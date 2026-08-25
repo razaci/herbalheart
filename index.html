@@ -4,47 +4,36 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="theme-color" content="#0a1210"/>
-<title>Willow Bend · Still-Room</title>
+<meta name="theme-color" content="#0d1f16"/>
+<title>Willow Bend Clinic</title>
 <style>
-:root{
-  --bg:#080f0c;--surface:#101c16;--card:#15231c;--card2:#1c2e24;--text:#eef6f0;--muted:#8aa696;
-  --accent:#3dd68c;--accent-dim:#249a5f;--gold:#f0c94d;--blue:#5eb0ff;--warn:#f0a85a;--danger:#f07171;
-  --violet:#a78bfa;--radius:16px;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
-  --nav-h:58px;--action-h:66px;--shadow:0 8px 28px rgba(0,0,0,.35);--line:#24382c;
-}
+:root{--bg:#0b1610;--surface:#14241b;--card:#1a2e22;--card2:#203628;--text:#e6f0e9;--muted:#7d9a88;--accent:#3dcf7a;--accent-dim:#2a9e5c;--gold:#e8c547;--blue:#4aa3f5;--warn:#e8a045;--danger:#e86a6a;--radius:14px;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--nav-h:56px;--action-h:64px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;scroll-behavior:smooth}
-body{font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#143024 0%,var(--bg) 55%);color:var(--text);line-height:1.45;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:100%;min-height:100dvh;padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 12px);padding-top:var(--safe-t);scroll-padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 16px)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.4;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:100%;min-height:100dvh;padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 12px);padding-top:var(--safe-t);scroll-padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 16px)}
 a{color:var(--accent)}button,input,select{font:inherit;color:inherit}
 .app{max-width:440px;margin:0 auto;min-height:100%;position:relative}
-.top{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(10,18,14,.97) 0%,rgba(8,15,12,.92) 100%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:10px 14px 8px;border-bottom:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.25)}
-.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.clinic-name{font-weight:750;font-size:.95rem;letter-spacing:-.01em}
-.rank-badge{background:linear-gradient(145deg,#2a2410,#1a1810);border:1px solid #5a4a20;border-radius:99px;padding:4px 11px;font-size:.68rem;color:var(--gold);font-weight:650}
-.meters{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:8px}
-.meter{background:var(--surface);border-radius:12px;padding:6px 4px;border:1px solid var(--line);text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-.meter .v{font-size:.95rem;font-weight:750;color:var(--accent)}.meter .l{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
-.meter.rp .v{color:var(--gold)}.meter.att .v{color:var(--blue)}.meter.tok .v{color:var(--violet)}
-.screen{display:none;padding:12px 14px 28px;animation:in .28s cubic-bezier(.2,.8,.2,1)}.screen.on{display:block}
-@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
-h2{font-size:1.22rem;margin-bottom:6px;letter-spacing:-.02em;font-weight:750}h3{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px;font-weight:650}
+.top{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,#122018 0%,var(--bg) 100%);padding:8px 12px 6px;border-bottom:1px solid #1e3328}
+.top-row{display:flex;justify-content:space-between;align-items:center}
+.clinic-name{font-weight:700;font-size:.9rem}
+.rank-badge{background:var(--card2);border:1px solid #2a4a38;border-radius:99px;padding:3px 10px;font-size:.7rem;color:var(--gold)}
+.meters{display:flex;gap:6px;margin-top:6px}
+.meter{flex:1;background:var(--surface);border-radius:10px;padding:5px 6px;border:1px solid #1e3328;text-align:center}
+.meter .v{font-size:1.05rem;font-weight:700;color:var(--accent)}.meter .l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.meter.rp .v{color:var(--gold)}.meter.att .v{color:var(--blue)}
+.screen{display:none;padding:10px 12px 24px;animation:in .22s ease}.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.15rem;margin-bottom:6px}h3{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 6px}
 .muted{color:var(--muted);font-size:.82rem}
-.card{background:linear-gradient(165deg,var(--card) 0%,#121f18 100%);border:1px solid var(--line);border-radius:var(--radius);padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
-.card.glow{border-color:rgba(61,214,140,.45);box-shadow:0 0 0 1px rgba(61,214,140,.25),var(--shadow)}
-.card.story{border-left:3px solid var(--blue);font-style:italic;background:linear-gradient(135deg,#142830,#121c22)}
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:14px 14px;border:none;border-radius:14px;font-weight:700;font-size:.95rem;cursor:pointer;background:linear-gradient(180deg,#4ae090 0%,var(--accent) 55%,var(--accent-dim) 100%);color:#04150c;margin-top:8px;transition:transform .1s,filter .15s;min-height:50px;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 4px 16px rgba(61,214,140,.28)}
-.btn:active{transform:scale(.98);filter:brightness(.95)}.btn:disabled{opacity:.45;pointer-events:none}
+.card{background:var(--card);border:1px solid #243a2e;border-radius:var(--radius);padding:12px;margin-bottom:8px}
+.card.glow{border-color:var(--accent-dim);box-shadow:0 0 0 1px var(--accent-dim)}
+.card.story{border-left:3px solid var(--blue);font-style:italic;background:#142830}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:14px 14px;border:none;border-radius:12px;font-weight:650;font-size:.95rem;cursor:pointer;background:var(--accent);color:#062010;margin-top:8px;transition:transform .08s;min-height:48px;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.45;pointer-events:none}
 .choice{touch-action:manipulation}
-.btn.sec{background:var(--card2);color:var(--text);border:1px solid var(--line);box-shadow:none}
-.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line);box-shadow:none}
-.btn.sm{width:auto;display:inline-flex;padding:8px 12px;font-size:.82rem;margin:0;min-height:auto;box-shadow:none}
-.hero-title{font-size:.7rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
-.quick-grid .btn{margin-top:0;min-height:46px;font-size:.84rem}
-.quest-card{border-color:#3a2e60;background:linear-gradient(145deg,#1a1628,#12181a)}
-.quest-card .q-title{font-weight:700;color:var(--violet)}
+.btn.sec{background:var(--card2);color:var(--text);border:1px solid #2a4a38}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid #2a4a38}
+.btn.sm{width:auto;display:inline-flex;padding:8px 12px;font-size:.82rem;margin:0;min-height:auto}
 /* Sticky action bar — always above nav, always tappable on phones */
 .action-bar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:440px;bottom:calc(var(--nav-h) + var(--safe-b));z-index:60;padding:10px 12px 8px;background:linear-gradient(180deg,rgba(11,22,16,0) 0%,rgba(11,22,16,.92) 22%,#0b1610 55%);pointer-events:none}
 .action-bar .btn{pointer-events:auto;margin-top:0;box-shadow:0 4px 18px rgba(0,0,0,.45);min-height:50px}
@@ -118,16 +107,229 @@ input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;borde
 .lore-tt{color:var(--gold);font-weight:700;letter-spacing:.02em}
 .returning-pill{background:#241c08;color:var(--gold);border:1px solid var(--gold)}
 .body-pill{background:#1a2830;color:var(--blue);border:1px solid #2a4a5a}
+
+/* ===== OVERHAUL: Willow Bend — Lantern Edition ===== */
+:root{
+  --bg:#071018;--surface:#0d1b27;--card:#122536;--card2:#183247;
+  --text:#eaf5ff;--muted:#86a5b8;--accent:#62e6ad;--accent-dim:#35b982;
+  --gold:#ffd166;--blue:#69b7ff;--violet:#b99cff;--danger:#ff7474;
+  --radius:18px;--nav-h:64px;--action-h:70px;
+}
+body{
+  background:
+    radial-gradient(circle at 15% -5%,rgba(98,230,173,.12),transparent 32%),
+    radial-gradient(circle at 90% 15%,rgba(105,183,255,.10),transparent 30%),
+    linear-gradient(180deg,#071018 0%,#09131d 55%,#060d14 100%);
+}
+.app{max-width:480px}
+.top{
+  background:linear-gradient(180deg,rgba(10,27,39,.98),rgba(7,16,24,.92));
+  border-bottom:1px solid rgba(98,230,173,.18);
+  box-shadow:0 8px 30px rgba(0,0,0,.18);
+  backdrop-filter:blur(16px);
+}
+.clinic-name{font-size:1rem;letter-spacing:.01em}
+.rank-badge{
+  background:linear-gradient(135deg,#183b4d,#172b3b);
+  border-color:#32617b;box-shadow:inset 0 1px rgba(255,255,255,.06)
+}
+.meter{
+  background:rgba(13,27,39,.82);border-color:#234052;border-radius:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.03)
+}
+.screen{padding:14px 14px 28px}
+.card{
+  background:linear-gradient(145deg,rgba(18,37,54,.96),rgba(12,27,40,.96));
+  border-color:#244358;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.13)
+}
+.card.glow{
+  border-color:rgba(98,230,173,.55);
+  box-shadow:0 0 0 1px rgba(98,230,173,.18),0 12px 32px rgba(44,190,139,.08)
+}
+.card.story{background:linear-gradient(145deg,#102936,#10212c);border-left-color:var(--blue)}
+.btn{
+  border-radius:15px;min-height:52px;
+  background:linear-gradient(135deg,#62e6ad,#37bd8a);
+  box-shadow:0 8px 20px rgba(48,193,139,.14)
+}
+.btn.sec{background:linear-gradient(135deg,#183247,#14293a);border-color:#31566d}
+.btn.ghost{border-color:#31566d}
+.choice{
+  background:linear-gradient(145deg,#102331,#0d1e2b);
+  border-color:#29495c;border-radius:15px;padding:12px 13px;
+  transition:transform .12s,border-color .12s,background .12s,box-shadow .12s
+}
+.choice:hover{border-color:#46738d;transform:translateY(-1px)}
+.choice:active{transform:scale(.985)}
+.patient-card{
+  background:
+    radial-gradient(circle at 90% 0%,rgba(98,230,173,.10),transparent 28%),
+    linear-gradient(145deg,#183247,#102331);
+  border-color:#31566d;box-shadow:0 12px 30px rgba(0,0,0,.16)
+}
+.pill{background:#1a3445;color:#72e7b5}
+.nav{
+  background:rgba(7,17,26,.94);border-top-color:#244154;
+  backdrop-filter:blur(16px);min-height:var(--nav-h)
+}
+.nav button{font-size:.62rem}
+.nav button.on{color:#6ff0b9;text-shadow:0 0 14px rgba(98,230,173,.35)}
+.nav .ico{font-size:1.2rem}
+.action-bar{max-width:480px;background:linear-gradient(180deg,transparent,rgba(7,16,24,.96) 35%,#071018 70%)}
+.toast{top:70px;background:#123c32;border-color:#49dca7;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.daily-card{background:linear-gradient(145deg,#172d28,#11211f);border-color:#356458}
+.badge{background:linear-gradient(145deg,#132a3a,#0e202d);border-color:#29495c}
+.outcome-flash{box-shadow:0 14px 40px rgba(0,0,0,.18)}
+#sc-home:before{
+  content:"LANTERN EDITION  •  STILL-ROOM SIM";
+  display:block;color:#5d8ba1;font-size:.58rem;letter-spacing:.16em;font-weight:800;
+  margin:0 0 7px 3px
+}
+.section-kicker{
+  font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:#5d8ba1;font-weight:800
+}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.feature-tile{
+  padding:12px;border-radius:16px;border:1px solid #244358;
+  background:linear-gradient(145deg,#102635,#0d1d29);cursor:pointer;
+  min-height:92px;transition:transform .12s,border-color .12s
+}
+.feature-tile:active{transform:scale(.98)}
+.feature-tile .fi{font-size:1.35rem}.feature-tile .ft{font-weight:750;font-size:.82rem;margin-top:4px}
+.feature-tile .fd{font-size:.68rem;color:var(--muted);margin-top:3px}
+.quest-card{
+  border:1px solid #3a5870;border-radius:18px;padding:13px;margin:10px 0;
+  background:linear-gradient(135deg,#142b3b,#10202e)
+}
+.quest-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.quest-progress{height:7px;background:#08151f;border-radius:9px;overflow:hidden;margin-top:9px}
+.quest-progress>i{display:block;height:100%;background:linear-gradient(90deg,#69b7ff,#62e6ad);border-radius:9px}
+.heat{color:#ffd166;font-weight:800}
+.theme-toggle{
+  position:fixed;right:max(12px,calc((100vw - 480px)/2 + 12px));top:8px;z-index:100;
+  border:1px solid #31566d;background:#0d1e2b;color:#dff8ff;border-radius:999px;
+  padding:5px 9px;font-size:.7rem;display:none
+}
+@media (min-width:700px){.theme-toggle{display:block}}
+
+
+/* ===== COMPLETE EDITION: WORLD / RPG LAYER ===== */
+.start-screen{
+  position:fixed;inset:0;z-index:500;display:none;overflow:auto;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(98,230,173,.15),transparent 28%),
+    radial-gradient(circle at 20% 80%,rgba(105,183,255,.12),transparent 30%),
+    linear-gradient(160deg,#061019,#0b1d2a 55%,#050b11);
+  padding:30px 16px;
+}
+.start-inner{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.logo-mark{font-size:4rem;text-align:center;filter:drop-shadow(0 0 22px rgba(98,230,173,.25))}
+.start-title{font-size:2.15rem;text-align:center;letter-spacing:.02em;margin:6px 0}
+.start-sub{color:#86a5b8;text-align:center;line-height:1.55;margin:0 auto 22px;max-width:390px}
+.start-card{background:rgba(13,27,39,.82);border:1px solid #31566d;border-radius:22px;padding:18px;box-shadow:0 25px 60px rgba(0,0,0,.35);backdrop-filter:blur(15px)}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.mode{padding:12px;border:1px solid #29495c;border-radius:15px;background:#0e202d;cursor:pointer}
+.mode.on{border-color:#62e6ad;box-shadow:0 0 0 1px rgba(98,230,173,.18)}
+.mode strong{display:block}.mode span{display:block;color:#86a5b8;font-size:.7rem;margin-top:3px}
+.world-strip{display:flex;gap:6px;overflow:auto;padding:5px 0 2px}
+.world-dot{min-width:72px;text-align:center;padding:9px 7px;border:1px solid #29495c;border-radius:12px;background:#0d1e2b;font-size:.7rem}
+.world-dot.locked{opacity:.42}.world-dot.open{border-color:#62e6ad}
+.mini-map{height:155px;border-radius:18px;border:1px solid #29495c;position:relative;overflow:hidden;margin:10px 0;background:
+  linear-gradient(115deg,transparent 48%,rgba(105,183,255,.13) 49%,rgba(105,183,255,.13) 51%,transparent 52%),
+  linear-gradient(35deg,transparent 48%,rgba(98,230,173,.10) 49%,rgba(98,230,173,.10) 51%,transparent 52%),
+  #091720}
+.map-node{position:absolute;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#112c3a;border:2px solid #31566d;box-shadow:0 0 18px rgba(98,230,173,.12);font-size:1rem}
+.map-node.active{border-color:#62e6ad;box-shadow:0 0 0 4px rgba(98,230,173,.07),0 0 22px rgba(98,230,173,.25)}
+.map-node.locked{opacity:.3}
+.zone-banner{padding:14px;border-radius:17px;background:linear-gradient(135deg,#153446,#10212e);border:1px solid #31566d;margin-bottom:10px}
+.zone-banner h3{margin:2px 0}.zone-banner p{margin:4px 0 0;color:#86a5b8;font-size:.78rem}
+.rpg-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 12px}
+.rpg-tab{padding:9px 4px;border:1px solid #29495c;background:#0c1c28;color:#86a5b8;border-radius:12px;font-size:.68rem}
+.rpg-tab.on{color:#eaf5ff;border-color:#62e6ad}
+.encounter{
+  padding:14px;border-radius:18px;border:1px solid #3a5870;
+  background:linear-gradient(145deg,#152b3a,#0d1e2b);margin:9px 0
+}
+.encounter .tag{font-size:.6rem;letter-spacing:.12em;color:#69b7ff;font-weight:800}
+.encounter h3{margin:3px 0 4px}.encounter p{font-size:.78rem;color:#9db7c7;margin:0}
+.reward-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.reward{padding:5px 8px;border-radius:999px;background:#153142;color:#9feecb;font-size:.68rem}
+.achievement{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #1d3647}
+.achievement:last-child{border-bottom:0}.achievement .ai{font-size:1.4rem}
+.achievement.lock{opacity:.42}
+.relation{margin:8px 0;padding:10px;border-radius:14px;background:#0e202d;border:1px solid #29495c}
+.rel-top{display:flex;justify-content:space-between;font-size:.78rem}.rel-bar{height:6px;background:#07121a;border-radius:8px;margin-top:7px;overflow:hidden}.rel-bar i{display:block;height:100%;background:linear-gradient(90deg,#b99cff,#62e6ad)}
+@keyframes lanternPulse{0%,100%{box-shadow:0 0 0 0 rgba(98,230,173,0)}50%{box-shadow:0 0 0 8px rgba(98,230,173,.04)}}
+.world-card{animation:lanternPulse 3.5s ease-in-out infinite}
+
+
+/* ===== HERBARIUM / APOTHECARY ===== */
+.herb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.herb-tile{padding:11px;border-radius:14px;border:1px solid #29495c;background:linear-gradient(145deg,#102635,#0d1d29);cursor:pointer;min-height:88px}
+.herb-tile:active{transform:scale(.98)}
+.herb-tile .hi{font-size:1.25rem}.herb-tile .hn{font-weight:750;font-size:.8rem;margin-top:3px}
+.herb-tile .hd{font-size:.66rem;color:var(--muted);margin-top:2px;line-height:1.35}
+.herb-tile.central{border-color:#62e6ad;box-shadow:0 0 0 1px rgba(98,230,173,.15)}
+.potion-card{border-left:3px solid var(--gold);background:linear-gradient(145deg,#2a2410,#1a1810);border-radius:14px;padding:12px;margin:8px 0}
+.syn-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.syn-pill{padding:3px 8px;border-radius:99px;background:#153142;color:#9feecb;font-size:.68rem;border:1px solid #2a4a5a}
+.herb-detail{margin-top:8px;font-size:.8rem;line-height:1.45;color:#b8d4c4}
+.color-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+
+/* ===== PROBLEMS & CURES CATALOG ===== */
+.pr-fam-bar{display:flex;gap:5px;overflow:auto;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
+.pr-fam{flex:0 0 auto;padding:6px 11px;border-radius:99px;border:1px solid #29495c;background:#0d1e2b;font-size:.7rem;cursor:pointer;white-space:nowrap}
+.pr-fam.on{border-color:var(--accent);background:#143d28;color:var(--accent)}
+.pr-card{border-left:3px solid #31566d}
+.pr-card .proto{font-size:.8rem;line-height:1.4;margin-top:6px;padding:8px;border-radius:10px;background:#0c1a24;border:1px solid #1e3648}
+.pr-card .safe-line{font-size:.7rem;color:#c8b880;margin-top:6px;line-height:1.35}
+
+
+/* ===== RBT RECOVERY TECHNIQUES ===== */
+.rbt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.rbt-tile{padding:12px;border-radius:14px;border:1px solid #29495c;background:linear-gradient(145deg,#102635,#0d1d29);cursor:pointer;min-height:96px}
+.rbt-tile:active{transform:scale(.98)}
+.rbt-tile .ri{font-size:1.35rem}.rbt-tile .rn{font-weight:750;font-size:.82rem;margin-top:4px}
+.rbt-tile .rd{font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.35}
+.rbt-detail{border-left:3px solid var(--accent);margin-top:10px}
+.rbt-pr{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:99px;background:#1a3445;color:#72e7b5;margin:2px 3px 2px 0}
+
 </style>
 </head>
 <body>
+
+<div class="start-screen" id="completeStart">
+  <div class="start-inner">
+    <div class="logo-mark">🏮</div>
+    <div class="start-title">WILLOW BEND</div>
+    <p class="start-sub">The Grey is spreading. The road is opening. Keep the still-room alive — one patient, one choice, one thread at a time.</p>
+    <div class="start-card">
+      <div class="section-kicker">Choose your route</div>
+      <div class="mode-grid">
+        <div class="mode on" id="modeStory" onclick="setRunMode('story')"><strong>📖 Story</strong><span>Full chronicle & character arcs</span></div>
+        <div class="mode" id="modeExpedition" onclick="setRunMode('expedition')"><strong>🗺️ Expedition</strong><span>More encounters & exploration</span></div>
+      </div>
+      <div class="section-kicker">The road ahead</div>
+      <div class="world-strip">
+        <div class="world-dot open">🏠<br>Clinic</div>
+        <div class="world-dot open">🌲<br>Hollow</div>
+        <div class="world-dot locked">🌫️<br>Grey</div>
+        <div class="world-dot locked">🌙<br>Moon Road</div>
+      </div>
+      <button class="btn" style="width:100%;margin-top:13px" onclick="beginCompleteEdition()">Enter the Still-Room</button>
+      <button class="btn sec" style="width:100%;margin-top:8px" onclick="continueCompleteEdition()">Continue Existing Run</button>
+    </div>
+    <p style="text-align:center;color:#527388;font-size:.65rem;margin-top:14px">Complete Edition · existing saves are preserved</p>
+  </div>
+</div>
+
 <div class="app">
 <div class="top">
 <div class="top-row"><div class="clinic-name" id="clinicName">Willow Bend Clinic<span class="streak-pill" id="streakPill">🔥 x0</span></div><div class="rank-badge" id="rankBadge">Novice</div></div>
 <div class="meters">
 <div class="meter rp"><div class="v" id="mRP">0</div><div class="l">RP</div></div>
-<div class="meter att"><div class="v" id="mAtt">10</div><div class="l">Att</div></div>
-<div class="meter tok"><div class="v" id="mTok">0</div><div class="l">Token</div></div>
+<div class="meter att"><div class="v" id="mAtt">10</div><div class="l">Attention</div></div>
 <div class="meter"><div class="v" id="mDay">1</div><div class="l">Day</div></div>
 <div class="meter"><div class="v" id="mCases">0</div><div class="l">Cases</div></div>
 </div>
@@ -135,21 +337,30 @@ input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;borde
 </div>
 
 <section id="sc-home" class="screen on">
-<div class="hero-title">Still-room on the old road</div>
-<div class="card glow"><div class="muted" style="font-size:.72rem">ATMOSPHERE</div><div id="atmosphere" style="font-weight:700;margin-top:4px;font-size:.95rem">Quiet morning. The kettle is warm.</div><div class="muted" id="moonLine" style="margin-top:4px;font-size:.78rem"></div><div class="muted" id="dayHint" style="margin-top:6px;font-size:.8rem"></div></div>
+<div class="card glow"><div class="muted" style="font-size:.75rem">CLINIC ATMOSPHERE</div><div id="atmosphere" style="font-weight:650;margin-top:4px">Quiet morning. The kettle is warm.</div><div class="muted" id="moonLine" style="margin-top:4px;font-size:.78rem"></div><div class="muted" id="dayHint" style="margin-top:6px;font-size:.8rem"></div></div>
 <div class="card story" id="chronicleCard" style="cursor:pointer" onclick="go('codex');setTimeout(function(){switchCodexTab('lore')},50)"></div>
-<div class="card quest-card" id="questCard" style="cursor:pointer" onclick="go('codex');setTimeout(function(){switchCodexTab('shop')},50)"></div>
 <div class="card" id="staffCard" style="cursor:pointer" onclick="go('staff')"></div>
+<div class="card story" style="cursor:pointer" onclick="go('codex')">📜 <strong>The Old Ways</strong> — this room has kept the same color ledger for three generations, since Senna Vey's still-room by the old road. Tap to read the Codex, browse patient records, or check your remedy shelf.</div>
 <div class="daily-card" id="dailyCard"></div>
-<div id="lastCaseCard" style="display:none"></div>
-<div class="quick-grid">
-<button class="btn" onclick="openWaitingRoom()">▶ Open door</button>
-<button class="btn sec" onclick="go('codex');setTimeout(function(){switchCodexTab('shop')},40)">🛒 Market</button>
-<button class="btn sec" onclick="go('deck')">🃏 Deck</button>
-<button class="btn sec" onclick="go('staff')">👥 Staff</button>
+<div class="quest-card" id="overhaulPanel">
+  <div class="section-kicker">Lantern board</div>
+  <div class="quest-row"><strong>Today's fieldwork</strong><span class="heat" id="overhaulStreak">🔥 0</span></div>
+  <div class="muted" id="overhaulQuest" style="margin-top:4px">Loading today's objective…</div>
+  <div class="quest-progress"><i id="overhaulQuestBar" style="width:0%"></i></div>
+  <div class="feature-grid">
+    <div class="feature-tile" onclick="openWorkshop()"><div class="fi">🛠️</div><div class="ft">Workshop</div><div class="fd">Spend RP on permanent upgrades</div></div>
+    <div class="feature-tile" onclick="openFieldNotes()"><div class="fi">🗺️</div><div class="ft">Field Notes</div><div class="fd">Review discoveries and run stats</div></div>
+    <div class="feature-tile" onclick="go('codex');setTimeout(function(){switchCodexTab('herb')},40)"><div class="fi">🌿</div><div class="ft">Herbarium</div><div class="fd">Central herbs, potions & synergies</div></div>
+    <div class="feature-tile" onclick="openHerbLore()"><div class="fi">📜</div><div class="ft">Still-Room Lore</div><div class="fd">How the ledger keeps the plants</div></div>
+    <div class="feature-tile" onclick="go('codex');setTimeout(function(){switchCodexTab('problems')},40)"><div class="fi">🃏</div><div class="ft">Problems &amp; Cures</div><div class="fd">All 40 PR cases + protocols</div></div>
+    <div class="feature-tile" onclick="go('codex');setTimeout(function(){switchCodexTab('rbt')},40)"><div class="fi">🧠</div><div class="ft">RBT Techniques</div><div class="fd">10 cognitive recovery tools</div></div>
+  </div>
 </div>
+
+<div id="lastCaseCard" style="display:none"></div>
+<button class="btn" onclick="openWaitingRoom()">▶ Open the door</button>
 <button class="btn sec" onclick="startMayaArc()" id="btnMaya">✦ Maya's first visit (tutorial)</button>
-<p class="muted" style="text-align:center;margin-top:6px;font-size:.75rem">Choose a patient · Attention spent when the session begins</p>
+<p class="muted" style="text-align:center;margin-top:6px;font-size:.75rem">Waiting room: choose who to see · spends Attention only when you begin</p>
 <h3>Your progress</h3>
 <div class="card">
 <div class="mastery-row"><span>Sleep</span><span id="msSleep">0/5</span></div><div class="bar-wrap"><div class="bar" id="barSleep" style="width:0%"></div></div>
@@ -233,13 +444,19 @@ input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;borde
 <section id="sc-codex" class="screen">
 <h2>Codex</h2>
 <p class="muted" style="margin-bottom:10px">Lore, patients, remedies, and the workshop under the still-room stairs.</p>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:10px">
-<div class="choice ctab on" id="ctabLore" onclick="switchCodexTab('lore')"><div class="t" style="font-size:.72rem">📜 Lore</div></div>
-<div class="choice ctab" id="ctabArchive" onclick="switchCodexTab('archive')"><div class="t" style="font-size:.72rem">🗂 Archive</div></div>
-<div class="choice ctab" id="ctabInv" onclick="switchCodexTab('inv')"><div class="t" style="font-size:.72rem">🎒 Shelf</div></div>
-<div class="choice ctab" id="ctabShop" onclick="switchCodexTab('shop')"><div class="t" style="font-size:.72rem">🔧 Shop</div></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:10px">
+<div class="choice ctab on" id="ctabLore" onclick="switchCodexTab('lore')"><div class="t" style="font-size:.62rem">📜 Lore</div></div>
+<div class="choice ctab" id="ctabHerb" onclick="switchCodexTab('herb')"><div class="t" style="font-size:.62rem">🌿 Herb</div></div>
+<div class="choice ctab" id="ctabProblems" onclick="switchCodexTab('problems')"><div class="t" style="font-size:.58rem">🃏 Cases</div></div>
+<div class="choice ctab" id="ctabRbt" onclick="switchCodexTab('rbt')"><div class="t" style="font-size:.58rem">🧠 RBT</div></div>
+<div class="choice ctab" id="ctabArchive" onclick="switchCodexTab('archive')"><div class="t" style="font-size:.62rem">🗂 Archive</div></div>
+<div class="choice ctab" id="ctabInv" onclick="switchCodexTab('inv')"><div class="t" style="font-size:.62rem">🎒 Shelf</div></div>
+<div class="choice ctab" id="ctabShop" onclick="switchCodexTab('shop')"><div class="t" style="font-size:.62rem">🔧 Shop</div></div>
 </div>
 <div id="codexLore"></div>
+<div id="codexHerb" style="display:none"></div>
+<div id="codexProblems" style="display:none"></div>
+<div id="codexRbt" style="display:none"></div>
 <div id="codexArchive" style="display:none"></div>
 <div id="codexInv" style="display:none"></div>
 <div id="codexShop" style="display:none"></div>
@@ -279,6 +496,18 @@ input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;borde
 <div class="safe">Tone lock: competent, kind, slightly tired, never cruel. Never medical advice. Body systems are game fiction only.</div>
 <button class="btn ghost" onclick="if(confirm('Reset all progress?')){localStorage.removeItem('hhc2');location.reload()}">Reset everything</button>
 </section>
+
+<section id="sc-world" class="screen">
+<h2>🏮 The Old Road</h2>
+<p class="muted" style="margin-bottom:10px">Depth rewards attention, not spectacle. Turn back before the lantern gutters.</p>
+<div class="rpg-tabs" style="grid-template-columns:repeat(3,1fr)">
+<div class="rpg-tab on" onclick="renderWorldTab('expedition',this)">🛤️ Expedition</div>
+<div class="rpg-tab" onclick="renderWorldTab('achievements',this)">🏅 Badges</div>
+<div class="rpg-tab" onclick="renderWorldTab('threads',this)">🧵 Threads</div>
+</div>
+<div id="worldContent"></div>
+<button class="btn sec" style="margin-top:10px" onclick="go('home')">Back to clinic</button>
+</section>
 </div>
 
 <div class="action-bar hidden" id="actionBar"></div>
@@ -289,19 +518,23 @@ input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;borde
 <button data-s="badges" onclick="go('badges')"><span class="ico">🏅</span>Badges</button>
 <button data-s="codex" onclick="go('codex')"><span class="ico">📖</span>Codex</button>
 <button data-s="more" onclick="go('more')"><span class="ico">⚙️</span>More</button>
+<button id="worldNavBtn" data-s="world" onclick="go('world')"><span class="ico">🗺️</span>WORLD</button>
 </nav>
+
+<div id="overhaulModal" style="display:none;position:fixed;inset:0;z-index:120;background:rgba(2,8,13,.78);backdrop-filter:blur(8px);padding:18px 14px;overflow:auto">
+  <div style="max-width:480px;margin:7vh auto 30px;background:#0d1b27;border:1px solid #31566d;border-radius:22px;box-shadow:0 25px 70px rgba(0,0,0,.5);padding:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div><div class="section-kicker" id="overhaulModalKicker">WORKSHOP</div><h2 id="overhaulModalTitle" style="margin:2px 0 0">Workshop</h2></div>
+      <button class="btn sm sec" onclick="closeOverhaulModal()">Close</button>
+    </div>
+    <div id="overhaulModalBody" style="margin-top:12px"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const P=[{"id":"PR-001","f":"Sleep","p":"Trouble falling asleep","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Blue nervine lore + wind-down If–Then","q":"blackout curtains white noise machine","url":"https://www.amazon.com/s?k=blackout+curtains+white+noise+machine","quote":"I can't fall asleep even when I'm exhausted."},{"id":"PR-002","f":"Sleep","p":"Waking at 3am with thoughts","att":1,"tags":["SETTLE","INSIGHT"],"color":"Blue","se":["SE-07","SE-01"],"proto":"Nightbloom tea lore + no screens","q":"sleep journal notebook","url":"https://www.amazon.com/s?k=sleep+journal+notebook","quote":"Around three, my mind just turns the lights on."},{"id":"PR-003","f":"Sleep","p":"Phone in bed / night scrolling","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05"],"proto":"Device outside room + Passionflower lore","q":"phone charging station bedside alternative","url":"https://www.amazon.com/s?k=phone+charging+station+bedside+alternative","quote":"I end up on my phone in bed every night."},{"id":"PR-004","f":"Focus","p":"Procrastinating simple tasks","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"2-minute start + Rosemary lore","q":"pomodoro timer","url":"https://www.amazon.com/s?k=pomodoro+timer","quote":"I put off simple tasks until they pile up."},{"id":"PR-005","f":"Focus","p":"Afternoon energy crash","att":1,"tags":["PACE","RESOURCE"],"color":"Yellow","se":["SE-12"],"proto":"Protein+walk + Holy Basil lore","q":"protein snack ideas","url":"https://www.amazon.com/s?k=protein+snack+ideas","quote":"Every afternoon I just… drop."},{"id":"PR-006","f":"Focus","p":"Context-switch scatter after meetings","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"Reset ritual + Lemon Balm","q":"notepad index cards","url":"https://www.amazon.com/s?k=notepad+index+cards","quote":"After back-to-back meetings I can't think straight."},{"id":"PR-007","f":"Boundaries","p":"Trouble saying no","att":1,"tags":["BOUNDARY"],"color":"Black","se":["SE-08"],"proto":"One refusal script + Motherwort","q":"boundary journal","url":"https://www.amazon.com/s?k=boundary+journal","quote":"I say yes when I mean no."},{"id":"PR-008","f":"Boundaries","p":"Overcommitting calendar","att":1,"tags":["BOUNDARY","RESET"],"color":"Black","se":["SE-08"],"proto":"48-hour rule before yes","q":"planner calendar","url":"https://www.amazon.com/s?k=planner+calendar","quote":"My calendar is full of things I regret agreeing to."},{"id":"PR-009","f":"Boundaries","p":"Feeling responsible for others' moods","att":2,"tags":["BOUNDARY","RESOURCE"],"color":"Black","se":["SE-08","SE-04"],"proto":"Return responsibility + Motherwort","q":"therapy workbook optional","url":"https://www.amazon.com/s?k=therapy+workbook+optional","quote":"I feel responsible for everyone's mood."},{"id":"PR-010","f":"Mood-Energy","p":"Sunday scaries / work dread","att":1,"tags":["GROUND","SETTLE"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"One controllable next action","q":"worry notepad","url":"https://www.amazon.com/s?k=worry+notepad","quote":"Sunday evening dread hits me every week."},{"id":"PR-011","f":"Mood-Energy","p":"Social battery empty","att":1,"tags":["RESOURCE","BOUNDARY"],"color":"Black","se":["SE-04"],"proto":"Recovery block + Reishi lore","q":"eye mask quiet time","url":"https://www.amazon.com/s?k=eye+mask+quiet+time","quote":"One social event and my battery is gone."},{"id":"PR-012","f":"Mood-Energy","p":"Comparison spiral on social media","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Violet","se":["SE-05"],"proto":"Unfollow batch + 24h pause","q":"app limit screen time","url":"https://www.amazon.com/s?k=app+limit+screen+time","quote":"Social media leaves me comparing and low."},{"id":"PR-013","f":"Mood-Energy","p":"Low motivation to start exercising","att":1,"tags":["ACTIVATE","PACE"],"color":"Orange","se":["SE-12"],"proto":"Shoes-only win + Ginger lore","q":"resistance bands yoga mat","url":"https://www.amazon.com/s?k=resistance+bands+yoga+mat","quote":"I want to move more but can't start."},{"id":"PR-014","f":"Pain-Stiffness","p":"Morning stiffness","att":1,"tags":["ACTIVATE","GROUND"],"color":"Red","se":["SE-12","SE-11"],"proto":"Warmth + gentle movement + Turmeric","q":"heating pad","url":"https://www.amazon.com/s?k=heating+pad","quote":"Mornings I feel stiff until I warm up."},{"id":"PR-015","f":"Pain-Stiffness","p":"Desk shoulder tension","att":1,"tags":["PACE","SETTLE"],"color":"Green","se":["SE-01","SE-11"],"proto":"Micro-breaks + heat + stretch","q":"lumbar cushion","url":"https://www.amazon.com/s?k=lumbar+cushion","quote":"My shoulders lock up at the desk."},{"id":"PR-016","f":"Pain-Stiffness","p":"Jaw tension at night","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-01","SE-03"],"proto":"Evening down-regulation + Skullcap","q":"mouth guard consult dentist","url":"https://www.amazon.com/s?k=mouth+guard+consult+dentist","quote":"I wake with a tight jaw."},{"id":"PR-017","f":"Home-Environment","p":"Cold office feet","att":1,"tags":["RESOURCE","GROUND"],"color":"Red","se":["SE-11"],"proto":"Warming lore + layers","q":"wool thermal socks USB foot warmer","url":"https://www.amazon.com/s?k=wool+thermal+socks+USB+foot+warmer","quote":"My feet stay ice-cold in the office."},{"id":"PR-018","f":"Home-Environment","p":"Dry indoor air","att":1,"tags":["SETTLE","RESOURCE"],"color":"Blue","se":["SE-07"],"proto":"Humidify + Marshmallow lore","q":"humidifier honey lozenges","url":"https://www.amazon.com/s?k=humidifier+honey+lozenges","quote":"Dry air makes my throat scratchy at night."},{"id":"PR-019","f":"Home-Environment","p":"Noisy environment disrupting sleep","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Noise boundary + Blue nervine","q":"white noise machine foam earplugs","url":"https://www.amazon.com/s?k=white+noise+machine+foam+earplugs","quote":"Noise keeps wrecking my sleep."},{"id":"PR-020","f":"Home-Environment","p":"Eye strain from screens","att":1,"tags":["PACE","RESET"],"color":"Blue","se":["SE-05"],"proto":"Breaks + warm compress lore","q":"blue light glasses monitor arm","url":"https://www.amazon.com/s?k=blue+light+glasses+monitor+arm","quote":"Screens leave my eyes burning."},{"id":"PR-021","f":"Digestive","p":"Snacking when not hungry","att":1,"tags":["GROUND","INSIGHT"],"color":"Orange","se":["SE-01"],"proto":"10-min pause + water + Fennel","q":"herbal tea sampler","url":"https://www.amazon.com/s?k=herbal+tea+sampler","quote":"I snack when I'm not actually hungry."},{"id":"PR-022","f":"Digestive","p":"Nervous stomach before events","att":1,"tags":["SETTLE","GROUND"],"color":"Orange","se":["SE-05","SE-07"],"proto":"Simple food + Ginger","q":"ginger tea bags","url":"https://www.amazon.com/s?k=ginger+tea+bags","quote":"Before big events my stomach flips."},{"id":"PR-023","f":"Digestive","p":"Mild post-meal fog","att":1,"tags":["PACE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"Simpler meals + walk","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After meals my head feels foggy."},{"id":"PR-024","f":"Sleep","p":"Waking tired most days","att":2,"tags":["PACE","RESOURCE","GROUND"],"color":"Green","se":["SE-04","SE-12"],"proto":"Protect morning energy + Oatstraw","q":"sunrise alarm clock","url":"https://www.amazon.com/s?k=sunrise+alarm+clock","quote":"I wake up tired almost every day."},{"id":"PR-025","f":"Focus","p":"Brain fog after poor sleep","att":2,"tags":["SETTLE","RESOURCE"],"color":"Yellow","se":["SE-01","SE-10"],"proto":"Fix sleep first","q":"sleep mask","url":"https://www.amazon.com/s?k=sleep+mask","quote":"Bad sleep turns into all-day fog."},{"id":"PR-026","f":"Boundaries","p":"Difficulty ending the workday","att":1,"tags":["BOUNDARY","RESET"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Shutdown ritual + dump list","q":"notebook shutdown checklist","url":"https://www.amazon.com/s?k=notebook+shutdown+checklist","quote":"I can't mentally leave work at the end of the day."},{"id":"PR-027","f":"Mood-Energy","p":"Irritability from hunger","att":1,"tags":["RESOURCE","PACE"],"color":"Orange","se":["SE-11"],"proto":"Protein snack protocol","q":"portable protein snacks","url":"https://www.amazon.com/s?k=portable+protein+snacks","quote":"When I skip food I get irritable."},{"id":"PR-028","f":"Mood-Energy","p":"Feeling flat after social media","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-05","SE-12"],"proto":"Replace 15 min with light/air","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After scrolling I feel flat and empty."},{"id":"PR-029","f":"Pain-Stiffness","p":"Seasonal joint ache","att":2,"tags":["GROUND","RESOURCE"],"color":"Red","se":["SE-12","SE-11"],"proto":"Boswellia/Turmeric + warmth","q":"heating pad compression sleeve","url":"https://www.amazon.com/s?k=heating+pad+compression+sleeve","quote":"Damp weather makes my joints ache."},{"id":"PR-030","f":"Mood-Energy","p":"Everyday existential ache","att":2,"tags":["INSIGHT","RESOURCE"],"color":"Violet","se":["SE-04","SE-10"],"proto":"Small meaningful act + connection","q":"journal","url":"https://www.amazon.com/s?k=journal","quote":"There's a quiet everyday ache about meaning."},{"id":"PR-031","f":"Focus","p":"Decision paralysis","att":1,"tags":["GROUND","INSIGHT"],"color":"Yellow","se":["SE-05"],"proto":"24-hour decision window","q":"decision journal","url":"https://www.amazon.com/s?k=decision+journal","quote":"I freeze when I have to decide."},{"id":"PR-032","f":"Sleep","p":"Difficulty winding down after work","att":1,"tags":["SETTLE","RESET"],"color":"Blue","se":["SE-07","SE-05"],"proto":"Wind-down sequence + Blue nervines","q":"aromatherapy diffuser optional","url":"https://www.amazon.com/s?k=aromatherapy+diffuser+optional","quote":"After work I can't wind down."},{"id":"PR-033","f":"Home-Environment","p":"Clutter stress one surface","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"10-minute one surface","q":"storage bins","url":"https://www.amazon.com/s?k=storage+bins","quote":"One messy surface stresses me out all day."},{"id":"PR-034","f":"Boundaries","p":"Over-apologizing","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Yellow","se":["SE-08"],"proto":"Replace one sorry with thank-you","q":"sticky note reminder","url":"https://www.amazon.com/s?k=sticky+note+reminder","quote":"I apologize for things that don't need sorry."},{"id":"PR-035","f":"Focus","p":"Difficulty finishing books / deep work","att":1,"tags":["GROUND","ACTIVATE"],"color":"Yellow","se":["SE-12"],"proto":"One book only + Bacopa lore","q":"book stand reading light","url":"https://www.amazon.com/s?k=book+stand+reading+light","quote":"I start books and deep work but rarely finish."},{"id":"PR-036","f":"Mood-Energy","p":"Post-holiday crash","att":1,"tags":["PACE","RESOURCE"],"color":"Green","se":["SE-04","SE-12"],"proto":"Gentle routine reset + Nettle","q":"routine checklist","url":"https://www.amazon.com/s?k=routine+checklist","quote":"After holidays I crash for days."},{"id":"PR-037","f":"Digestive","p":"Occasional gas after heavy meals","att":1,"tags":["GROUND","SETTLE"],"color":"Orange","se":["SE-01"],"proto":"Simpler meal + Fennel/Peppermint","q":"peppermint tea","url":"https://www.amazon.com/s?k=peppermint+tea","quote":"Heavy meals leave me gassy and uncomfortable."},{"id":"PR-038","f":"Home-Environment","p":"Overheating bedroom at night","att":1,"tags":["SETTLE"],"color":"Blue","se":["SE-07"],"proto":"Cool room + Blue cooling lore","q":"tower fan cooling pillow","url":"https://www.amazon.com/s?k=tower+fan+cooling+pillow","quote":"My bedroom is too hot to sleep well."},{"id":"PR-039","f":"Pain-Stiffness","p":"Eye strain from extended reading","att":1,"tags":["PACE","RESET"],"color":"Indigo","se":["SE-05"],"proto":"Breaks + compress + Indigo","q":"book stand reading glasses","url":"https://www.amazon.com/s?k=book+stand+reading+glasses","quote":"Long reading sessions strain my eyes."},{"id":"PR-040","f":"Boundaries","p":"Fear of resting","att":2,"tags":["PACE","RESOURCE","BOUNDARY"],"color":"Black","se":["SE-12","SE-04"],"proto":"Rest as training + Ashwagandha lore","q":"timer for rest windows","url":"https://www.amazon.com/s?k=timer+for+rest+windows","quote":"Resting makes me feel guilty or unsafe."},{"id":"PR-041","f":"Focus","p":"Phantom phone buzzes","att":1,"tags":["SETTLE","BOUNDARY"],"color":"Indigo","se":["SE-05"],"proto":"Pocket-empty ritual + Indigo rest-lens lore","q":"phone free pouch","url":"https://www.amazon.com/s?k=phone+free+pouch","quote":"My thigh buzzes. There is no message. There is never a message."},{"id":"PR-042","f":"Home-Environment","p":"Sock-eating dryer conspiracy","att":1,"tags":["RESET","INSIGHT"],"color":"White","se":["SE-11"],"proto":"One-basket rule + White clearing cloth lore","q":"mesh laundry bags","url":"https://www.amazon.com/s?k=mesh+laundry+bags","quote":"The dryer takes tribute. Always one sock. Always."},{"id":"PR-043","f":"Mood-Energy","p":"Group-chat obligation fog","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Violet","se":["SE-04"],"proto":"Mute-and-breathe + Violet listening bell","q":"do not disturb phone","url":"https://www.amazon.com/s?k=do+not+disturb+phone","quote":"Seventy-three unread messages. None require me. All feel urgent."},{"id":"PR-044","f":"Focus","p":"Tab hoarding spiral","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-11"],"proto":"Close-all-but-one + Rosemary start lore","q":"browser tab organizer","url":"https://www.amazon.com/s?k=browser+tab+organizer","quote":"I have forty-one tabs. I need three. I open a forty-second."},{"id":"PR-045","f":"Boundaries","p":"Reply-all reflex","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Black","se":["SE-08"],"proto":"Draft-then-delete + Motherwort edge lore","q":"sticky notes desk","url":"https://www.amazon.com/s?k=sticky+notes+desk","quote":"I reply-all before my brain finishes the sentence."},{"id":"PR-046","f":"Sleep","p":"One-more-episode gravity","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Credits = bedtime If-Then + Blue nervine","q":"tv sleep timer","url":"https://www.amazon.com/s?k=tv+sleep+timer","quote":"The episode ends. My hand finds Next. I am no longer in charge."},{"id":"PR-047","f":"Mood-Energy","p":"Plant that judges you","att":1,"tags":["INSIGHT","ACTIVATE"],"color":"Green","se":["SE-12"],"proto":"Water-on-Sundays pact + Green restorative lore","q":"plant watering globe","url":"https://www.amazon.com/s?k=plant+watering+globe","quote":"The fern knows I forgot. The fern has always known."},{"id":"PR-048","f":"Digestive","p":"Fridge light negotiations","att":1,"tags":["GROUND","PACE"],"color":"Orange","se":["SE-01"],"proto":"Door-closed + water first + Fennel pause","q":"fridge organizer bins","url":"https://www.amazon.com/s?k=fridge+organizer+bins","quote":"I open the fridge for answers. The light offers none. I stay anyway."},{"id":"PR-049","f":"Focus","p":"Meeting that should have been a walk","att":1,"tags":["PACE","RESET"],"color":"Yellow","se":["SE-11","SE-12"],"proto":"Standing stretch + 2-min reset lore","q":"under desk walking pad","url":"https://www.amazon.com/s?k=under+desk+walking+pad","quote":"Forty minutes of updates. One decision. My soul left at minute six."},{"id":"PR-050","f":"Home-Environment","p":"Cable that multiplies overnight","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"One-drawer exile + White clearing cloth","q":"cable organizer box","url":"https://www.amazon.com/s?k=cable+organizer+box","quote":"I own three chargers. The drawer contains eleven. None fit."},
-{"id":"PR-051","f":"Mood-Energy","p":"Sunday scaries without a Monday","att":1,"tags":["SETTLE","INSIGHT"],"color":"Violet","se":["SE-04"],"proto":"Name the dread + Violet listening","q":"anxiety journal","url":"https://www.amazon.com/s?k=anxiety+journal","quote":"Even on rest days my body braces for a problem that is not scheduled."},
-{"id":"PR-052","f":"Focus","p":"Inbox as a second pulse","att":1,"tags":["BOUNDARY","RESET"],"color":"Yellow","se":["SE-11"],"proto":"Two check windows + Rosemary start","q":"email schedule tips","url":"https://www.amazon.com/s?k=focus+timer","quote":"Every ping feels like a heartbeat that is not mine."},
-{"id":"PR-053","f":"Sleep","p":"Revenge bedtime procrastination","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Hard lights-out + Blue nervine","q":"wind down routine","url":"https://www.amazon.com/s?k=sleep+routine+checklist","quote":"I stay up late to steal hours the day already took."},
-{"id":"PR-054","f":"Boundaries","p":"Family group-chat gravity","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Black","se":["SE-08"],"proto":"One reply window + Motherwort","q":"boundary scripts","url":"https://www.amazon.com/s?k=boundary+setting+book","quote":"If I mute them I feel cruel. If I answer I disappear."},
-{"id":"PR-055","f":"Pain-Stiffness","p":"Phone-neck from looking down at life","att":1,"tags":["ACTIVATE","PACE"],"color":"Red","se":["SE-12"],"proto":"Chin tucks + Red warming wrap lore","q":"neck stretcher","url":"https://www.amazon.com/s?k=neck+stretching+tool","quote":"My head lives two inches forward of my spine now."},
-{"id":"PR-056","f":"Digestive","p":"Coffee on an empty argument","att":1,"tags":["GROUND","SETTLE"],"color":"Orange","se":["SE-01"],"proto":"Food before caffeine + Fennel pause","q":"breakfast ideas","url":"https://www.amazon.com/s?k=easy+breakfast","quote":"I drink the argument first. Then the coffee. Then the regret."},
-{"id":"PR-057","f":"Home-Environment","p":"Pile of almost-done laundry","att":1,"tags":["ACTIVATE","RESET"],"color":"White","se":["SE-11"],"proto":"One load rule + White cloth","q":"laundry basket","url":"https://www.amazon.com/s?k=laundry+basket","quote":"Clean clothes live in the dryer like a second wardrobe."},
-{"id":"PR-058","f":"Mood-Energy","p":"Comparison hangover after scrolling","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Green","se":["SE-04","SE-12"],"proto":"Scroll curfew + Green restorative","q":"app timers","url":"https://www.amazon.com/s?k=phone+app+timer","quote":"I put the phone down and still feel poorer than strangers."}];
+const P=[{"id":"PR-001","f":"Sleep","p":"Trouble falling asleep","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Blue nervine lore + wind-down If–Then","q":"blackout curtains white noise machine","url":"https://www.amazon.com/s?k=blackout+curtains+white+noise+machine","quote":"I can't fall asleep even when I'm exhausted."},{"id":"PR-002","f":"Sleep","p":"Waking at 3am with thoughts","att":1,"tags":["SETTLE","INSIGHT"],"color":"Blue","se":["SE-07","SE-01"],"proto":"Nightbloom tea lore + no screens","q":"sleep journal notebook","url":"https://www.amazon.com/s?k=sleep+journal+notebook","quote":"Around three, my mind just turns the lights on."},{"id":"PR-003","f":"Sleep","p":"Phone in bed / night scrolling","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05"],"proto":"Device outside room + Passionflower lore","q":"phone charging station bedside alternative","url":"https://www.amazon.com/s?k=phone+charging+station+bedside+alternative","quote":"I end up on my phone in bed every night."},{"id":"PR-004","f":"Focus","p":"Procrastinating simple tasks","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"2-minute start + Rosemary lore","q":"pomodoro timer","url":"https://www.amazon.com/s?k=pomodoro+timer","quote":"I put off simple tasks until they pile up."},{"id":"PR-005","f":"Focus","p":"Afternoon energy crash","att":1,"tags":["PACE","RESOURCE"],"color":"Yellow","se":["SE-12"],"proto":"Protein+walk + Holy Basil lore","q":"protein snack ideas","url":"https://www.amazon.com/s?k=protein+snack+ideas","quote":"Every afternoon I just… drop."},{"id":"PR-006","f":"Focus","p":"Context-switch scatter after meetings","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"Reset ritual + Lemon Balm","q":"notepad index cards","url":"https://www.amazon.com/s?k=notepad+index+cards","quote":"After back-to-back meetings I can't think straight."},{"id":"PR-007","f":"Boundaries","p":"Trouble saying no","att":1,"tags":["BOUNDARY"],"color":"Black","se":["SE-08"],"proto":"One refusal script + Motherwort","q":"boundary journal","url":"https://www.amazon.com/s?k=boundary+journal","quote":"I say yes when I mean no."},{"id":"PR-008","f":"Boundaries","p":"Overcommitting calendar","att":1,"tags":["BOUNDARY","RESET"],"color":"Black","se":["SE-08"],"proto":"48-hour rule before yes","q":"planner calendar","url":"https://www.amazon.com/s?k=planner+calendar","quote":"My calendar is full of things I regret agreeing to."},{"id":"PR-009","f":"Boundaries","p":"Feeling responsible for others' moods","att":2,"tags":["BOUNDARY","RESOURCE"],"color":"Black","se":["SE-08","SE-04"],"proto":"Return responsibility + Motherwort","q":"therapy workbook optional","url":"https://www.amazon.com/s?k=therapy+workbook+optional","quote":"I feel responsible for everyone's mood."},{"id":"PR-010","f":"Mood-Energy","p":"Sunday scaries / work dread","att":1,"tags":["GROUND","SETTLE"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"One controllable next action","q":"worry notepad","url":"https://www.amazon.com/s?k=worry+notepad","quote":"Sunday evening dread hits me every week."},{"id":"PR-011","f":"Mood-Energy","p":"Social battery empty","att":1,"tags":["RESOURCE","BOUNDARY"],"color":"Black","se":["SE-04"],"proto":"Recovery block + Reishi lore","q":"eye mask quiet time","url":"https://www.amazon.com/s?k=eye+mask+quiet+time","quote":"One social event and my battery is gone."},{"id":"PR-012","f":"Mood-Energy","p":"Comparison spiral on social media","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Violet","se":["SE-05"],"proto":"Unfollow batch + 24h pause","q":"app limit screen time","url":"https://www.amazon.com/s?k=app+limit+screen+time","quote":"Social media leaves me comparing and low."},{"id":"PR-013","f":"Mood-Energy","p":"Low motivation to start exercising","att":1,"tags":["ACTIVATE","PACE"],"color":"Orange","se":["SE-12"],"proto":"Shoes-only win + Ginger lore","q":"resistance bands yoga mat","url":"https://www.amazon.com/s?k=resistance+bands+yoga+mat","quote":"I want to move more but can't start."},{"id":"PR-014","f":"Pain-Stiffness","p":"Morning stiffness","att":1,"tags":["ACTIVATE","GROUND"],"color":"Red","se":["SE-12","SE-11"],"proto":"Warmth + gentle movement + Turmeric","q":"heating pad","url":"https://www.amazon.com/s?k=heating+pad","quote":"Mornings I feel stiff until I warm up."},{"id":"PR-015","f":"Pain-Stiffness","p":"Desk shoulder tension","att":1,"tags":["PACE","SETTLE"],"color":"Green","se":["SE-01","SE-11"],"proto":"Micro-breaks + heat + stretch","q":"lumbar cushion","url":"https://www.amazon.com/s?k=lumbar+cushion","quote":"My shoulders lock up at the desk."},{"id":"PR-016","f":"Pain-Stiffness","p":"Jaw tension at night","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-01","SE-03"],"proto":"Evening down-regulation + Skullcap","q":"mouth guard consult dentist","url":"https://www.amazon.com/s?k=mouth+guard+consult+dentist","quote":"I wake with a tight jaw."},{"id":"PR-017","f":"Home-Environment","p":"Cold office feet","att":1,"tags":["RESOURCE","GROUND"],"color":"Red","se":["SE-11"],"proto":"Warming lore + layers","q":"wool thermal socks USB foot warmer","url":"https://www.amazon.com/s?k=wool+thermal+socks+USB+foot+warmer","quote":"My feet stay ice-cold in the office."},{"id":"PR-018","f":"Home-Environment","p":"Dry indoor air","att":1,"tags":["SETTLE","RESOURCE"],"color":"Blue","se":["SE-07"],"proto":"Humidify + Marshmallow lore","q":"humidifier honey lozenges","url":"https://www.amazon.com/s?k=humidifier+honey+lozenges","quote":"Dry air makes my throat scratchy at night."},{"id":"PR-019","f":"Home-Environment","p":"Noisy environment disrupting sleep","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Noise boundary + Blue nervine","q":"white noise machine foam earplugs","url":"https://www.amazon.com/s?k=white+noise+machine+foam+earplugs","quote":"Noise keeps wrecking my sleep."},{"id":"PR-020","f":"Home-Environment","p":"Eye strain from screens","att":1,"tags":["PACE","RESET"],"color":"Blue","se":["SE-05"],"proto":"Breaks + warm compress lore","q":"blue light glasses monitor arm","url":"https://www.amazon.com/s?k=blue+light+glasses+monitor+arm","quote":"Screens leave my eyes burning."},{"id":"PR-021","f":"Digestive","p":"Snacking when not hungry","att":1,"tags":["GROUND","INSIGHT"],"color":"Orange","se":["SE-01"],"proto":"10-min pause + water + Fennel","q":"herbal tea sampler","url":"https://www.amazon.com/s?k=herbal+tea+sampler","quote":"I snack when I'm not actually hungry."},{"id":"PR-022","f":"Digestive","p":"Nervous stomach before events","att":1,"tags":["SETTLE","GROUND"],"color":"Orange","se":["SE-05","SE-07"],"proto":"Simple food + Ginger","q":"ginger tea bags","url":"https://www.amazon.com/s?k=ginger+tea+bags","quote":"Before big events my stomach flips."},{"id":"PR-023","f":"Digestive","p":"Mild post-meal fog","att":1,"tags":["PACE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"Simpler meals + walk","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After meals my head feels foggy."},{"id":"PR-024","f":"Sleep","p":"Waking tired most days","att":2,"tags":["PACE","RESOURCE","GROUND"],"color":"Green","se":["SE-04","SE-12"],"proto":"Protect morning energy + Oatstraw","q":"sunrise alarm clock","url":"https://www.amazon.com/s?k=sunrise+alarm+clock","quote":"I wake up tired almost every day."},{"id":"PR-025","f":"Focus","p":"Brain fog after poor sleep","att":2,"tags":["SETTLE","RESOURCE"],"color":"Yellow","se":["SE-01","SE-10"],"proto":"Fix sleep first","q":"sleep mask","url":"https://www.amazon.com/s?k=sleep+mask","quote":"Bad sleep turns into all-day fog."},{"id":"PR-026","f":"Boundaries","p":"Difficulty ending the workday","att":1,"tags":["BOUNDARY","RESET"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Shutdown ritual + dump list","q":"notebook shutdown checklist","url":"https://www.amazon.com/s?k=notebook+shutdown+checklist","quote":"I can't mentally leave work at the end of the day."},{"id":"PR-027","f":"Mood-Energy","p":"Irritability from hunger","att":1,"tags":["RESOURCE","PACE"],"color":"Orange","se":["SE-11"],"proto":"Protein snack protocol","q":"portable protein snacks","url":"https://www.amazon.com/s?k=portable+protein+snacks","quote":"When I skip food I get irritable."},{"id":"PR-028","f":"Mood-Energy","p":"Feeling flat after social media","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-05","SE-12"],"proto":"Replace 15 min with light/air","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After scrolling I feel flat and empty."},{"id":"PR-029","f":"Pain-Stiffness","p":"Seasonal joint ache","att":2,"tags":["GROUND","RESOURCE"],"color":"Red","se":["SE-12","SE-11"],"proto":"Boswellia/Turmeric + warmth","q":"heating pad compression sleeve","url":"https://www.amazon.com/s?k=heating+pad+compression+sleeve","quote":"Damp weather makes my joints ache."},{"id":"PR-030","f":"Mood-Energy","p":"Everyday existential ache","att":2,"tags":["INSIGHT","RESOURCE"],"color":"Violet","se":["SE-04","SE-10"],"proto":"Small meaningful act + connection","q":"journal","url":"https://www.amazon.com/s?k=journal","quote":"There's a quiet everyday ache about meaning."},{"id":"PR-031","f":"Focus","p":"Decision paralysis","att":1,"tags":["GROUND","INSIGHT"],"color":"Yellow","se":["SE-05"],"proto":"24-hour decision window","q":"decision journal","url":"https://www.amazon.com/s?k=decision+journal","quote":"I freeze when I have to decide."},{"id":"PR-032","f":"Sleep","p":"Difficulty winding down after work","att":1,"tags":["SETTLE","RESET"],"color":"Blue","se":["SE-07","SE-05"],"proto":"Wind-down sequence + Blue nervines","q":"aromatherapy diffuser optional","url":"https://www.amazon.com/s?k=aromatherapy+diffuser+optional","quote":"After work I can't wind down."},{"id":"PR-033","f":"Home-Environment","p":"Clutter stress one surface","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"10-minute one surface","q":"storage bins","url":"https://www.amazon.com/s?k=storage+bins","quote":"One messy surface stresses me out all day."},{"id":"PR-034","f":"Boundaries","p":"Over-apologizing","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Yellow","se":["SE-08"],"proto":"Replace one sorry with thank-you","q":"sticky note reminder","url":"https://www.amazon.com/s?k=sticky+note+reminder","quote":"I apologize for things that don't need sorry."},{"id":"PR-035","f":"Focus","p":"Difficulty finishing books / deep work","att":1,"tags":["GROUND","ACTIVATE"],"color":"Yellow","se":["SE-12"],"proto":"One book only + Bacopa lore","q":"book stand reading light","url":"https://www.amazon.com/s?k=book+stand+reading+light","quote":"I start books and deep work but rarely finish."},{"id":"PR-036","f":"Mood-Energy","p":"Post-holiday crash","att":1,"tags":["PACE","RESOURCE"],"color":"Green","se":["SE-04","SE-12"],"proto":"Gentle routine reset + Nettle","q":"routine checklist","url":"https://www.amazon.com/s?k=routine+checklist","quote":"After holidays I crash for days."},{"id":"PR-037","f":"Digestive","p":"Occasional gas after heavy meals","att":1,"tags":["GROUND","SETTLE"],"color":"Orange","se":["SE-01"],"proto":"Simpler meal + Fennel/Peppermint","q":"peppermint tea","url":"https://www.amazon.com/s?k=peppermint+tea","quote":"Heavy meals leave me gassy and uncomfortable."},{"id":"PR-038","f":"Home-Environment","p":"Overheating bedroom at night","att":1,"tags":["SETTLE"],"color":"Blue","se":["SE-07"],"proto":"Cool room + Blue cooling lore","q":"tower fan cooling pillow","url":"https://www.amazon.com/s?k=tower+fan+cooling+pillow","quote":"My bedroom is too hot to sleep well."},{"id":"PR-039","f":"Pain-Stiffness","p":"Eye strain from extended reading","att":1,"tags":["PACE","RESET"],"color":"Indigo","se":["SE-05"],"proto":"Breaks + compress + Indigo","q":"book stand reading glasses","url":"https://www.amazon.com/s?k=book+stand+reading+glasses","quote":"Long reading sessions strain my eyes."},{"id":"PR-040","f":"Boundaries","p":"Fear of resting","att":2,"tags":["PACE","RESOURCE","BOUNDARY"],"color":"Black","se":["SE-12","SE-04"],"proto":"Rest as training + Ashwagandha lore","q":"timer for rest windows","url":"https://www.amazon.com/s?k=timer+for+rest+windows","quote":"Resting makes me feel guilty or unsafe."},{"id":"PR-041","f":"Focus","p":"Phantom phone buzzes","att":1,"tags":["SETTLE","BOUNDARY"],"color":"Indigo","se":["SE-05"],"proto":"Pocket-empty ritual + Indigo rest-lens lore","q":"phone free pouch","url":"https://www.amazon.com/s?k=phone+free+pouch","quote":"My thigh buzzes. There is no message. There is never a message."},{"id":"PR-042","f":"Home-Environment","p":"Sock-eating dryer conspiracy","att":1,"tags":["RESET","INSIGHT"],"color":"White","se":["SE-11"],"proto":"One-basket rule + White clearing cloth lore","q":"mesh laundry bags","url":"https://www.amazon.com/s?k=mesh+laundry+bags","quote":"The dryer takes tribute. Always one sock. Always."},{"id":"PR-043","f":"Mood-Energy","p":"Group-chat obligation fog","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Violet","se":["SE-04"],"proto":"Mute-and-breathe + Violet listening bell","q":"do not disturb phone","url":"https://www.amazon.com/s?k=do+not+disturb+phone","quote":"Seventy-three unread messages. None require me. All feel urgent."},{"id":"PR-044","f":"Focus","p":"Tab hoarding spiral","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-11"],"proto":"Close-all-but-one + Rosemary start lore","q":"browser tab organizer","url":"https://www.amazon.com/s?k=browser+tab+organizer","quote":"I have forty-one tabs. I need three. I open a forty-second."},{"id":"PR-045","f":"Boundaries","p":"Reply-all reflex","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Black","se":["SE-08"],"proto":"Draft-then-delete + Motherwort edge lore","q":"sticky notes desk","url":"https://www.amazon.com/s?k=sticky+notes+desk","quote":"I reply-all before my brain finishes the sentence."},{"id":"PR-046","f":"Sleep","p":"One-more-episode gravity","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Credits = bedtime If-Then + Blue nervine","q":"tv sleep timer","url":"https://www.amazon.com/s?k=tv+sleep+timer","quote":"The episode ends. My hand finds Next. I am no longer in charge."},{"id":"PR-047","f":"Mood-Energy","p":"Plant that judges you","att":1,"tags":["INSIGHT","ACTIVATE"],"color":"Green","se":["SE-12"],"proto":"Water-on-Sundays pact + Green restorative lore","q":"plant watering globe","url":"https://www.amazon.com/s?k=plant+watering+globe","quote":"The fern knows I forgot. The fern has always known."},{"id":"PR-048","f":"Digestive","p":"Fridge light negotiations","att":1,"tags":["GROUND","PACE"],"color":"Orange","se":["SE-01"],"proto":"Door-closed + water first + Fennel pause","q":"fridge organizer bins","url":"https://www.amazon.com/s?k=fridge+organizer+bins","quote":"I open the fridge for answers. The light offers none. I stay anyway."},{"id":"PR-049","f":"Focus","p":"Meeting that should have been a walk","att":1,"tags":["PACE","RESET"],"color":"Yellow","se":["SE-11","SE-12"],"proto":"Standing stretch + 2-min reset lore","q":"under desk walking pad","url":"https://www.amazon.com/s?k=under+desk+walking+pad","quote":"Forty minutes of updates. One decision. My soul left at minute six."},{"id":"PR-050","f":"Home-Environment","p":"Cable that multiplies overnight","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"One-drawer exile + White clearing cloth","q":"cable organizer box","url":"https://www.amazon.com/s?k=cable+organizer+box","quote":"I own three chargers. The drawer contains eleven. None fit."}];
 
 const NAMES=["Jordan","Sam","Riley","Casey","Alex","Morgan","Quinn","Avery","Jamie","Taylor","Rowan","Drew","Parker","Cameron","Skyler"];
 const ATMOS=["Quiet morning. The kettle is warm.","Soft rain on the still-room windows.","A busy afternoon — three people already waiting.","Late light. The herb jars catch gold.","Cool air. Someone left the door slightly open.","Market day energy outside. Inside stays slow."];
@@ -651,53 +884,6 @@ const SHOP_SPECIAL=[
 {id:"sp_hint",ic:"📜",name:"Archive Hint Scrap",cost:20,token:1,d:"Permanent: soft family whisper on diagnosis options.",flag:"hintWhisper"}
 ];
 
-/* Road quests — mid-length goals beyond daily */
-const QUESTS=[
-{id:"q_sessions5",ic:"📋",title:"Five Chairs",d:"Complete 5 sessions.",need:s=>(s.log||[]).length,target:5,reward:{rp:25,token:1}},
-{id:"q_dx",ic:"🔎",title:"Clear Eyes",d:"Get 3 correct diagnoses.",need:s=>s.diagCorrect||0,target:3,reward:{rp:20,token:0}},
-{id:"q_arc",ic:"📖",title:"Hold a Thread",d:"Advance any story arc once.",need:s=>s.arcs?Object.values(s.arcs).reduce((a,b)=>a+b,0):0,target:1,reward:{rp:30,token:1}},
-{id:"q_shop",ic:"🔧",title:"Wake the Room",d:"Install 2 clinic upgrades.",need:s=>Object.keys(s.upgrades||{}).length,target:2,reward:{rp:35,token:1}},
-{id:"q_streak",ic:"🔥",title:"Steady Hands",d:"Reach a 3-session streak.",need:s=>s.bestStreak||0,target:3,reward:{rp:40,token:2}},
-{id:"q_break",ic:"✨",title:"Lantern Flare",d:"Land 2 Breakthroughs.",need:s=>s.breakthroughs||0,target:2,reward:{rp:45,token:2}},
-{id:"q_staff",ic:"🤝",title:"Shared Kettle",d:"Reach +4 rapport with anyone.",need:s=>{const r=s.staffState&&s.staffState.rapport;if(!r)return 0;return Math.max.apply(null,Object.values(r).concat([0]))},target:4,reward:{rp:30,token:1}},
-{id:"q_grey",ic:"🌫",title:"Against the Thinning",d:"Unlock 4 chronicle chapters.",need:s=>(s.chronicleUnlocked||[]).length,target:4,reward:{rp:50,token:3}}
-];
-function ensureQuests(){
-  if(!S.questsDone)S.questsDone=[];
-  if(!S.questClaimed)S.questClaimed=[];
-}
-function checkQuests(){
-  ensureQuests();
-  QUESTS.forEach(q=>{
-    if(S.questsDone.indexOf(q.id)>=0)return;
-    let n=0;try{n=q.need(S)}catch(e){n=0}
-    if(n>=q.target){S.questsDone.push(q.id);toast(q.ic+" Quest ready: "+q.title)}
-  });
-}
-function claimQuest(id){
-  ensureQuests();
-  if(S.questClaimed.indexOf(id)>=0)return;
-  if(S.questsDone.indexOf(id)<0){toast("Not finished");return}
-  const q=QUESTS.find(x=>x.id===id);if(!q)return;
-  S.questClaimed.push(id);
-  S.rp=(S.rp||0)+(q.reward.rp||0);
-  S.tokens=(S.tokens||0)+(q.reward.token||0);
-  save();renderQuestCard();toast(q.ic+" +"+q.reward.rp+" RP"+(q.reward.token?" · 🪙+"+q.reward.token:""));
-}
-function renderQuestCard(){
-  const el=document.getElementById("questCard");if(!el)return;
-  ensureQuests();checkQuests();
-  const active=QUESTS.find(q=>S.questClaimed.indexOf(q.id)<0);
-  if(!active){el.innerHTML='<div class="q-title">🌌 All road quests claimed</div><p class="muted" style="margin-top:4px;font-size:.78rem">The market still holds more for a busy keeper.</p>';return}
-  let n=0;try{n=active.need(S)}catch(e){n=0}
-  const ready=S.questsDone.indexOf(active.id)>=0;
-  el.innerHTML='<div class="muted" style="font-size:.7rem">ROAD QUEST</div><div class="q-title" style="margin-top:2px">'+active.ic+' '+active.title+'</div>'+
-    '<p class="muted" style="margin-top:4px;font-size:.78rem">'+active.d+'</p>'+
-    '<div class="muted" style="margin-top:6px;font-size:.75rem">'+Math.min(n,active.target)+' / '+active.target+
-    (ready?' · <span style="color:var(--accent)">Ready to claim</span>':'')+'</div>'+
-    (ready?'<button class="btn sm" style="margin-top:8px" onclick="event.stopPropagation();claimQuest(\''+active.id+'\')">Claim reward</button>':'');
-}
-
 const SENNA_LETTERS=[
 {id:"let1",t:"On Not Fixing",b:"If you rush to mend what has not finished speaking, you will sew the wrong seam. Sit. The trouble will name itself."},
 {id:"let2",t:"On the Color Black",b:"Black is not emptiness. It is the edge of a person — the place where they stop belonging to everyone else."},
@@ -761,7 +947,7 @@ return{kind,need:1,label:"Land 1 Breakthrough outcome today",reward:25};
 }
 function todayKey(){return new Date().toDateString()}
 
-let S={clinic:"Willow Bend Clinic",healer:"",rp:0,att:10,attTimer:0,day:1,rank:"Novice",mastery:{Sleep:0,Focus:0,Boundaries:0,"Mood-Energy":0,"Pain-Stiffness":0,Digestive:0,"Home-Environment":0},bodyMastery:{"Brain / Nervous":0,"Heart / Boundary":0,"Heart / Cardiovascular":0,"Spine / Musculoskeletal":0,"Eyes / Sensory":0,"Stomach / Digestive":0},maya:0,log:[],seenMaya:false,streak:0,bestStreak:0,breakthroughs:0,badges:[],gambles:0,dailyDone:0,daily:null,dailyDate:"",dailyProg:0,dailyClaimed:false,lastTick:Date.now(),passiveAccum:0,inventory:{},equipped:null,patientMemory:{},archiveFilterFam:"All",archiveFilterOut:"All",archiveFilterBody:"All",codexTab:"lore",diagHighCorrect:0,diagTotal:0,diagCorrect:0,arcs:{Maya:0,Ellis:0,Kai:0,Rae:0},arcCooldown:{},upgrades:{},letters:[],kettleUsedDay:0,sawFullMoon:false,staffState:{duty:[],moods:{},event:null,eventDay:0,rapport:{}},chronicleUnlocked:["ch0"],tokens:0,buffs:[],flags:{},shopTab:"upgrades",questsDone:[],questClaimed:[]};
+let S={clinic:"Willow Bend Clinic",healer:"",rp:0,att:10,attTimer:0,day:1,rank:"Novice",mastery:{Sleep:0,Focus:0,Boundaries:0,"Mood-Energy":0,"Pain-Stiffness":0,Digestive:0,"Home-Environment":0},bodyMastery:{"Brain / Nervous":0,"Heart / Boundary":0,"Heart / Cardiovascular":0,"Spine / Musculoskeletal":0,"Eyes / Sensory":0,"Stomach / Digestive":0},maya:0,log:[],seenMaya:false,streak:0,bestStreak:0,breakthroughs:0,badges:[],gambles:0,dailyDone:0,daily:null,dailyDate:"",dailyProg:0,dailyClaimed:false,lastTick:Date.now(),passiveAccum:0,inventory:{},equipped:null,patientMemory:{},archiveFilterFam:"All",archiveFilterOut:"All",archiveFilterBody:"All",codexTab:"lore",diagHighCorrect:0,diagTotal:0,diagCorrect:0,arcs:{Maya:0,Ellis:0,Kai:0,Rae:0},arcCooldown:{},upgrades:{},letters:[],kettleUsedDay:0,sawFullMoon:false,staffState:{duty:[],moods:{},event:null,eventDay:0,rapport:{}},chronicleUnlocked:["ch0"],tokens:0,buffs:[],flags:{},shopTab:"upgrades"};
 let session=null;
 
 const DIAGNOSIS_BANK={
@@ -1070,11 +1256,9 @@ renderDaily();
 renderLastCase();
 renderStaffCard();
 renderChronicleCard();
-renderQuestCard();
 checkChronicle();
-checkQuests();
 checkBadges();
-updateMeters(true);
+updateMeters();
 }
 function checkChronicle(){
   if(!S.chronicleUnlocked)S.chronicleUnlocked=["ch0"];
@@ -1145,15 +1329,13 @@ function renderLastCase(){
   el.innerHTML='<div class="card last-case-card" onclick="go(\'log\')"><div class="muted" style="font-size:.72rem">LAST SESSION</div><div style="font-weight:650;margin-top:2px">'+e.name+' · '+e.problem+'</div><div class="muted" style="font-size:.78rem;margin-top:3px">'+e.outcome+' · +'+e.rp+' RP'+(e.bodySystem?' · '+bodyInfo.ic+' '+e.bodySystem:'')+(e.diagnosisCorrect?' · ✓ dx':'')+'</div></div>';
 }
 function updateMeters(force){
-const rp=Math.floor(S.rp),att=S.att,tok=S.tokens||0;
-const regenMs=(S.upgrades&&S.upgrades.up_clock)?(ATT_REGEN_MS*0.8):ATT_REGEN_MS;
-const pct=S.att>=ATT_MAX?0:Math.min(100,(S.attTimer/regenMs)*100)|0;
-const key=rp+"|"+att+"|"+pct+"|"+tok;
+const rp=Math.floor(S.rp),att=S.att;
+const pct=S.att>=ATT_MAX?0:Math.min(100,(S.attTimer/ATT_REGEN_MS)*100)|0;
+const key=rp+"|"+att+"|"+pct;
 if(!force&&key===_lastMeterKey)return;
 _lastMeterKey=key;
 const mrp=$("mRP");if(mrp&&mrp.textContent!==String(rp))mrp.textContent=rp;
 const ma=$("mAtt");if(ma&&ma.textContent!==String(att))ma.textContent=att;
-const mt=$("mTok");if(mt&&mt.textContent!==String(tok))mt.textContent=tok;
 const bar=$("regenBar");if(bar)bar.style.width=pct+"%";
 }
 function renderDaily(){
@@ -1215,6 +1397,7 @@ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.da
 setActionBar(null);
 if(name==="deck")renderDeck();if(name==="log")renderLog();if(name==="badges")renderBadges();
 if(name==="codex"){renderCodexLore();switchCodexTab(S.codexTab||"lore")}
+if(name==="world"&&typeof renderWorldTab==="function"){document.querySelectorAll(".rpg-tab").forEach((b,i)=>b.classList.toggle("on",i===0));renderWorldTab("expedition",document.querySelector(".rpg-tab"))}
 if(name==="more"){try{document.getElementById("inClinic").value=S.clinic;document.getElementById("inHealer").value=S.healer||""}catch(e){}}
 _homeOn=(name==="home");
 if(name==="home"){ui();setActionBar('<button class="btn" id="btnOpenDoor" onclick="openWaitingRoom()">▶ Open the door</button>');}
@@ -1984,6 +2167,844 @@ try{
 try{requestAnimationFrame(tick)}catch(e){}
 // Track whether home is visible without querying every frame
 document.addEventListener("visibilitychange",()=>{/* tick handles hidden */},{passive:true});
+
+
+/* ==========================================================
+   HERBARIUM — Still-Room Apothecary (from workbook herb sheets)
+   Central Herbs · Catalog lore · Healing Potions · Real Synergies
+   Fictional game layer only. Not medical advice.
+   ========================================================== */
+(function(){
+  const CENTRAL_HERBS = [
+    {id:"turmeric",ic:"🧡",name:"Turmeric",why:"Many anti-inflammatory pairs",pairs:["Black Pepper","Boswellia","Ginger"],color:"Orange / Red",hex:"#e8a045",lore:"Root of the warm still-room. The ledger marks it wherever joints and heat meet."},
+    {id:"ginger",ic:"🫚",name:"Ginger",why:"Digestive + warming hub",pairs:["Peppermint","Turmeric","Cinnamon"],color:"Orange / Red",hex:"#e8a045",lore:"The kettle's oldest friend. Settles a flipping stomach before an event and wakes cold feet."},
+    {id:"hawthorn",ic:"💗",name:"Hawthorn",why:"Heart / emotional pairs",pairs:["Rose","Motherwort","Oatstraw"],color:"Pink / Green",hex:"#e86a9a",lore:"Berry and leaf of the soft boundary. Used when the chest feels tight from care, not only from strain."},
+    {id:"skullcap",ic:"💙",name:"Skullcap",why:"Nervine hub",pairs:["Passionflower","Lemon Balm","Oatstraw"],color:"Blue",hex:"#4aa3f5",lore:"Blue ledger herb. The still-room reaches for it when the mind will not leave the day."},
+    {id:"ashwagandha",ic:"🖤",name:"Ashwagandha",why:"Adaptogen hub",pairs:["Oatstraw","Reishi","Holy Basil"],color:"Black / Green",hex:"#6a7a6a",lore:"Root of winter stores. Teaches the body that rest is not the same as giving up."},
+    {id:"oatstraw",ic:"💚",name:"Oatstraw",why:"Nutritive / nervous trophorestorative",pairs:["Ashwagandha","Skullcap","Nettle"],color:"Green / RESOURCE",hex:"#3dcf7a",lore:"The quiet mineral tea. Fed to the exhausted before any clever protocol."},
+    {id:"reishi",ic:"🟣",name:"Reishi",why:"Immune / calm terrain",pairs:["Astragalus","Oatstraw","Rose"],color:"Black / Violet",hex:"#b99cff",lore:"The glossy shelf fungus of long recovery. Not for the acute fever — for the weeks after."},
+    {id:"nettle",ic:"🌿",name:"Nettle",why:"Nutritive / skin / mineral",pairs:["Cleavers","Oatstraw","Dandelion"],color:"Green / White",hex:"#7d9a88",lore:"Stings in the field, softens in the cup. The street's mineral ally for damp knees and thin blood."},
+    {id:"lemonbalm",ic:"💛",name:"Lemon Balm",why:"Gentle nervine + focus",pairs:["Skullcap","Holy Basil","Rosemary"],color:"Yellow / Blue",hex:"#e8c547",lore:"Leaf of the soft reset. Clears the fog after meetings without asking for a nap."},
+    {id:"boswellia",ic:"❤️",name:"Boswellia",why:"Joint / inflammatory pairs",pairs:["Turmeric","Ginger"],color:"Red / Green",hex:"#e86a6a",lore:"Resin of the damp-weather ledger. Paired with warmth when the joints complain of rain."}
+  ];
+
+  const HERB_CATALOG_300 = [{"n":1,"c":"Echinacea","b":"Echinacea purpurea/angustifolia","u":"Immune support, colds, flu onset, lymphatic","o":"Short-term. Autoimmune caution.","a":"echinacea"},{"n":2,"c":"Elderberry","b":"Sambucus nigra","u":"Colds, flu, antiviral support, immune","o":"Must be cooked/processed. Raw toxic.","a":"elderberry"},{"n":3,"c":"Ginger","b":"Zingiber officinale","u":"Nausea, digestion, circulation, anti-inflammatory","o":"Very safe. High dose may thin blood.","a":"ginger+root"},{"n":4,"c":"Turmeric","b":"Curcuma longa","u":"Inflammation, joints, antioxidant, digestion","o":"Best with black pepper/fat. Blood-thinning caution.","a":"turmeric+curcumin"},{"n":5,"c":"Ashwagandha","b":"Withania somnifera","u":"Stress, adaptogen, sleep, vitality","o":"Caution in hyperthyroidism. Avoid with sedatives if sensitive.","a":"ashwagandha"},{"n":6,"c":"Valerian","b":"Valeriana officinalis","u":"Insomnia, anxiety, muscle tension","o":"Sedating. Avoid with alcohol/sedatives.","a":"valerian+root"},{"n":7,"c":"Chamomile","b":"Matricaria recutita","u":"Calm, digestion, mild sleep, skin","o":"Asteraceae allergy possible.","a":"chamomile"},{"n":8,"c":"Peppermint","b":"Mentha piperita","u":"Digestion, gas, nausea, headache (topical)","o":"May worsen reflux.","a":"peppermint"},{"n":9,"c":"Licorice","b":"Glycyrrhiza glabra","u":"Adrenal support, throat, digestion, harmonizer","o":"Raises BP, lowers potassium with prolonged high dose. Use DGL for stomach.","a":"licorice+root"},{"n":10,"c":"Milk Thistle","b":"Silybum marianum","u":"Liver support, antioxidant, detox support","o":"Generally safe. Real liver disease needs medical care.","a":"milk+thistle"},{"n":11,"c":"St. John's Wort","b":"Hypericum perforatum","u":"Mild mood support, nerve pain (topical)","o":"STRONG drug interactions (SSRIs, birth control, etc.).","a":"st+johns+wort"},{"n":12,"c":"Garlic","b":"Allium sativum","u":"Immune, cardiovascular, antimicrobial","o":"Blood-thinning. Odor.","a":"garlic+supplement"},{"n":13,"c":"Ginkgo","b":"Ginkgo biloba","u":"Circulation, cognitive support, memory","o":"Blood-thinning. Caution before surgery.","a":"ginkgo+biloba"},{"n":14,"c":"Ginseng - Asian","b":"Panax ginseng","u":"Energy, adaptogen, cognitive","o":"Can be stimulating. Caution with hypertension.","a":"panax+ginseng"},{"n":15,"c":"Ginseng - American","b":"Panax quinquefolius","u":"Adaptogen, immune, cooling energy","o":"Milder than Asian.","a":"american+ginseng"},{"n":16,"c":"Rhodiola","b":"Rhodiola rosea","u":"Fatigue, stress performance, mood","o":"Can be stimulating for some.","a":"rhodiola+rosea"},{"n":17,"c":"Holy Basil / Tulsi","b":"Ocimum tenuiflorum","u":"Stress, adaptogen, blood sugar support, respiratory","o":"Generally safe.","a":"holy+basil+tulsi"},{"n":18,"c":"Lemon Balm","b":"Melissa officinalis","u":"Calm, antiviral (topical), digestion, sleep","o":"Very gentle.","a":"lemon+balm"},{"n":19,"c":"Passionflower","b":"Passiflora incarnata","u":"Anxiety, sleep, nervous tension","o":"Sedating. Avoid with sedatives.","a":"passionflower"},{"n":20,"c":"Skullcap","b":"Scutellaria lateriflora","u":"Nervine, tension, sleep support","o":"Quality varies. Use reputable source.","a":"skullcap"},{"n":21,"c":"Hops","b":"Humulus lupulus","u":"Sleep, calm, digestion","o":"Sedating. Estrogenic activity mild.","a":"hops+herb"},{"n":22,"c":"California Poppy","b":"Eschscholzia californica","u":"Sleep, anxiety, mild pain","o":"Gentle sedative.","a":"california+poppy"},{"n":23,"c":"Oatstraw / Milky Oats","b":"Avena sativa","u":"Nervous system tonic, stress recovery","o":"Very safe nourishing nervine.","a":"milky+oats+oatstraw"},{"n":24,"c":"Nettle","b":"Urtica dioica","u":"Mineral tonic, allergies, urinary, joints","o":"Fresh stings. Dried/cooked safe.","a":"stinging+nettle"},{"n":25,"c":"Dandelion Leaf/Root","b":"Taraxacum officinale","u":"Liver, digestion, diuretic, bitter","o":"Diuretic. Bitter.","a":"dandelion+root+leaf"},{"n":26,"c":"Burdock","b":"Arctium lappa","u":"Alterative, skin, liver, lymphatic","o":"Generally safe.","a":"burdock+root"},{"n":27,"c":"Yellow Dock","b":"Rumex crispus","u":"Alterative, iron support, liver, skin","o":"Anthraquinones – not long-term high dose.","a":"yellow+dock"},{"n":28,"c":"Cleavers","b":"Galium aparine","u":"Lymphatic, urinary, skin","o":"Gentle.","a":"cleavers+herb"},{"n":29,"c":"Red Clover","b":"Trifolium pratense","u":"Alterative, skin, women's health","o":"Isoflavones – hormone caution.","a":"red+clover"},{"n":30,"c":"Calendula","b":"Calendula officinalis","u":"Skin healing, anti-inflammatory, lymphatic","o":"Topical excellent. Asteraceae allergy possible.","a":"calendula"},{"n":31,"c":"Plantain","b":"Plantago major/lanceolata","u":"Skin, drawing, respiratory, urinary","o":"Very safe.","a":"plantain+herb"},{"n":32,"c":"Yarrow","b":"Achillea millefolium","u":"Bleeding (styptic), fever, digestion, women's","o":"Asteraceae allergy. Not in pregnancy high dose.","a":"yarrow"},{"n":33,"c":"Shepherd's Purse","b":"Capsella bursa-pastoris","u":"Bleeding, uterine tonic","o":"Styptic. Medical care for real bleeding.","a":"shepherds+purse"},{"n":34,"c":"Cranberry","b":"Vaccinium macrocarpon","u":"Urinary tract support, anti-adhesion","o":"Supportive. Real UTI needs medical care.","a":"cranberry"},{"n":35,"c":"Uva Ursi / Bearberry","b":"Arctostaphylos uva-ursi","u":"Urinary antiseptic (short-term)","o":"Short-term only. Not in pregnancy/kidney disease.","a":"uva+ursi"},{"n":36,"c":"Cornsilk","b":"Zea mays","u":"Urinary soothing, demulcent","o":"Very gentle.","a":"cornsilk"},{"n":37,"c":"Marshmallow Root","b":"Althaea officinalis","u":"Demulcent – throat, gut, urinary","o":"Very safe. Take meds separately.","a":"marshmallow+root"},{"n":38,"c":"Slippery Elm","b":"Ulmus rubra","u":"Demulcent – throat, gut","o":"Sustainable sourcing concern. Very safe.","a":"slippery+elm"},{"n":39,"c":"Mullein","b":"Verbascum thapsus","u":"Respiratory, ear (oil), demulcent","o":"Gentle lung herb.","a":"mullein"},{"n":40,"c":"Thyme","b":"Thymus vulgaris","u":"Respiratory, antimicrobial, digestion","o":"Safe culinary/medicinal.","a":"thyme"},{"n":41,"c":"Elecampane","b":"Inula helenium","u":"Respiratory, expectorant, digestion","o":"Not in pregnancy.","a":"elecampane"},{"n":42,"c":"Hyssop","b":"Hyssopus officinalis","u":"Respiratory, antiviral lore","o":"Caution with high doses.","a":"hyssop"},{"n":43,"c":"Oregano","b":"Origanum vulgare","u":"Antimicrobial, respiratory, digestion","o":"Oil is strong – dilute.","a":"oregano+oil"},{"n":44,"c":"Andrographis","b":"Andrographis paniculata","u":"Immune, respiratory infections","o":"Bitter. Short-term. GI upset possible.","a":"andrographis"},{"n":45,"c":"Astragalus","b":"Astragalus membranaceus","u":"Immune tonic, Qi, recovery","o":"Avoid in acute high fever (TCM).","a":"astragalus"},{"n":46,"c":"Reishi","b":"Ganoderma lucidum","u":"Immune, calm, adaptogen, sleep","o":"Generally safe long-term.","a":"reishi+mushroom"},{"n":47,"c":"Cordyceps","b":"Cordyceps spp.","u":"Energy, lung, adaptogen, stamina","o":"Generally well tolerated.","a":"cordyceps"},{"n":48,"c":"Turkey Tail","b":"Trametes versicolor","u":"Immune support, gut","o":"Well researched polysaccharide.","a":"turkey+tail+mushroom"},{"n":49,"c":"Lion's Mane","b":"Hericium erinaceus","u":"Cognitive, nerve support","o":"Emerging research.","a":"lions+mane+mushroom"},{"n":50,"c":"Chaga","b":"Inonotus obliquus","u":"Antioxidant, immune lore","o":"Sustainable sourcing. Oxalates.","a":"chaga+mushroom"},{"n":51,"c":"Boswellia / Frankincense","b":"Boswellia serrata","u":"Joints, inflammation, 5-LOX","o":"Good joint support evidence.","a":"boswellia"},{"n":52,"c":"Devil's Claw","b":"Harpagophytum procumbens","u":"Joints, pain, digestion","o":"Avoid with ulcers.","a":"devils+claw"},{"n":53,"c":"Willow Bark","b":"Salix spp.","u":"Pain, inflammation (salicin)","o":"Aspirin-like. Avoid with blood thinners/ulcers/children.","a":"willow+bark"},{"n":54,"c":"Meadowsweet","b":"Filipendula ulmaria","u":"Digestion, mild pain, anti-inflammatory","o":"Salicylates. Avoid with aspirin sensitivity.","a":"meadowsweet"},{"n":55,"c":"Feverfew","b":"Tanacetum parthenium","u":"Migraine prevention","o":"Mouth sores possible. Asteraceae.","a":"feverfew"},{"n":56,"c":"Butterbur","b":"Petasites hybridus","u":"Migraine prevention, allergies","o":"MUST be PA-free (pyrrolizidine free).","a":"butterbur+pa+free"},{"n":57,"c":"Butterbur PA-free only","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"butterbur+pa-free+only"},{"n":58,"c":"Black Cohosh","b":"Actaea racemosa","u":"Menopausal symptoms, women's health","o":"Liver caution. Not long unsupervised.","a":"black+cohosh"},{"n":59,"c":"Vitex / Chasteberry","b":"Vitex agnus-castus","u":"PMS, cycle regulation, prolactin","o":"Hormone effects. Not with hormonal meds without advice.","a":"vitex+chasteberry"},{"n":60,"c":"Dong Quai","b":"Angelica sinensis","u":"Women's tonic, blood, cycle","o":"Blood-moving. Not in pregnancy or heavy bleeding.","a":"dong+quai"},{"n":61,"c":"Raspberry Leaf","b":"Rubus idaeus","u":"Uterine tonic, pregnancy tea (late), minerals","o":"Traditional pregnancy tea – discuss with midwife.","a":"raspberry+leaf"},{"n":62,"c":"Evening Primrose Oil","b":"Oenothera biennis","u":"Skin, PMS, gamma-linolenic acid","o":"Generally safe.","a":"evening+primrose+oil"},{"n":63,"c":"Borage Oil","b":"Borago officinalis","u":"GLA, skin, inflammation","o":"PA concern with some – use refined.","a":"borage+oil"},{"n":64,"c":"Saw Palmetto","b":"Serenoa repens","u":"Prostate support, urinary","o":"For men mainly. Medical check for urinary symptoms.","a":"saw+palmetto"},{"n":65,"c":"Pygeum","b":"Prunus africana","u":"Prostate, urinary","o":"Sustainable sourcing issue.","a":"pygeum"},{"n":66,"c":"Nettle Root","b":"Urtica dioica root","u":"Prostate, urinary","o":"Different from leaf.","a":"nettle+root"},{"n":67,"c":"Hawthorn","b":"Crataegus spp.","u":"Heart tonic, circulation, blood pressure support","o":"Can potentiate cardiac meds. Real heart disease needs doctor.","a":"hawthorn+berry"},{"n":68,"c":"Motherwort","b":"Leonurus cardiaca","u":"Heart nervine, women's, calm","o":"Bitter. Not in pregnancy.","a":"motherwort"},{"n":69,"c":"Linden / Limeflower","b":"Tilia spp.","u":"Calm, mild blood pressure, colds","o":"Gentle.","a":"linden+flower"},{"n":70,"c":"Hibiscus","b":"Hibiscus sabdariffa","u":"Blood pressure support, antioxidant, tart tea","o":"May lower BP.","a":"hibiscus"},{"n":71,"c":"Cayenne","b":"Capsicum annuum","u":"Circulation, topical pain, digestion","o":"Irritant. Use carefully.","a":"cayenne"},{"n":72,"c":"Cinnamon","b":"Cinnamomum spp.","u":"Blood sugar support, digestion, warming","o":"Cassia has coumarin – limit. Ceylon preferred long-term.","a":"cinnamon"},{"n":73,"c":"Fenugreek","b":"Trigonella foenum-graecum","u":"Blood sugar, lactation, digestion","o":"Maple odor. Not in pregnancy high dose.","a":"fenugreek"},{"n":74,"c":"Gymnema","b":"Gymnema sylvestre","u":"Blood sugar, sweet taste blocker","o":"Monitor glucose if diabetic.","a":"gymnema"},{"n":75,"c":"Bitter Melon","b":"Momordica charantia","u":"Blood sugar support","o":"Potent. Monitor glucose.","a":"bitter+melon"},{"n":76,"c":"Schisandra","b":"Schisandra chinensis","u":"Adaptogen, liver, stress, astringent","o":"Five-flavor berry. Generally safe.","a":"schisandra"},{"n":77,"c":"Eleuthero / Siberian Ginseng","b":"Eleutherococcus senticosus","u":"Adaptogen, stamina, immune","o":"Mild adaptogen.","a":"eleuthero"},{"n":78,"c":"Codonopsis","b":"Codonopsis pilosula","u":"Qi tonic, gentler ginseng alternative","o":"Gentle.","a":"codonopsis"},{"n":79,"c":"He Shou Wu / Fo-Ti","b":"Polygonum multiflorum","u":"Tonic, hair, liver lore","o":"Liver toxicity reports – use caution/prepared form.","a":"he+shou+wu"},{"n":80,"c":"Goji / Lycium","b":"Lycium barbarum","u":"Yin tonic, eyes, antioxidant","o":"Generally safe food-herb.","a":"goji+berry"},{"n":81,"c":"Longan","b":"Dimocarpus longan","u":"Blood/Shen tonic, sleep, calm","o":"Gentle.","a":"longan"},{"n":82,"c":"Jujube / Red Date","b":"Ziziphus jujuba","u":"Calm, digestion, blood tonic","o":"Food-herb.","a":"jujube"},{"n":83,"c":"Suan Zao Ren","b":"Ziziphus spinosa","u":"Insomnia, calm Shen","o":"Classic TCM sleep herb.","a":"suan+zao+ren"},{"n":84,"c":"Albizia / Silk Tree","b":"Albizia julibrissin","u":"Mood, calm, 'happy bark'","o":"Traditional mood support.","a":"albizia"},{"n":85,"c":"Rose","b":"Rosa spp.","u":"Mood, skin, heart, astringent","o":"Gentle. Hips high vitamin C.","a":"rose+petals+hips"},{"n":86,"c":"Lavender","b":"Lavandula angustifolia","u":"Calm, sleep, skin, topical","o":"Very safe. Essential oil dilute.","a":"lavender"},{"n":87,"c":"Rosemary","b":"Rosmarinus officinalis","u":"Circulation, cognition, digestion, hair","o":"Safe culinary.","a":"rosemary"},{"n":88,"c":"Sage","b":"Salvia officinalis","u":"Throat, sweating, cognition, antimicrobial","o":"Not high dose long-term (thujone).","a":"sage"},{"n":89,"c":"Basil","b":"Ocimum basilicum","u":"Digestion, calm, antimicrobial","o":"Culinary safe.","a":"basil"},{"n":90,"c":"Catnip","b":"Nepeta cataria","u":"Calm, digestion, children's nervine","o":"Gentle.","a":"catnip"},{"n":91,"c":"Lemon Verbena","b":"Aloysia citrodora","u":"Digestion, calm, flavor","o":"Gentle.","a":"lemon+verbena"},{"n":92,"c":"Lemongrass","b":"Cymbopogon citratus","u":"Digestion, antimicrobial, flavor","o":"Safe.","a":"lemongrass"},{"n":93,"c":"Fennel","b":"Foeniculum vulgare","u":"Digestion, gas, lactation, mild estrogenic","o":"Safe culinary. Seeds best.","a":"fennel"},{"n":94,"c":"Anise","b":"Pimpinella anisum","u":"Digestion, respiratory, mild estrogenic","o":"Safe.","a":"anise+seed"},{"n":95,"c":"Cardamom","b":"Elettaria cardamomum","u":"Digestion, respiratory, flavor","o":"Safe.","a":"cardamom"},{"n":96,"c":"Cumin","b":"Cuminum cyminum","u":"Digestion, antimicrobial","o":"Safe.","a":"cumin"},{"n":97,"c":"Coriander","b":"Coriandrum sativum","u":"Digestion, cooling","o":"Safe.","a":"coriander"},{"n":98,"c":"Dill","b":"Anethum graveolens","u":"Digestion, gas, children's colic lore","o":"Safe.","a":"dill"},{"n":99,"c":"Caraway","b":"Carum carvi","u":"Digestion, gas","o":"Safe.","a":"caraway"},{"n":100,"c":"Black Pepper","b":"Piper nigrum","u":"Digestion, bioavailability enhancer (piperine)","o":"Piperine increases absorption of many compounds.","a":"black+pepper"},{"n":101,"c":"Long Pepper","b":"Piper longum","u":"Digestion, bioavailability, respiratory","o":"Ayurvedic.","a":"long+pepper"},{"n":102,"c":"Trikatu","b":"blend","u":"Digestive fire, bioavailability","o":"Ginger+black pepper+long pepper.","a":"trikatu"},{"n":103,"c":"Triphala","b":"blend","u":"Gentle detox, digestion, rejuvenation","o":"Amalaki+Bibhitaki+Haritaki.","a":"triphala"},{"n":104,"c":"Amalaki / Amla","b":"Emblica officinalis","u":"Antioxidant, vitamin C, rejuvenative","o":"Key rasayana.","a":"amla+amalaki"},{"n":105,"c":"Haritaki","b":"Terminalia chebula","u":"Digestion, elimination, rejuvenative","o":"One of Triphala.","a":"haritaki"},{"n":106,"c":"Bibhitaki","b":"Terminalia bellirica","u":"Respiratory, elimination, rejuvenative","o":"One of Triphala.","a":"bibhitaki"},{"n":107,"c":"Manjistha","b":"Rubia cordifolia","u":"Lymphatic, skin, blood purifier lore","o":"Ayurvedic alterative.","a":"manjistha"},{"n":108,"c":"Neem","b":"Azadirachta indica","u":"Skin, antimicrobial, bitter","o":"Bitter. Not in pregnancy. Internal caution.","a":"neem"},{"n":109,"c":"Tulsi already as Holy Basil","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"tulsi+already+as+holy+basil"},{"n":110,"c":"Shatavari","b":"Asparagus racemosus","u":"Women's tonic, demulcent, adaptogen","o":"Cooling tonic.","a":"shatavari"},{"n":111,"c":"Shilajit","b":"","u":"Mineral tonic, energy, adaptogen lore","o":"Purified only. Heavy metal risk if poor quality.","a":"shilajit"},{"n":112,"c":"Guggul","b":"Commiphora mukul","u":"Lipids, inflammation, thyroid lore","o":"Interactions possible.","a":"guggul"},{"n":113,"c":"Arjuna","b":"Terminalia arjuna","u":"Heart tonic","o":"Traditional cardiac support.","a":"arjuna"},{"n":114,"c":"Bacopa / Brahmi","b":"Bacopa monnieri","u":"Cognition, memory, calm focus","o":"Good cognitive evidence.","a":"bacopa"},{"n":115,"c":"Gotu Kola","b":"Centella asiatica","u":"Cognition, skin, circulation, anxiety","o":"Traditional brain & skin.","a":"gotu+kola"},{"n":116,"c":"Jyotishmati / Celastrus","b":"","u":"Cognition lore","o":"Less common.","a":"celastrus"},{"n":117,"c":"Acorus / Calamus","b":"Acorus calamus","u":"Digestion, cognition lore","o":"Beta-asarone concern – regulated in some places.","a":"calamus"},{"n":118,"c":"Spikenard / Nardostachys","b":"","u":"Calm, sleep","o":"Endangered concern.","a":"spikenard"},{"n":119,"c":"Saffron","b":"Crocus sativus","u":"Mood, antioxidant, women's","o":"Expensive. Mood research positive.","a":"saffron"},{"n":120,"c":"Galangal","b":"Alpinia galanga","u":"Digestion, warming, antimicrobial","o":"Culinary/medicinal.","a":"galangal"},{"n":121,"c":"Clove","b":"Syzygium aromaticum","u":"Antimicrobial, dental, digestion","o":"Strong. Eugenol.","a":"clove"},{"n":122,"c":"Nutmeg","b":"Myristica fragrans","u":"Digestion, sleep lore (low dose)","o":"High dose toxic/psychoactive.","a":"nutmeg"},{"n":123,"c":"Star Anise","b":"Illicium verum","u":"Respiratory, digestion, antiviral lore","o":"True star anise only – not Japanese.","a":"star+anise"},{"n":124,"c":"Bay Leaf","b":"Laurus nobilis","u":"Digestion, flavor","o":"Culinary.","a":"bay+leaf"},{"n":125,"c":"Juniper","b":"Juniperus communis","u":"Urinary, digestion, antimicrobial","o":"Not long-term or in kidney disease.","a":"juniper+berry"},{"n":126,"c":"Buchu","b":"Agathosma betulina","u":"Urinary","o":"Traditional urinary.","a":"buchu"},{"n":127,"c":"Horsetail","b":"Equisetum arvense","u":"Minerals, connective tissue, urinary","o":"Nicotine content mild. Not long high dose.","a":"horsetail"},{"n":128,"c":"Alfalfa","b":"Medicago sativa","u":"Mineral tonic, nutritive","o":"Can be contaminating if poor quality. Autoimmune caution rare.","a":"alfalfa"},{"n":129,"c":"Spirulina","b":"","u":"Nutritive, protein, antioxidant","o":"Quality critical (contamination).","a":"spirulina"},{"n":130,"c":"Chlorella","b":"","u":"Nutritive, binding lore","o":"Quality critical.","a":"chlorella"},{"n":131,"c":"Wheatgrass","b":"","u":"Nutritive","o":"Fresh or powder.","a":"wheatgrass"},{"n":132,"c":"Barley Grass","b":"","u":"Nutritive","o":"Similar.","a":"barley+grass"},{"n":133,"c":"Moringa","b":"Moringa oleifera","u":"Nutritive, antioxidant, many uses","o":"Leaves safest. Root/bark caution.","a":"moringa"},{"n":134,"c":"Baobab","b":"","u":"Vitamin C, fiber, antioxidant","o":"Food.","a":"baobab"},{"n":135,"c":"Camu Camu","b":"","u":"Very high vitamin C","o":"Food.","a":"camu+camu"},{"n":136,"c":"Acerola","b":"","u":"Vitamin C","o":"Food.","a":"acerola"},{"n":137,"c":"Elderflower","b":"Sambucus nigra flower","u":"Colds, fever, sinus, diaphoretic","o":"Gentle.","a":"elderflower"},{"n":138,"c":"Boneset","b":"Eupatorium perfoliatum","u":"Flu, deep aches, fever","o":"Bitter. Not long-term (PA concern some Eupatorium).","a":"boneset"},{"n":139,"c":"Pleurisy Root","b":"Asclepias tuberosa","u":"Respiratory, pleurisy lore","o":"Traditional. Not widely available.","a":"pleurisy+root"},{"n":140,"c":"Lomatium","b":"Lomatium dissectum","u":"Antiviral respiratory lore","o":"Rash possible. Strong.","a":"lomatium"},{"n":141,"c":"Osha","b":"Ligusticum porteri","u":"Respiratory, antimicrobial, altitude","o":"Sustainable concern. Strong.","a":"osha"},{"n":142,"c":"Usnea","b":"Usnea spp.","u":"Antimicrobial, respiratory, immune","o":"Sustainable harvesting issue.","a":"usnea"},{"n":143,"c":"Propolis","b":"","u":"Antimicrobial, throat, immune","o":"Bee product. Allergy possible.","a":"propolis"},{"n":144,"c":"Bee Pollen","b":"","u":"Nutritive, energy lore","o":"Allergy risk high for some.","a":"bee+pollen"},{"n":145,"c":"Royal Jelly","b":"","u":"Nutritive, tonic lore","o":"Allergy risk.","a":"royal+jelly"},{"n":146,"c":"Honey","b":"esp. Manuka","u":"Wound, throat, antimicrobial","o":"Not for infants <1 year.","a":"manuka+honey"},{"n":147,"c":"Aloe Vera","b":"inner leaf","u":"Skin, demulcent gut (careful)","o":"Latex is strong laxative – avoid internal latex.","a":"aloe+vera+gel"},{"n":148,"c":"Comfrey","b":"Symphytum officinale","u":"Topical tissue repair only","o":"EXTERNAL ONLY. PA – liver toxic internal.","a":"comfrey"},{"n":149,"c":"Arnica","b":"Arnica montana","u":"Topical bruises, soreness","o":"EXTERNAL ONLY. Toxic internal.","a":"arnica"},{"n":150,"c":"Chickweed","b":"Stellaria media","u":"Skin, demulcent, cooling","o":"Gentle.","a":"chickweed"},{"n":151,"c":"Self-heal","b":"Prunella vulgaris","u":"Throat, skin, antiviral lore","o":"Gentle.","a":"self+heal+prunella"},{"n":152,"c":"Goldenseal","b":"Hydrastis canadensis","u":"Mucous membrane, antimicrobial, bitter","o":"Endangered. Berberine. Short-term. Blood sugar.","a":"goldenseal"},{"n":153,"c":"Oregon Grape","b":"Mahonia aquifolium","u":"Similar to goldenseal, berberine, skin, liver","o":"More sustainable berberine source.","a":"oregon+grape"},{"n":154,"c":"Barberry","b":"Berberis vulgaris","u":"Berberine, digestion, antimicrobial","o":"Similar.","a":"barberry"},{"n":155,"c":"Coptis / Huang Lian","b":"","u":"Strong bitter, antimicrobial, heat","o":"Very bitter. Short-term.","a":"coptis"},{"n":156,"c":"Gentian","b":"Gentiana lutea","u":"Bitter digestive stimulant","o":"Classic bitter.","a":"gentian"},{"n":157,"c":"Wormwood","b":"Artemisia absinthium","u":"Bitter, digestive, parasite lore","o":"Thujone. Short-term only.","a":"wormwood"},{"n":158,"c":"Sweet Annie","b":"Artemisia annua","u":"Antimalarial (artemisinin), immune lore","o":"Research ongoing. Not self-treat malaria.","a":"artemisia+annua"},{"n":159,"c":"Black Walnut Hull","b":"Juglans nigra","u":"Parasite lore, skin, antifungal","o":"Strong. Not long-term.","a":"black+walnut+hull"},{"n":160,"c":"Pumpkin Seed","b":"","u":"Prostate, parasite lore, nutrients","o":"Food.","a":"pumpkin+seed"},{"n":161,"c":"Olive Leaf","b":"Olea europaea","u":"Antimicrobial, blood pressure, antioxidant","o":"Generally safe.","a":"olive+leaf"},{"n":162,"c":"Pau d'Arco","b":"Tabebuia spp.","u":"Antifungal, immune lore","o":"Traditional. Quality varies.","a":"pau+darco"},{"n":163,"c":"Cat's Claw","b":"Uncaria tomentosa","u":"Immune, inflammation, joints","o":"Immune modulating.","a":"cats+claw"},{"n":164,"c":"Sarsaparilla","b":"Smilax spp.","u":"Alterative, skin, hormone lore","o":"Traditional.","a":"sarsaparilla"},{"n":165,"c":"Sassafras","b":"Sassafras albidum","u":"Traditional blood purifier – restricted","o":"Safrole – regulated/restricted many places.","a":"sassafras"},{"n":166,"c":"Birch","b":"Betula spp.","u":"Joints, mild diuretic, topical","o":"Methyl salicylate related.","a":"birch"},{"n":167,"c":"Wintergreen","b":"Gaultheria procumbens","u":"Topical pain (methyl salicylate)","o":"Oil is toxic if ingested. External only.","a":"wintergreen"},{"n":168,"c":"Spearmint","b":"Mentha spicata","u":"Digestion, milder than peppermint","o":"Safe.","a":"spearmint"},{"n":169,"c":"Chocolate Mint etc","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"chocolate+mint+etc"},{"n":170,"c":"Bee Balm / Monarda","b":"","u":"Antimicrobial, digestion, respiratory","o":"Traditional.","a":"bee+balm+monarda"},{"n":171,"c":"Bergamot","b":"Monarda or Citrus","u":"Depends on species","o":"Specify.","a":"bergamot"},{"n":172,"c":"Marjoram","b":"Origanum majorana","u":"Digestion, calm, respiratory","o":"Gentle.","a":"marjoram"},{"n":173,"c":"Savory","b":"","u":"Digestion, antimicrobial","o":"Culinary.","a":"savory+herb"},{"n":174,"c":"Tarragon","b":"Artemisia dracunculus","u":"Digestion, flavor","o":"Culinary.","a":"tarragon"},{"n":175,"c":"Chervil","b":"","u":"Digestion, mild","o":"Culinary.","a":"chervil"},{"n":176,"c":"Parsley","b":"Petroselinum crispum","u":"Diuretic, minerals, breath","o":"High dose not in pregnancy.","a":"parsley"},{"n":177,"c":"Cilantro / Coriander leaf","b":"","u":"Digestion, heavy metal lore, flavor","o":"Safe.","a":"cilantro"},{"n":178,"c":"Celery Seed","b":"Apium graveolens","u":"Joints, diuretic, blood pressure lore","o":"Interactions possible.","a":"celery+seed"},{"n":179,"c":"Mustard Seed","b":"","u":"Topical plaster, digestion","o":"Irritant topical.","a":"mustard+seed"},{"n":180,"c":"Horseradish","b":"Armoracia rusticana","u":"Respiratory, antimicrobial, circulation","o":"Strong.","a":"horseradish"},{"n":181,"c":"Wasabi","b":"","u":"Similar","o":"Culinary.","a":"wasabi"},{"n":182,"c":"Nasturtium","b":"","u":"Antimicrobial, respiratory, vitamin C","o":"Peppery.","a":"nasturtium"},{"n":183,"c":"Watercress","b":"","u":"Nutritive, respiratory, bitter","o":"Food.","a":"watercress"},{"n":184,"c":"Sorrel","b":"","u":"Cooling, vitamin C, astringent","o":"Oxalates.","a":"sorrel"},{"n":185,"c":"Chicory","b":"Cichorium intybus","u":"Liver, bitter, prebiotic root","o":"Coffee substitute.","a":"chicory+root"},{"n":186,"c":"Artichoke Leaf","b":"Cynara scolymus","u":"Liver, bile, digestion, lipids","o":"Good evidence for dyspepsia.","a":"artichoke+leaf"},{"n":187,"c":"Boldo","b":"Peumus boldus","u":"Liver, digestion","o":"Not long-term or in liver disease/pregnancy.","a":"boldo"},{"n":188,"c":"Picrorhiza","b":"Picrorhiza kurroa","u":"Liver, immune, respiratory","o":"Bitter. Ayurvedic.","a":"picrorhiza"},{"n":189,"c":"Bupleurum","b":"Bupleurum chinense","u":"Liver Qi, fever, immune modulation","o":"Key TCM herb.","a":"bupleurum"},{"n":190,"c":"White Peony","b":"Paeonia lactiflora","u":"Blood, spasm, women's, liver","o":"Classic with licorice.","a":"white+peony+root"},{"n":191,"c":"Chinese Skullcap","b":"Scutellaria baicalensis","u":"Inflammation, antimicrobial, calming","o":"Different from Western skullcap.","a":"baicalin+skullcap"},{"n":192,"c":"Isatis / Ban Lan Gen","b":"","u":"Antiviral, throat, heat","o":"TCM cold/flu.","a":"isatis"},{"n":193,"c":"Honeysuckle","b":"Lonicera japonica","u":"Heat, toxicity, colds, skin","o":"TCM.","a":"honeysuckle"},{"n":194,"c":"Forsythia","b":"Forsythia suspensa","u":"Heat, toxicity, colds","o":"TCM pair with honeysuckle.","a":"forsythia"},{"n":195,"c":"Chrysanthemum","b":"Chrysanthemum morifolium","u":"Eyes, wind-heat, calm","o":"TCM tea.","a":"chrysanthemum"},{"n":196,"c":"Mint / Bo He","b":"","u":"Wind-heat, liver Qi, head","o":"TCM.","a":"chinese+mint"},{"n":197,"c":"Atractylodes","b":"Atractylodes macrocephala","u":"Qi, digestion, dampness","o":"TCM.","a":"atractylodes"},{"n":198,"c":"Poria","b":"Poria cocos","u":"Dampness, digestion, calm","o":"TCM fungus.","a":"poria"},{"n":199,"c":"Pinellia","b":"Pinellia ternata","u":"Phlegm, cough, nausea (prepared)","o":"Must be prepared. Raw toxic.","a":"pinellia"},{"n":200,"c":"Citrus peel / Chen Pi","b":"","u":"Digestion, Qi, phlegm","o":"TCM.","a":"aged+citrus+peel"},{"n":201,"c":"Magnolia Bark","b":"Magnolia officinalis","u":"Digestion, Qi, calm, lung","o":"Honokiol research.","a":"magnolia+bark"},{"n":202,"c":"Polygala","b":"Polygala tenuifolia","u":"Calm, phlegm, cognitive lore","o":"TCM.","a":"polygala"},{"n":203,"c":"Dragon Bone / Oyster Shell","b":"","u":"Calm, anchor, astringe","o":"Mineral.","a":"dragon+bone+oyster"},{"n":204,"c":"Pearl","b":"","u":"Calm, skin lore","o":"Traditional.","a":"pearl+powder"},{"n":205,"c":"Amber","b":"","u":"Calm, heart lore","o":"Traditional.","a":"amber+powder"},{"n":206,"c":"Sandalwood","b":"","u":"Calm, skin, spiritual","o":"Sustainable concern.","a":"sandalwood"},{"n":207,"c":"Frankincense already as Boswellia","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"frankincense+already+as+boswellia"},{"n":208,"c":"Myrrh","b":"Commiphora myrrha","u":"Antimicrobial, oral, skin, blood moving","o":"Traditional.","a":"myrrh"},{"n":209,"c":"Frankincense","b":"Boswellia or Boswellia sacra","u":"Already covered","o":"Research safety before use.","a":"frankincense"},{"n":210,"c":"Copal","b":"","u":"Similar resin","o":"Traditional.","a":"copal"},{"n":211,"c":"Benzoin","b":"","u":"Respiratory, skin","o":"Resin.","a":"benzoin"},{"n":212,"c":"Pine resin / pitch","b":"","u":"Drawing, antimicrobial topical","o":"Topical.","a":"pine+resin"},{"n":213,"c":"Balm of Gilead","b":"Populus","u":"Respiratory, topical","o":"Buds.","a":"balm+of+gilead"},{"n":214,"c":"Aspen","b":"","u":"Similar salicylates","o":"Traditional.","a":"aspen+bark"},{"n":215,"c":"Poplar","b":"","u":"Similar","o":"Research safety before use.","a":"poplar"},{"n":216,"c":"Oak Bark","b":"Quercus spp.","u":"Astringent, skin, diarrhea","o":"Strong astringent.","a":"oak+bark"},{"n":217,"c":"Witch Hazel","b":"Hamamelis virginiana","u":"Astringent, skin, hemorrhoids (topical)","o":"Topical excellent.","a":"witch+hazel"},{"n":218,"c":"Crane's Bill / Geranium","b":"","u":"Astringent, bleeding","o":"Traditional.","a":"cranesbill+geranium"},{"n":219,"c":"Tormentil","b":"Potentilla erecta","u":"Strong astringent","o":"Traditional.","a":"tormentil"},{"n":220,"c":"Bistort","b":"","u":"Astringent","o":"Traditional.","a":"bistort"},{"n":221,"c":"Lady's Mantle","b":"Alchemilla vulgaris","u":"Women's astringent, skin","o":"Traditional.","a":"ladys+mantle"},{"n":222,"c":"Blackberry Leaf","b":"","u":"Astringent, diarrhea, oral","o":"Gentle.","a":"blackberry+leaf"},{"n":223,"c":"Strawberry Leaf","b":"","u":"Mild astringent, tea","o":"Gentle.","a":"strawberry+leaf"},{"n":224,"c":"Agrimony","b":"Agrimonia eupatoria","u":"Astringent, digestion, tension","o":"Traditional.","a":"agrimony"},{"n":225,"c":"Cinquefoil","b":"","u":"Astringent","o":"Traditional.","a":"cinquefoil"},{"n":226,"c":"Couch Grass","b":"Elymus repens","u":"Urinary demulcent","o":"Traditional.","a":"couch+grass"},{"n":227,"c":"Gravel Root","b":"Eupatorium purpureum","u":"Urinary, stones lore","o":"Traditional.","a":"gravel+root"},{"n":228,"c":"Hydrangea","b":"Hydrangea arborescens","u":"Urinary, stones lore","o":"Traditional.","a":"hydrangea+root"},{"n":229,"c":"Stone Root","b":"Collinsonia","u":"Venous, urinary, throat","o":"Traditional.","a":"stone+root+collinsonia"},{"n":230,"c":"Pipsissewa","b":"Chimaphila umbellata","u":"Urinary","o":"Traditional.","a":"pipsissewa"},{"n":231,"c":"Trailing Arbutus","b":"","u":"Urinary","o":"Rare.","a":"trailing+arbutus"},{"n":232,"c":"Goldenrod","b":"Solidago spp.","u":"Urinary, allergies, anti-inflammatory","o":"Not the same as ragweed allergy.","a":"goldenrod"},{"n":233,"c":"Ragweed is allergen","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"ragweed+is+allergen"},{"n":234,"c":"Eyebright","b":"Euphrasia officinalis","u":"Eye irritation, sinus","o":"Traditional eye herb.","a":"eyebright"},{"n":235,"c":"Bilberry","b":"Vaccinium myrtillus","u":"Eye, circulation, antioxidant","o":"Good for microcirculation.","a":"bilberry"},{"n":236,"c":"Blueberry","b":"","u":"Similar antioxidant","o":"Food.","a":"blueberry"},{"n":237,"c":"Grape Seed Extract","b":"","u":"Antioxidant, circulation, veins","o":"OPC.","a":"grape+seed+extract"},{"n":238,"c":"Pine Bark / Pycnogenol","b":"","u":"Antioxidant, circulation","o":"Researched.","a":"pycnogenol+pine+bark"},{"n":239,"c":"Horse Chestnut","b":"Aesculus hippocastanum","u":"Venous tone, varicose, hemorrhoids","o":"Aescin. Not raw seed internal.","a":"horse+chestnut"},{"n":240,"c":"Butcher's Broom","b":"Ruscus aculeatus","u":"Venous, circulation","o":"Traditional.","a":"butchers+broom"},{"n":241,"c":"Prickly Ash","b":"Zanthoxylum","u":"Circulation, digestion, toothache","o":"Traditional.","a":"prickly+ash"},{"n":242,"c":"Bayberry","b":"Myrica","u":"Astringent, circulation lore","o":"Traditional.","a":"bayberry"},{"n":243,"c":"Violet","b":"Viola spp.","u":"Lymphatic, skin, demulcent, mild","o":"Gentle.","a":"violet+leaf+flower"},{"n":244,"c":"Heartsease","b":"Viola tricolor","u":"Skin, mild","o":"Gentle.","a":"heartsease"},{"n":245,"c":"Marigold already as Calendula","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"marigold+already+as+calendula"},{"n":246,"c":"Wild Lettuce","b":"Lactuca virosa","u":"Mild sedative, pain lore","o":"Traditional. Latex.","a":"wild+lettuce"},{"n":247,"c":"Jamaican Dogwood","b":"Piscidia","u":"Pain, sleep (strong)","o":"Strong. Not common.","a":"jamaican+dogwood"},{"n":248,"c":"Corydalis","b":"Corydalis yanhusuo","u":"Pain, blood moving","o":"TCM pain herb.","a":"corydalis"},{"n":249,"c":"Kava","b":"Piper methysticum","u":"Anxiety, muscle tension, sleep","o":"Liver caution – quality and duration matter. Banned some countries.","a":"kava"},{"n":250,"c":"Kratom","b":"Mitragyna speciosa","u":"Pain, energy/mood (controversial)","o":"Highly controversial. Dependence risk. Legal status varies. Not recommended.","a":"kratom"},{"n":251,"c":"Cannabis / Hemp","b":"where legal","u":"Many uses – legal status varies","o":"Legal status complex. CBD vs THC.","a":"hemp+cbd"},{"n":252,"c":"Damiana","b":"Turnera diffusa","u":"Mood, libido, mild nervine","o":"Traditional.","a":"damiana"},{"n":253,"c":"Muira Puama","b":"","u":"Libido, tonic lore","o":"Traditional Amazonian.","a":"muira+puama"},{"n":254,"c":"Yohimbe","b":"Pausinystalia yohimbe","u":"Libido, circulation (strong)","o":"Potent. BP/heart risk. Not casual use.","a":"yohimbe"},{"n":255,"c":"Horny Goat Weed","b":"Epimedium","u":"Libido, tonic lore","o":"Traditional.","a":"horny+goat+weed"},{"n":256,"c":"Tribulus","b":"Tribulus terrestris","u":"Libido, tonic lore","o":"Mixed evidence.","a":"tribulus"},{"n":257,"c":"Maca","b":"Lepidium meyenii","u":"Energy, libido, hormone lore, adaptogen","o":"Food-herb. Generally safe.","a":"maca"},{"n":258,"c":"Tongkat Ali","b":"Eurycoma longifolia","u":"Libido, testosterone lore","o":"Traditional. Quality varies.","a":"tongkat+ali"},{"n":259,"c":"Rehmannia","b":"Rehmannia glutinosa","u":"Yin/blood tonic, kidneys, adrenals lore","o":"TCM. Prepared vs raw different.","a":"rehmannia"},{"n":260,"c":"Prepared Rehmannia","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"prepared+rehmannia"},{"n":261,"c":"Gardenia","b":"Gardenia jasminoides","u":"Heat, irritability, sleep","o":"TCM.","a":"gardenia"},{"n":262,"c":"Moutan / Tree Peony","b":"","u":"Blood, heat, inflammation","o":"TCM.","a":"moutan"},{"n":263,"c":"Salvia / Dan Shen","b":"Salvia miltiorrhiza","u":"Blood, heart, circulation","o":"TCM cardiac. Blood-moving.","a":"dan+shen+salvia"},{"n":264,"c":"Notoginseng / San Qi","b":"Panax notoginseng","u":"Bleeding, trauma, heart","o":"TCM trauma herb.","a":"san+qi+notoginseng"},{"n":265,"c":"Safflower","b":"Carthamus tinctorius","u":"Blood moving, menses","o":"TCM. Not in pregnancy.","a":"safflower"},{"n":266,"c":"Peach Kernel / Persica","b":"","u":"Blood, constipation","o":"TCM. Cyanogenic – prepared.","a":"peach+kernel"},{"n":267,"c":"Frankincense / Ru Xiang","b":"","u":"Blood, pain, trauma","o":"TCM.","a":"ru+xiang+frankincense"},{"n":268,"c":"Myrrh / Mo Yao","b":"","u":"Blood, pain, trauma","o":"TCM.","a":"mo+yao+myrrh"},{"n":269,"c":"Dragon's Blood","b":"various","u":"Trauma, astringent, topical","o":"Several species.","a":"dragons+blood+resin"},{"n":270,"c":"Yunnan Baiyao","b":"formula","u":"Trauma, bleeding","o":"Famous patent formula.","a":"yunnan+baiyao"},{"n":271,"c":"Bone-set already as Boneset","b":"","u":"Traditional uses vary","o":"Research safety before use.","a":"bone-set+already+as+boneset"},{"n":272,"c":"Tea Tree","b":"Melaleuca alternifolia","u":"Antimicrobial topical, skin, fungal","o":"EXTERNAL. Dilute. Toxic if ingested.","a":"tea+tree+oil"},{"n":273,"c":"Eucalyptus","b":"Eucalyptus globulus","u":"Respiratory, topical, antimicrobial","o":"Oil strong. Not internal high dose. Not for young children facial.","a":"eucalyptus"},{"n":274,"c":"Cinnamon oil","b":"","u":"Strong antimicrobial, warming","o":"Irritant. Dilute heavily.","a":"cinnamon+oil"},{"n":275,"c":"Lemon oil / Citrus","b":"","u":"Mood, antimicrobial, cleaning","o":"Photosensitizing some citrus.","a":"lemon+essential+oil"},{"n":276,"c":"Cedarwood","b":"","u":"Skin, calm, grounding","o":"Essential oil.","a":"cedarwood"},{"n":277,"c":"Cypress","b":"","u":"Circulation, skin, astringent","o":"Essential oil.","a":"cypress+oil"},{"n":278,"c":"Pine oil","b":"","u":"Respiratory, antimicrobial","o":"Essential oil.","a":"pine+oil"},{"n":279,"c":"Spruce","b":"","u":"Similar","o":"Research safety before use.","a":"spruce+oil"},{"n":280,"c":"Fir","b":"","u":"Similar","o":"Research safety before use.","a":"fir+oil"},{"n":281,"c":"Helichrysum","b":"","u":"Skin, bruising, regenerative lore","o":"Expensive essential oil.","a":"helichrysum"},{"n":282,"c":"German Chamomile oil","b":"","u":"Skin, anti-inflammatory, calm","o":"Blue chamazulene.","a":"german+chamomile+oil"},{"n":283,"c":"Roman Chamomile oil","b":"","u":"Calm, skin, children lore","o":"Gentle.","a":"roman+chamomile+oil"},{"n":284,"c":"Neroli","b":"","u":"Mood, calm, skin","o":"Expensive.","a":"neroli+oil"},{"n":285,"c":"Jasmine","b":"","u":"Mood, aphrodisiac lore","o":"Expensive.","a":"jasmine+oil"},{"n":286,"c":"Ylang Ylang","b":"","u":"Mood, calm, blood pressure lore","o":"Strong scent.","a":"ylang+ylang"},{"n":287,"c":"Patchouli","b":"","u":"Skin, mood, grounding","o":"Essential oil.","a":"patchouli"},{"n":288,"c":"Vetiver","b":"","u":"Calm, grounding, focus","o":"Essential oil.","a":"vetiver"},{"n":289,"c":"Valerian oil","b":"","u":"Calm, sleep","o":"Strong odor.","a":"valerian+oil"},{"n":290,"c":"Basil oil","b":"","u":"Focus, digestion, antiviral lore","o":"Some types high methyl chavicol.","a":"basil+oil"},{"n":291,"c":"Clary Sage","b":"","u":"Women's, calm, mood","o":"Hormone lore. Not in pregnancy.","a":"clary+sage+oil"},{"n":292,"c":"Geranium oil","b":"","u":"Skin, balance, mood","o":"Essential oil.","a":"geranium+oil"},{"n":293,"c":"Palmarosa","b":"","u":"Skin, antimicrobial","o":"Essential oil.","a":"palmarosa"},{"n":294,"c":"Citronella","b":"","u":"Insect, antimicrobial","o":"Essential oil.","a":"citronella"},{"n":295,"c":"Litsea Cubeba","b":"","u":"Similar lemony","o":"Essential oil.","a":"litsea"},{"n":296,"c":"Turmeric oil","b":"","u":"Anti-inflammatory topical/aromatic","o":"Essential oil or CO2.","a":"turmeric+oil"},{"n":297,"c":"Coriander oil","b":"","u":"Digestion, calm","o":"Essential oil.","a":"coriander+oil"},{"n":298,"c":"Carrot Seed","b":"","u":"Skin, liver lore","o":"Essential oil.","a":"carrot+seed+oil"},{"n":299,"c":"Parsley seed oil","b":"","u":"Strong diuretic lore","o":"High apiole – caution.","a":"parsley+seed+oil"},{"n":300,"c":"Ajwain / Bishop's Weed","b":"","u":"Digestion, antimicrobial strong","o":"Traditional Indian.","a":"ajwain"}];
+  // legacy alias kept for any older refs
+  const CATALOG_LORE = HERB_CATALOG_300.slice(0, 20).map(h=>({ic:"🌿",name:h.c,uses:h.u,note:h.o||""}));
+
+  const POTIONS = [
+    {id:"dawnfire",ic:"☀️",name:"Dawnfire Vitality Elixir",mix:"Rhodiola + Cordyceps + Ginger + Schisandra",effect:"Lifts fatigue, daytime energy and resilience",when:"Morning or early afternoon",color:"Yellow / Orange",lore:"Brewed when the Grey has left someone flat after holidays or long shifts."},
+    {id:"moonveil",ic:"🌙",name:"Moonveil Calm Tonic",mix:"Ashwagandha + Holy Basil + Lemon Balm + Oatstraw",effect:"Eases stress tension while preserving clarity",when:"30–60 min before bed",color:"Blue / Black",lore:"The exam-season bottle. Maya's second visit often smells of this."},
+    {id:"ironroot",ic:"🩸",name:"Ironroot Blood Tonic",mix:"Nettle + Yellow Dock + Alfalfa + molasses lore",effect:"Nutritive support for low vitality",when:"1–2× daily for a short arc",color:"Green / Red",lore:"Street tonic. Not a substitute for real anemia care."},
+    {id:"stormshield",ic:"🛡️",name:"Stormshield Immune Guard",mix:"Astragalus + Reishi + Turkey Tail + Elderberry",effect:"Deep immune and recovery between illnesses",when:"Between acute spikes, not high fever",color:"Violet / Black",lore:"Shelf stock for the damp weeks when the road brings coughs."},
+    {id:"silverflow",ic:"💫",name:"Silverflow Circulation Draft",mix:"Hawthorn + Ginkgo + Rosemary + Ginger",effect:"Circulation and mental clarity",when:"Daytime focus protocols",color:"Pink / Yellow",lore:"For the healer who cannot leave the ledger at night."},
+    {id:"emberjoint",ic:"🔥",name:"Emberjoint Comfort Brew",mix:"Boswellia + Turmeric + Devil's Claw + Black Pepper",effect:"Joint and connective comfort after strain",when:"With food; allow days to work",color:"Red / Orange",lore:"Damp-weather classic. Warmth first, resin second."}
+  ];
+
+  const SYNERGIES = [
+    {a:"Turmeric",b:"Black Pepper",note:"Classic absorption pair — Orange/Red hub"},
+    {a:"Turmeric",b:"Boswellia",note:"Joint inflammatory axis"},
+    {a:"Ginger",b:"Peppermint",note:"Digestive settle before events"},
+    {a:"Skullcap",b:"Passionflower",note:"Blue wind-down for sleep onset"},
+    {a:"Skullcap",b:"Lemon Balm",note:"Nervine + soft focus"},
+    {a:"Ashwagandha",b:"Oatstraw",note:"Adaptogen + trophorestorative"},
+    {a:"Ashwagandha",b:"Holy Basil",note:"Stress clarity without collapse"},
+    {a:"Hawthorn",b:"Rose",note:"Heart / emotional boundary"},
+    {a:"Hawthorn",b:"Motherwort",note:"Care without over-helping"},
+    {a:"Reishi",b:"Astragalus",note:"Calm immune terrain"},
+    {a:"Nettle",b:"Oatstraw",note:"Mineral + nerve restoration"},
+    {a:"Boswellia",b:"Ginger",note:"Warm joint pair for damp days"}
+  ];
+
+  const HERB_LORE_PAGES = [
+    {t:"The Color Ledger",b:"Every still-room since Senna Vey keeps a color ledger: Blue for settle, Yellow for clear focus, Red for mobilizing warmth, Green for repair, Black for boundary, Violet for meaning. Herbs are filed by the color they most often serve — not by Latin name alone."},
+    {t:"Central Hubs",b:"Ten plants appear in more combinations than the rest. The workbook calls them Central Herbs. When a protocol activates two or more documented synergies that share a hub, the session gains a quiet centrality bonus — the kettle remembers."},
+    {t:"Fiction vs Shelf",b:"In play, herbs are narrative tags and optional Amazon product searches for comfort tools. They are never prescriptions. Persistent real symptoms belong to real clinicians. The Herb Dosing Authority sheet is a reference gate only — no invented doses."},
+    {t:"Potions of the Bend",b:"Named elixirs are story bottles: Dawnfire for post-holiday crash, Moonveil for exam insomnia, Emberjoint for damp knees. Mixing them is role-play; the mechanical payoff is color match, tag synergy, and RP — not pharmacology."},
+    {t:"Wild Harvesters' Rule",b:"Take only what the bank can spare. Leave the stand better than you found it. Winter list opens at Loyalty Mark 3. Forage never overrides the Safety Line on the Problem Catalog."}
+  ];
+
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  window.openHerbLore = function(){
+    const body = HERB_LORE_PAGES.map(p=>`<div class="card story"><span class="lore-tt">${esc(p.t)}</span><p style="margin-top:6px;line-height:1.45">${esc(p.b)}</p></div>`).join("");
+    if(typeof openOverhaulModal==="function"){
+      openOverhaulModal("Still-Room Lore","HERBARIUM",body+`<p class="safe" style="margin-top:10px">Fictional educational game. Herbs & protocols are game fiction. Persistent symptoms → real clinicians.</p>`);
+    } else {
+      go('codex'); setTimeout(()=>switchCodexTab('herb'),50);
+    }
+  };
+
+  window.renderHerbarium = function(){
+    const el = document.getElementById("codexHerb");
+    if(!el) return;
+    const tab = (window.S && S.herbTab) || "central";
+    let html = `<div class="card glow"><div class="muted" style="font-size:.72rem">STILL-ROOM APOTHECARY</div>
+      <div style="font-weight:700;margin-top:2px">Herbarium of Willow Bend</div>
+      <p class="muted" style="margin-top:4px;font-size:.78rem">Central hubs · catalog notes · named potions · documented synergies. All game fiction.</p></div>`;
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin:8px 0">`+
+      [{id:"central",l:"🌟 Hubs"},{id:"catalog",l:"📖 Catalog"},{id:"potions",l:"🧪 Potions"},{id:"syn",l:"🔗 Synergy"}].map(t=>
+        `<div class="choice ctab${tab===t.id?' on':''}" onclick="S.herbTab='${t.id}';renderHerbarium()"><div class="t" style="font-size:.7rem">${t.l}</div></div>`
+      ).join("")+`</div>`;
+
+    if(tab==="central"){
+      html += `<p class="muted" style="font-size:.75rem;margin-bottom:6px">Ten plants the ledger treats as hubs. Matching ≥2 synergies that share a hub can grant a small session edge.</p>`;
+      html += `<div class="herb-grid">`+CENTRAL_HERBS.map(h=>`
+        <div class="herb-tile central" onclick="showHerbDetail('${h.id}')">
+          <div class="hi">${h.ic}</div>
+          <div class="hn">${esc(h.name)}</div>
+          <div class="hd"><span class="color-dot" style="background:${h.hex}"></span>${esc(h.color)}</div>
+          <div class="hd">${esc(h.why)}</div>
+        </div>`).join("")+`</div>`;
+      html += `<div id="herbDetailBox"></div>`;
+    } else if(tab==="catalog"){
+      const q = (S.herbSearch||"").trim().toLowerCase();
+      let list = HERB_CATALOG_300;
+      if(q){
+        list = list.filter(h =>
+          String(h.n).includes(q) ||
+          (h.c||"").toLowerCase().includes(q) ||
+          (h.b||"").toLowerCase().includes(q) ||
+          (h.u||"").toLowerCase().includes(q) ||
+          (h.o||"").toLowerCase().includes(q)
+        );
+      }
+      const page = Math.max(0, S.herbPage|0);
+      const PAGE = 25;
+      const totalPages = Math.max(1, Math.ceil(list.length / PAGE));
+      const safePage = Math.min(page, totalPages-1);
+      S.herbPage = safePage;
+      const slice = list.slice(safePage*PAGE, safePage*PAGE+PAGE);
+      html += `<div class="card" style="padding:10px">
+        <div class="muted" style="font-size:.72rem;margin-bottom:6px">FULL CATALOG · ${HERB_CATALOG_300.length} herbs from workbook · game fiction only</div>
+        <input id="herbSearchInput" type="search" placeholder="Search name, use, note…" value="${esc(S.herbSearch||"")}"
+          oninput="S.herbSearch=this.value;S.herbPage=0;renderHerbarium()"
+          style="margin:0"/>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:.75rem;color:var(--muted)">
+          <span>${list.length} match${list.length===1?"":"es"} · page ${safePage+1}/${totalPages}</span>
+          <span>
+            <button class="btn sm sec" style="min-height:auto;padding:4px 10px;margin:0 2px" onclick="S.herbPage=Math.max(0,(S.herbPage|0)-1);renderHerbarium()" ${safePage<=0?"disabled":""}>‹</button>
+            <button class="btn sm sec" style="min-height:auto;padding:4px 10px;margin:0 2px" onclick="S.herbPage=Math.min(${totalPages-1},(S.herbPage|0)+1);renderHerbarium()" ${safePage>=totalPages-1?"disabled":""}>›</button>
+          </span>
+        </div>
+      </div>`;
+      if(!slice.length){
+        html += `<div class="empty">No herbs match that search.</div>`;
+      } else {
+        html += slice.map(h=>`
+          <div class="card" style="padding:10px 12px">
+            <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:.88rem"><span class="muted" style="font-weight:600">#${h.n}</span> ${esc(h.c)}</div>
+                ${h.b?`<div class="muted" style="font-size:.7rem;font-style:italic;margin-top:1px">${esc(h.b)}</div>`:""}
+                <div style="font-size:.8rem;margin-top:5px;line-height:1.4">${esc(h.u)}</div>
+                ${h.o?`<div class="muted" style="font-size:.72rem;margin-top:4px;color:#c8b880">${esc(h.o)}</div>`:""}
+              </div>
+              ${h.a?`<a class="amz" href="https://www.amazon.com/s?k=${encodeURIComponent(h.a)}" target="_blank" rel="noopener" style="flex:0 0 auto;padding:8px 10px;font-size:.72rem;margin:0;min-width:auto" onclick="event.stopPropagation()">🛒</a>`:""}
+            </div>
+          </div>`).join("");
+      }
+      html += `<div class="safe" style="margin-top:8px">Amazon links = consumer product searches only. Catalog uses are traditional themes for game flavor — not prescriptions. Persistent symptoms → real clinicians.</div>`;
+    } else if(tab==="potions"){
+      html += `<p class="muted" style="font-size:.75rem;margin-bottom:6px">Named still-room bottles. Story first; RP and color match second.</p>`;
+      html += POTIONS.map(p=>`
+        <div class="potion-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong>${p.ic} ${esc(p.name)}</strong>
+            <span class="pill">${esc(p.color)}</span>
+          </div>
+          <div class="muted" style="font-size:.78rem;margin-top:4px">${esc(p.mix)}</div>
+          <div style="font-size:.82rem;margin-top:6px">${esc(p.effect)}</div>
+          <div class="muted" style="font-size:.72rem;margin-top:4px">When: ${esc(p.when)}</div>
+          <div class="herb-detail">${esc(p.lore)}</div>
+        </div>`).join("");
+    } else if(tab==="syn"){
+      html += `<p class="muted" style="font-size:.75rem;margin-bottom:6px">Documented pairs from the Real Synergies sheet. Use as role-play prompts when logging SE-xx|TAG|#HEX.</p>`;
+      html += SYNERGIES.map(s=>`
+        <div class="card" style="padding:10px 12px">
+          <div style="font-weight:700;font-size:.88rem">${esc(s.a)} <span style="color:var(--accent)">+</span> ${esc(s.b)}</div>
+          <div class="muted" style="font-size:.75rem;margin-top:3px">${esc(s.note)}</div>
+        </div>`).join("");
+      html += `<div class="safe" style="margin-top:10px">Synergy is narrative + optional RP bonus. Never a real-world dosing instruction.</div>`;
+    }
+    el.innerHTML = html;
+  };
+
+  window.showHerbDetail = function(id){
+    const h = CENTRAL_HERBS.find(x=>x.id===id);
+    const box = document.getElementById("herbDetailBox");
+    if(!h||!box) return;
+    box.innerHTML = `<div class="card glow" style="margin-top:8px">
+      <div style="font-size:1.5rem">${h.ic} <strong>${esc(h.name)}</strong></div>
+      <div class="muted" style="margin-top:4px"><span class="color-dot" style="background:${h.hex}"></span>${esc(h.color)} · ${esc(h.why)}</div>
+      <p style="margin-top:8px;line-height:1.45">${esc(h.lore)}</p>
+      <div class="syn-row">${h.pairs.map(p=>`<span class="syn-pill">🔗 ${esc(p)}</span>`).join("")}</div>
+      <p class="muted" style="font-size:.72rem;margin-top:8px">Game fiction only. See Herb Dosing Authority for real-world reference gates.</p>
+    </div>`;
+  };
+
+  // Patch switchCodexTab to handle herb tab
+  const _oldSwitch = window.switchCodexTab;
+  window.switchCodexTab = function(tab){
+    if(typeof _oldSwitch === "function") _oldSwitch(tab);
+    const herbEl = document.getElementById("codexHerb");
+    if(herbEl) herbEl.style.display = tab==="herb" ? "" : "none";
+    const ctab = document.getElementById("ctabHerb");
+    if(ctab) ctab.classList.toggle("on", tab==="herb");
+    // ensure other tabs hide herb when not selected
+    if(tab==="herb"){
+      ["codexLore","codexArchive","codexInv","codexShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.style.display="none";
+      });
+      ["ctabLore","ctabArchive","ctabInv","ctabShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.classList.remove("on");
+      });
+      if(window.S) S.codexTab="herb";
+      renderHerbarium();
+    }
+  };
+
+  // Soft unlock note on home chronicle card area
+  setTimeout(()=>{
+    try{
+      if(!window.S) return;
+      if(!S.chronicleUnlocked) S.chronicleUnlocked=["ch0"];
+      if(!S.chronicleUnlocked.includes("herbarium")){
+        // unlock after first session or immediately for visibility
+        if((S.log&&S.log.length>=0)){
+          /* visible from start as Core-adjacent lure */
+        }
+      }
+    }catch(e){}
+  },600);
+})();
+
+
+/* ==========================================================
+   PROBLEMS & CURES — Full PR-001…PR-040 catalog
+   From Problem Catalog sheet. Fictional game protocols only.
+   ========================================================== */
+(function(){
+  const PROBLEM_CATALOG = [{"id":"PR-001","f":"Sleep","p":"Trouble falling asleep","sev":"Everyday","att":1,"tags":"SETTLE, GROUND","color":"Blue","rbt":"Thought–Sensation Decoupling","se":"SE-05, SE-07","proto":"Blue + nervine lore (Skullcap/Passionflower) + wind-down If–Then","aq":"blackout curtains white noise machine","safe":"Not a treatment for chronic insomnia — see a clinician if it persists","url":"https://www.amazon.com/s?k=blackout+curtains+white+noise+machine"},{"id":"PR-002","f":"Sleep","p":"Waking at 3am with thoughts","sev":"Everyday","att":1,"tags":"SETTLE, INSIGHT","color":"Blue","rbt":"Thought dump / Decoupling","se":"SE-07, SE-01","proto":"Nightbloom-style tea lore + no screens + dump list","aq":"sleep journal notebook","safe":"Recurring night waking needs medical evaluation if ongoing","url":"https://www.amazon.com/s?k=sleep+journal+notebook"},{"id":"PR-003","f":"Sleep","p":"Phone in bed / night scrolling","sev":"Everyday","att":1,"tags":"BOUNDARY, SETTLE","color":"Blue","rbt":"If–Then Implementation","se":"SE-05","proto":"Device outside room + Blue color + Passionflower lore","aq":"phone charging station bedside alternative","safe":"Habit support only — not clinical sleep therapy","url":"https://www.amazon.com/s?k=phone+charging+station+bedside+alternative"},{"id":"PR-004","f":"Focus","p":"Procrastinating simple tasks","sev":"Everyday","att":1,"tags":"ACTIVATE, GROUND","color":"Yellow","rbt":"Behavioral Activation Ladder","se":"SE-12","proto":"2-minute start rule + Rosemary/Bacopa lore + Yellow","aq":"pomodoro timer","safe":"If procrastination is severe/disability-level, seek professional support","url":"https://www.amazon.com/s?k=pomodoro+timer"},{"id":"PR-005","f":"Focus","p":"Afternoon energy crash","sev":"Everyday","att":1,"tags":"PACE, RESOURCE","color":"Yellow","rbt":"If–Then (crash plan)","se":"SE-12","proto":"Protein+walk plan + Holy Basil/Cinnamon lore","aq":"protein snack ideas","safe":"Ongoing crashes may need medical workup","url":"https://www.amazon.com/s?k=protein+snack+ideas"},{"id":"PR-006","f":"Focus","p":"Context-switch scatter after meetings","sev":"Everyday","att":1,"tags":"RESET, GROUND","color":"Yellow","rbt":"If–Then + one task only","se":"SE-05, SE-11","proto":"Reset ritual + Lemon Balm + single next action","aq":"notepad index cards","safe":"Game/focus aid only","url":"https://www.amazon.com/s?k=notepad+index+cards"},{"id":"PR-007","f":"Boundaries","p":"Trouble saying no","sev":"Everyday","att":1,"tags":"BOUNDARY","color":"Black","rbt":"Values Compass Check","se":"SE-08","proto":"One refusal script + Motherwort lore + Black color","aq":"boundary journal","safe":"Not a substitute for therapy if relationships are unsafe","url":"https://www.amazon.com/s?k=boundary+journal"},{"id":"PR-008","f":"Boundaries","p":"Overcommitting calendar","sev":"Everyday","att":1,"tags":"BOUNDARY, RESET","color":"Black","rbt":"Cost–Benefit of the Story","se":"SE-08","proto":"48-hour rule before yes + Lemon Balm","aq":"planner calendar","safe":"Workload stress may need employer/clinical support","url":"https://www.amazon.com/s?k=planner+calendar"},{"id":"PR-009","f":"Boundaries","p":"Feeling responsible for others' moods","sev":"Mild","att":2,"tags":"BOUNDARY, RESOURCE","color":"Black","rbt":"ABC Belief Mapping","se":"SE-08, SE-04","proto":"Return responsibility gently + Motherwort + Pink/Black","aq":"therapy workbook optional","safe":"Consider professional help if enmeshment/trauma history","url":"https://www.amazon.com/s?k=therapy+workbook+optional"},{"id":"PR-010","f":"Mood-Energy","p":"Sunday scaries / work dread","sev":"Everyday","att":1,"tags":"GROUND, SETTLE","color":"Yellow","rbt":"If–Then Implementation","se":"SE-05, SE-11","proto":"One controllable next action + Lemon Balm/Holy Basil","aq":"worry notepad","safe":"Persistent anxiety → clinician","url":"https://www.amazon.com/s?k=worry+notepad"},{"id":"PR-011","f":"Mood-Energy","p":"Social battery empty","sev":"Everyday","att":1,"tags":"RESOURCE, BOUNDARY","color":"Black","rbt":"Self-Compassion Break","se":"SE-04","proto":"Recovery block after social + Reishi/Oatstraw lore","aq":"eye mask quiet time","safe":"Isolation or depression symptoms need professional care","url":"https://www.amazon.com/s?k=eye+mask+quiet+time"},{"id":"PR-012","f":"Mood-Energy","p":"Comparison spiral on social media","sev":"Everyday","att":1,"tags":"BOUNDARY, INSIGHT","color":"Violet","rbt":"Evidence Log For/Against","se":"SE-05","proto":"Unfollow batch + 24h pause + Albizia/Holy Basil lore","aq":"app limit screen time","safe":"Not treatment for body image or mood disorders","url":"https://www.amazon.com/s?k=app+limit+screen+time"},{"id":"PR-013","f":"Mood-Energy","p":"Low motivation to start exercising","sev":"Everyday","att":1,"tags":"ACTIVATE, PACE","color":"Orange","rbt":"Activation Ladder rung 1","se":"SE-12","proto":"Shoes-only win + Ginger/Rhodiola lore + Orange","aq":"resistance bands yoga mat","safe":"New exercise: check with doctor if health conditions","url":"https://www.amazon.com/s?k=resistance+bands+yoga+mat"},{"id":"PR-014","f":"Pain-Stiffness","p":"Morning stiffness","sev":"Everyday","att":1,"tags":"ACTIVATE, GROUND","color":"Red","rbt":"Graded movement","se":"SE-12, SE-11","proto":"Warmth + gentle movement before coffee + Turmeric/Ginger lore","aq":"heating pad","safe":"New/severe joint pain needs evaluation","url":"https://www.amazon.com/s?k=heating+pad"},{"id":"PR-015","f":"Pain-Stiffness","p":"Desk shoulder tension","sev":"Everyday","att":1,"tags":"PACE, SETTLE","color":"Green","rbt":"If–Then micro-breaks","se":"SE-01, SE-11","proto":"Micro-breaks + heat + stretch + Magnesium lore","aq":"lumbar cushion","safe":"Persistent pain or numbness → clinician","url":"https://www.amazon.com/s?k=lumbar+cushion"},{"id":"PR-016","f":"Pain-Stiffness","p":"Jaw tension at night","sev":"Everyday","att":1,"tags":"SETTLE, GROUND","color":"Blue","rbt":"Thought–Sensation Decoupling","se":"SE-01, SE-03","proto":"Evening down-regulation + Skullcap lore + Blue","aq":"mouth guard consult dentist","safe":"Dental/TMJ issues need professional care","url":"https://www.amazon.com/s?k=mouth+guard+consult+dentist"},{"id":"PR-017","f":"Home-Environment","p":"Cold office feet in winter","sev":"Everyday","att":1,"tags":"RESOURCE, GROUND","color":"Red","rbt":"—","se":"SE-11","proto":"Warming lore (Ginger) + layers; game circulation theme","aq":"wool thermal socks USB foot warmer","safe":"Product comfort only — not vascular disease care","url":"https://www.amazon.com/s?k=wool+thermal+socks+USB+foot+warmer"},{"id":"PR-018","f":"Home-Environment","p":"Dry indoor air / dry cough feel","sev":"Everyday","att":1,"tags":"SETTLE, RESOURCE","color":"Blue","rbt":"—","se":"SE-07","proto":"Humidify + soothing lore (Marshmallow/honey game)","aq":"humidifier honey lozenges","safe":"Cough >2 weeks or with fever → doctor","url":"https://www.amazon.com/s?k=humidifier+honey+lozenges"},{"id":"PR-019","f":"Home-Environment","p":"Noisy environment disrupting sleep","sev":"Everyday","att":1,"tags":"BOUNDARY, SETTLE","color":"Blue","rbt":"If–Then","se":"SE-05, SE-07","proto":"Noise boundary + Blue nervine lore","aq":"white noise machine foam earplugs","safe":"Hearing concerns → audiology","url":"https://www.amazon.com/s?k=white+noise+machine+foam+earplugs"},{"id":"PR-020","f":"Home-Environment","p":"Eye strain from screens","sev":"Everyday","att":1,"tags":"PACE, RESET","color":"Blue","rbt":"20-20-20 If–Then","se":"SE-05","proto":"Breaks + warm compress lore + Blue","aq":"blue light glasses monitor arm","safe":"Vision changes → eye doctor","url":"https://www.amazon.com/s?k=blue+light+glasses+monitor+arm"},{"id":"PR-021","f":"Digestive","p":"Snacking when not hungry","sev":"Everyday","att":1,"tags":"GROUND, INSIGHT","color":"Orange","rbt":"ABC Belief Mapping","se":"SE-01","proto":"10-min pause + water + Fennel/Peppermint lore","aq":"herbal tea sampler","safe":"Disordered eating patterns need specialist care","url":"https://www.amazon.com/s?k=herbal+tea+sampler"},{"id":"PR-022","f":"Digestive","p":"Nervous stomach before events","sev":"Everyday","att":1,"tags":"SETTLE, GROUND","color":"Orange","rbt":"If–Then pre-event","se":"SE-05, SE-07","proto":"Simple food + Ginger/Peppermint + Orange","aq":"ginger tea bags","safe":"Severe GI symptoms → doctor","url":"https://www.amazon.com/s?k=ginger+tea+bags"},{"id":"PR-023","f":"Digestive","p":"Mild post-meal fog","sev":"Everyday","att":1,"tags":"PACE, GROUND","color":"Yellow","rbt":"Short walk If–Then","se":"SE-12","proto":"Simpler meals + walk + Ginger lore","aq":"walking shoes","safe":"Ongoing post-meal symptoms need evaluation","url":"https://www.amazon.com/s?k=walking+shoes"},{"id":"PR-024","f":"Sleep","p":"Waking tired most days","sev":"Mild","att":2,"tags":"PACE, RESOURCE, GROUND","color":"Green/Black","rbt":"Graded Exposure to Rest","se":"SE-04, SE-12","proto":"Protect morning energy + Oatstraw/Ashwagandha lore","aq":"sunrise alarm clock","safe":"Chronic fatigue needs medical workup — not game protocols","url":"https://www.amazon.com/s?k=sunrise+alarm+clock"},{"id":"PR-025","f":"Focus","p":"Brain fog after poor sleep","sev":"Mild","att":2,"tags":"SETTLE, RESOURCE","color":"Yellow/Indigo","rbt":"Evidence Log + sleep first","se":"SE-01, SE-10","proto":"Fix sleep architecture first; Bacopa only as secondary game lore","aq":"sleep mask","safe":"Sudden cognitive change → urgent care/doctor","url":"https://www.amazon.com/s?k=sleep+mask"},{"id":"PR-026","f":"Boundaries","p":"Difficulty ending the workday","sev":"Everyday","att":1,"tags":"BOUNDARY, RESET","color":"Blue","rbt":"If–Then shutdown ritual","se":"SE-05, SE-07","proto":"Shutdown ritual + dump list + Blue","aq":"notebook shutdown checklist","safe":"Burnout signs → professional support","url":"https://www.amazon.com/s?k=notebook+shutdown+checklist"},{"id":"PR-027","f":"Mood-Energy","p":"Irritability from hunger","sev":"Everyday","att":1,"tags":"RESOURCE, PACE","color":"Orange","rbt":"If–Then snack protocol","se":"SE-11","proto":"Protein snack protocol + Ginger/Cinnamon lore","aq":"portable protein snacks","safe":"Mood + metabolic concerns → clinician","url":"https://www.amazon.com/s?k=portable+protein+snacks"},{"id":"PR-028","f":"Mood-Energy","p":"Feeling flat after social media","sev":"Everyday","att":1,"tags":"ACTIVATE, GROUND","color":"Yellow","rbt":"Activation + outdoor light","se":"SE-05, SE-12","proto":"Replace 15 min with light/air + Rhodiola lore","aq":"walking shoes","safe":"Depression symptoms → professional care","url":"https://www.amazon.com/s?k=walking+shoes"},{"id":"PR-029","f":"Pain-Stiffness","p":"Seasonal joint ache damp weather","sev":"Mild","att":2,"tags":"GROUND, RESOURCE","color":"Red/Green","rbt":"Movement + warmth","se":"SE-12, SE-11","proto":"Boswellia/Turmeric lore + warmth + movement","aq":"heating pad compression sleeve","safe":"Inflammatory disease management is medical, not game","url":"https://www.amazon.com/s?k=heating+pad+compression+sleeve"},{"id":"PR-030","f":"Mood-Energy","p":"Everyday existential ache","sev":"Mild","att":2,"tags":"INSIGHT, RESOURCE","color":"Violet","rbt":"Values + Perspective","se":"SE-04, SE-10","proto":"Small meaningful act + connection + Violet/Rose lore","aq":"journal","safe":"Suicidal or severe despair → emergency/crisis resources, not this game","url":"https://www.amazon.com/s?k=journal"},{"id":"PR-031","f":"Focus","p":"Decision paralysis","sev":"Everyday","att":1,"tags":"GROUND, INSIGHT","color":"Yellow","rbt":"Cost–Benefit + 24h window","se":"SE-05","proto":"24-hour decision window + Gotu Kola/Lemon Balm lore","aq":"decision journal","safe":"If impairing life, seek counseling","url":"https://www.amazon.com/s?k=decision+journal"},{"id":"PR-032","f":"Sleep","p":"Difficulty winding down after work","sev":"Everyday","att":1,"tags":"SETTLE, RESET","color":"Blue","rbt":"If–Then wind-down","se":"SE-07, SE-05","proto":"Wind-down sequence + Blue nervines lore","aq":"aromatherapy diffuser optional","safe":"Unmanageable stress → professional help","url":"https://www.amazon.com/s?k=aromatherapy+diffuser+optional"},{"id":"PR-033","f":"Home-Environment","p":"Clutter stress one surface","sev":"Everyday","att":1,"tags":"RESET, GROUND","color":"White","rbt":"If–Then 10-min clear","se":"SE-11","proto":"10-minute one surface + White/Nettle lore","aq":"storage bins","safe":"Hoarding-level issues need specialist support","url":"https://www.amazon.com/s?k=storage+bins"},{"id":"PR-034","f":"Boundaries","p":"Over-apologizing","sev":"Everyday","att":1,"tags":"BOUNDARY, INSIGHT","color":"Yellow","rbt":"ABC Mapping","se":"SE-08","proto":"Replace one sorry with thank-you + Boundary Black","aq":"sticky note reminder","safe":"Deep self-worth issues may need therapy","url":"https://www.amazon.com/s?k=sticky+note+reminder"},{"id":"PR-035","f":"Focus","p":"Difficulty finishing books / deep work","sev":"Everyday","att":1,"tags":"GROUND, ACTIVATE","color":"Yellow","rbt":"Activation Ladder 10 pages","se":"SE-12","proto":"One book only + Bacopa/Rosemary lore","aq":"book stand reading light","safe":"ADHD assessment is clinical if suspected","url":"https://www.amazon.com/s?k=book+stand+reading+light"},{"id":"PR-036","f":"Mood-Energy","p":"Post-holiday crash","sev":"Everyday","att":1,"tags":"PACE, RESOURCE","color":"Green","rbt":"Graded rest routine","se":"SE-04, SE-12","proto":"Gentle routine reset + Nettle/Oatstraw lore","aq":"routine checklist","safe":"Prolonged low mood → clinician","url":"https://www.amazon.com/s?k=routine+checklist"},{"id":"PR-037","f":"Digestive","p":"Occasional gas after heavy meals","sev":"Everyday","att":1,"tags":"GROUND, SETTLE","color":"Orange","rbt":"If–Then lighter meal","se":"SE-01","proto":"Simpler meal + Fennel/Peppermint lore","aq":"peppermint tea","safe":"Frequent GI pain → doctor","url":"https://www.amazon.com/s?k=peppermint+tea"},{"id":"PR-038","f":"Home-Environment","p":"Overheating bedroom at night","sev":"Everyday","att":1,"tags":"SETTLE","color":"Blue","rbt":"—","se":"SE-07","proto":"Cool room + Blue cooling lore game theme","aq":"tower fan cooling pillow","safe":"Night sweats medical causes need evaluation","url":"https://www.amazon.com/s?k=tower+fan+cooling+pillow"},{"id":"PR-039","f":"Pain-Stiffness","p":"Eye strain from extended reading","sev":"Everyday","att":1,"tags":"PACE, RESET","color":"Indigo","rbt":"Breaks If–Then","se":"SE-05","proto":"Breaks + compress lore + Indigo","aq":"book stand reading glasses","safe":"Eye exam if persistent","url":"https://www.amazon.com/s?k=book+stand+reading+glasses"},{"id":"PR-040","f":"Boundaries","p":"Fear of resting (productivity identity)","sev":"Mild","att":2,"tags":"PACE, RESOURCE, BOUNDARY","color":"Black/Green","rbt":"Graded Exposure to Rest","se":"SE-12, SE-04","proto":"Rest as training + Ashwagandha lore + Black","aq":"timer for rest windows","safe":"Burnout/depression → professional care","url":"https://www.amazon.com/s?k=timer+for+rest+windows"}];
+  const PR_FAMILIES = ["All","Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+  const COLOR_HEX = {Blue:"#4aa3f5",Yellow:"#e8c547",Black:"#6a7a6a",Violet:"#b99cff",Orange:"#e8a045",Red:"#e86a6a",Green:"#3dcf7a",White:"#c8d4dc",Indigo:"#6a7cff","Green/Black":"#3dcf7a","Yellow/Indigo":"#e8c547","Red/Green":"#e86a6a","Black/Green":"#6a7a6a","Blue/Black":"#4aa3f5"};
+
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  window.renderProblemsCatalog = function(){
+    const el = document.getElementById("codexProblems");
+    if(!el) return;
+    if(!window.S) window.S = {};
+    const fam = S.prFam || "All";
+    const q = (S.prSearch||"").trim().toLowerCase();
+    let list = PROBLEM_CATALOG.slice();
+    if(fam !== "All") list = list.filter(p => p.f === fam);
+    if(q){
+      list = list.filter(p =>
+        p.id.toLowerCase().includes(q) ||
+        p.p.toLowerCase().includes(q) ||
+        p.proto.toLowerCase().includes(q) ||
+        p.tags.toLowerCase().includes(q) ||
+        (p.rbt||"").toLowerCase().includes(q) ||
+        (p.se||"").toLowerCase().includes(q)
+      );
+    }
+    let html = `<div class="card glow"><div class="muted" style="font-size:.72rem">PROBLEM ENGINE · WORKBOOK</div>
+      <div style="font-weight:700;margin-top:2px">Problems &amp; Cures</div>
+      <p class="muted" style="margin-top:4px;font-size:.78rem">All ${PROBLEM_CATALOG.length} everyday cases. Protocol is game fiction; Amazon is comfort-tool search only.</p></div>`;
+    html += `<div class="pr-fam-bar">` + PR_FAMILIES.map(f =>
+      `<div class="pr-fam${f===fam?' on':''}" onclick="S.prFam='${f}';renderProblemsCatalog()">${esc(f)}</div>`
+    ).join("") + `</div>`;
+    html += `<div class="card" style="padding:10px;margin-bottom:8px">
+      <input type="search" placeholder="Search problem, tag, protocol…" value="${esc(S.prSearch||'')}"
+        oninput="S.prSearch=this.value;renderProblemsCatalog()" style="margin:0"/>
+      <div class="muted" style="font-size:.72rem;margin-top:6px">${list.length} case${list.length===1?'':'s'}</div>
+    </div>`;
+    if(!list.length){
+      html += `<div class="empty">No cases match.</div>`;
+    } else {
+      html += list.map(p => {
+        const hx = COLOR_HEX[p.color] || COLOR_HEX[(p.color||'').split('/')[0]] || '#31566d';
+        return `<div class="card pr-card" style="border-left-color:${hx}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+            <div>
+              <span class="pill">${esc(p.id)}</span>
+              <span class="pill">${esc(p.f)}</span>
+              <span class="pill" style="background:#1a2830;color:${hx}">${esc(p.color)}</span>
+            </div>
+            <span class="muted" style="font-size:.7rem;white-space:nowrap">Att ${p.att} · ${esc(p.sev)}</span>
+          </div>
+          <div style="font-weight:700;margin-top:8px;font-size:.95rem">${esc(p.p)}</div>
+          <div class="muted" style="font-size:.75rem;margin-top:4px">Tags: ${esc(p.tags)} · SE: ${esc(p.se)}</div>
+          ${p.rbt?`<div class="muted" style="font-size:.75rem;margin-top:2px">RBT: ${esc(p.rbt)}</div>`:''}
+          <div class="proto"><span class="muted" style="font-size:.68rem;letter-spacing:.06em">GAME PROTOCOL</span><br>${esc(p.proto)}</div>
+          ${p.safe?`<div class="safe-line">⚠ ${esc(p.safe)}</div>`:''}
+          ${p.url?`<a class="amz" href="${esc(p.url)}" target="_blank" rel="noopener" style="margin-top:8px">🛒 Home comfort search · ${esc(p.aq||'tools')}</a>`:''}
+        </div>`;
+      }).join("");
+    }
+    html += `<div class="safe" style="margin-top:10px">Fictional educational game. Protocols are not medical treatment. Persistent or severe symptoms → qualified clinicians.</div>`;
+    el.innerHTML = html;
+  };
+
+  // Patch switchCodexTab for problems tab
+  const _sw = window.switchCodexTab;
+  window.switchCodexTab = function(tab){
+    if(typeof _sw === "function") _sw(tab);
+    const box = document.getElementById("codexProblems");
+    if(box) box.style.display = tab==="problems" ? "" : "none";
+    const c = document.getElementById("ctabProblems");
+    if(c) c.classList.toggle("on", tab==="problems");
+    if(tab==="problems"){
+      ["codexLore","codexHerb","codexArchive","codexInv","codexShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.style.display="none";
+      });
+      ["ctabLore","ctabHerb","ctabArchive","ctabInv","ctabShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.classList.remove("on");
+      });
+      if(window.S) S.codexTab="problems";
+      renderProblemsCatalog();
+    }
+  };
+})();
+
+
+/* ==========================================================
+   RBT — Rational Behavior & Cognitive Recovery Techniques
+   From workbook sheet RBT Recovery Techniques. Game depth tools.
+   ========================================================== */
+(function(){
+  const RBT_TECHNIQUES = [{"id":"RBT-01","n":1,"name":"ABC Belief Mapping","short":"ABC Mapping","core":"Separate Activating event → Belief → Consequence. Challenge the Belief that amplifies suffering.","best":"Anxiety, anger, secondary distress about symptoms","how":"Patient names one activating event, the belief they held, and the emotional/behavioral consequence. Test the belief together.","mech":"+5 to +12 RP for documented belief shift; can raise Compliance next session","ic":"🧩","color":"#b99cff"},{"id":"RBT-02","n":2,"name":"Evidence Log (For/Against)","short":"Evidence Log","core":"Write evidence that supports vs contradicts a catastrophic or hopeless thought about the issue.","best":"Catastrophizing, health anxiety, Hard Case demoralization","how":"Two-column log for one week. Review together. Update Bayesian priors if the evidence changes the picture.","mech":"+ Bayesian Insight eligibility; reduces secondary suffering","ic":"📋","color":"#69b7ff"},{"id":"RBT-03","n":3,"name":"Behavioral Activation Ladder","short":"Activation Ladder","core":"List avoided valued activities; order by difficulty; schedule the smallest possible step today.","best":"Depression-lore, fatigue with avoidance, post-crash withdrawal","how":"Build a 5-rung ladder. Patient commits only to rung 1. Success unlocks next. Ties to pacing.","mech":"+ Compliance; can shorten fatigue arc if used early","ic":"🪜","color":"#e8c547"},{"id":"RBT-04","n":4,"name":"Thought–Sensation Decoupling","short":"Decoupling","core":"Practice noticing a body sensation without the automatic story ('this means I am getting worse').","best":"Symptom amplification, panic, pain-fear cycles","how":"In-session: mild awareness of a neutral sensation, then a feared one; practice labeling without story.","mech":"Reduces complication rate from fear-driven flares","ic":"🔗","color":"#4aa3f5"},{"id":"RBT-05","n":5,"name":"Values Compass Check","short":"Values Compass","core":"Identify 2–3 core values; rate how much current behavior serves them vs serves fear/avoidance.","best":"Loss of meaning, ethical dilemmas, long-arc demoralization","how":"Short values card sort or conversation. Link one micro-action to a value this week.","mech":"+ Ethical Credit; + Narrative depth","ic":"🧭","color":"#62e6ad"},{"id":"RBT-06","n":6,"name":"Graded Exposure to Rest","short":"Graded Rest","core":"For patients who fear rest (or fear activity), build a graded hierarchy and expose systematically.","best":"Boom-bust fatigue cycles, rest-avoidance, activity-avoidance","how":"Create hierarchy (e.g. 5 min rest → 15 min → full recovery window). Pair with color Green/Black.","mech":"Directly improves pacing compliance; reduces relapse probability in Markov chain","ic":"🌱","color":"#3dcf7a"},{"id":"RBT-07","n":7,"name":"Cost–Benefit of the Symptom Story","short":"Cost–Benefit","core":"Explicitly list short-term payoffs and long-term costs of staying in the current illness narrative.","best":"Secondary gain, identity fused with illness, resistance to recovery","how":"Collaborative two-column exercise. No confrontation — curiosity only.","mech":"Can convert a stuck Plateau into Improve in Markov terms","ic":"⚖️","color":"#e8a045"},{"id":"RBT-08","n":8,"name":"Self-Compassion Break (Structured)","short":"Self-Compassion","core":"Three phrases: (1) This is a moment of suffering. (2) Suffering is part of the human condition. (3) May I be kind to myself in this moment.","best":"Shame, self-criticism, postpartum lore, trauma aftermath","how":"Teach the three phrases. Practice once in session. Assign as response to self-critical spirals.","mech":"+ Compliance through reduced self-attack; + Pink color synergy","ic":"💗","color":"#e86a9a"},{"id":"RBT-09","n":9,"name":"If–Then Implementation Intentions","short":"If–Then","core":"Pre-decide: 'If situation X occurs, then I will do behavior Y' (dose, rest, boundary, help-seeking).","best":"Intention–action gap, forgotten doses, boundary failures","how":"Write 2–3 if–then plans for the coming week. Review adherence next session.","mech":"+ Compliance Score; reduces forgotten-dose complications","ic":"➡️","color":"#ffd166"},{"id":"RBT-10","n":10,"name":"Perspective Shift (Time / Friend / Values)","short":"Perspective Shift","core":"Ask the same problem from three angles: (1) How will this look in 5 years? (2) What would I tell a friend? (3) What do my values say?","best":"Tunnel vision, urgency, ethical stuckness, catastrophic timelines","how":"Run the three questions live. Capture the shift in one sentence.","mech":"+ Insight RP; can support Pareto-aware protocol redesign","ic":"🔭","color":"#b99cff"}];
+  const RBT_PR_MAP = {"RBT-01":[{"id":"PR-009","rbt":"ABC Belief Mapping"},{"id":"PR-021","rbt":"ABC Belief Mapping"},{"id":"PR-034","rbt":"ABC Mapping"}],"RBT-02":[{"id":"PR-012","rbt":"Evidence Log For/Against"},{"id":"PR-025","rbt":"Evidence Log + sleep first"}],"RBT-03":[{"id":"PR-004","rbt":"Behavioral Activation Ladder"},{"id":"PR-013","rbt":"Activation Ladder rung 1"},{"id":"PR-028","rbt":"Activation + outdoor light"},{"id":"PR-035","rbt":"Activation Ladder 10 pages"}],"RBT-04":[{"id":"PR-001","rbt":"Thought–Sensation Decoupling"},{"id":"PR-002","rbt":"Thought dump / Decoupling"},{"id":"PR-016","rbt":"Thought–Sensation Decoupling"}],"RBT-05":[{"id":"PR-007","rbt":"Values Compass Check"},{"id":"PR-030","rbt":"Values + Perspective"}],"RBT-06":[{"id":"PR-014","rbt":"Graded movement"},{"id":"PR-024","rbt":"Graded Exposure to Rest"},{"id":"PR-029","rbt":"Movement + warmth"},{"id":"PR-036","rbt":"Graded rest routine"},{"id":"PR-040","rbt":"Graded Exposure to Rest"}],"RBT-07":[{"id":"PR-008","rbt":"Cost–Benefit of the Story"},{"id":"PR-031","rbt":"Cost–Benefit + 24h window"}],"RBT-08":[{"id":"PR-011","rbt":"Self-Compassion Break"}],"RBT-09":[{"id":"PR-003","rbt":"If–Then Implementation"},{"id":"PR-005","rbt":"If–Then (crash plan)"},{"id":"PR-006","rbt":"If–Then + one task only"},{"id":"PR-010","rbt":"If–Then Implementation"},{"id":"PR-015","rbt":"If–Then micro-breaks"},{"id":"PR-019","rbt":"If–Then"},{"id":"PR-020","rbt":"20-20-20 If–Then"},{"id":"PR-022","rbt":"If–Then pre-event"},{"id":"PR-023","rbt":"Short walk If–Then"},{"id":"PR-026","rbt":"If–Then shutdown ritual"},{"id":"PR-027","rbt":"If–Then snack protocol"},{"id":"PR-032","rbt":"If–Then wind-down"},{"id":"PR-033","rbt":"If–Then 10-min clear"},{"id":"PR-037","rbt":"If–Then lighter meal"},{"id":"PR-039","rbt":"Breaks If–Then"}],"RBT-10":[]};
+
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  window.renderRbtCatalog = function(){
+    const el = document.getElementById("codexRbt");
+    if(!el) return;
+    if(!window.S) window.S = {};
+    const selected = S.rbtSelected || null;
+    let html = `<div class="card glow"><div class="muted" style="font-size:.72rem">DEPTH TECHNIQUES · WORKBOOK</div>
+      <div style="font-weight:700;margin-top:2px">RBT Recovery Techniques</div>
+      <p class="muted" style="margin-top:4px;font-size:.78rem">Ten rational-behavior &amp; cognitive tools. Pair with SE (body) and Color. Fictional game layer only.</p></div>`;
+    html += `<div class="rbt-grid">` + RBT_TECHNIQUES.map(r => `
+      <div class="rbt-tile" style="border-color:${selected===r.id?'var(--accent)':'#29495c'}" onclick="S.rbtSelected='${r.id}';renderRbtCatalog()">
+        <div class="ri">${r.ic}</div>
+        <div class="rn">${r.n}. ${esc(r.short)}</div>
+        <div class="rd">${esc(r.best)}</div>
+      </div>`).join("") + `</div>`;
+
+    if(selected){
+      const r = RBT_TECHNIQUES.find(x=>x.id===selected);
+      const prs = RBT_PR_MAP[selected] || [];
+      if(r){
+        html += `<div class="card rbt-detail" style="border-left-color:${r.color}">
+          <div style="font-size:1.4rem">${r.ic} <strong>${esc(r.name)}</strong></div>
+          <div class="muted" style="font-size:.72rem;margin-top:2px">${r.id} · Depth technique</div>
+          <p style="margin-top:10px;line-height:1.45"><strong>Core action</strong><br>${esc(r.core)}</p>
+          <p style="margin-top:8px;line-height:1.45"><strong>Best for</strong><br>${esc(r.best)}</p>
+          <p style="margin-top:8px;line-height:1.45"><strong>How to run in a session</strong><br>${esc(r.how)}</p>
+          <p style="margin-top:8px;line-height:1.45"><strong>RP / mechanical effect</strong><br>${esc(r.mech)}</p>
+          <div style="margin-top:12px"><div class="muted" style="font-size:.7rem;letter-spacing:.06em;margin-bottom:4px">LINKED PR CASES</div>
+            ${prs.length ? prs.map(p=>`<span class="rbt-pr">${esc(p.id)}</span>`).join("") : '<span class="muted" style="font-size:.78rem">No direct PR default (use freely)</span>'}
+          </div>
+          <button class="btn sm sec" style="margin-top:12px" onclick="S.rbtSelected=null;renderRbtCatalog()">Close detail</button>
+        </div>`;
+      }
+    } else {
+      html += `<div class="card story" style="margin-top:8px"><span class="lore-tt">How RBT fits</span>
+        <p style="margin-top:6px;line-height:1.45">RBT is the cognitive/behavioral layer. SE tools are body-first. Color is the ledger atmosphere. Problem Catalog assigns a default RBT per PR-ID; you can still choose another when the session asks for depth.</p>
+        <p style="margin-top:6px;line-height:1.45">Tap a technique for full text, session steps, and which everyday cases point to it.</p>
+      </div>`;
+    }
+    html += `<div class="safe" style="margin-top:10px">Inspired by REBT/CBT/values/self-compassion ideas for game depth only. Not therapy or medical advice. Persistent symptoms → real clinicians.</div>`;
+    el.innerHTML = html;
+  };
+
+  const _sw = window.switchCodexTab;
+  window.switchCodexTab = function(tab){
+    if(typeof _sw === "function") _sw(tab);
+    const box = document.getElementById("codexRbt");
+    if(box) box.style.display = tab==="rbt" ? "" : "none";
+    const c = document.getElementById("ctabRbt");
+    if(c) c.classList.toggle("on", tab==="rbt");
+    if(tab==="rbt"){
+      ["codexLore","codexHerb","codexProblems","codexArchive","codexInv","codexShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.style.display="none";
+      });
+      ["ctabLore","ctabHerb","ctabProblems","ctabArchive","ctabInv","ctabShop"].forEach(id=>{
+        const n=document.getElementById(id); if(n) n.classList.remove("on");
+      });
+      if(window.S) S.codexTab="rbt";
+      renderRbtCatalog();
+    }
+  };
+})();
+
+/* ===== OVERHAUL GAMEPLAY LAYER =====
+   Adds: workshop upgrades, field notes, daily objective presentation,
+   streak rewards, dynamic clinic atmosphere, and keyboard shortcuts.
+   Existing systems remain the source of truth for sessions/save data.
+*/
+(function(){
+  const OLD_LOAD=window.load, OLD_UI=window.ui;
+  const upgrades=[
+    {id:"lantern",ic:"🏮",name:"Lantern Oil",desc:"Start each new day with +1 Attention.",cost:55},
+    {id:"ledger",ic:"📚",name:"Living Ledger",desc:"Earn +1 RP on every successful diagnosis.",cost:70},
+    {id:"kettle",ic:"🫖",name:"Quick Kettle",desc:"Attention regenerates 20% faster.",cost:90},
+    {id:"map",ic:"🗺️",name:"Road Map",desc:"Daily objectives pay +15 RP when claimed.",cost:120}
+  ];
+
+  function ensureOverhaul(){
+    if(!S.overhaul)S.overhaul={quests:{},claimed:{},upgrades:[]};
+    if(!Array.isArray(S.overhaul.upgrades))S.overhaul.upgrades=[];
+    const key=(typeof todayKey==="function"?todayKey():new Date().toISOString().slice(0,10));
+    if(S.overhaul.questKey!==key){
+      const goals=[
+        {t:"Treat 1 patient",kind:"cases",need:1,reward:12},
+        {t:"Get a good outcome",kind:"good",need:1,reward:16},
+        {t:"Complete 2 sessions",kind:"cases",need:2,reward:22},
+        {t:"Find a remedy",kind:"remedy",need:1,reward:18},
+        {t:"Use the Codex",kind:"codex",need:1,reward:10}
+      ];
+      // Deterministic-ish daily selection from date.
+      let n=0;for(let i=0;i<key.length;i++)n=(n*31+key.charCodeAt(i))>>>0;
+      S.overhaul.quest=goals[n%goals.length];S.overhaul.questKey=key;S.overhaul.questProg=0;S.overhaul.questClaimed=false;
+    }
+  }
+
+  function hasUp(id){return S.overhaul && S.overhaul.upgrades.includes(id)}
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  window.openOverhaulModal=function(title,kicker,body){
+    document.getElementById("overhaulModalKicker").textContent=kicker||"LANTERN BOARD";
+    document.getElementById("overhaulModalTitle").textContent=title;
+    document.getElementById("overhaulModalBody").innerHTML=body;
+    document.getElementById("overhaulModal").style.display="block";
+  };
+  window.closeOverhaulModal=function(){document.getElementById("overhaulModal").style.display="none"};
+
+  window.openWorkshop=function(){
+    ensureOverhaul();
+    const rows=upgrades.map(u=>{
+      const owned=hasUp(u.id);
+      return `<div class="card" style="margin-bottom:8px">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="font-size:1.6rem">${u.ic}</div><div style="flex:1"><strong>${u.name}</strong><div class="muted">${u.desc}</div></div>
+          <span class="pill">${owned?"OWNED":u.cost+" RP"}</span>
+        </div>
+        ${owned?'<div class="feedback-good">Installed permanently.</div>':`<button class="btn sm" style="margin-top:9px" onclick="buyOverhaulUpgrade('${u.id}')">Install</button>`}
+      </div>`;
+    }).join("");
+    openOverhaulModal("Workshop","UPGRADES",`<p class="muted" style="margin-bottom:10px">Permanent clinic improvements. Current RP: <strong>${S.rp||0}</strong></p>${rows}`);
+  };
+
+  window.buyOverhaulUpgrade=function(id){
+    ensureOverhaul();const u=upgrades.find(x=>x.id===id);if(!u)return;
+    if(hasUp(id)){toast("Already installed");return}
+    if((S.rp||0)<u.cost){toast("Not enough RP");return}
+    S.rp-=u.cost;S.overhaul.upgrades.push(id);save();toast("🛠️ "+u.name+" installed");openWorkshop();
+  };
+
+  window.openFieldNotes=function(){
+    ensureOverhaul();
+    const total=S.log?.length||0, correct=S.diagCorrect||0, dt=S.diagTotal||0;
+    const acc=dt?Math.round(correct/dt*100):0;
+    const mastery=Object.entries(S.mastery||{}).sort((a,b)=>b[1]-a[1]);
+    const unlocked=(S.chronicleUnlocked||[]).length;
+    openOverhaulModal("Field Notes","YOUR RUN",
+      `<div class="feature-grid">
+        <div class="feature-tile"><div class="fi">🧑‍🤝‍🧑</div><div class="ft">${total}</div><div class="fd">sessions logged</div></div>
+        <div class="feature-tile"><div class="fi">🎯</div><div class="ft">${acc}%</div><div class="fd">diagnosis accuracy</div></div>
+        <div class="feature-tile"><div class="fi">📖</div><div class="ft">${unlocked}</div><div class="fd">chronicle entries</div></div>
+        <div class="feature-tile"><div class="fi">🏮</div><div class="ft">${S.rp||0}</div><div class="fd">RP on hand</div></div>
+      </div>
+      <div class="card"><strong>Mastery trail</strong>${mastery.map(([k,v])=>`<div class="mastery-row"><span>${esc(k)}</span><span>${v||0}/5</span></div>`).join("")}</div>
+      <div class="card"><strong>Installed upgrades</strong><div class="muted" style="margin-top:5px">${S.overhaul.upgrades.length?S.overhaul.upgrades.map(id=>upgrades.find(u=>u.id===id)?.name).filter(Boolean).join(" · "):"None yet."}</div></div>`);
+    S.overhaul.questClaimed=true; // visiting notes counts as the "use Codex" style objective
+    if(S.overhaul.quest?.kind==="codex")S.overhaul.questProg=1;
+    save({ui:false});renderOverhaul();
+  };
+
+  function renderOverhaul(){
+    try{
+      ensureOverhaul();
+      const q=S.overhaul.quest||{t:"Treat 1 patient",need:1,reward:10};
+      let p=Number(S.overhaul.questProg||0);
+      if(q.kind==="cases")p=Math.min(q.need,S.log?.length||0);
+      if(q.kind==="good")p=Math.min(q.need,(S.log||[]).filter(e=>e.outcome==="Improve"||e.outcome==="Breakthrough").length);
+      if(q.kind==="remedy")p=Math.min(q.need,Object.values(S.inventory||{}).reduce((a,b)=>a+(b||0),0));
+      if(q.kind==="codex")p=Math.min(q.need,p);
+      S.overhaul.questProg=p;
+      const bar=document.getElementById("overhaulQuestBar"),text=document.getElementById("overhaulQuest"),st=document.getElementById("overhaulStreak");
+      if(bar)bar.style.width=Math.min(100,(p/q.need)*100)+"%";
+      if(text)text.innerHTML=(S.overhaul.questClaimed?"✅ Completed · ":"")+esc(q.t)+` · ${p}/${q.need} <span style="color:var(--gold)">(+${q.reward} RP)</span>`;
+      if(st)st.textContent="🔥 "+(S.streak||0);
+      if(p>=q.need&&!S.overhaul.questClaimed){
+        S.rp=(S.rp||0)+q.reward+(hasUp("map")?15:0);S.overhaul.questClaimed=true;
+        toast("🏮 Daily objective complete · +"+(q.reward+(hasUp("map")?15:0))+" RP");
+        save({ui:false});
+      }
+    }catch(e){}
+  }
+
+  window.openWaitingRoomOverhauled=window.openWaitingRoom;
+
+  // Softly decorate the existing UI after each normal render.
+  window.renderOverhaul=renderOverhaul;
+  setTimeout(renderOverhaul,50);
+  setInterval(renderOverhaul,2500);
+
+  // Add a small dynamic atmosphere layer.
+  const atmos=["The lantern glass hums softly.","Rain taps the roof like impatient fingers.","The kettle knows it is nearly time.","A cart rattles past the old road.","Someone has left a blue ribbon by the door.","The clinic feels one degree warmer than yesterday."];
+  setInterval(()=>{
+    const el=document.getElementById("atmosphere");
+    if(el && Math.random()<.25)el.textContent=atmos[Math.floor(Math.random()*atmos.length)];
+  },9000);
+
+  document.addEventListener("keydown",e=>{
+    if(e.target && /input|textarea|select/i.test(e.target.tagName))return;
+    if(e.key==="Escape")closeOverhaulModal();
+    if(e.key.toLowerCase()==="w")openWorkshop();
+    if(e.key.toLowerCase()==="f")openFieldNotes();
+  });
+
+  // Patch the common successful-session path without replacing the original result logic.
+  const originalFinish = window.finishSession;
+  if(typeof originalFinish==="function"){
+    window.finishSession=function(){
+      const before=S.log?.length||0;
+      const r=originalFinish.apply(this,arguments);
+      const after=S.log?.length||0;
+      if(after>before){
+        const e=S.log[after-1];
+        if(e && (e.outcome==="Improve"||e.outcome==="Breakthrough") && hasUp("ledger")){S.rp=(S.rp||0)+1}
+        renderOverhaul();
+      }
+      return r;
+    };
+  }
+
+  // Ensure a fresh player gets the new data fields without changing old saves.
+  try{ensureOverhaul();save({ui:false})}catch(e){}
+})();
+
+
+/* ==========================================================
+   COMPLETE EDITION — THE OLD ROAD (Lantern Stability Expedition)
+   ========================================================== */
+(function(){
+  const CE_KEY="willowComplete";
+  let runMode="story";
+
+  // Layers = how far the road has thinned. Depth pushes you through them;
+  // the day-gate keeps a fresh keeper from wandering somewhere they can't yet survive.
+  const LAYERS=[
+    {id:1,ic:"🌲",name:"The Hollow Path",min:0,max:4,needDay:0,dangerMul:1,
+      flavor:"Ferns brush the ledger case. The road is quiet here — the kind of quiet that still remembers footsteps."},
+    {id:2,ic:"🛒",name:"Old Market Fringe",min:5,max:9,needDay:3,dangerMul:1.3,
+      flavor:"Stalls stand half-packed, jars still warm. Whoever was minding them left mid-thought."},
+    {id:3,ic:"🌫️",name:"The Grey Verge",min:10,max:14,needDay:7,dangerMul:1.7,
+      flavor:"Color thins here. Your own shadow arrives a half-second late, like it's still deciding to follow."},
+    {id:4,ic:"🌙",name:"Moon Road",min:15,max:99999,needDay:12,dangerMul:2.2,
+      flavor:"The road keeps going past where a road should reasonably end."}
+  ];
+
+  // Every encounter offers a quieter, attention-based path (safer, the way the
+  // lore says to meet the Grey) and a louder, spectacle-based path (bigger and
+  // faster, but the Grey thickens toward noise). Neither one "defeats" anything —
+  // the aim is always to make the Grey hesitate and come home with what you found.
+  const ENCOUNTERS=[
+    {id:"e1a",layer:1,tag:"QUIET",title:"A Held Breath",
+      text:"The path narrows between ferns. Something up ahead is very still, the way a held breath is still.",
+      choices:[
+        {label:"Sit and wait it out",type:"attention",note:"Meet it with attention.",stabilityDelta:3,rpBase:6,tokenChance:.05},
+        {label:"Call out to whatever's there",type:"spectacle",note:"Meet it with spectacle.",stabilityDelta:-10,rpBase:11,tokenChance:.12}
+      ]},
+    {id:"e1b",layer:1,tag:"FOUND OBJECT",title:"The Milestone Stone",
+      text:"A milestone stone stands half-swallowed by moss, its painted mark gone dull grey.",
+      choices:[
+        {label:"Trace the old paint by feel",type:"attention",stabilityDelta:2,rpBase:7,tokenChance:.06},
+        {label:"Scrub it clean by force",type:"spectacle",stabilityDelta:-8,rpBase:10,tokenChance:.1}
+      ]},
+    {id:"e1c",layer:1,tag:"ENCOUNTER",title:"A Traveler's Cough",
+      text:"A traveler coughs from behind a hedge — once, twice, then nothing. The silence after is louder than the cough.",
+      choices:[
+        {label:"Ask gently if they're alright",type:"attention",stabilityDelta:2,rpBase:8,tokenChance:.07},
+        {label:"Push through the hedge to look",type:"spectacle",stabilityDelta:-9,rpBase:12,tokenChance:.1}
+      ]},
+    {id:"e2a",layer:2,tag:"MARKET",title:"The Half-Packed Stall",
+      text:"A stall stands half-packed, jars still warm, no seller in sight.",
+      choices:[
+        {label:"Leave a coin and wait nearby",type:"attention",stabilityDelta:2,rpBase:12,tokenChance:.1},
+        {label:"Take what looks useful",type:"spectacle",stabilityDelta:-14,rpBase:20,tokenChance:.18}
+      ]},
+    {id:"e2b",layer:2,tag:"GREY SIGN",title:"The Bell With No Hand",
+      text:"A market bell rings once. No one stands near the rope.",
+      choices:[
+        {label:"Listen for what the bell means",type:"attention",stabilityDelta:0,rpBase:13,tokenChance:.12},
+        {label:"Ring it back, louder",type:"spectacle",stabilityDelta:-16,rpBase:22,tokenChance:.2}
+      ]},
+    {id:"e2c",layer:2,tag:"FOUND OBJECT",title:"Prices in a Fading Hand",
+      text:"A chalk price board is half-erased, as if someone forgot mid-number what things cost.",
+      choices:[
+        {label:"Note what's still legible",type:"attention",stabilityDelta:1,rpBase:11,tokenChance:.09},
+        {label:"Guess loudly at the rest",type:"spectacle",stabilityDelta:-12,rpBase:18,tokenChance:.15}
+      ]},
+    {id:"e3a",layer:3,tag:"GREY EVENT",
+      title:"Where Color Thins",
+      text:()=>GREY_SENSORY[Math.floor(Math.random()*GREY_SENSORY.length)]+" Ahead, the road itself looks like a description of a road rather than the thing.",
+      choices:[
+        {label:"Stand still and name what you notice",type:"attention",stabilityDelta:4,rpBase:20,tokenChance:.2},
+        {label:"Run to get past it fast",type:"spectacle",stabilityDelta:-22,rpBase:30,tokenChance:.28}
+      ]},
+    {id:"e3b",layer:3,tag:"GREY EVENT",title:"A Voice Half a Beat Late",
+      text:"Someone calls your name from just behind you — arriving a half-second after it should.",
+      choices:[
+        {label:"Turn slowly and answer",type:"attention",stabilityDelta:2,rpBase:19,tokenChance:.18},
+        {label:"Spin around and shout back",type:"spectacle",stabilityDelta:-20,rpBase:28,tokenChance:.25}
+      ]},
+    {id:"e3c",layer:3,tag:"GREY EVENT",title:"The Bell Without Rope",
+      text:"A bell rings from an empty doorway. Your shadow points the wrong way.",
+      choices:[
+        {label:"Watch which way your shadow settles",type:"attention",stabilityDelta:3,rpBase:22,tokenChance:.22},
+        {label:"Step through the doorway anyway",type:"spectacle",stabilityDelta:-24,rpBase:32,tokenChance:.3}
+      ]},
+    {id:"e4a",layer:4,tag:"NIGHT ROAD",title:"Four Lights Cross",
+      text:"Four lights cross the road at once, weaving a pattern like a loom with no weaver.",
+      choices:[
+        {label:"Follow the pattern with your eyes only",type:"attention",stabilityDelta:3,rpBase:28,tokenChance:.3},
+        {label:"Walk straight into the crossing",type:"spectacle",stabilityDelta:-28,rpBase:40,tokenChance:.38}
+      ]},
+    {id:"e4b",layer:4,tag:"NIGHT ROAD",title:"A Kettle That Isn't Yours",
+      text:"Somewhere past the treeline, a kettle you don't own starts, faintly, to sing.",
+      choices:[
+        {label:"Let it sing without answering",type:"attention",stabilityDelta:2,rpBase:26,tokenChance:.28},
+        {label:"Go find the kettle",type:"spectacle",stabilityDelta:-26,rpBase:36,tokenChance:.34}
+      ]},
+    {id:"e4c",layer:4,tag:"NIGHT ROAD",title:"The Road Runs Past Roads",
+      text:"The road keeps going past where a road should reasonably end.",
+      choices:[
+        {label:"Sit at the last honest mile-marker",type:"attention",stabilityDelta:4,rpBase:30,tokenChance:.32},
+        {label:"Keep walking regardless",type:"spectacle",stabilityDelta:-30,rpBase:44,tokenChance:.4}
+      ]}
+  ];
+
+  const achievements=[
+    ["first","🌱","First Light","Complete your first session.",()=>S.log?.length>=1],
+    ["five","🕯️","Keeper","Complete 5 sessions.",()=>S.log?.length>=5],
+    ["accurate","🎯","Sharp Eye","Reach 75% diagnosis accuracy with at least 4 cases.",()=>((S.diagTotal||0)>=4&&(S.diagCorrect||0)/(S.diagTotal||1)>=.75)],
+    ["streak","🔥","Hot Kettle","Reach a 3-session streak.",()=>((S.streak||0)>=3)],
+    ["threads","🧵","Four Threads","Advance at least one character arc.",()=>S.arcs&&Object.values(S.arcs).some(v=>v>=1)],
+    ["chronicle","📖","Archivist","Unlock 5 chronicle entries.",()=>((S.chronicleUnlocked||[]).length>=5)],
+    ["road","🗺️","Road Walker","Reach Day 10.",()=>((S.day||0)>=10)],
+    ["grey","🌫️","Grey Watcher","Reach Day 15.",()=>((S.day||0)>=15)],
+    ["depth","🕳️","Deep Walker","Reach depth 10 on the Old Road.",()=>((S.roadStats?.bestDepth||0)>=10)],
+    ["turnback","🏮","Kept the Flame","Turn back from the Old Road voluntarily 3 times.",()=>((S.roadLog||[]).filter(r=>r.voluntary).length>=3)]
+  ];
+
+  function ce(){if(!S.complete)S.complete={mode:"story",zone:"clinic",encounters:[],encounterDay:0,relations:{Maya:0,Ellis:0,Kai:0,Rae:0},badges:[],flags:{}};return S.complete}
+  function rp(n){S.rp=(S.rp||0)+n}
+  function esc2(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  function ensureRoad(){
+    if(!S.expedition)S.expedition={active:false,depth:0,stability:100,trail:[],runRp:0,runTokens:0,usedIds:[],current:null};
+    if(!S.roadStats)S.roadStats={bestDepth:0,totalWalks:0};
+    if(!S.roadLog)S.roadLog=[];
+  }
+  function getLayer(depth){
+    const found=LAYERS.slice().reverse().find(l=>depth>=l.min);
+    return found||LAYERS[0];
+  }
+  function maxAllowedLayerIndex(){
+    let idx=0;
+    LAYERS.forEach((l,i)=>{if((S.day||1)>=l.needDay)idx=i});
+    return idx;
+  }
+  function pickEncounter(layerId,usedIds){
+    const pool=ENCOUNTERS.filter(e=>e.layer===layerId);
+    let avail=pool.filter(e=>!usedIds.includes(e.id));
+    if(!avail.length)avail=pool;
+    const raw=avail[Math.floor(Math.random()*avail.length)];
+    const text=typeof raw.text==="function"?raw.text():raw.text;
+    return Object.assign({},raw,{text:text});
+  }
+
+  window.beginExpedition=function(){
+    ensureRoad();
+    S.expedition={active:true,depth:0,stability:100,trail:[],runRp:0,runTokens:0,usedIds:[],current:null};
+    S.expedition.current=pickEncounter(1,[]);
+    save({ui:false});
+    toast("🏮 You step onto the Old Road");
+    renderExpeditionTab();
+  };
+
+  window.resolveExpeditionChoice=function(idx){
+    ensureRoad();
+    const ex=S.expedition;if(!ex||!ex.active)return;
+    const enc=ex.current;const c=enc&&enc.choices[idx];if(!c)return;
+    const layer=getLayer(ex.depth);
+    const rpGain=Math.max(1,Math.round((c.rpBase+ex.depth*2)*layer.dangerMul*(0.9+Math.random()*0.3)));
+    const stabRaw=c.stabilityDelta<0?Math.round(c.stabilityDelta*layer.dangerMul):c.stabilityDelta;
+    ex.stability=Math.max(0,Math.min(100,ex.stability+stabRaw));
+    S.rp=(S.rp||0)+rpGain;ex.runRp=(ex.runRp||0)+rpGain;
+    let tokenGain=0;
+    if(Math.random()<c.tokenChance){tokenGain=1;S.tokens=(S.tokens||0)+1;ex.runTokens=(ex.runTokens||0)+1}
+    ex.trail.push({depth:ex.depth,layer:layer.name,
+      note:esc2(enc.title)+" — you chose \""+esc2(c.label)+".\" +"+rpGain+" RP"+(tokenGain?" · +1 token":"")+(stabRaw<0?" · lantern dims ("+stabRaw+")":stabRaw>0?" · lantern steadies (+"+stabRaw+")":"")});
+    ex.usedIds.push(enc.id);
+    save({ui:false});
+    toast((tokenGain?"🪙 ":"✨ ")+"+"+rpGain+" RP"+(tokenGain?" · +1 Road Token":""));
+    if(ex.stability<=0){forceExpulsion();return}
+    const depthGain=c.type==="spectacle"?2:1;
+    let newDepth=ex.depth+depthGain;
+    const allowedIdx=maxAllowedLayerIndex();const allowedLayer=LAYERS[allowedIdx];
+    if(newDepth>allowedLayer.max){
+      newDepth=allowedLayer.max;
+      const next=LAYERS[allowedIdx+1];
+      toast("🌀 The road won't open further yet"+(next?" — try again around Day "+next.needDay:""));
+    }
+    ex.depth=newDepth;
+    ex.current=pickEncounter(getLayer(ex.depth).id,ex.usedIds);
+    renderExpeditionTab();
+  };
+
+  function finishExpedition(summary){
+    ensureRoad();
+    S.roadStats.bestDepth=Math.max(S.roadStats.bestDepth,summary.depth);
+    S.roadStats.totalWalks=(S.roadStats.totalWalks||0)+1;
+    S.roadLog.push(summary);if(S.roadLog.length>20)S.roadLog=S.roadLog.slice(-20);
+    S.expedition={active:false,depth:0,stability:100,trail:[],runRp:0,runTokens:0,usedIds:[],current:null};
+    save();
+  }
+
+  function forceExpulsion(){
+    const ex=S.expedition;
+    const summary={day:S.day||1,depth:ex.depth,rp:ex.runRp||0,tokens:ex.runTokens||0,voluntary:false};
+    finishExpedition(summary);
+    openOverhaulModal("The Grey Pushes You Out","THE ROAD",
+      `<div class="card" style="border-left:3px solid var(--danger)"><div style="font-size:2rem;text-align:center">🌫️</div>
+      <p style="text-align:center">The lantern gutters to nothing. The Grey doesn't chase you — it doesn't have to. It just waits until you're the one who leaves.</p>
+      <p style="text-align:center" class="muted">You keep everything you'd already found: <strong>+${summary.rp} RP</strong>${summary.tokens?` · <strong>${summary.tokens} Road Token${summary.tokens>1?"s":""}</strong>`:""} from depth ${summary.depth}. The clinic itself is untouched.</p>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="closeOverhaulModal();renderWorldTab('expedition',document.querySelector('.rpg-tab'))">Return to the clinic gate</button></div>`);
+  }
+
+  window.retreatExpedition=function(){
+    ensureRoad();
+    const ex=S.expedition;if(!ex||!ex.active)return;
+    const summary={day:S.day||1,depth:ex.depth,rp:ex.runRp||0,tokens:ex.runTokens||0,voluntary:true};
+    finishExpedition(summary);
+    openOverhaulModal("You Turn Back","THE ROAD",
+      `<div class="card glow"><div style="font-size:2rem;text-align:center">🏮</div>
+      <p style="text-align:center">You choose the doorstep over the dark. The lantern steadies the moment you decide to stop.</p>
+      <p style="text-align:center" class="muted">This walk: <strong>+${summary.rp} RP</strong>${summary.tokens?` · <strong>${summary.tokens} Road Token${summary.tokens>1?"s":""}</strong>`:""} · reached depth ${summary.depth}.</p>
+      <button class="btn" style="width:100%;margin-top:8px" onclick="closeOverhaulModal();renderWorldTab('expedition',document.querySelector('.rpg-tab'))">Back to the clinic gate</button></div>`);
+  };
+
+  function renderExpeditionTab(){
+    ensureRoad();
+    const el=document.getElementById("worldContent");if(!el)return;
+    const ex=S.expedition;
+    const layer=getLayer(ex.active?ex.depth:0);
+    const stab=ex.active?Math.max(0,Math.min(100,ex.stability)):100;
+    const lanternStyle=ex.active?`filter:grayscale(${(1-stab/100).toFixed(2)});opacity:${(0.4+0.6*stab/100).toFixed(2)}`:"";
+    const barColor=stab>55?"var(--accent)":stab>25?"var(--warn)":"var(--danger)";
+    let html=`<div class="zone-banner"><div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:2.1rem;transition:filter .3s,opacity .3s;${lanternStyle}">🏮</div>
+      <div style="flex:1"><h3>${layer.ic} ${esc2(layer.name)}</h3><p>${ex.active?esc2(layer.flavor):"Begin a walk to step past the clinic gate."}</p></div>
+    </div>`;
+    if(ex.active){
+      html+=`<div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)"><span>LANTERN STABILITY</span><span>${Math.round(stab)}%</span></div>
+        <div class="bar-wrap"><div class="bar" style="width:${stab}%;background:${barColor}"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:.78rem"><span>🧭 Depth ${ex.depth}</span><span>✨ +${ex.runRp||0} RP this walk</span>${ex.runTokens?`<span>🪙 +${ex.runTokens}</span>`:""}</div>
+      </div>`;
+    }
+    html+="</div>";
+    if(!ex.active){
+      html+=`<button class="btn" onclick="beginExpedition()">${(S.roadStats.totalWalks||0)?"Walk the road again":"Step onto the Old Road"}</button>`;
+      if(S.roadStats.bestDepth)html+=`<p class="muted" style="text-align:center;margin-top:6px;font-size:.76rem">Deepest walk so far: depth ${S.roadStats.bestDepth}</p>`;
+      if(S.roadLog.length){
+        html+=`<h3>Recent walks</h3>`+S.roadLog.slice(-4).reverse().map(r=>
+          `<div class="log-item"><div class="when">Day ${r.day} · depth ${r.depth}</div>${r.voluntary?"You turned back with":"The Grey pushed you out with"} +${r.rp} RP${r.tokens?` and ${r.tokens} token${r.tokens>1?"s":""}`:""}.</div>`
+        ).join("");
+      }
+    } else {
+      const enc=ex.current;
+      html+=`<div class="encounter"><div class="tag">${esc2(enc.tag)}</div><h3>${esc2(enc.title)}</h3><p>${esc2(enc.text)}</p>`;
+      html+=enc.choices.map((c,i)=>`<button class="btn ${i===0?"":"sec"} sm" style="margin-top:8px;width:100%;text-align:left;display:block;white-space:normal" onclick="resolveExpeditionChoice(${i})"><strong>${esc2(c.label)}</strong>${c.note?`<div class="muted" style="font-size:.7rem;margin-top:2px">${esc2(c.note)}</div>`:""}</button>`).join("");
+      html+="</div>";
+      html+=`<button class="btn ghost" style="margin-top:4px" onclick="retreatExpedition()">🚪 Turn back now (keep what you've earned)</button>`;
+      if(ex.trail.length){
+        html+=`<h3>Trail so far</h3>`+ex.trail.slice(-5).reverse().map(t=>`<div class="log-item"><div class="when">Depth ${t.depth} · ${esc2(t.layer)}</div>${t.note}</div>`).join("");
+      }
+    }
+    el.innerHTML=html;
+  }
+
+  window.setRunMode=function(m){
+    runMode=m;
+    document.getElementById("modeStory").classList.toggle("on",m==="story");
+    document.getElementById("modeExpedition").classList.toggle("on",m==="expedition");
+  };
+  window.beginCompleteEdition=function(){
+    ce().mode=runMode;ce().flags.started=true;save();document.getElementById("completeStart").style.display="none";go("world");toast("🏮 The road is open");
+  };
+  window.continueCompleteEdition=function(){
+    ce();document.getElementById("completeStart").style.display="none";go("home");toast("Welcome back to Willow Bend");
+  };
+
+  window.renderWorldTab=function(tab,button){
+    document.querySelectorAll(".rpg-tab").forEach(b=>b.classList.remove("on"));if(button)button.classList.add("on");
+    ce();ensureRoad();
+    const el=document.getElementById("worldContent");if(!el)return;
+    if(tab==="achievements"){
+      el.innerHTML=achievements.map(a=>{
+        const got=a[4]();const already=ce().badges.includes(a[0]);
+        if(got&&!already){ce().badges.push(a[0]);rp(10);save();toast("🏅 Badge earned: "+a[2]+" · +10 RP")}
+        return `<div class="achievement ${got?"":"lock"}"><div class="ai">${a[1]}</div><div><strong>${a[2]}</strong><div class="muted">${a[3]}</div>${got?'<div class="feedback-good">UNLOCKED · +10 RP</div>':''}</div></div>`;
+      }).join("");
+    } else if(tab==="threads"){
+      const names=["Maya","Ellis","Kai","Rae"];
+      el.innerHTML=names.map(n=>{
+        const v=Math.max(0,Math.min(10,(ce().relations[n]||0)+(S.arcs?.[n]||0)*2));
+        return `<div class="relation"><div class="rel-top"><strong>${n}</strong><span>${v}/10</span></div><div class="rel-bar"><i style="width:${v*10}%"></i></div><div class="muted" style="margin-top:5px">${v>=7?"Trust is growing.":v>=3?"They know your name.":"The relationship is still taking shape."}</div></div>`;
+      }).join("");
+    } else {
+      document.querySelectorAll(".rpg-tab").forEach(b=>b.classList.remove("on"));
+      if(!button){const first=document.querySelector(".rpg-tab");if(first)first.classList.add("on")}
+      renderExpeditionTab();
+    }
+  };
+
+  // Kept as a thin alias in case any older save-era markup still calls showScreen().
+  window.showScreen=function(name){go(name)};
+
+  // Upgrade effects are intentionally applied through existing state.
+  function applyPersistentEffects(){
+    if(!S.complete)return;
+    if(S.complete.mode==="expedition")S.complete.expeditionBonus=true;
+  }
+
+  // Add a small route prompt to the home screen.
+  setTimeout(()=>{
+    ce();ensureRoad();applyPersistentEffects();
+    const home=document.getElementById("sc-home");
+    if(home && !document.getElementById("routePrompt")){
+      const d=document.createElement("div");d.id="routePrompt";d.className="card";
+      d.innerHTML='<div class="section-kicker">Next destination</div><strong>🏮 The Old Road is waiting</strong><p class="muted" style="margin:4px 0 8px">Walk out past the clinic gate. Keep the lantern lit, go as deep as you dare, and turn back before it gutters.</p><button class="btn sm" onclick="go(\'world\')">Open the Old Road</button>';
+      home.appendChild(d);
+    }
+  },250);
+
+  // Don't auto-force the title screen over a returning player; it appears only for a brand-new run.
+  setTimeout(()=>{
+    try{
+      if(!ce().flags.started && !(S.log&&S.log.length))document.getElementById("completeStart").style.display="flex";
+    }catch(e){}
+  },400);
+})();
+
 </script>
 </body>
 </html>
