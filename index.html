@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#0a1210"/>
+<title>Willow Bend · Still-Room</title>
+<style>
+:root{
+  --bg:#080f0c;--surface:#101c16;--card:#15231c;--card2:#1c2e24;--text:#eef6f0;--muted:#8aa696;
+  --accent:#3dd68c;--accent-dim:#249a5f;--gold:#f0c94d;--blue:#5eb0ff;--warn:#f0a85a;--danger:#f07171;
+  --violet:#a78bfa;--radius:16px;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+  --nav-h:58px;--action-h:66px;--shadow:0 8px 28px rgba(0,0,0,.35);--line:#24382c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#143024 0%,var(--bg) 55%);color:var(--text);line-height:1.45;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:100%;min-height:100dvh;padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 12px);padding-top:var(--safe-t);scroll-padding-bottom:calc(var(--nav-h) + var(--action-h) + var(--safe-b) + 16px)}
+a{color:var(--accent)}button,input,select{font:inherit;color:inherit}
+.app{max-width:440px;margin:0 auto;min-height:100%;position:relative}
+.top{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(10,18,14,.97) 0%,rgba(8,15,12,.92) 100%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:10px 14px 8px;border-bottom:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.clinic-name{font-weight:750;font-size:.95rem;letter-spacing:-.01em}
+.rank-badge{background:linear-gradient(145deg,#2a2410,#1a1810);border:1px solid #5a4a20;border-radius:99px;padding:4px 11px;font-size:.68rem;color:var(--gold);font-weight:650}
+.meters{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:8px}
+.meter{background:var(--surface);border-radius:12px;padding:6px 4px;border:1px solid var(--line);text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.meter .v{font-size:.95rem;font-weight:750;color:var(--accent)}.meter .l{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+.meter.rp .v{color:var(--gold)}.meter.att .v{color:var(--blue)}.meter.tok .v{color:var(--violet)}
+.screen{display:none;padding:12px 14px 28px;animation:in .28s cubic-bezier(.2,.8,.2,1)}.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+h2{font-size:1.22rem;margin-bottom:6px;letter-spacing:-.02em;font-weight:750}h3{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px;font-weight:650}
+.muted{color:var(--muted);font-size:.82rem}
+.card{background:linear-gradient(165deg,var(--card) 0%,#121f18 100%);border:1px solid var(--line);border-radius:var(--radius);padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
+.card.glow{border-color:rgba(61,214,140,.45);box-shadow:0 0 0 1px rgba(61,214,140,.25),var(--shadow)}
+.card.story{border-left:3px solid var(--blue);font-style:italic;background:linear-gradient(135deg,#142830,#121c22)}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:14px 14px;border:none;border-radius:14px;font-weight:700;font-size:.95rem;cursor:pointer;background:linear-gradient(180deg,#4ae090 0%,var(--accent) 55%,var(--accent-dim) 100%);color:#04150c;margin-top:8px;transition:transform .1s,filter .15s;min-height:50px;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 4px 16px rgba(61,214,140,.28)}
+.btn:active{transform:scale(.98);filter:brightness(.95)}.btn:disabled{opacity:.45;pointer-events:none}
+.choice{touch-action:manipulation}
+.btn.sec{background:var(--card2);color:var(--text);border:1px solid var(--line);box-shadow:none}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line);box-shadow:none}
+.btn.sm{width:auto;display:inline-flex;padding:8px 12px;font-size:.82rem;margin:0;min-height:auto;box-shadow:none}
+.hero-title{font-size:.7rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.quick-grid .btn{margin-top:0;min-height:46px;font-size:.84rem}
+.quest-card{border-color:#3a2e60;background:linear-gradient(145deg,#1a1628,#12181a)}
+.quest-card .q-title{font-weight:700;color:var(--violet)}
+/* Sticky action bar — always above nav, always tappable on phones */
+.action-bar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:440px;bottom:calc(var(--nav-h) + var(--safe-b));z-index:60;padding:10px 12px 8px;background:linear-gradient(180deg,rgba(11,22,16,0) 0%,rgba(11,22,16,.92) 22%,#0b1610 55%);pointer-events:none}
+.action-bar .btn{pointer-events:auto;margin-top:0;box-shadow:0 4px 18px rgba(0,0,0,.45);min-height:50px}
+.action-bar.hidden{display:none!important}
+.screen.has-action{padding-bottom:calc(var(--action-h) + 16px)}
+.choices{display:grid;gap:7px;margin:8px 0}
+.choice{background:var(--surface);border:2px solid #2a4a38;border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left}
+.choice:active{border-color:var(--accent);background:#1a3a28}
+.choice .t{font-weight:650;font-size:.9rem}.choice .d{font-size:.74rem;color:var(--muted);margin-top:2px}
+.patient-card{background:linear-gradient(145deg,#1a2e22,#14241b);border:1px solid #2a4a38;border-radius:14px;padding:12px;margin:8px 0}
+.patient-card .name{font-size:1.08rem;font-weight:700}
+.patient-card .quote{font-style:italic;color:#b8d4c4;margin:8px 0;font-size:.9rem}
+.pill{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:99px;background:#243a2e;color:var(--accent);margin-right:4px;margin-bottom:2px}
+.outcome-flash{text-align:center;padding:24px 16px;border-radius:16px;margin:12px 0;animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.outcome-flash.good{background:#143d28;border:1px solid var(--accent)}
+.outcome-flash.ok{background:#2a2a18;border:1px solid var(--warn)}
+.outcome-flash.bad{background:#3a1a1a;border:1px solid var(--danger)}
+.outcome-flash .big{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.outcome-flash .rp{font-size:1.1rem;color:var(--gold);margin-top:8px}
+.log-item{background:var(--surface);border-radius:12px;padding:10px 12px;margin-bottom:8px;border-left:3px solid var(--accent);font-size:.86rem}
+.log-item .when{font-size:.7rem;color:var(--muted)}
+.bar-wrap{background:#0f1a14;border-radius:6px;height:8px;overflow:hidden;margin-top:4px}
+.bar{height:100%;background:var(--accent);border-radius:6px;transition:width .4s ease}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:70;background:#0f1c15;border-top:1px solid #1e3328;display:flex;padding:4px 0 calc(4px + var(--safe-b));min-height:var(--nav-h);box-shadow:0 -2px 12px rgba(0,0,0,.3)}
+.nav button{flex:1;background:none;border:none;color:var(--muted);padding:6px 2px;font-size:.6rem;cursor:pointer}
+.nav button.on{color:var(--accent)}.nav .ico{font-size:1.12rem;display:block;margin-bottom:1px}
+/* Compact diagnosis on phones */
+#diagnosisBox{padding:10px}
+#diagnosisBox .choice{padding:9px 11px}
+.confidence .choice{padding:10px 6px;min-height:42px;display:flex;align-items:center;justify-content:center}
+.last-case-card{border-left:3px solid var(--accent);cursor:pointer}
+.last-case-card:active{background:#1a3a28}
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#1a3a28;border:1px solid var(--accent);color:var(--text);padding:10px 18px;border-radius:12px;font-size:.88rem;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.safe{background:#1a1810;border:1px solid #4a3a18;color:#c8b880;border-radius:10px;padding:10px;font-size:.78rem;margin:10px 0}
+.amz{display:flex;align-items:center;justify-content:center;gap:8px;background:#ff9900;color:#111;font-weight:700;text-decoration:none;border-radius:10px;padding:11px;margin-top:8px;font-size:.88rem}
+.step-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2a4a38;margin:0 3px}.step-dot.on{background:var(--accent)}
+.empty{text-align:center;padding:28px 12px;color:var(--muted)}
+label{display:block;font-size:.75rem;color:var(--muted);margin:8px 0 4px}
+input,select{width:100%;background:var(--surface);border:1px solid #2a4a38;border-radius:10px;padding:10px 12px;outline:none}
+.mastery-row{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:.86rem}
+.loyalty{color:var(--gold);font-size:.8rem}
+.regen-wrap{margin-top:6px;height:4px;background:#0f1a14;border-radius:4px;overflow:hidden}
+.regen-bar{height:100%;background:var(--blue);width:0%;transition:width .3s linear}
+.streak-pill{display:none;align-items:center;gap:3px;background:linear-gradient(135deg,#3a2a10,#241a08);border:1px solid var(--warn);color:var(--warn);border-radius:99px;padding:2px 9px;font-size:.72rem;font-weight:700;margin-left:6px}
+.streak-pill.on{display:inline-flex}
+.twist-card{border-left:3px solid var(--gold);background:#2a2410;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:.84rem;animation:pop .3s ease}
+.twist-card .tt{font-weight:700;color:var(--gold);margin-bottom:2px}
+.daily-card{background:linear-gradient(145deg,#1e2a18,#161f13);border:1px solid #3a4a28;border-radius:16px;padding:14px;margin:10px 0}
+.daily-card .tt{font-weight:700;font-size:.9rem;display:flex;justify-content:space-between;align-items:center}
+.daily-card .prog{font-size:.78rem;color:var(--muted);margin-top:4px}
+.daily-card.done{border-color:var(--accent)}
+.badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.badge{background:var(--card);border:1px solid #243a2e;border-radius:14px;padding:12px;text-align:center;opacity:.35}
+.badge.on{opacity:1;border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.badge .ic{font-size:1.6rem}
+.badge .n{font-size:.74rem;font-weight:700;margin-top:4px}
+.badge .d{font-size:.66rem;color:var(--muted);margin-top:2px}
+.outcome-flash.epic{background:linear-gradient(145deg,#3a2e10,#241c08);border:1px solid var(--gold);box-shadow:0 0 18px -4px var(--gold)}
+.combo-flash{text-align:center;color:var(--warn);font-weight:700;font-size:.9rem;margin-top:6px}
+.risk-choice{border-color:var(--warn)!important;background:#241c10}
+.diagnosis-choice.selected{border-color:var(--accent);background:#193b29}
+.diagnosis-choice.wrong{border-color:var(--danger);background:#351b1b}
+.clue-list{display:grid;gap:6px;margin-top:8px}.clue{background:#102018;border:1px solid #284536;border-radius:9px;padding:7px 9px;font-size:.78rem}
+.feedback-good{color:var(--accent);font-size:.8rem;margin-top:8px}.feedback-warn{color:var(--warn);font-size:.8rem;margin-top:8px}
+.confidence{display:flex;gap:6px;margin-top:8px}.confidence .choice{padding:8px;text-align:center;font-size:.78rem}
+.ctab{text-align:center;padding:10px 4px;cursor:pointer}
+.ctab.on{border-color:var(--gold);background:#241c08}
+.ctab .t{color:var(--text)}
+.lore-tt{color:var(--gold);font-weight:700;letter-spacing:.02em}
+.returning-pill{background:#241c08;color:var(--gold);border:1px solid var(--gold)}
+.body-pill{background:#1a2830;color:var(--blue);border:1px solid #2a4a5a}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+<div class="top-row"><div class="clinic-name" id="clinicName">Willow Bend Clinic<span class="streak-pill" id="streakPill">🔥 x0</span></div><div class="rank-badge" id="rankBadge">Novice</div></div>
+<div class="meters">
+<div class="meter rp"><div class="v" id="mRP">0</div><div class="l">RP</div></div>
+<div class="meter att"><div class="v" id="mAtt">10</div><div class="l">Att</div></div>
+<div class="meter tok"><div class="v" id="mTok">0</div><div class="l">Token</div></div>
+<div class="meter"><div class="v" id="mDay">1</div><div class="l">Day</div></div>
+<div class="meter"><div class="v" id="mCases">0</div><div class="l">Cases</div></div>
+</div>
+<div class="regen-wrap"><div class="regen-bar" id="regenBar"></div></div>
+</div>
+
+<section id="sc-home" class="screen on">
+<div class="hero-title">Still-room on the old road</div>
+<div class="card glow"><div class="muted" style="font-size:.72rem">ATMOSPHERE</div><div id="atmosphere" style="font-weight:700;margin-top:4px;font-size:.95rem">Quiet morning. The kettle is warm.</div><div class="muted" id="moonLine" style="margin-top:4px;font-size:.78rem"></div><div class="muted" id="dayHint" style="margin-top:6px;font-size:.8rem"></div></div>
+<div class="card story" id="chronicleCard" style="cursor:pointer" onclick="go('codex');setTimeout(function(){switchCodexTab('lore')},50)"></div>
+<div class="card quest-card" id="questCard" style="cursor:pointer" onclick="go('codex');setTimeout(function(){switchCodexTab('shop')},50)"></div>
+<div class="card" id="staffCard" style="cursor:pointer" onclick="go('staff')"></div>
+<div class="daily-card" id="dailyCard"></div>
+<div id="lastCaseCard" style="display:none"></div>
+<div class="quick-grid">
+<button class="btn" onclick="openWaitingRoom()">▶ Open door</button>
+<button class="btn sec" onclick="go('codex');setTimeout(function(){switchCodexTab('shop')},40)">🛒 Market</button>
+<button class="btn sec" onclick="go('deck')">🃏 Deck</button>
+<button class="btn sec" onclick="go('staff')">👥 Staff</button>
+</div>
+<button class="btn sec" onclick="startMayaArc()" id="btnMaya">✦ Maya's first visit (tutorial)</button>
+<p class="muted" style="text-align:center;margin-top:6px;font-size:.75rem">Choose a patient · Attention spent when the session begins</p>
+<h3>Your progress</h3>
+<div class="card">
+<div class="mastery-row"><span>Sleep</span><span id="msSleep">0/5</span></div><div class="bar-wrap"><div class="bar" id="barSleep" style="width:0%"></div></div>
+<div class="mastery-row"><span>Focus</span><span id="msFocus">0/5</span></div><div class="bar-wrap"><div class="bar" id="barFocus" style="width:0%"></div></div>
+<div class="mastery-row"><span>Boundaries</span><span id="msBound">0/5</span></div><div class="bar-wrap"><div class="bar" id="barBound" style="width:0%"></div></div>
+<div class="mastery-row"><span>Mood-Energy</span><span id="msMood">0/5</span></div><div class="bar-wrap"><div class="bar" id="barMood" style="width:0%"></div></div>
+<div class="mastery-row" style="margin-top:12px"><span class="loyalty">Maya loyalty</span><span id="msMaya" class="loyalty">0/3</span></div>
+<div class="bar-wrap"><div class="bar" id="barMaya" style="width:0%;background:var(--gold)"></div></div>
+<div class="mastery-row" style="margin-top:12px"><span>Diagnosis accuracy</span><span id="msDiag">—</span></div>
+<div class="bar-wrap"><div class="bar" id="barDiag" style="width:0%;background:var(--blue)"></div></div>
+<div class="muted" style="font-size:.72rem;margin-top:8px" id="bodyMasteryLine"></div>
+<div class="muted" style="font-size:.72rem;margin-top:6px" id="arcProgressLine"></div>
+</div>
+<div class="safe">Fictional educational game. Herbs, colors, body systems &amp; protocols are game fiction. Persistent real symptoms → real clinicians. Amazon links = product searches only.</div>
+</section>
+
+<section id="sc-wait" class="screen">
+<div class="muted" style="font-size:.75rem;margin-bottom:4px">WAITING ROOM</div>
+<h2 style="margin-bottom:4px">Who will you see?</h2>
+<p class="muted" style="margin-bottom:10px">Three people are here. Attention is spent only when you begin a session.</p>
+<div id="waitList"></div>
+<button class="btn sec" onclick="go('home')">Leave the door closed</button>
+</section>
+
+<section id="sc-arrive" class="screen">
+<div class="muted" style="font-size:.75rem;margin-bottom:4px">SOMEONE AT THE DOOR</div>
+<div id="twistBanner"></div>
+<div class="patient-card" id="patientCard"></div>
+
+<!-- Diagnostic Center -->
+<div class="card" id="diagnosisBox">
+  <div class="muted" style="font-size:.75rem;margin-bottom:6px">DIAGNOSTIC CENTER · Working diagnosis</div>
+  <div id="bodySystemHint" class="muted" style="font-size:.78rem;margin-bottom:8px"></div>
+  <div class="choices" id="diagnosisChoices"></div>
+  <div id="diagnosisFeedback"></div>
+</div>
+
+<div class="choices" id="intakeChoices"></div>
+</section>
+
+<section id="sc-protocol" class="screen">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+  <div class="muted" style="font-size:.75rem">SESSION · STEP <span id="stepNum">1</span>/3</div>
+  <div id="liveScore" class="pill" style="margin:0;background:#1a3a28;color:var(--accent)">Score 0</div>
+</div>
+<div style="margin:6px 0 12px"><span class="step-dot on" id="sd1"></span><span class="step-dot" id="sd2"></span><span class="step-dot" id="sd3"></span></div>
+<div class="card" id="protocolPrompt"></div>
+<div class="choices" id="protocolChoices"></div>
+</section>
+
+<section id="sc-recap" class="screen">
+<div class="muted" style="font-size:.75rem;margin-bottom:4px">END OF DAY</div>
+<h2 id="recapTitle">Day recap</h2>
+<div id="recapBody"></div>
+<button class="btn" onclick="finishRecap()">Begin the next day</button>
+</section>
+
+<section id="sc-result" class="screen">
+<div id="resultBox"></div>
+<div id="resultExtra"></div>
+<div style="height:56px"></div>
+</section>
+
+<section id="sc-deck" class="screen">
+<h2>Complaint Deck</h2>
+<p class="muted" style="margin-bottom:8px">Tap a case for a full session (costs Attention). Use <strong>Practice</strong> to train diagnosis only — free, no outcome.</p>
+<div id="deckList"></div>
+</section>
+
+<section id="sc-log" class="screen">
+<h2>Treatment Log</h2>
+<div id="logList"></div>
+</section>
+
+<section id="sc-badges" class="screen">
+<h2>Badges</h2>
+<p class="muted" style="margin-bottom:10px" id="badgeCount">0/0 earned</p>
+<div class="badge-grid" id="badgeGrid"></div>
+</section>
+
+<section id="sc-codex" class="screen">
+<h2>Codex</h2>
+<p class="muted" style="margin-bottom:10px">Lore, patients, remedies, and the workshop under the still-room stairs.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-bottom:10px">
+<div class="choice ctab on" id="ctabLore" onclick="switchCodexTab('lore')"><div class="t" style="font-size:.72rem">📜 Lore</div></div>
+<div class="choice ctab" id="ctabArchive" onclick="switchCodexTab('archive')"><div class="t" style="font-size:.72rem">🗂 Archive</div></div>
+<div class="choice ctab" id="ctabInv" onclick="switchCodexTab('inv')"><div class="t" style="font-size:.72rem">🎒 Shelf</div></div>
+<div class="choice ctab" id="ctabShop" onclick="switchCodexTab('shop')"><div class="t" style="font-size:.72rem">🔧 Shop</div></div>
+</div>
+<div id="codexLore"></div>
+<div id="codexArchive" style="display:none"></div>
+<div id="codexInv" style="display:none"></div>
+<div id="codexShop" style="display:none"></div>
+</section>
+
+<section id="sc-staff" class="screen">
+<h2>Still-room staff</h2>
+<p class="muted" style="margin-bottom:10px">Who shares the kettle, who sharpens the ledger, and who argues about the Old Ways.</p>
+<div id="staffEventBanner"></div>
+<div id="staffList"></div>
+<button class="btn sec" onclick="go('home')">Back to clinic</button>
+</section>
+
+<section id="sc-more" class="screen">
+<h2>Clinic</h2>
+<div class="card">
+<label>Clinic name</label><input id="inClinic"/>
+<label>Healer name</label><input id="inHealer" placeholder="Your name"/>
+<button class="btn sm" style="margin-top:10px" onclick="saveSetup()">Save</button>
+</div>
+<div class="card">
+<p class="muted">Attention refreshes each new clinic day. Or reset now:</p>
+<button class="btn sec" onclick="fullRest()">Rest · Attention → 10 (free)</button>
+<button class="btn ghost" onclick="emergencyRest()">Emergency rest · +3 Att for 5 RP</button>
+</div>
+<div class="card">
+<p style="font-weight:650;margin-bottom:6px">How to play</p>
+<p class="muted">1. Open the door → <strong>Waiting Room</strong>: pick 1 of 3 patients<br>
+2. Form a working diagnosis (you can switch before locking confidence)<br>
+3. Rate confidence (calibrated scoring)<br>
+4. Intake → 3 protocol steps (live score shown)<br>
+5. Outcome from choices + luck · color–system match helps<br>
+6. After ~3 sessions or low Attention → <strong>Day Recap</strong><br>
+7. Deck: full Session (costs Att) or free <strong>Practice</strong> diagnosis<br>
+8. Build Mastery, body map, Maya loyalty, remedies, Archive</p>
+</div>
+<div class="safe">Tone lock: competent, kind, slightly tired, never cruel. Never medical advice. Body systems are game fiction only.</div>
+<button class="btn ghost" onclick="if(confirm('Reset all progress?')){localStorage.removeItem('hhc2');location.reload()}">Reset everything</button>
+</section>
+</div>
+
+<div class="action-bar hidden" id="actionBar"></div>
+<nav class="nav">
+<button class="on" data-s="home" onclick="go('home')"><span class="ico">🏠</span>Clinic</button>
+<button data-s="deck" onclick="go('deck')"><span class="ico">🃏</span>Deck</button>
+<button data-s="log" onclick="go('log')"><span class="ico">📋</span>Log</button>
+<button data-s="badges" onclick="go('badges')"><span class="ico">🏅</span>Badges</button>
+<button data-s="codex" onclick="go('codex')"><span class="ico">📖</span>Codex</button>
+<button data-s="more" onclick="go('more')"><span class="ico">⚙️</span>More</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const P=[{"id":"PR-001","f":"Sleep","p":"Trouble falling asleep","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Blue nervine lore + wind-down If–Then","q":"blackout curtains white noise machine","url":"https://www.amazon.com/s?k=blackout+curtains+white+noise+machine","quote":"I can't fall asleep even when I'm exhausted."},{"id":"PR-002","f":"Sleep","p":"Waking at 3am with thoughts","att":1,"tags":["SETTLE","INSIGHT"],"color":"Blue","se":["SE-07","SE-01"],"proto":"Nightbloom tea lore + no screens","q":"sleep journal notebook","url":"https://www.amazon.com/s?k=sleep+journal+notebook","quote":"Around three, my mind just turns the lights on."},{"id":"PR-003","f":"Sleep","p":"Phone in bed / night scrolling","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05"],"proto":"Device outside room + Passionflower lore","q":"phone charging station bedside alternative","url":"https://www.amazon.com/s?k=phone+charging+station+bedside+alternative","quote":"I end up on my phone in bed every night."},{"id":"PR-004","f":"Focus","p":"Procrastinating simple tasks","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"2-minute start + Rosemary lore","q":"pomodoro timer","url":"https://www.amazon.com/s?k=pomodoro+timer","quote":"I put off simple tasks until they pile up."},{"id":"PR-005","f":"Focus","p":"Afternoon energy crash","att":1,"tags":["PACE","RESOURCE"],"color":"Yellow","se":["SE-12"],"proto":"Protein+walk + Holy Basil lore","q":"protein snack ideas","url":"https://www.amazon.com/s?k=protein+snack+ideas","quote":"Every afternoon I just… drop."},{"id":"PR-006","f":"Focus","p":"Context-switch scatter after meetings","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"Reset ritual + Lemon Balm","q":"notepad index cards","url":"https://www.amazon.com/s?k=notepad+index+cards","quote":"After back-to-back meetings I can't think straight."},{"id":"PR-007","f":"Boundaries","p":"Trouble saying no","att":1,"tags":["BOUNDARY"],"color":"Black","se":["SE-08"],"proto":"One refusal script + Motherwort","q":"boundary journal","url":"https://www.amazon.com/s?k=boundary+journal","quote":"I say yes when I mean no."},{"id":"PR-008","f":"Boundaries","p":"Overcommitting calendar","att":1,"tags":["BOUNDARY","RESET"],"color":"Black","se":["SE-08"],"proto":"48-hour rule before yes","q":"planner calendar","url":"https://www.amazon.com/s?k=planner+calendar","quote":"My calendar is full of things I regret agreeing to."},{"id":"PR-009","f":"Boundaries","p":"Feeling responsible for others' moods","att":2,"tags":["BOUNDARY","RESOURCE"],"color":"Black","se":["SE-08","SE-04"],"proto":"Return responsibility + Motherwort","q":"therapy workbook optional","url":"https://www.amazon.com/s?k=therapy+workbook+optional","quote":"I feel responsible for everyone's mood."},{"id":"PR-010","f":"Mood-Energy","p":"Sunday scaries / work dread","att":1,"tags":["GROUND","SETTLE"],"color":"Yellow","se":["SE-05","SE-11"],"proto":"One controllable next action","q":"worry notepad","url":"https://www.amazon.com/s?k=worry+notepad","quote":"Sunday evening dread hits me every week."},{"id":"PR-011","f":"Mood-Energy","p":"Social battery empty","att":1,"tags":["RESOURCE","BOUNDARY"],"color":"Black","se":["SE-04"],"proto":"Recovery block + Reishi lore","q":"eye mask quiet time","url":"https://www.amazon.com/s?k=eye+mask+quiet+time","quote":"One social event and my battery is gone."},{"id":"PR-012","f":"Mood-Energy","p":"Comparison spiral on social media","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Violet","se":["SE-05"],"proto":"Unfollow batch + 24h pause","q":"app limit screen time","url":"https://www.amazon.com/s?k=app+limit+screen+time","quote":"Social media leaves me comparing and low."},{"id":"PR-013","f":"Mood-Energy","p":"Low motivation to start exercising","att":1,"tags":["ACTIVATE","PACE"],"color":"Orange","se":["SE-12"],"proto":"Shoes-only win + Ginger lore","q":"resistance bands yoga mat","url":"https://www.amazon.com/s?k=resistance+bands+yoga+mat","quote":"I want to move more but can't start."},{"id":"PR-014","f":"Pain-Stiffness","p":"Morning stiffness","att":1,"tags":["ACTIVATE","GROUND"],"color":"Red","se":["SE-12","SE-11"],"proto":"Warmth + gentle movement + Turmeric","q":"heating pad","url":"https://www.amazon.com/s?k=heating+pad","quote":"Mornings I feel stiff until I warm up."},{"id":"PR-015","f":"Pain-Stiffness","p":"Desk shoulder tension","att":1,"tags":["PACE","SETTLE"],"color":"Green","se":["SE-01","SE-11"],"proto":"Micro-breaks + heat + stretch","q":"lumbar cushion","url":"https://www.amazon.com/s?k=lumbar+cushion","quote":"My shoulders lock up at the desk."},{"id":"PR-016","f":"Pain-Stiffness","p":"Jaw tension at night","att":1,"tags":["SETTLE","GROUND"],"color":"Blue","se":["SE-01","SE-03"],"proto":"Evening down-regulation + Skullcap","q":"mouth guard consult dentist","url":"https://www.amazon.com/s?k=mouth+guard+consult+dentist","quote":"I wake with a tight jaw."},{"id":"PR-017","f":"Home-Environment","p":"Cold office feet","att":1,"tags":["RESOURCE","GROUND"],"color":"Red","se":["SE-11"],"proto":"Warming lore + layers","q":"wool thermal socks USB foot warmer","url":"https://www.amazon.com/s?k=wool+thermal+socks+USB+foot+warmer","quote":"My feet stay ice-cold in the office."},{"id":"PR-018","f":"Home-Environment","p":"Dry indoor air","att":1,"tags":["SETTLE","RESOURCE"],"color":"Blue","se":["SE-07"],"proto":"Humidify + Marshmallow lore","q":"humidifier honey lozenges","url":"https://www.amazon.com/s?k=humidifier+honey+lozenges","quote":"Dry air makes my throat scratchy at night."},{"id":"PR-019","f":"Home-Environment","p":"Noisy environment disrupting sleep","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Noise boundary + Blue nervine","q":"white noise machine foam earplugs","url":"https://www.amazon.com/s?k=white+noise+machine+foam+earplugs","quote":"Noise keeps wrecking my sleep."},{"id":"PR-020","f":"Home-Environment","p":"Eye strain from screens","att":1,"tags":["PACE","RESET"],"color":"Blue","se":["SE-05"],"proto":"Breaks + warm compress lore","q":"blue light glasses monitor arm","url":"https://www.amazon.com/s?k=blue+light+glasses+monitor+arm","quote":"Screens leave my eyes burning."},{"id":"PR-021","f":"Digestive","p":"Snacking when not hungry","att":1,"tags":["GROUND","INSIGHT"],"color":"Orange","se":["SE-01"],"proto":"10-min pause + water + Fennel","q":"herbal tea sampler","url":"https://www.amazon.com/s?k=herbal+tea+sampler","quote":"I snack when I'm not actually hungry."},{"id":"PR-022","f":"Digestive","p":"Nervous stomach before events","att":1,"tags":["SETTLE","GROUND"],"color":"Orange","se":["SE-05","SE-07"],"proto":"Simple food + Ginger","q":"ginger tea bags","url":"https://www.amazon.com/s?k=ginger+tea+bags","quote":"Before big events my stomach flips."},{"id":"PR-023","f":"Digestive","p":"Mild post-meal fog","att":1,"tags":["PACE","GROUND"],"color":"Yellow","se":["SE-12"],"proto":"Simpler meals + walk","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After meals my head feels foggy."},{"id":"PR-024","f":"Sleep","p":"Waking tired most days","att":2,"tags":["PACE","RESOURCE","GROUND"],"color":"Green","se":["SE-04","SE-12"],"proto":"Protect morning energy + Oatstraw","q":"sunrise alarm clock","url":"https://www.amazon.com/s?k=sunrise+alarm+clock","quote":"I wake up tired almost every day."},{"id":"PR-025","f":"Focus","p":"Brain fog after poor sleep","att":2,"tags":["SETTLE","RESOURCE"],"color":"Yellow","se":["SE-01","SE-10"],"proto":"Fix sleep first","q":"sleep mask","url":"https://www.amazon.com/s?k=sleep+mask","quote":"Bad sleep turns into all-day fog."},{"id":"PR-026","f":"Boundaries","p":"Difficulty ending the workday","att":1,"tags":["BOUNDARY","RESET"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Shutdown ritual + dump list","q":"notebook shutdown checklist","url":"https://www.amazon.com/s?k=notebook+shutdown+checklist","quote":"I can't mentally leave work at the end of the day."},{"id":"PR-027","f":"Mood-Energy","p":"Irritability from hunger","att":1,"tags":["RESOURCE","PACE"],"color":"Orange","se":["SE-11"],"proto":"Protein snack protocol","q":"portable protein snacks","url":"https://www.amazon.com/s?k=portable+protein+snacks","quote":"When I skip food I get irritable."},{"id":"PR-028","f":"Mood-Energy","p":"Feeling flat after social media","att":1,"tags":["ACTIVATE","GROUND"],"color":"Yellow","se":["SE-05","SE-12"],"proto":"Replace 15 min with light/air","q":"walking shoes","url":"https://www.amazon.com/s?k=walking+shoes","quote":"After scrolling I feel flat and empty."},{"id":"PR-029","f":"Pain-Stiffness","p":"Seasonal joint ache","att":2,"tags":["GROUND","RESOURCE"],"color":"Red","se":["SE-12","SE-11"],"proto":"Boswellia/Turmeric + warmth","q":"heating pad compression sleeve","url":"https://www.amazon.com/s?k=heating+pad+compression+sleeve","quote":"Damp weather makes my joints ache."},{"id":"PR-030","f":"Mood-Energy","p":"Everyday existential ache","att":2,"tags":["INSIGHT","RESOURCE"],"color":"Violet","se":["SE-04","SE-10"],"proto":"Small meaningful act + connection","q":"journal","url":"https://www.amazon.com/s?k=journal","quote":"There's a quiet everyday ache about meaning."},{"id":"PR-031","f":"Focus","p":"Decision paralysis","att":1,"tags":["GROUND","INSIGHT"],"color":"Yellow","se":["SE-05"],"proto":"24-hour decision window","q":"decision journal","url":"https://www.amazon.com/s?k=decision+journal","quote":"I freeze when I have to decide."},{"id":"PR-032","f":"Sleep","p":"Difficulty winding down after work","att":1,"tags":["SETTLE","RESET"],"color":"Blue","se":["SE-07","SE-05"],"proto":"Wind-down sequence + Blue nervines","q":"aromatherapy diffuser optional","url":"https://www.amazon.com/s?k=aromatherapy+diffuser+optional","quote":"After work I can't wind down."},{"id":"PR-033","f":"Home-Environment","p":"Clutter stress one surface","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"10-minute one surface","q":"storage bins","url":"https://www.amazon.com/s?k=storage+bins","quote":"One messy surface stresses me out all day."},{"id":"PR-034","f":"Boundaries","p":"Over-apologizing","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Yellow","se":["SE-08"],"proto":"Replace one sorry with thank-you","q":"sticky note reminder","url":"https://www.amazon.com/s?k=sticky+note+reminder","quote":"I apologize for things that don't need sorry."},{"id":"PR-035","f":"Focus","p":"Difficulty finishing books / deep work","att":1,"tags":["GROUND","ACTIVATE"],"color":"Yellow","se":["SE-12"],"proto":"One book only + Bacopa lore","q":"book stand reading light","url":"https://www.amazon.com/s?k=book+stand+reading+light","quote":"I start books and deep work but rarely finish."},{"id":"PR-036","f":"Mood-Energy","p":"Post-holiday crash","att":1,"tags":["PACE","RESOURCE"],"color":"Green","se":["SE-04","SE-12"],"proto":"Gentle routine reset + Nettle","q":"routine checklist","url":"https://www.amazon.com/s?k=routine+checklist","quote":"After holidays I crash for days."},{"id":"PR-037","f":"Digestive","p":"Occasional gas after heavy meals","att":1,"tags":["GROUND","SETTLE"],"color":"Orange","se":["SE-01"],"proto":"Simpler meal + Fennel/Peppermint","q":"peppermint tea","url":"https://www.amazon.com/s?k=peppermint+tea","quote":"Heavy meals leave me gassy and uncomfortable."},{"id":"PR-038","f":"Home-Environment","p":"Overheating bedroom at night","att":1,"tags":["SETTLE"],"color":"Blue","se":["SE-07"],"proto":"Cool room + Blue cooling lore","q":"tower fan cooling pillow","url":"https://www.amazon.com/s?k=tower+fan+cooling+pillow","quote":"My bedroom is too hot to sleep well."},{"id":"PR-039","f":"Pain-Stiffness","p":"Eye strain from extended reading","att":1,"tags":["PACE","RESET"],"color":"Indigo","se":["SE-05"],"proto":"Breaks + compress + Indigo","q":"book stand reading glasses","url":"https://www.amazon.com/s?k=book+stand+reading+glasses","quote":"Long reading sessions strain my eyes."},{"id":"PR-040","f":"Boundaries","p":"Fear of resting","att":2,"tags":["PACE","RESOURCE","BOUNDARY"],"color":"Black","se":["SE-12","SE-04"],"proto":"Rest as training + Ashwagandha lore","q":"timer for rest windows","url":"https://www.amazon.com/s?k=timer+for+rest+windows","quote":"Resting makes me feel guilty or unsafe."},{"id":"PR-041","f":"Focus","p":"Phantom phone buzzes","att":1,"tags":["SETTLE","BOUNDARY"],"color":"Indigo","se":["SE-05"],"proto":"Pocket-empty ritual + Indigo rest-lens lore","q":"phone free pouch","url":"https://www.amazon.com/s?k=phone+free+pouch","quote":"My thigh buzzes. There is no message. There is never a message."},{"id":"PR-042","f":"Home-Environment","p":"Sock-eating dryer conspiracy","att":1,"tags":["RESET","INSIGHT"],"color":"White","se":["SE-11"],"proto":"One-basket rule + White clearing cloth lore","q":"mesh laundry bags","url":"https://www.amazon.com/s?k=mesh+laundry+bags","quote":"The dryer takes tribute. Always one sock. Always."},{"id":"PR-043","f":"Mood-Energy","p":"Group-chat obligation fog","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Violet","se":["SE-04"],"proto":"Mute-and-breathe + Violet listening bell","q":"do not disturb phone","url":"https://www.amazon.com/s?k=do+not+disturb+phone","quote":"Seventy-three unread messages. None require me. All feel urgent."},{"id":"PR-044","f":"Focus","p":"Tab hoarding spiral","att":1,"tags":["RESET","GROUND"],"color":"Yellow","se":["SE-11"],"proto":"Close-all-but-one + Rosemary start lore","q":"browser tab organizer","url":"https://www.amazon.com/s?k=browser+tab+organizer","quote":"I have forty-one tabs. I need three. I open a forty-second."},{"id":"PR-045","f":"Boundaries","p":"Reply-all reflex","att":1,"tags":["BOUNDARY","INSIGHT"],"color":"Black","se":["SE-08"],"proto":"Draft-then-delete + Motherwort edge lore","q":"sticky notes desk","url":"https://www.amazon.com/s?k=sticky+notes+desk","quote":"I reply-all before my brain finishes the sentence."},{"id":"PR-046","f":"Sleep","p":"One-more-episode gravity","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Credits = bedtime If-Then + Blue nervine","q":"tv sleep timer","url":"https://www.amazon.com/s?k=tv+sleep+timer","quote":"The episode ends. My hand finds Next. I am no longer in charge."},{"id":"PR-047","f":"Mood-Energy","p":"Plant that judges you","att":1,"tags":["INSIGHT","ACTIVATE"],"color":"Green","se":["SE-12"],"proto":"Water-on-Sundays pact + Green restorative lore","q":"plant watering globe","url":"https://www.amazon.com/s?k=plant+watering+globe","quote":"The fern knows I forgot. The fern has always known."},{"id":"PR-048","f":"Digestive","p":"Fridge light negotiations","att":1,"tags":["GROUND","PACE"],"color":"Orange","se":["SE-01"],"proto":"Door-closed + water first + Fennel pause","q":"fridge organizer bins","url":"https://www.amazon.com/s?k=fridge+organizer+bins","quote":"I open the fridge for answers. The light offers none. I stay anyway."},{"id":"PR-049","f":"Focus","p":"Meeting that should have been a walk","att":1,"tags":["PACE","RESET"],"color":"Yellow","se":["SE-11","SE-12"],"proto":"Standing stretch + 2-min reset lore","q":"under desk walking pad","url":"https://www.amazon.com/s?k=under+desk+walking+pad","quote":"Forty minutes of updates. One decision. My soul left at minute six."},{"id":"PR-050","f":"Home-Environment","p":"Cable that multiplies overnight","att":1,"tags":["RESET","GROUND"],"color":"White","se":["SE-11"],"proto":"One-drawer exile + White clearing cloth","q":"cable organizer box","url":"https://www.amazon.com/s?k=cable+organizer+box","quote":"I own three chargers. The drawer contains eleven. None fit."},
+{"id":"PR-051","f":"Mood-Energy","p":"Sunday scaries without a Monday","att":1,"tags":["SETTLE","INSIGHT"],"color":"Violet","se":["SE-04"],"proto":"Name the dread + Violet listening","q":"anxiety journal","url":"https://www.amazon.com/s?k=anxiety+journal","quote":"Even on rest days my body braces for a problem that is not scheduled."},
+{"id":"PR-052","f":"Focus","p":"Inbox as a second pulse","att":1,"tags":["BOUNDARY","RESET"],"color":"Yellow","se":["SE-11"],"proto":"Two check windows + Rosemary start","q":"email schedule tips","url":"https://www.amazon.com/s?k=focus+timer","quote":"Every ping feels like a heartbeat that is not mine."},
+{"id":"PR-053","f":"Sleep","p":"Revenge bedtime procrastination","att":1,"tags":["BOUNDARY","SETTLE"],"color":"Blue","se":["SE-05","SE-07"],"proto":"Hard lights-out + Blue nervine","q":"wind down routine","url":"https://www.amazon.com/s?k=sleep+routine+checklist","quote":"I stay up late to steal hours the day already took."},
+{"id":"PR-054","f":"Boundaries","p":"Family group-chat gravity","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Black","se":["SE-08"],"proto":"One reply window + Motherwort","q":"boundary scripts","url":"https://www.amazon.com/s?k=boundary+setting+book","quote":"If I mute them I feel cruel. If I answer I disappear."},
+{"id":"PR-055","f":"Pain-Stiffness","p":"Phone-neck from looking down at life","att":1,"tags":["ACTIVATE","PACE"],"color":"Red","se":["SE-12"],"proto":"Chin tucks + Red warming wrap lore","q":"neck stretcher","url":"https://www.amazon.com/s?k=neck+stretching+tool","quote":"My head lives two inches forward of my spine now."},
+{"id":"PR-056","f":"Digestive","p":"Coffee on an empty argument","att":1,"tags":["GROUND","SETTLE"],"color":"Orange","se":["SE-01"],"proto":"Food before caffeine + Fennel pause","q":"breakfast ideas","url":"https://www.amazon.com/s?k=easy+breakfast","quote":"I drink the argument first. Then the coffee. Then the regret."},
+{"id":"PR-057","f":"Home-Environment","p":"Pile of almost-done laundry","att":1,"tags":["ACTIVATE","RESET"],"color":"White","se":["SE-11"],"proto":"One load rule + White cloth","q":"laundry basket","url":"https://www.amazon.com/s?k=laundry+basket","quote":"Clean clothes live in the dryer like a second wardrobe."},
+{"id":"PR-058","f":"Mood-Energy","p":"Comparison hangover after scrolling","att":1,"tags":["BOUNDARY","RESOURCE"],"color":"Green","se":["SE-04","SE-12"],"proto":"Scroll curfew + Green restorative","q":"app timers","url":"https://www.amazon.com/s?k=phone+app+timer","quote":"I put the phone down and still feel poorer than strangers."}];
+
+const NAMES=["Jordan","Sam","Riley","Casey","Alex","Morgan","Quinn","Avery","Jamie","Taylor","Rowan","Drew","Parker","Cameron","Skyler"];
+const ATMOS=["Quiet morning. The kettle is warm.","Soft rain on the still-room windows.","A busy afternoon — three people already waiting.","Late light. The herb jars catch gold.","Cool air. Someone left the door slightly open.","Market day energy outside. Inside stays slow."];
+
+/* Still-room staff — clinic dynamics (fiction) */
+const STAFF=[
+{id:"jun",ic:"🫖",name:"Jun",role:"Senior apprentice",style:"Steady hands, few words",
+  bio:"Trained under the previous keeper. Believes the kettle does half the work. Protective of the color order on the shelf.",
+  moods:["focused","tired","quietly proud","overprotective"],
+  comments:{
+    good:["Jun nods once. That is high praise.","Jun refills the kettle without being asked.","Jun: \"They left lighter. Good.\""],
+    bad:["Jun rearranges a jar you did not touch.","Jun: \"Tomorrow, slower.\"","Jun says nothing. The silence is instructional."],
+    tip:["Jun taps the Blue jar. \"Settle before you teach.\"","Jun: \"One next step. Not twelve.\""]
+  },
+  perk:{kind:"score",val:1,when:"first",label:"+1 first session when Jun is on duty"}
+},
+{id:"pell",ic:"🌱",name:"Pell",role:"Junior helper",style:"Eager, slightly chaotic",
+  bio:"Arrived asking to 'learn the herbs.' Still confuses Violet with Indigo. Means well. Sometimes means well too loudly.",
+  moods:["eager","nervous","delighted","sheepish"],
+  comments:{
+    good:["Pell whispers \"yes!\" from behind the curtain.","Pell almost drops a jar from excitement.","Pell: \"Can I write that in the ledger?\""],
+    bad:["Pell looks stricken on your behalf.","Pell offers tea to the wrong person.","Pell: \"Should I… sweep?\""],
+    tip:["Pell: \"Jun says matching the color helps.\"","Pell has already opened the wrong jar. You redirect."]
+  },
+  perk:{kind:"drop",val:0.08,when:"always",label:"Slightly higher remedy drop when Pell assists"}
+},
+{id:"mira",ic:"📋",name:"Mira",role:"Ledger keeper",style:"Precise, dry humor",
+  bio:"Keeps the Archive honest. Remembers every returning patient better than you do. Claims she does not do bedside work. Occasionally does.",
+  moods:["sharp","amused","weary","meticulous"],
+  comments:{
+    good:["Mira updates the Archive before you sit down.","Mira: \"Noted. They will be back.\"","Mira underlines a diagnosis you got right."],
+    bad:["Mira: \"I will file that under unfinished.\"","Mira does not look up from the ledger.","Mira: \"The pattern is still fuzzy.\""],
+    tip:["Mira: \"Check the body system before the tags.\"","Mira slides you a note: returning patient, same family."]
+  },
+  perk:{kind:"dx",val:1,when:"correct",label:"+1 score when diagnosis is correct while Mira is on duty"}
+},
+{id:"orrin",ic:"🌩",name:"Orrin",role:"Itinerant skeptic",style:"Challenges every protocol",
+  bio:"Travels the old road. Respects Senna's ledger and questions everyone who uses it. Some days he is useful. Some days he is weather.",
+  moods:["skeptical","grudgingly impressed","provocative","fair"],
+  comments:{
+    good:["Orrin: \"Fine. That one landed.\"","Orrin raises an eyebrow — his version of applause.","Orrin: \"Do not get comfortable.\""],
+    bad:["Orrin: \"As expected.\"","Orrin hums something that might be I-told-you-so.","Orrin: \"The patient needed less performance.\""],
+    tip:["Orrin: \"If you stack three techniques, you are panicking.\"","Orrin: \"Confidence without a match is theater.\""]
+  },
+  perk:{kind:"risk",val:1,when:"gamble",label:"Risky closes less punishing when Orrin is watching (softened)"}
+}
+];
+const STAFF_EVENTS=[
+{id:"argue",title:"Shelf argument",d:"Jun and Orrin disagree about the Blue jar order. The room is sharp for an hour.",effect:"twistUp"},
+{id:"pell_spill",title:"Pell spills the kettle",d:"No one is burned. Everyone is damp. Pell is mortified. Jun is silent.",effect:"attTax"},
+{id:"mira_find",title:"Mira finds a note",d:"A scrap in Senna's hand: \"Returning feet mean the story is open.\" Mira pins it above the ledger.",effect:"letterChance"},
+{id:"quiet",title:"Quiet shift",d:"No one argues. The kettle sings. Staff stay out of your way.",effect:"scoreBoost"},
+{id:"busy",title:"Market spillover",d:"Three walk-ins arrived before you unlocked the door. Staff are stretched.",effect:"busy"},
+{id:"teaching",title:"Teaching hour",d:"Pell asks to observe. Jun allows it. You feel watched — in a useful way.",effect:"observe"}
+];
+function staffById(id){return STAFF.find(s=>s.id===id)}
+function ensureStaffDay(){
+  if(!S.staffState)S.staffState={duty:[],moods:{},event:null,eventDay:0,rapport:{}};
+  if(S.staffState.eventDay!==S.day){
+    // Rotate 2 on duty
+    const shuffled=[...STAFF].sort(()=>Math.random()-0.5);
+    S.staffState.duty=shuffled.slice(0,2).map(s=>s.id);
+    S.staffState.moods={};
+    S.staffState.duty.forEach(id=>{
+      const s=staffById(id);
+      S.staffState.moods[id]=s.moods[Math.floor(Math.random()*s.moods.length)];
+    });
+    // ~35% staff event
+    S.staffState.event=Math.random()<0.35?STAFF_EVENTS[Math.floor(Math.random()*STAFF_EVENTS.length)]:null;
+    S.staffState.eventDay=S.day;
+    if(!S.staffState.rapport)S.staffState.rapport={};
+    STAFF.forEach(s=>{if(S.staffState.rapport[s.id]==null)S.staffState.rapport[s.id]=0});
+  }
+}
+const MAYA_LINES=["I just need something that isn't another lecture.","The wind-down helped once. Then exams got louder.","I booked this before I talked myself out of it.","I told a friend about the still room. Is that weird?"];
+
+/* Multi-visit story arcs — named patients who return with memory */
+const STORY_ARCS={
+  Maya:{
+    key:"maya", color:"Blue", family:"Sleep",
+    stages:[
+      {pr:"PR-001",quote:"I just need something that isn't another lecture.",note:"Exam season. Eyes tired. First meeting.",need:["Improve","Plateau","Breakthrough"]},
+      {pr:"PR-003",quote:"The wind-down helped once. Then exams got louder.",note:"Returning — screens are winning again.",need:["Improve","Breakthrough"]},
+      {pr:"PR-002",quote:"I booked this before I talked myself out of it.",note:"Loyalty deepening. Night thoughts still loud.",need:["Improve","Breakthrough"]},
+      {pr:"PR-032",quote:"I told a friend about the still room. Is that weird?",note:"Arc closing visit.",need:["Improve","Breakthrough","Plateau"]}
+    ],
+    completeMsg:"Maya's arc settles. She leaves a pressed blue flower on the shelf."
+  },
+  Ellis:{
+    key:"ellis", color:"Black", family:"Boundaries",
+    stages:[
+      {pr:"PR-007",quote:"I keep saying yes in meetings and resenting it by Friday.",note:"New patient. Calendar already full.",need:["Improve","Plateau","Breakthrough"]},
+      {pr:"PR-008",quote:"I tried the refusal script once. Then my boss asked again.",note:"Returning — pressure from above.",need:["Improve","Breakthrough"]},
+      {pr:"PR-026",quote:"I left on time twice. People noticed. I almost apologized.",note:"Workday edges are the real work.",need:["Improve","Breakthrough"]},
+      {pr:"PR-040",quote:"Rest still feels like I'm failing someone.",note:"Fear of resting — arc climax.",need:["Improve","Breakthrough","Plateau"]}
+    ],
+    completeMsg:"Ellis's arc closes. A black boundary cord appears on your shelf — left without a note."
+  },
+  Kai:{
+    key:"kai", color:"Yellow", family:"Focus",
+    stages:[
+      {pr:"PR-004",quote:"I open the same three tabs and do none of them.",note:"Procrastination loop. Soft-spoken.",need:["Improve","Plateau","Breakthrough"]},
+      {pr:"PR-006",quote:"Back-to-back calls. By 3pm I'm not a person, I'm residue.",note:"Context-switch scatter returning.",need:["Improve","Breakthrough"]},
+      {pr:"PR-025",quote:"Bad sleep again. Fog is the whole day now.",note:"Sleep debt feeding the focus arc.",need:["Improve","Breakthrough"]},
+      {pr:"PR-035",quote:"I want to finish one book. Just one. Before the year ends.",note:"Deep work — arc climax.",need:["Improve","Breakthrough","Plateau"]}
+    ],
+    completeMsg:"Kai's arc closes. A yellow tonic jar shows up with a sticky note: start smaller."
+  },
+  Rae:{
+    key:"rae", color:"Red", family:"Pain-Stiffness",
+    stages:[
+      {pr:"PR-015",quote:"My shoulders lock by lunch. I used to notice. Now I don't until it hurts.",note:"Desk tension. Practical, slightly impatient.",need:["Improve","Plateau","Breakthrough"]},
+      {pr:"PR-014",quote:"Mornings are the worst. Everything's stiff until I move.",note:"Returning — morning stiffness joined the story.",need:["Improve","Breakthrough"]},
+      {pr:"PR-029",quote:"Damp weather and the desk — both at once this week.",note:"Seasonal ache on top of posture.",need:["Improve","Breakthrough"]},
+      {pr:"PR-016",quote:"I wake with a tight jaw. I didn't know I was clenching in my sleep.",note:"Night tension — arc climax.",need:["Improve","Breakthrough","Plateau"]}
+    ],
+    completeMsg:"Rae's arc closes. A red warming wrap is folded on the chair they always used."
+  }
+};
+
+/* Named patient backstories — fiction for the ledger */
+const BACKSTORIES={
+  Maya:{
+    age:"early twenties",
+    role:"Graduate student · literature",
+    trait:"Bright, exhausted, allergic to advice that sounds like a syllabus",
+    story:"Maya moved to the valley for a program she still loves on paper. Exam season turned her evenings into a second workday under a blue screen. She tried every productivity lecture her cohort shared. None of them sat with her the way a quiet room does. She found Willow Bend because a classmate whispered that the still-room does not grade you."
+  },
+  Ellis:{
+    age:"mid thirties",
+    role:"Project lead at a logistics firm",
+    trait:"Competent, over-available, keeps score of every favor",
+    story:"Ellis was promoted for being the person who never said no. The promotion came with a calendar that ate weekends. They are good at their job and quietly furious about it. A partner suggested 'boundaries' like it was a software update. Ellis arrived at the clinic skeptical, then kept returning because someone finally asked what they wanted to stop carrying."
+  },
+  Kai:{
+    age:"late twenties",
+    role:"Freelance designer · remote",
+    trait:"Gentle voice, loud browser, collects unfinished starts",
+    story:"Kai works from a kitchen table under a window that never gets enough sun. Clients stack; tabs stack harder. They once finished a whole novel in a week and have not finished a chapter since. Sleep slipped, then focus, then the sense that any single task could be begun. Kai comes in soft-spoken and leaves a little less scattered when the session lands."
+  },
+  Rae:{
+    age:"early forties",
+    role:"Administrative coordinator · long desk hours",
+    trait:"Practical, dry humor, notices pain only after it shouts",
+    story:"Rae has worked the same corridor of offices for twelve years. The chair is 'fine.' The monitor is 'fine.' The shoulders disagree by noon. Damp weather makes the disagreement louder. Rae does not want a philosophy of the body — they want something that works before the next meeting. The still-room's warmth is the first place they admitted the jaw clenches at night."
+  }
+};
+
+const WALKIN_BITS={
+  jobs:["baker on early shifts","night librarian","bike courier","greenhouse hand","county clerk","barber","podcaster with too many mics","substitute teacher","orchard picker in season","radio tech"],
+  hooks:["moved here last spring","inherited a house with loud pipes","shares a wall with a drummer","trains for a race they may not run","keeps bees badly","writes letters they never send","collects keys to forgotten sheds","walks the same loop every dusk"],
+  tells:["speaks carefully","laughs once then stops","looks at the kettle more than at you","sits on the edge of the chair","brings the weather in on their coat","apologizes for taking the chair"]
+};
+function walkInBackstory(name,pr){
+  // Stable pseudo-random from name + problem so Archive stays consistent
+  let h=0;const key=name+"|"+(pr&&pr.id||"");
+  for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;
+  const job=WALKIN_BITS.jobs[h%WALKIN_BITS.jobs.length];
+  const hook=WALKIN_BITS.hooks[(h>>3)%WALKIN_BITS.hooks.length];
+  const tell=WALKIN_BITS.tells[(h>>5)%WALKIN_BITS.tells.length];
+  return{
+    age:"—",
+    role:job,
+    trait:tell,
+    story:name+" "+hook+". They came in about \""+(pr&&pr.p||"something small")+".\" "+tell.charAt(0).toUpperCase()+tell.slice(1)+"."
+  };
+}
+function getBackstory(name,pr){
+  if(BACKSTORIES[name])return BACKSTORIES[name];
+  return walkInBackstory(name,pr);
+}
+
+const TAG_INFO={SETTLE:{d:"Calm the system · favor settle"},GROUND:{d:"Stability · safe self-loop"},RESOURCE:{d:"Build capacity · support"},ACTIVATE:{d:"Gentle mobilization"},PACE:{d:"Cut boom-bust · protect energy"},BOUNDARY:{d:"Protect edges · say no cleanly"},INSIGHT:{d:"Reflect · re-rank the story"},RESET:{d:"Clear slate · one next action"}};
+
+const BODY_SYSTEMS={
+  "Sleep":"Brain / Nervous",
+  "Focus":"Brain / Nervous",
+  "Boundaries":"Heart / Boundary",
+  "Mood-Energy":"Heart / Cardiovascular",
+  "Pain-Stiffness":"Spine / Musculoskeletal",
+  "Home-Environment":"Eyes / Sensory",
+  "Digestive":"Stomach / Digestive"
+};
+const BODY_SYSTEM_INFO={
+  "Brain / Nervous":{ic:"🧠",d:"Settling, orienting, and quieting mental activation"},
+  "Heart / Boundary":{ic:"🖤",d:"Protecting edges and returning responsibility"},
+  "Heart / Cardiovascular":{ic:"❤️",d:"Mood, energy rhythm, and recovery capacity"},
+  "Spine / Musculoskeletal":{ic:"🦴",d:"Warmth, micro-movement, and joint ease"},
+  "Eyes / Sensory":{ic:"👁",d:"Visual rest, light, and environmental load"},
+  "Stomach / Digestive":{ic:"🧡",d:"Simple meals, pause, and gut-mood link"}
+};
+// Soft resonance: matching color to body system gives a small edge in step 2
+const COLOR_BODY_RESONANCE={
+  "Blue":["Brain / Nervous","Eyes / Sensory"],
+  "Yellow":["Brain / Nervous","Heart / Cardiovascular"],
+  "Black":["Heart / Boundary"],
+  "Green":["Spine / Musculoskeletal","Heart / Cardiovascular"],
+  "Orange":["Stomach / Digestive","Heart / Cardiovascular"],
+  "Red":["Spine / Musculoskeletal"],
+  "Violet":["Heart / Cardiovascular","Brain / Nervous"],
+  "Indigo":["Eyes / Sensory","Brain / Nervous"],
+  "White":["Eyes / Sensory"]
+};
+
+const LORE=[
+{t:"I. The Old Road Keepers",b:"Before guilds and ranks, there were only keepers of the old road: herbwives, itinerants, and quiet stubborn people who kept a chair by a kettle. They did not claim to heal the world. They claimed the next traveler deserved a place to set down their pack. Willow Bend is one lamp in a chain of lamps. When a keeper fails, the next light must burn a little warmer. When a keeper holds, the road itself seems shorter for those who walk it."},
+{t:"The Founding",b:"Three generations before Willow Bend had a name on any map, a herbwife named Senna Vey kept a still-room at the edge of the old road, treating travelers for a coin or a story. She wrote down what worked in a ledger of colors — Blue for the nervous system, Yellow for the tired mind, Black for the over-given heart — and called it nothing grander than \"the Old Ways.\""},
+{t:"The Still Room",b:"Every apothecary since has kept the same room: low light, a warm kettle, a shelf of jars in Senna's original color order. The room itself is said to do half the healing — people arrive braced for a diagnosis and find, instead, a chair. Old road keepers say you can smell a true still-room before you see it: mint, copper, wet wool, and something like rain on stone."},
+{t:"The Color Ledger",b:"Blue calms. Yellow lifts. Black protects the edges of a person. Green restores what was worn down. Orange steadies the gut and the temper together. Red loosens what has gone stiff. Violet sits with the unanswerable questions. Indigo rests the eyes and the noticing-mind. White clears one surface at a time. None of it is medicine. All of it is attention, dressed in old language."},
+{t:"The Body Systems",b:"Senna also kept a quiet map of the body in game terms: Brain/Nervous for sleep and focus, Heart for boundaries and mood-energy, Spine for stiffness, Eyes/Sensory for strain and environment, Stomach for the gut-mood loop. The map is fiction — a way to notice patterns, never a diagnosis."},
+{t:"The Healer's Vow",b:"Every apprentice copies the same line into the front of their own ledger before their first patient: \"I will not perform a fix. I will sit until the true shape of the trouble shows itself.\""},
+{t:"The Rank of Healers",b:"Novice, Apprentice, Journeyman, Adept, Master, Grandmaster — the old guild's six ranks, earned in Renown (RP), not years. Some Grandmasters were young. Senna herself never passed Adept; she said the ledger mattered more than the title. Old road keepers cared less for hats than for whether the door still opened at dawn."},
+{t:"On Returning Patients",b:"Senna's ledger notes that the same visitor rarely tells the same story twice. A good healer keeps a memory as well as a method — not to predict a person, but to notice when they've changed. The Archive exists for exactly this."},
+{t:"The Remedy Shelf",b:"Jars, cords, sachets and small worn tools, left behind or gifted after a session that truly landed. None do anything on their own. Equipped and matched to the right color, they're said to help a healer's hands remember the ledger a half-second faster."},
+{t:"The Grey",b:"Travelers on the old road speak of a thinning — not illness of flesh, but of color. People arrive grey at the edges: sleep without rest, yes without meaning, pain without a place to put it. Senna called it the Grey. The ledger was her answer: name the color, and the person can find their way back."},
+{t:"Sensory Signs of the Grey",b:"Sight: colors dull as if seen through washed glass; shadows lose their edges; a favorite blue mug looks merely \"cup.\" Sound: voices arrive half a beat late; the kettle's song flattens to a single note; laughter has no grain. Smell: bread does not rise into memory; rain smells only wet, never clean. Touch: wool feels neither warm nor rough — only present. Taste: tea goes thin, as if the water forgot the leaf. The body knows before the mind names it."},
+{t:"How the Grey Feels on the Skin",b:"Keepers describe a cool film on the forearms when a heavily greyed patient sits down — not fever-cold, more like standing in a cellar doorway. Some feel pressure behind the eyes, as if the room's light had to work harder. Pell once said the air tasted of old coins. Jun told him to stop announcing it to the patient."},
+{t:"The Road's Bargain",b:"The still-room stands because the road allows it. In return, the keeper tends whoever steps from the dust — merchant, student, skeptic, lost. Refuse the bargain, and the jars lose their order. Keep it, and the room remembers your name. Old road keepers renew the bargain each dawn by simply unlocking the door."},
+{t:"Origins of the Grey",b:"No one agrees where the Grey began. Some say it seeped from a ruined waystation where a keeper forced every traveler into a single color. Some say it is older than the road — the hunger of places without attention. Senna wrote only: It grows where no one sits with the trouble."},
+{t:"What the Grey Is Not",b:"The Grey is not a demon you can name and banish. It is not a plague of the body. It does not wear a face. It is the drift toward numbness: the scroll that never ends, the yes that means nothing, the pain ignored until it owns the house. Fight it with spectacle and it thickens. Meet it with attention and it thins."},
+{t:"Signs Along the Road",b:"Milestone stones lose their painted marks. Bees forget the way to a hive. A favorite mug stops tasting like home. Dust hangs in the air without drifting. At dusk, the horizon looks erased. In the still-room the first sign is quieter: a patient who cannot finish the sentence I feel… Without a color to reach for, the Grey has already taken a seat."},
+{t:"The Ledger as Map",b:"Senna refused the word weapon. She preferred map. Each color is a path out of thinning: Blue toward rest, Black toward edges, Yellow toward a single next act. The map does not destroy the Grey. It gives a person somewhere else to stand while the fog moves on."},
+{t:"Keepers Who Failed",b:"One filled the still-room with mirrors and slogans until the jars cracked. One sold the road's bargain to a merchant house and found the door sealed at dawn. One tried to bottle the Grey itself — witnesses said the bottle fogged from the inside and never cleared. The road buried that room under thistle and polite forgetting."},
+{t:"Why the Grey Thickens",b:"Orrin says people walk into it because attention is expensive and numbness is cheap. Jun says it prefers the gifted and over-responsible — those who carry everyone else's weight until they have no color left. Mira files both. Both are useful."},
+{t:"Full Moon Thinning",b:"On full nights the Grey presses closer to lanterns. Not stronger — hungrier. Lamp-flame burns bluer; copper tastes sharper on the tongue; the kettle takes longer to sing. Sessions run hotter; twists arrive more often. Senna stayed up those nights on purpose: If you only keep the room when it is easy, you are keeping a hobby, not a road."},
+{t:"Victory Conditions",b:"You will not end the Grey. You will make it hesitate: at a doorstep, at a name, at a patient who returns less hollow than before. A completed arc restores paint to a milestone. A careful diagnosis is a small light. The road remembers keepers who chose the chair over the cure."}
+];
+
+const GREY_SENSORY=[
+"The air tastes faintly of old coins.",
+"Lamp-light looks washed, as if through fogged glass.",
+"Somewhere outside, a bird calls once and does not finish the phrase.",
+"Wool on the chair feels neither warm nor rough — only there.",
+"The kettle's song flattens for a breath, then returns.",
+"Dust hangs in a stripe of light and forgets to drift.",
+"Tea steams without perfume.",
+"A shadow at the door has no sharp edge."
+];
+
+/* Main fantasy chronicle — unlocks as you keep the still-room */
+const CHRONICLE=[
+{id:"ch0",title:"The Key Turns",ic:"🔑",
+  body:"You were given a key that still smelled of copper and dried mint. Jun met you at the door, said little, and pointed at the ledger. \"The road sends who it sends. You sit. You listen. The Grey does the rest of the recruiting.\" Outside, the old road hummed like a held breath.",
+  unlock:s=>true},
+{id:"ch1",title:"First Color",ic:"🧵",
+  body:"After your first true session, the Blue jar seemed less dusty. Mira wrote a single line in the Archive without asking. Pell tried to clap and dropped a spoon. Somewhere beyond the window, a traveler paused — as if the room had become slightly more real.",
+  unlock:s=>(s.log||[]).length>=1},
+{id:"ch2",title:"The Grey Notices",ic:"🌫",
+  body:"Orrin returned from the road with rain on his coat and a warning: the Grey is not a metaphor in the outer hamlets. People there forget which color they were reaching for. \"Your little clinic,\" he said, \"is a lantern. Lanterns attract moths. And worse.\"",
+  unlock:s=>(s.log||[]).length>=5||(s.rp||0)>=40},
+{id:"ch3",title:"Four Threads",ic:"📖",
+  body:"Maya, Ellis, Kai, Rae — four lives tugging at the same warp. Senna's notes called such clusters a \"loom.\" When enough threads tighten, the still-room can pull a pattern out of the Grey. Jun polished the guest chairs without explaining why.",
+  unlock:s=>s.arcs&&Object.values(s.arcs).some(v=>v>=1)},
+{id:"ch4",title:"Moon Over the Ledger",ic:"🌕",
+  body:"Under a full moon the jars throw long shadows. Mira swears the ink in the ledger rearranges itself by a hair's width. The Old Ways say a keeper who works through a full moon learns whether they serve the road — or only their pride.",
+  unlock:s=>!!s.sawFullMoon||(s.day||0)>=8},
+{id:"ch5",title:"Staff of the Lantern",ic:"🤝",
+  body:"Rapport is not softness. It is the agreement that the kettle belongs to all of you. When Jun trusts your pacing, when Mira stops correcting your Archive hand, the room's walls feel thicker against the Grey.",
+  unlock:s=>s.staffState&&s.staffState.rapport&&Object.values(s.staffState.rapport).some(v=>v>=3)},
+{id:"ch6",title:"Arc of Names",ic:"✨",
+  body:"A story arc completes. The patient leaves something behind — a cord, a flower, a note. The Grey loses a foothold in one life. On the road, a milestone stone that had gone blank shows a faint color again. Pell cries. Orrin pretends not to notice.",
+  unlock:s=>s.arcs&&Object.values(s.arcs).some(v=>v>=4)},
+{id:"ch7",title:"Deep Shelf",ic:"🔧",
+  body:"You spend renown on the still-room itself — copper, chairs, lamp, bell. The building answers. Senna believed a keeper's true rank was measured in how much of the room they could wake without waking the Grey.",
+  unlock:s=>s.upgrades&&Object.keys(s.upgrades).length>=2},
+{id:"ch8",title:"Letters from the Founder",ic:"✉",
+  body:"Senna's letters surface like fish in dark water. She did not conquer the Grey. She out-listened it. \"If you rush to mend what has not finished speaking,\" one scrap reads, \"you will sew the wrong seam.\"",
+  unlock:s=>(s.letters||[]).length>=2},
+{id:"ch9",title:"Keeper of Willow Bend",ic:"👑",
+  body:"Adept or higher. The guild ranks were always a hat; the ledger was the work. Travelers begin asking for you by title, not by the room's old name. The Grey does not retreat — but it hesitates at your doorstep, which is a kind of victory.",
+  unlock:s=>RANKS.findIndex(r=>r.n===s.rank)>=3},
+{id:"ch10",title:"The Road Remembers",ic:"🗺",
+  body:"All four arcs closed. The loom holds. On a clear morning you find a new line in the ledger written in no living hand: \"The bargain holds. Tend the road's people, and the road will tend the room.\" Jun leaves tea. For once, Orrin has nothing sharp to say.",
+  unlock:s=>s.arcs&&["Maya","Ellis","Kai","Rae"].every(n=>(s.arcs[n]||0)>=4)}
+];
+
+const ITEMS=[
+{id:"it_blue",ic:"🧵",name:"Blue Nervine Sachet",color:"Blue",d:"A small linen sachet, Senna's original blend. Calms a Sleep case before you've said a word."},
+{id:"it_yellow",ic:"🫙",name:"Yellow Morning Tonic",color:"Yellow",d:"Bright and bitter. Steadies a scattered Focus session."},
+{id:"it_black",ic:"🖤",name:"Black Boundary Cord",color:"Black",d:"Knotted cord kept by hand. A physical reminder that \"no\" is a complete sentence."},
+{id:"it_green",ic:"🌿",name:"Green Restorative Salve",color:"Green",d:"Worn jar, worn label. For cases that need rebuilding, not fixing."},
+{id:"it_orange",ic:"🧡",name:"Orange Steadying Root",color:"Orange",d:"Chewed slow. Settles stomach and temper in the same breath."},
+{id:"it_red",ic:"🩸",name:"Red Warming Wrap",color:"Red",d:"Old wool, warmed by the stove before use. For anything stiff at the joints."},
+{id:"it_violet",ic:"🔮",name:"Violet Listening Bell",color:"Violet",d:"Rung once at the start of a hard conversation. Nobody knows why it helps. It helps."},
+{id:"it_indigo",ic:"👁",name:"Indigo Rest-Lens",color:"Indigo",d:"Tinted glass, older than it looks. Rests the noticing-mind."},
+{id:"it_white",ic:"🤍",name:"White Clearing Cloth",color:"White",d:"For clearing one surface, and only one, at a time."},
+{id:"it_kettle",ic:"🫖",name:"Kettle Charm",color:"Green",d:"A brass charm hung on the spout. First session of the day feels steadier.",rare:true},
+{id:"it_ledger",ic:"📓",name:"Guest Ledger Stub",color:"Black",d:"Torn page from Senna's guest book. Returning patients soften a little.",rare:true},
+{id:"it_window",ic:"🪟",name:"Still-Room Window Glass",color:"Blue",d:"A shard that catches morning light. Sleep cases gain a quiet edge.",rare:true},
+{id:"it_stone",ic:"🪨",name:"Doorstep Stone",color:"White",d:"Worn smooth by three generations of boots. Grounds overdone sessions.",rare:true},
+{id:"it_honey",ic:"🍯",name:"Night Honey Pot",color:"Orange",d:"Local honey, slightly crystallized. Settles nervous stomach lore.",rare:true}
+];
+
+const MOON_PHASES=[
+{n:"New Moon",ic:"🌑",d:"Quiet ledger. Twists less often.",twistMod:-0.08,rpMod:0},
+{n:"Waxing Crescent",ic:"🌒",d:"Small starts favored.",twistMod:0,rpMod:0.05},
+{n:"First Quarter",ic:"🌓",d:"Decisions land cleaner.",twistMod:0,rpMod:0},
+{n:"Waxing Gibbous",ic:"🌔",d:"Stories want to advance.",twistMod:0.05,rpMod:0.05},
+{n:"Full Moon",ic:"🌕",d:"High signal, high noise. Twists more often.",twistMod:0.12,rpMod:0.1},
+{n:"Waning Gibbous",ic:"🌖",d:"Integration weather.",twistMod:0,rpMod:0},
+{n:"Last Quarter",ic:"🌗",d:"Good for boundaries and closing loops.",twistMod:-0.05,rpMod:0},
+{n:"Waning Crescent",ic:"🌘",d:"Rest-friendly. Recovery feels easier.",twistMod:-0.05,rpMod:0}
+];
+function getMoon(){return MOON_PHASES[(Math.max(0,(S.day||1)-1))%MOON_PHASES.length]}
+
+const UPGRADES=[
+{id:"up_kettle",ic:"🫖",name:"Copper Kettle",cost:40,d:"+1 score on the first session of each clinic day."},
+{id:"up_chair",ic:"🪑",name:"Second Guest Chair",cost:60,d:"+2 RP when a returning patient session goes well."},
+{id:"up_shelf",ic:"📚",name:"Deep Shelf",cost:80,d:"Remedy drop chance 40% → 55%."},
+{id:"up_lamp",ic:"🕯",name:"Evening Lamp",cost:100,d:"At Att ≤3, matching tags in step 1 give +1."},
+{id:"up_bell",ic:"🔔",name:"Door Bell",cost:50,d:"Waiting Room prioritizes story-arc patients."},
+{id:"up_rug",ic:"🧶",name:"Still-Room Rug",cost:70,d:"+1 score credit on Plateau outcomes."},
+{id:"up_clock",ic:"🕰",name:"Road Clock",cost:90,d:"Attention regenerates ~20% faster."},
+{id:"up_mirror",ic:"🪞",name:"Truth Mirror",cost:110,d:"Diagnosis clues start expanded."},
+{id:"up_garden",ic:"🌿",name:"Window Herbs",cost:120,d:"Correct high-confidence dx: chance of extra body mastery."},
+{id:"up_sign",ic:"🪧",name:"Willow Signboard",cost:150,d:"Waiting room shows 4 chairs instead of 3."},
+{id:"up_vault",ic:"🔐",name:"Coin Vault",cost:130,d:"+10% RP from session outcomes."},
+{id:"up_hearth",ic:"🔥",name:"Night Hearth",cost:160,d:"Risky close misses only −1 (with Orrin, even softer)."}
+];
+
+const SHOP_BUFFS=[
+{id:"bf_focus",ic:"🍋",name:"Lemon-Balm Dram",cost:18,token:0,d:"Next session: +2 score at start.",buff:"score2"},
+{id:"bf_calm",ic:"💙",name:"Blue Steam Cup",cost:15,token:0,d:"Next session: twist chance halved.",buff:"calm"},
+{id:"bf_luck",ic:"🎲",name:"Milestone Chalk",cost:22,token:1,d:"Next session: +15% remedy drop.",buff:"luck"},
+{id:"bf_insight",ic:"🔮",name:"Violet Sniff",cost:20,token:0,d:"Next session: free extra reconsider charge.",buff:"reconsider"},
+{id:"bf_road",ic:"🗺",name:"Road Dust Pinch",cost:25,token:2,d:"Next session: +3 RP if not Setback/Stuck.",buff:"roadrp"},
+{id:"bf_grey",ic:"🌫",name:"Lantern Oil",cost:30,token:2,d:"Next session: steady hands under Full Moon.",buff:"lantern"}
+];
+const SHOP_REMEDIES=ITEMS.filter(function(i){return !i.rare}).map(function(i){return{id:"buy_"+i.id,itemId:i.id,ic:i.ic,name:i.name,cost:28,d:"Add one "+i.color+" remedy to your Shelf.",color:i.color}});
+const SHOP_RARE=[
+{id:"buy_it_kettle",itemId:"it_kettle",ic:"🫖",name:"Kettle Charm",cost:55,token:3,d:"Rare — first session of day +1."},
+{id:"buy_it_window",itemId:"it_window",ic:"🪟",name:"Window Glass",cost:55,token:3,d:"Rare — Sleep cases edge."},
+{id:"buy_it_stone",itemId:"it_stone",ic:"🪨",name:"Doorstep Stone",cost:50,token:2,d:"Rare — softens overdo."},
+{id:"buy_it_ledger",itemId:"it_ledger",ic:"📓",name:"Guest Ledger Stub",cost:60,token:4,d:"Rare road collectible."},
+{id:"buy_it_honey",itemId:"it_honey",ic:"🍯",name:"Night Honey Pot",cost:45,token:2,d:"Rare shelf prestige."}
+];
+const SHOP_GIFTS=[
+{id:"gf_jun",ic:"🫖",name:"Tea for Jun",cost:12,token:0,staff:"jun",rap:2,d:"+2 rapport with Jun."},
+{id:"gf_pell",ic:"🌱",name:"Clean Apron for Pell",cost:10,token:0,staff:"pell",rap:2,d:"+2 rapport with Pell."},
+{id:"gf_mira",ic:"📋",name:"Fresh Ink for Mira",cost:14,token:0,staff:"mira",rap:2,d:"+2 rapport with Mira."},
+{id:"gf_orrin",ic:"🌩",name:"Travel Bread for Orrin",cost:16,token:1,staff:"orrin",rap:2,d:"+2 rapport with Orrin."}
+];
+const SHOP_SPECIAL=[
+{id:"sp_day",ic:"☀️",name:"Skip to Next Dawn",cost:35,token:0,d:"Advance clinic day by 1. Moon & staff rotate."},
+{id:"sp_att",ic:"💤",name:"Deep Rest Pack",cost:25,token:0,d:"Restore Attention to full."},
+{id:"sp_token",ic:"🪙",name:"Mint a Road Token",cost:40,token:0,d:"Turn 40 RP into 1 Road Token."},
+{id:"sp_hint",ic:"📜",name:"Archive Hint Scrap",cost:20,token:1,d:"Permanent: soft family whisper on diagnosis options.",flag:"hintWhisper"}
+];
+
+/* Road quests — mid-length goals beyond daily */
+const QUESTS=[
+{id:"q_sessions5",ic:"📋",title:"Five Chairs",d:"Complete 5 sessions.",need:s=>(s.log||[]).length,target:5,reward:{rp:25,token:1}},
+{id:"q_dx",ic:"🔎",title:"Clear Eyes",d:"Get 3 correct diagnoses.",need:s=>s.diagCorrect||0,target:3,reward:{rp:20,token:0}},
+{id:"q_arc",ic:"📖",title:"Hold a Thread",d:"Advance any story arc once.",need:s=>s.arcs?Object.values(s.arcs).reduce((a,b)=>a+b,0):0,target:1,reward:{rp:30,token:1}},
+{id:"q_shop",ic:"🔧",title:"Wake the Room",d:"Install 2 clinic upgrades.",need:s=>Object.keys(s.upgrades||{}).length,target:2,reward:{rp:35,token:1}},
+{id:"q_streak",ic:"🔥",title:"Steady Hands",d:"Reach a 3-session streak.",need:s=>s.bestStreak||0,target:3,reward:{rp:40,token:2}},
+{id:"q_break",ic:"✨",title:"Lantern Flare",d:"Land 2 Breakthroughs.",need:s=>s.breakthroughs||0,target:2,reward:{rp:45,token:2}},
+{id:"q_staff",ic:"🤝",title:"Shared Kettle",d:"Reach +4 rapport with anyone.",need:s=>{const r=s.staffState&&s.staffState.rapport;if(!r)return 0;return Math.max.apply(null,Object.values(r).concat([0]))},target:4,reward:{rp:30,token:1}},
+{id:"q_grey",ic:"🌫",title:"Against the Thinning",d:"Unlock 4 chronicle chapters.",need:s=>(s.chronicleUnlocked||[]).length,target:4,reward:{rp:50,token:3}}
+];
+function ensureQuests(){
+  if(!S.questsDone)S.questsDone=[];
+  if(!S.questClaimed)S.questClaimed=[];
+}
+function checkQuests(){
+  ensureQuests();
+  QUESTS.forEach(q=>{
+    if(S.questsDone.indexOf(q.id)>=0)return;
+    let n=0;try{n=q.need(S)}catch(e){n=0}
+    if(n>=q.target){S.questsDone.push(q.id);toast(q.ic+" Quest ready: "+q.title)}
+  });
+}
+function claimQuest(id){
+  ensureQuests();
+  if(S.questClaimed.indexOf(id)>=0)return;
+  if(S.questsDone.indexOf(id)<0){toast("Not finished");return}
+  const q=QUESTS.find(x=>x.id===id);if(!q)return;
+  S.questClaimed.push(id);
+  S.rp=(S.rp||0)+(q.reward.rp||0);
+  S.tokens=(S.tokens||0)+(q.reward.token||0);
+  save();renderQuestCard();toast(q.ic+" +"+q.reward.rp+" RP"+(q.reward.token?" · 🪙+"+q.reward.token:""));
+}
+function renderQuestCard(){
+  const el=document.getElementById("questCard");if(!el)return;
+  ensureQuests();checkQuests();
+  const active=QUESTS.find(q=>S.questClaimed.indexOf(q.id)<0);
+  if(!active){el.innerHTML='<div class="q-title">🌌 All road quests claimed</div><p class="muted" style="margin-top:4px;font-size:.78rem">The market still holds more for a busy keeper.</p>';return}
+  let n=0;try{n=active.need(S)}catch(e){n=0}
+  const ready=S.questsDone.indexOf(active.id)>=0;
+  el.innerHTML='<div class="muted" style="font-size:.7rem">ROAD QUEST</div><div class="q-title" style="margin-top:2px">'+active.ic+' '+active.title+'</div>'+
+    '<p class="muted" style="margin-top:4px;font-size:.78rem">'+active.d+'</p>'+
+    '<div class="muted" style="margin-top:6px;font-size:.75rem">'+Math.min(n,active.target)+' / '+active.target+
+    (ready?' · <span style="color:var(--accent)">Ready to claim</span>':'')+'</div>'+
+    (ready?'<button class="btn sm" style="margin-top:8px" onclick="event.stopPropagation();claimQuest(\''+active.id+'\')">Claim reward</button>':'');
+}
+
+const SENNA_LETTERS=[
+{id:"let1",t:"On Not Fixing",b:"If you rush to mend what has not finished speaking, you will sew the wrong seam. Sit. The trouble will name itself."},
+{id:"let2",t:"On the Color Black",b:"Black is not emptiness. It is the edge of a person — the place where they stop belonging to everyone else."},
+{id:"let3",t:"On Returning Feet",b:"The same boots on the step mean the story is still open. Do not assume you know the next page."},
+{id:"let4",t:"On the Full Moon",b:"Under a full moon every patient brings two troubles and one truth. Sort carefully."},
+{id:"let5",t:"On the Apprentice",b:"Rank is a hat. The ledger is the work. Lose the hat before you lose the ledger."}
+];
+
+const ATT_MAX=10;
+const ATT_REGEN_MS=30000;
+const RANKS=[{n:"Novice",rp:0},{n:"Apprentice",rp:50},{n:"Journeyman",rp:150},{n:"Adept",rp:350},{n:"Master",rp:700},{n:"Grandmaster",rp:1300}];
+const TWISTS=[
+{id:"crunch",name:"⏱ Time Crunch",d:"They can only stay a few minutes — every choice needs to count.",mult:1,riskier:false},
+{id:"skeptic",name:"🤨 Skeptic",d:"Tried everything before. Harder to land, bigger payoff if it works.",mult:1.35,riskier:false},
+{id:"crisis",name:"🌩 Flare-Up",d:"Symptoms spiked overnight. High risk, high reward session.",mult:1.6,riskier:true},
+{id:"gift",name:"🎁 Grateful Return",d:"A past win pays forward — small RP is locked in no matter what.",mult:1,riskier:false,flat:5}
+];
+const BADGES=[
+{id:"first_case",ic:"🌱",name:"First Case",d:"Complete 1 session",cond:s=>s.log.length>=1},
+{id:"ten_cases",ic:"📋",name:"Regular Hours",d:"Complete 10 sessions",cond:s=>s.log.length>=10},
+{id:"fifty_cases",ic:"🏛",name:"Seasoned Healer",d:"Complete 50 sessions",cond:s=>s.log.length>=50},
+{id:"streak5",ic:"🔥",name:"On a Roll",d:"Hit a 5-streak combo",cond:s=>s.bestStreak>=5},
+{id:"streak10",ic:"⚡",name:"Unstoppable",d:"Hit a 10-streak combo",cond:s=>s.bestStreak>=10},
+{id:"break1",ic:"✨",name:"Breakthrough",d:"Land a Breakthrough outcome",cond:s=>s.breakthroughs>=1},
+{id:"break10",ic:"🌟",name:"Master Healer",d:"Land 10 Breakthroughs",cond:s=>s.breakthroughs>=10},
+{id:"maya_loyal",ic:"💙",name:"Trusted",d:"Complete Maya's story arc",cond:s=>(s.arcs&&s.arcs.Maya>=4)||s.maya>=3},
+{id:"ellis_arc",ic:"🖤",name:"Clean Edges",d:"Complete Ellis's boundaries arc",cond:s=>s.arcs&&s.arcs.Ellis>=4},
+{id:"kai_arc",ic:"📒",name:"One Tab",d:"Complete Kai's focus arc",cond:s=>s.arcs&&s.arcs.Kai>=4},
+{id:"rae_arc",ic:"🔥",name:"Unclenched",d:"Complete Rae's stiffness arc",cond:s=>s.arcs&&s.arcs.Rae>=4},
+{id:"all_arcs",ic:"📖",name:"Full Ledger",d:"Complete all four story arcs",cond:s=>s.arcs&&["Maya","Ellis","Kai","Rae"].every(n=>(s.arcs[n]||0)>=4)},
+{id:"all_mastery",ic:"🧭",name:"Full Spectrum",d:"Mastery 5 in all core families",cond:s=>["Sleep","Focus","Boundaries","Mood-Energy"].every(f=>(s.mastery[f]||0)>=5)},
+{id:"rank_master",ic:"👑",name:"Master Rank",d:"Reach Master rank",cond:s=>RANKS.findIndex(r=>r.n===s.rank)>=4},
+{id:"daily7",ic:"📆",name:"Dedicated",d:"Complete 7 daily challenges",cond:s=>(s.dailyDone||0)>=7},
+{id:"gambler",ic:"🎲",name:"High Roller",d:"Take 5 risky gambles",cond:s=>(s.gambles||0)>=5},
+{id:"archivist",ic:"🗂",name:"Archivist",d:"Meet 10 distinct patients",cond:s=>new Set(s.log.map(e=>e.name)).size>=10},
+{id:"collector",ic:"🎒",name:"Remedy Collector",d:"Collect 5 different remedies",cond:s=>Object.keys(s.inventory||{}).filter(k=>s.inventory[k]>0).length>=5},
+{id:"rare_find",ic:"✨",name:"Rare Find",d:"Own any rare shelf item",cond:s=>ITEMS.some(i=>i.rare&&(s.inventory||{})[i.id]>0)},
+{id:"lettered",ic:"✉",name:"Senna's Reader",d:"Collect 3 of Senna's letters",cond:s=>(s.letters||[]).length>=3},
+{id:"workshop",ic:"🔧",name:"Workshop Hand",d:"Buy 2 clinic upgrades",cond:s=>Object.keys(s.upgrades||{}).length>=2},
+{id:"full_moon",ic:"🌕",name:"Moonlit Shift",d:"Complete a session under Full Moon",cond:s=>!!s.sawFullMoon},
+{id:"staff_friend",ic:"🤝",name:"Still-room Ally",d:"Reach +5 rapport with any staff member",cond:s=>s.staffState&&s.staffState.rapport&&Object.values(s.staffState.rapport).some(v=>v>=5)},
+{id:"chronicler",ic:"🗺",name:"Road's Keeper",d:"Unlock 6 chronicle chapters",cond:s=>(s.chronicleUnlocked||[]).length>=6},
+{id:"full_chronicle",ic:"🌌",name:"Against the Grey",d:"Complete the full chronicle",cond:s=>(s.chronicleUnlocked||[]).length>=11},
+{id:"shopper",ic:"🛒",name:"Market Regular",d:"Own 4 clinic upgrades",cond:s=>Object.keys(s.upgrades||{}).length>=4},
+{id:"tokened",ic:"🪙",name:"Token Holder",d:"Hold 3 Road Tokens at once",cond:s=>(s.tokens||0)>=3},
+{id:"full_build",ic:"🏛",name:"Still-Room Complete",d:"Install every clinic upgrade",cond:s=>Object.keys(s.upgrades||{}).length>=12},
+{id:"diagnoser",ic:"🔎",name:"Sharp Eye",d:"Correct diagnosis + High confidence on 5 cases",cond:s=>(s.diagHighCorrect||0)>=5},
+{id:"body_map",ic:"🗺",name:"Body Map",d:"Reach body-system mastery 3 in any two systems",cond:s=>{const m=s.bodyMastery||{};return Object.values(m).filter(v=>v>=3).length>=2}},
+{id:"calibrated",ic:"🎯",name:"Calibrated",d:"Achieve 70%+ diagnosis accuracy over 10+ cases",cond:s=>(s.diagTotal||0)>=10&&((s.diagCorrect||0)/(s.diagTotal||1))>=0.7}
+];
+const CHALLENGE_FAMS=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+function makeDaily(seedStr){
+let h=0;for(let i=0;i<seedStr.length;i++)h=(h*31+seedStr.charCodeAt(i))>>>0;
+const kinds=["family","sessions","streak","breakthrough","diagnosis"];
+const kind=kinds[h%kinds.length];
+if(kind==="family"){const f=CHALLENGE_FAMS[h%CHALLENGE_FAMS.length];return{kind,family:f,need:3,label:"Treat 3 "+f+" patients today",reward:20}}
+if(kind==="sessions")return{kind,need:4,label:"Complete 4 sessions today",reward:18};
+if(kind==="streak")return{kind,need:3,label:"Reach a 3-streak combo today",reward:22};
+if(kind==="diagnosis")return{kind,need:2,label:"Land 2 correct High-confidence diagnoses today",reward:24};
+return{kind,need:1,label:"Land 1 Breakthrough outcome today",reward:25};
+}
+function todayKey(){return new Date().toDateString()}
+
+let S={clinic:"Willow Bend Clinic",healer:"",rp:0,att:10,attTimer:0,day:1,rank:"Novice",mastery:{Sleep:0,Focus:0,Boundaries:0,"Mood-Energy":0,"Pain-Stiffness":0,Digestive:0,"Home-Environment":0},bodyMastery:{"Brain / Nervous":0,"Heart / Boundary":0,"Heart / Cardiovascular":0,"Spine / Musculoskeletal":0,"Eyes / Sensory":0,"Stomach / Digestive":0},maya:0,log:[],seenMaya:false,streak:0,bestStreak:0,breakthroughs:0,badges:[],gambles:0,dailyDone:0,daily:null,dailyDate:"",dailyProg:0,dailyClaimed:false,lastTick:Date.now(),passiveAccum:0,inventory:{},equipped:null,patientMemory:{},archiveFilterFam:"All",archiveFilterOut:"All",archiveFilterBody:"All",codexTab:"lore",diagHighCorrect:0,diagTotal:0,diagCorrect:0,arcs:{Maya:0,Ellis:0,Kai:0,Rae:0},arcCooldown:{},upgrades:{},letters:[],kettleUsedDay:0,sawFullMoon:false,staffState:{duty:[],moods:{},event:null,eventDay:0,rapport:{}},chronicleUnlocked:["ch0"],tokens:0,buffs:[],flags:{},shopTab:"upgrades",questsDone:[],questClaimed:[]};
+let session=null;
+
+const DIAGNOSIS_BANK={
+"Sleep":[
+{name:"Difficulty initiating sleep",match:["Trouble falling asleep","Difficulty winding down after work"],clues:["Exhausted but unable to settle","Nighttime activation or screen habits","Brain / Nervous system in play"]},
+{name:"Sleep-maintenance difficulty",match:["Waking at 3am with thoughts"],clues:["Wakes during the night","Thoughts become active after waking","Brain / Nervous system in play"]},
+{name:"Sleep-environment disruption",match:["Noisy environment disrupting sleep","Overheating bedroom at night"],clues:["Environment interferes with sleep","Improvement may follow a room-level change","Eyes / Sensory or Brain / Nervous"]},
+{name:"Non-restorative sleep pattern",match:["Waking tired most days"],clues:["Wakes tired repeatedly","Morning energy remains low","Brain / Nervous + recovery"]},
+{name:"Sleep-related behavior pattern",match:["Phone in bed / night scrolling"],clues:["Device use occurs in bed","Behavior competes with wind-down","Brain / Nervous system in play"]},
+{name:"Autoplay gravity pattern",match:["One-more-episode gravity"],clues:["Next episode wins over sleep","Credits=bedtime rule is the game clue","Brain / Nervous system in play"]}],
+"Focus":[
+{name:"Task-initiation difficulty",match:["Procrastinating simple tasks"],clues:["Simple tasks get delayed","Starting is harder than the task itself","Brain / Nervous system in play"]},
+{name:"Cognitive fatigue pattern",match:["Afternoon energy crash","Brain fog after poor sleep"],clues:["Mental performance drops","Energy or sleep context is relevant","Brain / Nervous system in play"]},
+{name:"Context-switch overload",match:["Context-switch scatter after meetings"],clues:["Back-to-back demands","Difficulty resetting attention","Brain / Nervous system in play"]},
+{name:"Decision paralysis",match:["Decision paralysis"],clues:["Choices feel unusually difficult","A smaller decision window may help","Brain / Nervous system in play"]},
+{name:"Deep-work completion difficulty",match:["Difficulty finishing books / deep work"],clues:["Starts are easier than sustained completion","Distraction or pacing is relevant","Brain / Nervous system in play"]},
+{name:"Phantom vibration pattern",match:["Phantom phone buzzes"],clues:["Felt buzz with no alert","Pocket-empty check is the game clue","Brain / Nervous system in play"]},
+{name:"Tab-hoarding overload",match:["Tab hoarding spiral"],clues:["Too many open contexts","Close-all-but-one is the game clue","Brain / Nervous system in play"]},
+{name:"Meeting-residue fog",match:["Meeting that should have been a walk"],clues:["Long meeting, thin outcome","Movement reset is the game clue","Brain / Nervous system in play"]}],
+"Boundaries":[
+{name:"Difficulty saying no",match:["Trouble saying no"],clues:["Agrees despite wanting to decline","Boundary language is the central issue","Heart / Boundary system in play"]},
+{name:"Overcommitment pattern",match:["Overcommitting calendar"],clues:["Too many commitments","Regret appears after agreeing","Heart / Boundary system in play"]},
+{name:"Responsibility-for-others pattern",match:["Feeling responsible for others' moods"],clues:["Other people's emotions feel like a personal duty","Boundary separation is relevant","Heart / Boundary system in play"]},
+{name:"Workday boundary difficulty",match:["Difficulty ending the workday"],clues:["Work remains mentally active after hours","A shutdown boundary is relevant","Heart / Boundary system in play"]},
+{name:"Over-apologizing pattern",match:["Over-apologizing"],clues:["Says sorry when no repair is needed","Automatic social habit is present","Heart / Boundary system in play"]},
+{name:"Rest-boundary difficulty",match:["Fear of resting"],clues:["Rest triggers guilt or unease","Recovery itself feels unsafe or unearned","Heart / Boundary system in play"]},
+{name:"Reply-all reflex pattern",match:["Reply-all reflex"],clues:["Sends before thinking","Draft-then-delete is the game clue","Heart / Boundary system in play"]}],
+"Mood-Energy":[
+{name:"Motivation / activation difficulty",match:["Low motivation to start exercising"],clues:["Wants to act but cannot initiate","A tiny activation step is appropriate","Heart / Cardiovascular system in play"]},
+{name:"Social recovery depletion",match:["Social battery empty"],clues:["Social activity consumes recovery capacity","Quiet recovery is relevant","Heart / Cardiovascular system in play"]},
+{name:"Comparison-driven mood strain",match:["Comparison spiral on social media","Feeling flat after social media"],clues:["Mood shifts after scrolling","Comparison or overstimulation is part of the pattern","Heart / Cardiovascular system in play"]},
+{name:"Work-dread pattern",match:["Sunday scaries / work dread"],clues:["Anticipatory dread","One controllable next action may reduce friction","Heart / Cardiovascular system in play"]},
+{name:"Routine-reset difficulty",match:["Post-holiday crash"],clues:["Transition disrupts routine","Gentle structure is relevant","Heart / Cardiovascular system in play"]},
+{name:"Meaning / connection strain",match:["Everyday existential ache"],clues:["Persistent questions about meaning","Connection or purposeful action is relevant","Heart / Cardiovascular system in play"]},
+{name:"Hunger-linked irritability pattern",match:["Irritability from hunger"],clues:["Mood changes when meals are skipped","Resource/pacing is relevant","Heart / Cardiovascular + Stomach"]},
+{name:"Group-chat obligation strain",match:["Group-chat obligation fog"],clues:["Unread pile feels urgent","Mute-and-breathe is the game clue","Heart / Cardiovascular system in play"]},
+{name:"Judgmental houseplant pattern",match:["Plant that judges you"],clues:["Plant care guilt","Sunday watering pact is the game clue","Heart / Cardiovascular system in play"]}],
+"Pain-Stiffness":[
+{name:"General stiffness pattern",match:["Morning stiffness"],clues:["Stiff on waking","Gentle movement/warmth is the game clue","Spine / Musculoskeletal system in play"]},
+{name:"Desk-related tension",match:["Desk shoulder tension"],clues:["Symptoms occur around desk work","Posture and micro-breaks are relevant","Spine / Musculoskeletal system in play"]},
+{name:"Night jaw-tension pattern",match:["Jaw tension at night"],clues:["Tight jaw on waking","Nighttime clenching/tension is suggested","Spine / Musculoskeletal system in play"]},
+{name:"Weather-associated joint discomfort",match:["Seasonal joint ache"],clues:["Damp weather is associated with discomfort","Warmth and pacing are game clues","Spine / Musculoskeletal system in play"]},
+{name:"Visual strain pattern",match:["Eye strain from extended reading"],clues:["Long reading triggers strain","Breaks and visual rest are relevant","Eyes / Sensory system in play"]}],
+"Home-Environment":[
+{name:"Cold-environment discomfort",match:["Cold office feet"],clues:["Localized cold exposure","Layers/warming are the game clue","Spine / Musculoskeletal or Eyes / Sensory"]},
+{name:"Dry-air irritation",match:["Dry indoor air"],clues:["Scratchy throat in dry air","Humidity/environment is central","Eyes / Sensory system in play"]},
+{name:"Noise-related sleep disruption",match:["Noisy environment disrupting sleep"],clues:["Noise interrupts sleep","Environmental boundary is central","Eyes / Sensory + Brain / Nervous"]},
+{name:"Screen-related visual strain",match:["Eye strain from screens"],clues:["Extended screen exposure","Breaks are the game clue","Eyes / Sensory system in play"]},
+{name:"Bedroom temperature disruption",match:["Overheating bedroom at night"],clues:["Room temperature interferes with sleep","Cooling the environment is the game clue","Eyes / Sensory system in play"]},
+{name:"Clutter-related stress pattern",match:["Clutter stress one surface"],clues:["One visual area drives stress","A small environmental reset is relevant","Eyes / Sensory system in play"]},
+{name:"Laundry tribute pattern",match:["Sock-eating dryer conspiracy"],clues:["Missing socks after dryer","One-basket boundary is the game clue","Eyes / Sensory system in play"]},
+{name:"Cable multiplication pattern",match:["Cable that multiplies overnight"],clues:["Drawer fills with unknown cords","One-drawer exile is the game clue","Eyes / Sensory system in play"]}],
+"Digestive":[
+{name:"Stress-related stomach upset",match:["Nervous stomach before events"],clues:["Symptoms appear before events","Stress context is central","Stomach / Digestive system in play"]},
+{name:"Meal-related digestive discomfort",match:["Occasional gas after heavy meals"],clues:["Heavy meals precede discomfort","Meal simplicity is the game clue","Stomach / Digestive system in play"]},
+{name:"Non-hunger snacking pattern",match:["Snacking when not hungry"],clues:["Eating occurs without physical hunger","A pause/check-in is the game clue","Stomach / Digestive system in play"]},
+{name:"Post-meal energy/fog pattern",match:["Mild post-meal fog"],clues:["Fog follows meals","Meal size and a walk are game clues","Stomach / Digestive + Brain / Nervous"]},
+{name:"Fridge-light negotiation pattern",match:["Fridge light negotiations"],clues:["Opens fridge without hunger","Water-first pause is the game clue","Stomach / Digestive system in play"]}]
+};
+
+function getDiagnosisOptions(pr){
+  const bank=DIAGNOSIS_BANK[pr.f]||[];
+  const exact=bank.find(d=>d.match.includes(pr.p));
+  const pool=bank.filter(d=>d!==exact);
+  const opts=[exact,...pool].filter(Boolean).slice(0,4);
+  return opts.sort(()=>Math.random()-0.5);
+}
+
+function diagnosisPick(index){
+  if(session.confidence)return; // locked after confidence
+  const d=session.diagnosisOptions[index];
+  if(!d)return;
+  // Allow switching diagnosis before confidence is set
+  const prevCorrect=session.diagnosisCorrect;
+  const hadPick=!!session.diagnosis;
+  if(hadPick){
+    // undo prior diagnosis score delta
+    session.score-=prevCorrect?3:-1;
+    session.choices=session.choices.filter(c=>c.type!=="diagnosis");
+  }
+  session.diagnosis=d.name;
+  session.diagnosisCorrect=d.match.includes(session.pr.p);
+  session.diagnosisClues=d.clues;
+  session.choices.push({type:"diagnosis",val:d.name});
+  session.score+=session.diagnosisCorrect?3:-1;
+  document.querySelectorAll("#diagnosisChoices .diagnosis-choice").forEach((el,i)=>{
+    el.classList.toggle("selected",i===index);
+    el.classList.remove("wrong");
+    if(i===index&&!session.diagnosisCorrect)el.classList.add("wrong");
+  });
+  document.getElementById("diagnosisFeedback").innerHTML=session.diagnosisCorrect?
+    '<div class="feedback-good">✓ Strong match. +3 reasoning points</div><div class="muted" style="font-size:.72rem;margin-top:4px">You can still switch diagnosis before locking confidence.</div>':
+    '<div class="feedback-warn">△ Plausible, but the case has a stronger match. −1 reasoning point</div><div class="muted" style="font-size:.72rem;margin-top:4px">You can still switch diagnosis before locking confidence.</div>';
+  document.getElementById("diagnosisBox").classList.add("glow");
+  document.getElementById("diagnosisChoices").style.pointerEvents="auto";
+  renderConfidence();
+  updateLiveScore();
+  setTimeout(()=>{const fb=document.getElementById("diagnosisFeedback");if(fb)fb.scrollIntoView({behavior:"smooth",block:"center"})},60);
+}
+
+function renderConfidence(){
+  document.getElementById("diagnosisFeedback").innerHTML +=
+    '<div class="muted" style="margin-top:8px">How confident are you in this working diagnosis?</div>'+
+    '<div class="confidence">'+
+    '<div class="choice" onclick="confidencePick(1)">Low</div>'+
+    '<div class="choice" onclick="confidencePick(2)">Moderate</div>'+
+    '<div class="choice" onclick="confidencePick(3)">High</div>'+
+    '</div>';
+}
+
+function confidencePick(level){
+  if(session.confidence)return;
+  if(!session.diagnosis){toast("Pick a diagnosis first");return}
+  session.confidence=level;
+  // Calibrated scoring:
+  // Correct + High → +2 | Correct + Moderate → +1 | Correct + Low → 0
+  // Wrong  + High → -2 | Wrong  + Moderate → -1 | Wrong  + Low → 0
+  let delta=0;
+  if(session.diagnosisCorrect){
+    if(level===3)delta=2;
+    else if(level===2)delta=1;
+  }else{
+    if(level===3)delta=-2;
+    else if(level===2)delta=-1;
+  }
+  session.score+=delta;
+  session.choices.push({type:"confidence",val:["","Low","Moderate","High"][level]});
+  const label=["","Low","Moderate","High"][level];
+  const msg=session.diagnosisCorrect
+    ?'<div class="feedback-good">Confidence locked: '+label+' · reasoning +'+delta+'</div>'
+    :'<div class="feedback-warn">Confidence locked: '+label+' · reasoning '+delta+'</div>';
+  document.getElementById("diagnosisFeedback").innerHTML+=msg;
+  document.getElementById("diagnosisChoices").style.pointerEvents="none";
+  if(session.diagnosisCorrect&&level===3)S.diagHighCorrect=(S.diagHighCorrect||0)+1;
+  if(!session.practice){
+    S.diagTotal=(S.diagTotal||0)+1;
+    if(session.diagnosisCorrect)S.diagCorrect=(S.diagCorrect||0)+1;
+  }
+  updateLiveScore();
+  showClues();
+}
+
+function showClues(){
+  const clues=(session.diagnosisClues||[]).map(x=>'<div class="clue">🔎 '+x+'</div>').join("");
+  document.getElementById("diagnosisFeedback").innerHTML+=
+    '<div class="muted" style="margin-top:8px;cursor:pointer" onclick="toggleClues()">Case clues <span id="clueToggle">▸ show</span></div>'+
+    '<div id="clueList" class="clue-list" style="display:none">'+clues+'</div>';
+  if(session.practice){
+    setActionBar('<button class="btn" onclick="endPractice()">Finish practice</button>');
+  }else{
+    let bar='<button class="btn" onclick="continueFromDiagnosis()">Continue to intake</button>';
+    if(session.extraReconsider>0)bar='<button class="btn sec" onclick="useReconsiderBuff()">🔮 Reconsider diagnosis</button>'+bar;
+    setActionBar(bar);
+  }
+}
+function useReconsiderBuff(){
+  if(!session.extraReconsider){toast("No reconsider left");return}
+  session.extraReconsider--;
+  // Undo confidence score delta approximately
+  session.score-=session.confidence?(session.diagnosisCorrect?(session.confidence===3?2:session.confidence===2?1:0):(session.confidence===3?-2:session.confidence===2?-1:0)):0;
+  session.confidence=0;
+  document.getElementById("diagnosisChoices").style.pointerEvents="auto";
+  document.getElementById("diagnosisFeedback").innerHTML='<div class="muted">Violet sniff clears the lock — pick again.</div>';
+  toast("🔮 Diagnosis unlocked");
+  setActionBar(null);
+}
+function toggleClues(){
+  const list=document.getElementById("clueList");
+  const tog=document.getElementById("clueToggle");
+  if(!list)return;
+  const open=list.style.display!=="none";
+  list.style.display=open?"none":"";
+  if(tog)tog.textContent=open?"▸ show":"▾ hide";
+}
+function toggleBackstory(id){
+  const el=document.getElementById(id);
+  const t=document.getElementById(id+"_t");
+  if(!el)return;
+  const open=el.style.display!=="none";
+  el.style.display=open?"none":"";
+  if(t)t.textContent=open?"▸":"▾";
+}
+
+function continueFromDiagnosis(){
+  if(!session.confidence){toast("Choose a confidence level first.");return}
+  setActionBar(null);
+  session.choices.push({type:"diagnosis_complete",val:"diagnosis reviewed"});
+  document.getElementById("intakeChoices").innerHTML=
+    '<div class="choice" onclick="intakePick(\'listen\')"><div class="t">Listen first</div><div class="d">Offer space. No rush to fix. (+SETTLE lean)</div></div>'+
+    '<div class="choice" onclick="intakePick(\'clarify\')"><div class="t">Clarify the stuck point</div><div class="d">One clear question. Name the pattern. (+INSIGHT / GROUND)</div></div>'+
+    '<div class="choice" onclick="intakePick(\'practical\')"><div class="t">Offer one practical next step</div><div class="d">Concrete, small, doable today. (+ACTIVATE / BOUNDARY)</div></div>';
+  setTimeout(()=>document.getElementById("intakeChoices").scrollIntoView({behavior:"smooth",block:"center"}),60);
+}
+function endPractice(){
+  const ok=session.diagnosisCorrect;
+  toast(ok?"Practice complete · correct diagnosis":"Practice complete · review the clues");
+  setActionBar(null);session=null;go("deck");
+}
+function updateLiveScore(){
+  const el=document.getElementById("liveScore");
+  if(!el||!session)return;
+  const s=session.score||0;
+  el.textContent="Score "+s;
+  el.style.color=s>=7?"var(--gold)":(s>=5?"var(--accent)":(s<1?"var(--danger)":"var(--text)"));
+}
+
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function load(){try{const r=safeGet("hhc2");if(r)Object.assign(S,JSON.parse(r))}catch(e){console.error("load",e)}
+if(typeof S.att!=="number"||isNaN(S.att))S.att=10;
+if(S.att<0)S.att=0;
+if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+if(!S.arcData)S.arcData=S.arcCooldown||{};
+if(!S.bodyMastery)S.bodyMastery={"Brain / Nervous":0,"Heart / Boundary":0,"Heart / Cardiovascular":0,"Spine / Musculoskeletal":0,"Eyes / Sensory":0,"Stomach / Digestive":0};
+if(!S.mastery)S.mastery={Sleep:0,Focus:0,Boundaries:0,"Mood-Energy":0,"Pain-Stiffness":0,Digestive:0,"Home-Environment":0};
+if(!Array.isArray(S.log))S.log=[];
+if(!S.staffState)S.staffState={duty:[],moods:{},event:null,eventDay:0,rapport:{}};
+if(!S.upgrades)S.upgrades={};
+if(!S.inventory)S.inventory={};
+if(!S.chronicleUnlocked||!S.chronicleUnlocked.length)S.chronicleUnlocked=["ch0"];
+const now=Date.now();const away=Math.max(0,now-(S.lastTick||now));
+if(away>2000){try{catchUp(away)}catch(e){}}
+S.lastTick=now;
+try{ensureDaily()}catch(e){}
+}
+function catchUp(ms){
+const capped=Math.min(ms,1000*60*60*6);
+if(S.att<ATT_MAX){S.attTimer=(S.attTimer||0)+capped;const gained=Math.floor(S.attTimer/ATT_REGEN_MS);if(gained>0){S.att=Math.min(ATT_MAX,S.att+gained);S.attTimer-=gained*ATT_REGEN_MS}}
+const rankIdx=RANKS.findIndex(r=>r.n===S.rank);
+if(rankIdx>0){const rp=Math.floor(rankIdx*0.12*capped/1000);if(rp>0){S.rp+=rp;toast("While away: +"+rp+" passive RP")}}
+}
+function ensureDaily(){
+const k=todayKey();
+if(S.dailyDate!==k){S.dailyDate=k;S.daily=makeDaily(k+S.clinic);S.dailyProg=0;S.dailyClaimed=false}
+}
+/* —— Performance layer: throttle saves, meters, toasts —— */
+const _dom={};
+function $(id){if(!_dom[id])_dom[id]=document.getElementById(id);return _dom[id]}
+let _saveTimer=null,_uiScheduled=false,_lastMeterKey="",_toastTimer=null,_toastQueue=[];
+function save(opts){
+  // opts.ui === false → persist only; default refreshes home meters lightly
+  const wantUi=!opts||opts.ui!==false;
+  try{
+    if(_saveTimer)clearTimeout(_saveTimer);
+    _saveTimer=setTimeout(()=>{try{safeSet("hhc2",JSON.stringify(S))}catch(e){}},180);
+  }catch(e){}
+  if(wantUi)scheduleUi();
+}
+function scheduleUi(){
+  if(_uiScheduled)return;
+  _uiScheduled=true;
+  requestAnimationFrame(()=>{_uiScheduled=false;try{ui()}catch(e){console.error("ui",e)}});
+}
+function ui(){
+const clinicEl=$("clinicName");
+if(clinicEl&&clinicEl.childNodes[0])clinicEl.childNodes[0].textContent=S.clinic;
+const rb=$("rankBadge");if(rb)rb.textContent=S.rank;
+updateMeters(true);
+const md=$("mDay");if(md)md.textContent=S.day;
+const mc=$("mCases");if(mc)mc.textContent=S.log.length;
+[["Sleep","Sleep"],["Focus","Focus"],["Boundaries","Bound"],["Mood-Energy","Mood"]].forEach(([f,id])=>{
+const v=S.mastery[f]||0;document.getElementById("ms"+id).textContent=v+"/5";
+document.getElementById("bar"+id).style.width=Math.min(100,v*20)+"%"});
+document.getElementById("msMaya").textContent=S.maya+"/3";
+document.getElementById("barMaya").style.width=Math.min(100,S.maya*33.4)+"%";
+// Diagnosis accuracy meter
+const dt=S.diagTotal||0,dc=S.diagCorrect||0;
+const acc=dt?Math.round((dc/dt)*100):0;
+document.getElementById("msDiag").textContent=dt?acc+"% ("+dc+"/"+dt+")":"—";
+document.getElementById("barDiag").style.width=Math.min(100,acc)+"%";
+// Compact body-system mastery line
+const bm=S.bodyMastery||{};
+const bmParts=Object.keys(BODY_SYSTEM_INFO).map(k=>{
+  const v=bm[k]||0;
+  if(v<=0)return null;
+  return (BODY_SYSTEM_INFO[k].ic||"")+" "+v;
+}).filter(Boolean);
+document.getElementById("bodyMasteryLine").textContent=bmParts.length?"Body map: "+bmParts.join(" · "):"Body map: not yet started";
+// Story arc progress
+if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+const arcLine=Object.keys(STORY_ARCS).map(n=>{
+  const st=S.arcs[n]||0;
+  const max=STORY_ARCS[n].stages.length;
+  const done=st>=max;
+  return n+(done?"✓":" "+Math.min(st,max)+"/"+max);
+}).join(" · ");
+const arcEl=document.getElementById("arcProgressLine");
+if(arcEl)arcEl.textContent="Stories: "+arcLine;
+for(let i=RANKS.length-1;i>=0;i--){if(S.rp>=RANKS[i].rp&&S.rank!==RANKS[i].n&&RANKS.findIndex(r=>r.n===S.rank)<i){S.rank=RANKS[i].n;_rankIdxCache=i;toast("Rank up → "+S.rank);save({ui:false});break}}
+let atmos=ATMOS[(S.day-1)%ATMOS.length];
+try{
+  const moon=getMoon();
+  const ml=document.getElementById("moonLine");
+  if(ml)ml.textContent=moon.ic+" "+moon.n+" — "+moon.d;
+  // Sensory Grey seeps into atmosphere on heavier days
+  if(moon.n==="Full Moon"||(S.day%5===0)){
+    const g=GREY_SENSORY[(S.day+3)%GREY_SENSORY.length];
+    atmos=atmos+" "+g;
+  }
+}catch(e){}
+document.getElementById("atmosphere").textContent=atmos;
+document.getElementById("dayHint").textContent=S.att<3?"Attention low — consider resting.":(S.att>=8?"Plenty of attention for the day.":"");
+document.getElementById("btnMaya").style.display=S.seenMaya&&S.maya>=1?"none":"";
+const sp=document.getElementById("streakPill");sp.textContent="🔥 x"+S.streak;sp.classList.toggle("on",S.streak>=2);
+renderDaily();
+renderLastCase();
+renderStaffCard();
+renderChronicleCard();
+renderQuestCard();
+checkChronicle();
+checkQuests();
+checkBadges();
+updateMeters(true);
+}
+function checkChronicle(){
+  if(!S.chronicleUnlocked)S.chronicleUnlocked=["ch0"];
+  let gained=false;
+  CHRONICLE.forEach(ch=>{
+    if(S.chronicleUnlocked.includes(ch.id))return;
+    try{
+      if(ch.unlock(S)){
+        S.chronicleUnlocked.push(ch.id);
+        gained=true;
+        toast(ch.ic+" Chronicle: "+ch.title);
+        S.rp=(S.rp||0)+8;
+      }
+    }catch(e){}
+  });
+  if(gained){try{save()}catch(e){}}
+}
+function renderChronicleCard(){
+  const el=document.getElementById("chronicleCard");
+  if(!el)return;
+  if(!S.chronicleUnlocked)S.chronicleUnlocked=["ch0"];
+  const unlocked=CHRONICLE.filter(ch=>S.chronicleUnlocked.includes(ch.id));
+  const latest=unlocked[unlocked.length-1]||CHRONICLE[0];
+  const next=CHRONICLE.find(ch=>!S.chronicleUnlocked.includes(ch.id));
+  el.innerHTML='<div class="muted" style="font-size:.72rem">CHRONICLE · '+unlocked.length+'/'+CHRONICLE.length+'</div>'+
+    '<div style="font-weight:700;margin-top:4px">'+latest.ic+' '+latest.title+'</div>'+
+    '<p class="muted" style="margin-top:4px;font-size:.78rem;line-height:1.4">'+(latest.body.slice(0,120))+'…</p>'+
+    (next?'<div class="muted" style="font-size:.72rem;margin-top:6px">Next thread still veiled</div>':'<div class="muted" style="font-size:.72rem;margin-top:6px;color:var(--gold)">The road remembers your name</div>');
+}
+function renderStaffCard(){
+  ensureStaffDay();
+  const el=document.getElementById("staffCard");
+  if(!el)return;
+  const duty=(S.staffState.duty||[]).map(id=>staffById(id)).filter(Boolean);
+  const ev=S.staffState.event;
+  el.innerHTML='<div class="muted" style="font-size:.72rem">ON DUTY · Day '+S.day+'</div>'+
+    '<div style="margin-top:4px;font-weight:650">'+duty.map(s=>s.ic+' '+s.name).join(' · ')+'</div>'+
+    '<div class="muted" style="font-size:.75rem;margin-top:4px">'+duty.map(s=>s.name+': '+(S.staffState.moods[s.id]||'—')).join(' · ')+'</div>'+
+    (ev?'<div class="muted" style="margin-top:6px;font-size:.78rem;color:var(--warn)">⚡ '+ev.title+'</div>':'')+
+    '<div class="muted" style="font-size:.72rem;margin-top:6px">Tap for staff dynamics</div>';
+}
+function renderStaffScreen(){
+  ensureStaffDay();
+  const ev=S.staffState.event;
+  const ban=document.getElementById("staffEventBanner");
+  if(ban)ban.innerHTML=ev?'<div class="twist-card"><div class="tt">⚡ '+ev.title+'</div>'+ev.d+'</div>':'<div class="muted" style="margin-bottom:8px">No staff event today. The room is ordinary — which is a gift.</div>';
+  const list=document.getElementById("staffList");
+  if(!list)return;
+  list.innerHTML=STAFF.map(s=>{
+    const on=S.staffState.duty.includes(s.id);
+    const mood=S.staffState.moods[s.id];
+    const rap=S.staffState.rapport[s.id]||0;
+    return '<div class="card'+(on?' glow':'')+'">'+
+      '<div style="display:flex;justify-content:space-between"><strong>'+s.ic+' '+s.name+'</strong>'+(on?'<span class="pill">On duty</span>':'<span class="muted" style="font-size:.75rem">Off</span>')+'</div>'+
+      '<div class="muted" style="font-size:.78rem;margin-top:2px">'+s.role+' · '+s.style+'</div>'+
+      (on&&mood?'<div class="muted" style="font-size:.75rem;margin-top:2px">Mood: '+mood+'</div>':'')+
+      '<p style="margin-top:6px;font-size:.84rem;line-height:1.45">'+s.bio+'</p>'+
+      '<div class="muted" style="font-size:.72rem;margin-top:6px">Rapport '+(rap>=0?'+':'')+rap+' · '+s.perk.label+'</div></div>';
+  }).join("");
+}
+function renderLastCase(){
+  const el=document.getElementById("lastCaseCard");
+  if(!el)return;
+  if(!S.log.length){el.style.display="none";el.innerHTML="";return}
+  const e=S.log[0];
+  const bodyInfo=BODY_SYSTEM_INFO[e.bodySystem]||{ic:""};
+  el.style.display="";
+  el.innerHTML='<div class="card last-case-card" onclick="go(\'log\')"><div class="muted" style="font-size:.72rem">LAST SESSION</div><div style="font-weight:650;margin-top:2px">'+e.name+' · '+e.problem+'</div><div class="muted" style="font-size:.78rem;margin-top:3px">'+e.outcome+' · +'+e.rp+' RP'+(e.bodySystem?' · '+bodyInfo.ic+' '+e.bodySystem:'')+(e.diagnosisCorrect?' · ✓ dx':'')+'</div></div>';
+}
+function updateMeters(force){
+const rp=Math.floor(S.rp),att=S.att,tok=S.tokens||0;
+const regenMs=(S.upgrades&&S.upgrades.up_clock)?(ATT_REGEN_MS*0.8):ATT_REGEN_MS;
+const pct=S.att>=ATT_MAX?0:Math.min(100,(S.attTimer/regenMs)*100)|0;
+const key=rp+"|"+att+"|"+pct+"|"+tok;
+if(!force&&key===_lastMeterKey)return;
+_lastMeterKey=key;
+const mrp=$("mRP");if(mrp&&mrp.textContent!==String(rp))mrp.textContent=rp;
+const ma=$("mAtt");if(ma&&ma.textContent!==String(att))ma.textContent=att;
+const mt=$("mTok");if(mt&&mt.textContent!==String(tok))mt.textContent=tok;
+const bar=$("regenBar");if(bar)bar.style.width=pct+"%";
+}
+function renderDaily(){
+ensureDaily();
+const d=S.daily;if(!d)return;
+const done=S.dailyProg>=d.need;
+const el=document.getElementById("dailyCard");
+el.className="daily-card"+(done?" done":"");
+el.innerHTML='<div class="tt"><span>🎯 Daily Challenge</span><span>'+(done?"✓ Done":Math.min(S.dailyProg,d.need)+"/"+d.need)+'</span></div><div class="prog">'+d.label+' · reward +'+d.reward+' RP</div>';
+}
+function checkBadges(){
+BADGES.forEach(b=>{if(!S.badges.includes(b.id)&&b.cond(S)){S.badges.push(b.id);toast("🏅 Badge earned: "+b.name)}});
+}
+function renderBadges(){
+document.getElementById("badgeCount").textContent=S.badges.length+"/"+BADGES.length+" earned";
+document.getElementById("badgeGrid").innerHTML=BADGES.map(b=>{const on=S.badges.includes(b.id);return '<div class="badge'+(on?" on":"")+'"><div class="ic">'+b.ic+'</div><div class="n">'+b.name+'</div><div class="d">'+b.d+'</div></div>'}).join("");
+}
+function toast(msg){
+  if(!msg)return;
+  // Coalesce rapid toasts so the UI does not stutter
+  _toastQueue.push(msg);
+  if(_toastTimer)return;
+  const show=()=>{
+    const m=_toastQueue.shift();
+    if(!m){_toastTimer=null;return}
+    const t=$("toast");if(!t){_toastTimer=null;return}
+    t.textContent=m;t.classList.add("show");
+    _toastTimer=setTimeout(()=>{
+      t.classList.remove("show");
+      _toastTimer=_toastQueue.length?setTimeout(show,120):null;
+      if(_toastQueue.length)show();
+    },2000);
+  };
+  show();
+}
+function setActionBar(html){
+  const bar=document.getElementById("actionBar");
+  if(!bar)return;
+  if(!html){bar.classList.add("hidden");bar.innerHTML="";document.querySelectorAll(".screen").forEach(s=>s.classList.remove("has-action"));return}
+  bar.innerHTML=html;bar.classList.remove("hidden");
+  const on=document.querySelector(".screen.on");if(on)on.classList.add("has-action");
+  // Keep content clear of the fixed bar on short phones
+  requestAnimationFrame(()=>{
+    const pad=bar.offsetHeight+8;
+    if(on)on.style.paddingBottom=pad+"px";
+  });
+}
+function go(name){
+try{
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+const scr=document.getElementById("sc-"+name);
+if(!scr){
+  console.error("Missing screen",name);
+  toast("Screen missing: "+name+" — back home");
+  name="home";
+  document.getElementById("sc-home").classList.add("on");
+}else scr.classList.add("on");
+document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.s===name));
+setActionBar(null);
+if(name==="deck")renderDeck();if(name==="log")renderLog();if(name==="badges")renderBadges();
+if(name==="codex"){renderCodexLore();switchCodexTab(S.codexTab||"lore")}
+if(name==="more"){try{document.getElementById("inClinic").value=S.clinic;document.getElementById("inHealer").value=S.healer||""}catch(e){}}
+_homeOn=(name==="home");
+if(name==="home"){ui();setActionBar('<button class="btn" id="btnOpenDoor" onclick="openWaitingRoom()">▶ Open the door</button>');}
+if(name==="staff")renderStaffScreen();
+if(name==="wait")setActionBar('<button class="btn sec" onclick="go(\'home\')">Leave the door closed</button>');
+if(name==="result")setActionBar('<button class="btn" onclick="endSession()">Continue</button>');
+try{window.scrollTo(0,0)}catch(e){}
+}catch(err){console.error("go",err);try{document.getElementById("sc-home").classList.add("on");_homeOn=true}catch(e){}}
+}
+function getArcStage(name){
+  if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+  return S.arcs[name]||0;
+}
+function buildArcCandidate(name){
+  const arc=STORY_ARCS[name];
+  if(!arc)return null;
+  const stage=Math.min(getArcStage(name),arc.stages.length-1);
+  if(getArcStage(name)>=arc.stages.length)return null; // completed
+  // Cooldown: don't reappear same day
+  if(S.arcCooldown&&S.arcData[name]===S.day)return null;
+  const st=arc.stages[stage];
+  const pr=P.find(x=>x.id===st.pr)||P[0];
+  return{
+    name,
+    pr,
+    isMaya:name==="Maya",
+    isArc:true,
+    arcName:name,
+    arcStage:stage,
+    quote:st.quote,
+    note:st.note+(stage>0?" · Story "+(stage+1)+"/"+arc.stages.length:""),
+    returning:stage>0,
+    mem:S.patientMemory[name]
+  };
+}
+function pickArcForWaiting(){
+  // Prefer incomplete arcs that are "due"
+  const names=Object.keys(STORY_ARCS).filter(n=>{
+    const stage=getArcStage(n);
+    if(stage>=STORY_ARCS[n].stages.length)return false;
+    if(S.arcData&&S.arcData[n]===S.day)return false;
+    // First visit arcs can appear after day 1 (except Maya tutorial)
+    if(stage===0&&n!=="Maya"&&S.day<2&&S.log.length<2)return false;
+    // Later stages require prior progress
+    return true;
+  });
+  if(!names.length)return null;
+  // Weight toward arcs already started
+  const started=names.filter(n=>getArcStage(n)>0);
+  const pool=started.length&&Math.random()<0.65?started:names;
+  return buildArcCandidate(pool[Math.floor(Math.random()*pool.length)]);
+}
+function pickCandidate(){
+  // ~40% chance to surface a story-arc patient when available
+  if(Math.random()<0.42){
+    const arcC=pickArcForWaiting();
+    if(arcC)return arcC;
+  }
+  const known=Object.keys(S.patientMemory||{}).filter(n=>!STORY_ARCS[n]);
+  if(known.length&&Math.random()<0.35){
+    const name=known[Math.floor(Math.random()*known.length)];
+    const mem=S.patientMemory[name];
+    const famPool=P.filter(x=>x.f===mem.lastFamily);
+    const pr=famPool[Math.floor(Math.random()*famPool.length)]||P[Math.floor(Math.random()*P.length)];
+    return{name,pr,isMaya:false,returning:true,mem};
+  }
+  const pr=P[Math.floor(Math.random()*P.length)];
+  const name=NAMES[Math.floor(Math.random()*NAMES.length)];
+  return{name,pr,isMaya:false};
+}
+function openWaitingRoom(){
+  try{
+    if(typeof S.att!=="number"||isNaN(S.att))S.att=10;
+    if(S.att<1){toast("No Attention left. Rest first.");go("more");return}
+    if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+    if(!S.arcData)S.arcData={};
+    // Build 3 distinct candidates — try to include one story arc when available
+    const seen=new Set();
+    const list=[];
+    let forced=null;
+    try{forced=pickArcForWaiting()}catch(e){forced=null}
+    // Door Bell upgrade: always prefer an arc when one is available
+    if(!forced&&(S.upgrades||{}).up_bell){try{forced=pickArcForWaiting()}catch(e){}}
+    if(forced&&forced.pr){list.push(forced);seen.add(forced.name+"|"+forced.pr.id)}
+    let guard=0;
+    const waitSlots=(S.upgrades&&S.upgrades.up_sign)?4:3;
+    while(list.length<waitSlots&&guard++<50){
+      let c=null;
+      try{c=pickCandidate()}catch(e){c=null}
+      if(!c||!c.pr){
+        const pr=P[Math.floor(Math.random()*P.length)];
+        const name=NAMES[Math.floor(Math.random()*NAMES.length)];
+        c={name,pr,isMaya:false};
+      }
+      const key=c.name+"|"+c.pr.id;
+      if(seen.has(key))continue;
+      if(c.isArc&&list.some(x=>x.isArc&&x.arcName===c.arcName))continue;
+      seen.add(key);
+      list.push(c);
+    }
+    while(list.length<1){
+      const pr=P[Math.floor(Math.random()*P.length)];
+      list.push({name:NAMES[0],pr,isMaya:false});
+    }
+    window._waitList=list;
+    const waitEl=document.getElementById("waitList");
+    if(!waitEl){beginArrival(list[0]);return}
+    waitEl.innerHTML=list.map((c,i)=>{
+      const body=BODY_SYSTEMS[c.pr.f]||"";
+      const info=BODY_SYSTEM_INFO[body]||{ic:""};
+      const arcTag=c.isArc&&STORY_ARCS[c.arcName]?' <span class="pill returning-pill">Story '+(c.arcStage+1)+'/'+STORY_ARCS[c.arcName].stages.length+'</span>':(c.returning?' <span class="pill returning-pill">Returning</span>':'');
+      return '<div class="card" style="cursor:pointer'+(c.isArc?';border-color:var(--gold)':'')+'" onclick="chooseWaiting('+i+')">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center">'+
+        '<strong>'+c.name+arcTag+'</strong>'+
+        '<span class="muted" style="font-size:.75rem">Att '+c.pr.att+'</span></div>'+
+        '<div class="muted" style="margin-top:4px;font-size:.84rem">&ldquo;'+(c.quote||c.pr.quote||'')+'&rdquo;</div>'+
+        '<div style="margin-top:6px"><span class="pill">'+c.pr.f+'</span><span class="pill body-pill">'+info.ic+' '+body+'</span><span class="pill">'+c.pr.color+'</span></div>'+
+        (c.note?'<div class="muted" style="font-size:.72rem;margin-top:4px">'+c.note+'</div>':'')+
+        (c.returning&&c.mem&&!c.isArc?'<div class="muted" style="font-size:.72rem;margin-top:4px">Last: '+c.mem.lastOutcome+' · '+c.mem.lastFamily+'</div>':'')+
+        '</div>';
+    }).join("");
+    go("wait");
+  }catch(err){
+    console.error("openWaitingRoom",err);
+    toast("Door jammed — seating a walk-in");
+    const pr=P[Math.floor(Math.random()*P.length)];
+    const name=NAMES[Math.floor(Math.random()*NAMES.length)];
+    beginArrival({name,pr,isMaya:false});
+  }
+}
+function chooseWaiting(i){
+  try{
+    const c=(window._waitList||[])[i];
+    if(!c||!c.pr){toast("That chair is empty");return}
+    if(S.att<c.pr.att){toast("Not enough Attention for this case");return}
+    beginArrival(c);
+  }catch(err){
+    console.error("chooseWaiting",err);
+    toast("Something slipped — try another chair");
+  }
+}
+function startClinicDay(){openWaitingRoom()}
+function fullRest(){S.att=10;S.attTimer=0;save();ui();toast("Attention restored")}
+function emergencyRest(){
+  if(S.rp<5){toast("Need 5 RP for emergency rest");return}
+  if(S.att>=ATT_MAX){toast("Attention already full");return}
+  S.rp-=5;S.att=Math.min(ATT_MAX,S.att+3);S.attTimer=0;save();ui();toast("Emergency rest · +3 Att · −5 RP");
+}
+function startMayaArc(){
+if(S.att<1){toast("No Attention left.");return}
+const c=buildArcCandidate("Maya");
+if(!c){toast("Maya's arc is complete");return}
+S.seenMaya=true;save();
+beginArrival(c);
+}
+function beginArrival(data){
+session={name:data.name,pr:data.pr,isMaya:!!data.isMaya,quote:data.quote||data.pr.quote,note:data.note||"",choices:[],score:0,step:0,twist:null,diagnosis:null,diagnosisCorrect:false,confidence:0,diagnosisOptions:[],bodySystem:null,practice:!!data.practice,isArc:!!data.isArc,arcName:data.arcName||null,arcStage:data.arcStage||0,buffs:[],extraReconsider:0};
+const pr=data.pr;
+// Apply shop buffs (next session) — not in practice mode
+if(!data.practice&&S.buffs&&S.buffs.length){
+  session.buffs=S.buffs.slice();
+  if(session.buffs.indexOf("score2")>=0){session.score+=2;toast("🍋 Lemon-balm · +2 start")}
+  if(session.buffs.indexOf("reconsider")>=0)session.extraReconsider=1;
+  S.buffs=[]; // consumed
+}
+// Story-arc visits: fewer random twists — the story is the twist
+if(!data.isMaya&&!data.practice&&!data.isArc){
+  const moon=getMoon();
+  let twistChance=0.32+(moon.twistMod||0);
+  if(session.buffs&&session.buffs.indexOf("calm")>=0)twistChance*=0.5;
+  if(session.buffs&&session.buffs.indexOf("lantern")>=0&&moon.n==="Full Moon")twistChance*=0.7;
+  if(Math.random()<twistChance)session.twist=TWISTS[Math.floor(Math.random()*TWISTS.length)];
+}
+let banner="";
+if(data.practice)banner='<div class="twist-card"><div class="tt">Practice mode</div>Diagnosis training only — no Attention cost, no outcome roll.</div>';
+else if(data.isArc)banner='<div class="twist-card"><div class="tt">📖 Story arc · '+(data.name)+' · visit '+(data.arcStage+1)+'/'+STORY_ARCS[data.arcName].stages.length+'</div>'+(data.note||"A returning thread in the ledger.")+'</div>';
+else if(session.twist)banner='<div class="twist-card"><div class="tt">'+session.twist.name+'</div>'+session.twist.d+'</div>';
+document.getElementById("twistBanner").innerHTML=banner;
+
+const bodySys=BODY_SYSTEMS[pr.f]||"Brain / Nervous";
+session.bodySystem=bodySys;
+const bodyInfo=BODY_SYSTEM_INFO[bodySys]||{ic:"●",d:""};
+
+let memNote="";
+if(data.returning&&data.mem){
+  const lastBody=data.mem.lastBody?(' · last system: '+data.mem.lastBody):'';
+  memNote='<div class="muted" style="margin-top:4px">🧠 You remember '+data.name+' — '+data.mem.visits+' visit'+(data.mem.visits>1?"s":"")+', last time: '+data.mem.lastOutcome+' ('+data.mem.lastFamily+')'+lastBody+'.</div>';
+}
+
+const bs=getBackstory(data.name,pr);
+session.backstory=bs;
+const storyId="bs_"+String(data.name).replace(/\W/g,"_");
+document.getElementById("patientCard").innerHTML=
+  '<div class="name">'+data.name+(data.returning?' <span class="pill returning-pill">Returning</span>':'')+(data.isArc?' <span class="pill returning-pill">Story</span>':'')+'</div>'+
+  '<div style="margin-top:4px">'+
+  '<span class="pill">'+pr.f+'</span>'+
+  '<span class="pill body-pill">'+bodyInfo.ic+' '+bodySys+'</span>'+
+  '<span class="pill">'+pr.id+'</span>'+
+  '<span class="pill">Att '+pr.att+'</span></div>'+
+  '<div class="quote">“'+session.quote+'”</div>'+
+  '<div class="muted">'+pr.p+(data.note?' · '+data.note:'')+'</div>'+memNote+
+  '<div class="muted" style="margin-top:8px;cursor:pointer;font-size:.78rem" onclick="toggleBackstory(\''+storyId+'\')">📖 Backstory <span id="'+storyId+'_t">▸</span></div>'+
+  '<div id="'+storyId+'" style="display:none;margin-top:6px;padding:8px 10px;background:#102018;border-radius:10px;border:1px solid #284536;font-size:.8rem">'+
+  '<div class="muted" style="font-size:.72rem">'+bs.role+(bs.age&&bs.age!=="—"?' · '+bs.age:'')+'</div>'+
+  '<div style="margin-top:4px;color:#b8d4c4">'+bs.trait+'</div>'+
+  '<p style="margin-top:6px;line-height:1.45">'+bs.story+'</p></div>';
+
+session.diagnosisOptions=getDiagnosisOptions(pr);
+document.getElementById("bodySystemHint").innerHTML=bodyInfo.ic+' Primary system in play: <strong>'+bodySys+'</strong> — '+bodyInfo.d;
+const whisper=S.flags&&S.flags.hintWhisper;
+document.getElementById("diagnosisChoices").innerHTML=session.diagnosisOptions.map((d,i)=>{
+  let hint="";
+  if(whisper&&d.match&&d.match.length)hint='<div class="d" style="opacity:.7">Whisper: may touch '+d.match[0]+'…</div>';
+  else hint='<div class="d">Choose as your working diagnosis</div>';
+  return '<div class="choice diagnosis-choice" onclick="diagnosisPick('+i+')"><div class="t">'+d.name+'</div>'+hint+'</div>';
+}).join("");
+document.getElementById("diagnosisFeedback").innerHTML="";
+document.getElementById("diagnosisBox").classList.remove("glow");
+document.getElementById("diagnosisChoices").style.pointerEvents="auto";
+document.getElementById("intakeChoices").innerHTML='<div class="muted" style="margin:10px 0">Complete the diagnosis step above to unlock intake.</div>';
+go("arrive");
+if(S.upgrades&&S.upgrades.up_mirror){try{const list=document.getElementById("clueList");const tog=document.getElementById("clueToggle");if(list){list.style.display="";}if(tog)tog.textContent="▾ hide"}catch(e){}}
+setTimeout(()=>{const box=document.getElementById("diagnosisBox");if(box)box.scrollIntoView({behavior:"smooth",block:"nearest"})},100);
+}
+function intakePick(kind){session.choices.push({type:"intake",kind});session.score+=1;session.step=1;showProtocolStep()}
+function showProtocolStep(){
+const pr=session.pr,step=session.step;
+document.getElementById("stepNum").textContent=step;
+[1,2,3].forEach(i=>document.getElementById("sd"+i).classList.toggle("on",i<=step));
+updateLiveScore();
+const box=document.getElementById("protocolPrompt"),ch=document.getElementById("protocolChoices");
+if(step===1){
+box.innerHTML='<p style="font-weight:650">Choose a primary tag</p><p class="muted" style="margin-top:4px">Good tags for '+pr.f+': '+pr.tags.join(", ")+'</p>';
+const opts=[...new Set([...pr.tags,"SETTLE","GROUND","PACE","BOUNDARY"])].slice(0,5);
+ch.innerHTML=opts.map(t=>{const info=TAG_INFO[t]||{d:""};const match=pr.tags.includes(t);return '<div class="choice" onclick="protoPick(\'tag\',\''+t+'\','+(match?2:0)+')"><div class="t">'+t+(match?" ✓":"")+'</div><div class="d">'+(info.d||"")+'</div></div>'}).join("");
+}else if(step===2){
+box.innerHTML='<p style="font-weight:650">Color &amp; body move</p><p class="muted">Suggested color: <strong>'+pr.color+'</strong> · SE: '+pr.se.join(", ")+'</p>';
+ch.innerHTML='<div class="choice" onclick="protoPick(\'move\',\'color_match\',2)"><div class="t">Lean into '+pr.color+'</div><div class="d">Match the color protocol. '+pr.proto+'</div></div><div class="choice" onclick="protoPick(\'move\',\'se_clean\',2)"><div class="t">Run '+pr.se[0]+' cleanly</div><div class="d">Orienting / exhale / ground — keep it simple.</div></div><div class="choice" onclick="protoPick(\'move\',\'overdo\',-1)"><div class="t">Stack three techniques at once</div><div class="d">More is not always better. Risk overload.</div></div>';
+}else if(step===3){
+box.innerHTML='<p style="font-weight:650">One clear next step</p><p class="muted">You are not here to fix their whole life in one hour.</p>';
+ch.innerHTML='<div class="choice" onclick="protoPick(\'close\',\'ifthen\',2)"><div class="t">If–Then plan</div><div class="d">“If evening comes, then phone stays outside the room.”</div></div><div class="choice" onclick="protoPick(\'close\',\'tiny\',2)"><div class="t">Tiny doable win</div><div class="d">One action so small it feels almost silly.</div></div><div class="choice" onclick="protoPick(\'close\',\'lecture\',-2)"><div class="t">Full lecture on everything that could help</div><div class="d">Maya already said she doesn’t need another lecture.</div></div>'+(session.isMaya?"":'<div class="choice risk-choice" onclick="riskPick()"><div class="t">🎲 Push for the breakthrough</div><div class="d">Bold, unscripted close. Could backfire — could be the session they remember.</div></div>');
+}
+go("protocol");
+setTimeout(()=>{const ch=document.getElementById("protocolChoices");if(ch)ch.scrollIntoView({behavior:"smooth",block:"nearest"})},60);
+}
+function protoPick(type,val,pts){
+if(type==="move"&&val==="color_match"){
+  if(S.equipped){
+    const it=ITEMS.find(i=>i.id===S.equipped);
+    if(it&&it.color===session.pr.color){pts+=1;toast("🎒 "+it.name+" resonates (+1)")}
+  }
+  const body=session.bodySystem;
+  const resonates=(COLOR_BODY_RESONANCE[session.pr.color]||[]).includes(body);
+  if(resonates){pts+=1;toast("✦ Color–system resonance (+1)")}
+  // Window glass rare item: Sleep/Blue edge
+  if((S.inventory||{}).it_window>0&&session.pr.f==="Sleep"){pts+=1;toast("🪟 Window glass catches the light (+1)")}
+}
+if(type==="tag"){
+  // Evening lamp: low attention bonus on matching tags
+  if((S.upgrades||{}).up_lamp&&S.att<=3&&session.pr.tags.includes(val)){pts+=1;toast("🕯 Evening lamp steadies your hand (+1)")}
+}
+// Body-map mastery edge
+if(session.bodySystem&&(S.bodyMastery[session.bodySystem]||0)>=5){pts+=1}
+// Doorstep stone: softens overdo penalty
+if(type==="move"&&val==="overdo"&&(S.inventory||{}).it_stone>0){pts+=1;toast("🪨 Doorstep stone grounds the overreach")}
+// Kettle charm / Copper Kettle upgrade: first session of day
+if(!session._kettleChecked){
+  session._kettleChecked=true;
+  const firstToday=!S.log.some(l=>l.day===S.day);
+  if(firstToday&&((S.upgrades||{}).up_kettle||(S.inventory||{}).it_kettle>0)&&S.kettleUsedDay!==S.day){
+    pts+=1;S.kettleUsedDay=S.day;toast("🫖 Kettle is warm (+1)");
+  }
+}
+session.choices.push({type,val});session.score+=pts;updateLiveScore();if(session.step<3){session.step++;showProtocolStep()}else resolveSession()}
+function riskPick(){
+S.gambles=(S.gambles||0)+1;
+ensureStaffDay();
+const orrinOn=(S.staffState.duty||[]).includes("orrin");
+const hearth=!!(S.upgrades&&S.upgrades.up_hearth);
+const roll=Math.random();let pts;
+if(roll<0.35){
+  pts=hearth?(orrinOn?0:-1):(orrinOn?-2:-4);
+  toast(hearth?"🔥 Hearth softens the miss":(orrinOn?"🎲 Orrin winces — softer fallout":"🎲 Bold move backfired"));
+}else if(roll<0.65){pts=1;toast("🎲 Middling gamble")}
+else{pts=7;toast("🎲 Bold move paid off big")}
+session.choices.push({type:"close",val:"risk"});session.score+=pts;session.gambled=true;
+resolveSession();
+}
+function resolveSession(){
+const pr=session.pr;let score=session.score;const tw=session.twist;
+ensureStaffDay();
+const duty=S.staffState.duty||[];
+// Staff score perks
+if(duty.includes("jun")){
+  const firstToday=!S.log.some(l=>l.day===S.day);
+  if(firstToday){score+=1}
+}
+if(duty.includes("mira")&&session.diagnosisCorrect){score+=1}
+if(S.staffState.event&&S.staffState.event.effect==="scoreBoost"){score+=1}
+if(S.staffState.event&&S.staffState.event.effect==="observe"){score+=1}
+const riskier=tw&&tw.riskier;
+const roll=Math.random();let outcome,rp,flavor;
+const streakEdge=Math.min(S.streak*0.02,0.2);
+if(score>=7&&roll>(riskier?0.35:0.58)-streakEdge){
+outcome="Breakthrough";rp=22+Math.floor(Math.random()*10)+(pr.att>1?5:0);
+flavor=pick(["Something clicks. They actually say “oh” out loud.","A real shift — not just relief, a new pattern.","This is the session they’ll tell a friend about."]);
+}else if(score>=5&&roll>0.15){outcome="Improve";rp=10+Math.floor(Math.random()*5)+(pr.att>1?3:0);flavor=pick(["Slightly easier onset. They leave a little lighter.","They name one thing they’ll try tonight.","The room feels quieter when they go."])}
+else if(score>=3&&roll>0.25){outcome="Plateau";rp=6+Math.floor(Math.random()*4);flavor=pick(["No big shift, but they felt heard.","They’ll try one piece. Come back if it helps.","Steady. Not dramatic. That’s fine."])}
+else if(score<0||(riskier&&roll<0.18)){outcome="Setback";rp=1;flavor=pick(["A hard session. They leave more guarded.","Wrong read today — worth noting for next time.","It didn’t land. That happens."])}
+else if(score<1||roll<0.12){outcome="Stuck";rp=3;flavor=pick(["They leave polite but unchanged.","Too much advice, not enough listening.","Maybe next time, slower."])}
+else{outcome="Plateau";rp=7;flavor="A small step. You’ll see them again."}
+if(session.isMaya&&getArcStage("Maya")===0&&!session.choices.some(c=>c.val==="lecture")){outcome="Improve";rp=12;flavor="She reports slightly easier onset. You remember: Maya · Blue · settle before screens."}
+if(tw&&tw.mult)rp=Math.round(rp*tw.mult);
+if(tw&&tw.flat)rp+=tw.flat;
+try{
+  const moon=getMoon();
+  if(moon.rpMod)rp=Math.round(rp*(1+moon.rpMod));
+  if(moon.n==="Full Moon")S.sawFullMoon=true;
+}catch(e){}
+// Second guest chair: returning patients pay forward
+if((S.upgrades||{}).up_chair&&S.patientMemory[session.name]&&S.patientMemory[session.name].visits>0&&(outcome==="Improve"||outcome==="Breakthrough")){
+  rp+=2;toast("🪑 Guest chair · returning patient +2 RP");
+}
+if((S.upgrades||{}).up_rug&&outcome==="Plateau"){score+=1;rp+=1}
+if((S.upgrades||{}).up_vault)rp=Math.round(rp*1.1);
+if(session.buffs&&session.buffs.indexOf("roadrp")>=0&&outcome!=="Setback"&&outcome!=="Stuck"){rp+=3;toast("🗺 Road dust · +3 RP")}
+if(outcome==="Breakthrough"){S.tokens=(S.tokens||0)+1;toast("🪙 Road Token from Breakthrough")}
+if(session.diagnosisCorrect&&session.confidence===3&&(S.upgrades||{}).up_garden&&Math.random()<0.45){
+  const bs=session.bodySystem;
+  if(bs&&S.bodyMastery[bs]!=null){S.bodyMastery[bs]++;toast("🌿 Window herbs · body map +1")}
+}
+const goodOutcome=outcome==="Breakthrough"||outcome==="Improve";
+if(goodOutcome)S.streak++;else if(outcome==="Setback"||outcome==="Stuck")S.streak=0;
+S.bestStreak=Math.max(S.bestStreak,S.streak);
+const comboMult=Math.min(S.streak*0.1,1.0);
+const comboBonus=comboMult>0?Math.floor(rp*comboMult):0;
+rp+=comboBonus;
+if(outcome==="Breakthrough")S.breakthroughs=(S.breakthroughs||0)+1;
+const cost=pr.att;if(S.att<cost){toast("Not enough Attention");go("home");return}
+S.att-=cost;S.rp+=rp;
+if(outcome==="Improve"||outcome==="Breakthrough"){const f=pr.f;if(S.mastery[f]!==undefined)S.mastery[f]=Math.min(5,(S.mastery[f]||0)+1)}
+// Body-system mastery: correct diagnosis + good outcome advances the map
+if(session.diagnosisCorrect&&(outcome==="Improve"||outcome==="Breakthrough"||outcome==="Plateau")){
+  const bs=session.bodySystem;
+  if(bs&&S.bodyMastery[bs]!==undefined){
+    const prev=S.bodyMastery[bs]||0;
+    S.bodyMastery[bs]=Math.min(5,prev+1);
+    if(prev<5&&S.bodyMastery[bs]>=5)toast("🗺 Body map mastered: "+bs+" — permanent +1 edge");
+  }
+}
+// Story arc progression
+let arcAdvanceHtml="";
+if(session.isArc&&session.arcName&&STORY_ARCS[session.arcName]&&!session.practice){
+  const arc=STORY_ARCS[session.arcName];
+  const stage=session.arcStage;
+  const st=arc.stages[stage];
+  const need=st&&st.need?st.need:["Improve","Breakthrough","Plateau"];
+  if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+  if(!S.arcData)S.arcData={};
+  S.arcData[session.arcName]=S.day;
+  if(need.includes(outcome)){
+    const prev=S.arcs[session.arcName]||0;
+    if(stage===prev){ // only advance if this is the current stage
+      S.arcs[session.arcName]=prev+1;
+      if(session.arcName==="Maya")S.maya=Math.min(4,S.arcs.Maya);
+      if(S.arcs[session.arcName]>=arc.stages.length){
+        arcAdvanceHtml='<div class="card glow"><strong>📖 Arc complete — '+session.arcName+'</strong><p style="margin-top:6px">'+arc.completeMsg+'</p><p class="muted" style="margin-top:4px">+25 RP story bonus</p></div>';
+        S.rp+=25;
+        // Guarantee a matching color remedy drop
+        const drop=ITEMS.find(i=>i.color===arc.color);
+        if(drop){S.inventory[drop.id]=(S.inventory[drop.id]||0)+1}
+      }else{
+        arcAdvanceHtml='<div class="card story"><strong>Story advances</strong> — '+session.arcName+' · visit '+(S.arcs[session.arcName]+1)+' next time they return.</div>';
+      }
+    }
+  }else{
+    arcAdvanceHtml='<div class="card"><span class="muted">Story holds</span> — '+session.arcName+' will try again another day. A better landing advances the arc.</div>';
+  }
+}else if(session.isMaya&&(outcome==="Improve"||outcome==="Plateau"||outcome==="Breakthrough")){
+  S.maya=Math.min(4,S.maya+1);
+  if(!S.arcs)S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+  S.arcs.Maya=Math.max(S.arcs.Maya||0,S.maya);
+}
+const d=S.daily;
+if(d&&!S.dailyClaimed){
+if(d.kind==="family"&&pr.f===d.family)S.dailyProg++;
+if(d.kind==="sessions")S.dailyProg++;
+if(d.kind==="streak")S.dailyProg=Math.max(S.dailyProg,S.streak);
+if(d.kind==="breakthrough"&&outcome==="Breakthrough")S.dailyProg++;
+if(d.kind==="diagnosis"&&session.diagnosisCorrect&&session.confidence===3)S.dailyProg++;
+if(S.dailyProg>=d.need){S.rp+=d.reward;S.dailyClaimed=true;S.dailyDone=(S.dailyDone||0)+1;toast("🎯 Daily Challenge complete +"+d.reward+" RP")}
+}
+const entry={ts:new Date().toISOString(),day:S.day,name:session.name,pr:pr.id,family:pr.f,problem:pr.p,bodySystem:session.bodySystem||"",diagnosis:session.diagnosis||"",diagnosisCorrect:!!session.diagnosisCorrect,confidence:session.confidence||0,outcome,rp,score,notes:session.choices.map(c=>c.val||c.kind).join(" → "),isMaya:session.isMaya,twist:tw?tw.name:null};
+S.log.unshift(entry);
+const mem=S.patientMemory[session.name]||{visits:0,families:[]};
+mem.visits++;mem.lastDay=S.day;mem.lastOutcome=outcome;mem.lastFamily=pr.f;mem.lastBody=session.bodySystem;
+if(!mem.families.includes(pr.f))mem.families.push(pr.f);
+S.patientMemory[session.name]=mem;
+let dropHtml="";
+let dropChance=(S.upgrades||{}).up_shelf?0.55:0.4;
+if(duty.includes("pell"))dropChance+=0.08;
+if(session.buffs&&session.buffs.indexOf("luck")>=0)dropChance+=0.15;
+if((outcome==="Improve"||outcome==="Breakthrough")&&Math.random()<dropChance){
+  // Prefer common color match; small chance of rare
+  let pool=ITEMS.filter(i=>i.color===pr.color&&!i.rare);
+  if(Math.random()<0.12)pool=ITEMS.filter(i=>i.rare);
+  if(!pool.length)pool=ITEMS.filter(i=>i.color===pr.color);
+  const drop=pool[Math.floor(Math.random()*pool.length)]||ITEMS[Math.floor(Math.random()*ITEMS.length)];
+  S.inventory[drop.id]=(S.inventory[drop.id]||0)+1;
+  dropHtml='<div class="card" style="border-left:3px solid var(--gold)"><strong>'+drop.ic+' Found: '+drop.name+(drop.rare?' · rare':'')+'</strong><p class="muted" style="margin-top:4px;font-size:.8rem">'+drop.d+'</p><p class="muted" style="font-size:.75rem;margin-top:4px">Added to your Shelf (Codex → Shelf)</p></div>';
+}
+// Staff comments + rapport
+let staffHtml="";
+try{
+  const good=outcome==="Breakthrough"||outcome==="Improve";
+  const bad=outcome==="Stuck"||outcome==="Setback";
+  duty.forEach(id=>{
+    const s=staffById(id);if(!s)return;
+    const pool=good?s.comments.good:(bad?s.comments.bad:s.comments.tip);
+    const line=pool[Math.floor(Math.random()*pool.length)];
+    staffHtml+='<div class="muted" style="font-size:.8rem;margin-top:4px">'+line+'</div>';
+    if(!S.staffState.rapport)S.staffState.rapport={};
+    S.staffState.rapport[id]=(S.staffState.rapport[id]||0)+(good?1:(bad?-1:0));
+  });
+  if(staffHtml)staffHtml='<div class="card"><p class="muted" style="font-size:.72rem">STAFF</p>'+staffHtml+'</div>';
+}catch(e){}
+// Senna's letters — rare after Breakthrough
+if(outcome==="Breakthrough"&&Math.random()<0.22){
+  if(!S.letters)S.letters=[];
+  const missing=SENNA_LETTERS.filter(l=>!S.letters.includes(l.id));
+  if(missing.length){
+    const let_=missing[Math.floor(Math.random()*missing.length)];
+    S.letters.push(let_.id);
+    dropHtml+='<div class="card story"><strong>✉ Letter found: '+let_.t+'</strong><p style="margin-top:6px">'+let_.b+'</p><p class="muted" style="font-size:.75rem;margin-top:4px">Saved in Codex → Lore</p></div>';
+  }
+}
+save();
+const cls=outcome==="Breakthrough"?"epic":(outcome==="Improve"?"good":((outcome==="Stuck"||outcome==="Setback")?"bad":"ok"));
+const icon=outcome==="Breakthrough"?"🌟":(outcome==="Improve"?"✦":((outcome==="Stuck"||outcome==="Setback")?"·":"–"));
+document.getElementById("resultBox").innerHTML='<div class="outcome-flash '+cls+'"><div class="big">'+icon+' '+outcome+'</div><div>'+flavor+'</div><div class="rp">+'+rp+' RP · −'+cost+' Attention'+(comboBonus>0?' <span style="color:var(--warn)">(🔥 +'+comboBonus+' combo)</span>':'')+'</div>'+(S.streak>=2?'<div class="combo-flash">🔥 '+S.streak+'-session streak</div>':'')+'</div>';
+const bodyInfo=BODY_SYSTEM_INFO[session.bodySystem]||{ic:"",d:""};
+let extra=dropHtml+(staffHtml||"")+
+  '<div class="card"><p class="muted" style="font-size:.75rem">WORKING DIAGNOSIS</p>'+
+  '<p style="font-weight:700">'+(entry.diagnosis||"Not selected")+'</p>'+
+  '<p class="muted" style="margin-top:4px">'+bodyInfo.ic+' '+ (session.bodySystem||"") +'</p>'+
+  '<p class="muted" style="margin-top:4px">Confidence: '+(["","Low","Moderate","High"][entry.confidence]||"—")+' · '+(entry.diagnosisCorrect?"Matched case":"Alternative selected")+'</p>'+
+  '<p class="muted" style="font-size:.75rem;margin-top:10px">LOG CODE</p>'+
+  '<p style="font-family:monospace;font-size:.85rem">'+pr.se[0]+'|'+pr.tags[0]+'|'+colorHex(pr.color)+'</p>'+
+  '<p class="muted" style="margin-top:8px">Choices: '+entry.notes+'</p></div>'+
+  '<a class="amz" href="'+pr.url+'" target="_blank" rel="noopener">🛒 Amazon: '+pr.q+'</a>'+
+  '<p class="muted" style="text-align:center;margin-top:4px;font-size:.75rem">Comfort tools only — not treatment</p>';
+if(arcAdvanceHtml)extra=arcAdvanceHtml+extra;
+if(session.isMaya&&(S.arcs&&S.arcs.Maya===1))extra='<div class="card story">Success test passed: you remember one patient (Maya), one color (Blue), one choice (settle before screens).</div>'+extra;
+if(session.isMaya&&(S.arcs&&S.arcs.Maya===3))extra='<div class="card glow"><strong>Loyalty Mark</strong> — Maya is close to the end of her arc.</div>'+extra;
+if(mem.visits>1&&!session.isArc)extra='<div class="muted" style="font-size:.75rem;margin-bottom:4px">🧠 Archive updated — '+session.name+' now has '+mem.visits+' recorded visits.</div>'+extra;
+document.getElementById("resultExtra").innerHTML=extra;go("result");
+}
+function colorHex(c){const m={Blue:"#2196F3",Yellow:"#FFC107",Black:"#37474F",Green:"#4CAF50",Orange:"#FF9800",Red:"#F44336",Violet:"#9C27B0",Indigo:"#3F51B5",White:"#FAFAFA"};return m[c]||"#4caf7a"}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function endSession(){
+const todays=S.log.filter(l=>l.day===S.day);
+const shouldRecap=todays.length>=3||S.att<=2;
+session=null;setActionBar(null);
+if(shouldRecap){
+  showDayRecap();
+}else{
+  go("home");
+}
+}
+function showDayRecap(){
+  const day=S.day;
+  const todays=S.log.filter(l=>l.day===day);
+  const rpToday=todays.reduce((a,e)=>a+e.rp,0);
+  const bt=todays.filter(e=>e.outcome==="Breakthrough").length;
+  const improves=todays.filter(e=>e.outcome==="Improve").length;
+  const dxOk=todays.filter(e=>e.diagnosisCorrect).length;
+  const bodies=[...new Set(todays.map(e=>e.bodySystem).filter(Boolean))];
+  document.getElementById("recapTitle").textContent="Day "+day+" complete";
+  document.getElementById("recapBody").innerHTML=
+    '<div class="outcome-flash good"><div class="big">+'+rpToday+' RP</div>'+
+    '<div>'+todays.length+' session'+(todays.length!==1?"s":"")+(bt?" · "+bt+" breakthrough"+(bt!==1?"s":""):"")+(improves?" · "+improves+" improve":"")+'</div></div>'+
+    '<div class="card"><div class="mastery-row"><span>Correct diagnoses</span><span>'+dxOk+'/'+todays.length+'</span></div>'+
+    '<div class="mastery-row"><span>Systems seen</span><span>'+(bodies.length?bodies.map(b=>((BODY_SYSTEM_INFO[b]&&BODY_SYSTEM_INFO[b].ic)||"")+" ").join(""):"—")+'</span></div>'+
+    '<div class="mastery-row"><span>Streak</span><span>🔥 '+S.streak+'</span></div>'+
+    '<div class="mastery-row"><span>Attention recovery</span><span>+4 (capped at '+ATT_MAX+')</span></div></div>'+
+    (todays.length?'<div class="card"><p class="muted" style="font-size:.75rem">TODAY\'S CASES</p>'+todays.map(e=>'<div style="font-size:.84rem;margin-top:4px"><strong>'+e.name+'</strong> — '+e.outcome+' · +'+e.rp+'</div>').join("")+'</div>':'');
+  // Advance day state but stay on recap until confirmed
+  S.day++;S.att=Math.min(ATT_MAX,S.att+4);S.attTimer=0;save();
+  go("recap");
+}
+function finishRecap(){go("home");toast("Day "+S.day+" begins")}
+function renderDeck(){
+document.getElementById("deckList").innerHTML=P.map((pr,i)=>{
+  const body=BODY_SYSTEMS[pr.f]||"";
+  const info=BODY_SYSTEM_INFO[body]||{ic:""};
+  return '<div class="card" style="padding:12px">'+
+    '<div style="font-weight:650">'+pr.p+'</div>'+
+    '<div class="muted" style="font-size:.78rem;margin-top:2px"><span class="pill">'+pr.f+'</span> <span class="pill body-pill">'+info.ic+' '+body+'</span> '+pr.id+' · Att '+pr.att+'</div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px">'+
+    '<button class="btn sm" style="flex:1" onclick="freePlay(\''+pr.id+'\')">Session</button>'+
+    '<button class="btn sm sec" style="flex:1" onclick="practicePlay(\''+pr.id+'\')">Practice</button>'+
+    '</div></div>';
+}).join("");
+}
+function freePlay(id){if(S.att<1){toast("No Attention");go("more");return}const pr=P.find(x=>x.id===id);const name=NAMES[Math.floor(Math.random()*NAMES.length)];beginArrival({name,pr,isMaya:false})}
+function practicePlay(id){
+  const pr=P.find(x=>x.id===id);
+  if(!pr)return;
+  beginArrival({name:"Practice",pr,isMaya:false,practice:true});
+}
+function renderLog(){
+const el=document.getElementById("logList");
+if(!S.log.length){el.innerHTML='<div class="empty">No sessions yet.<br>Open the door.</div>';return}
+const slice=S.log.slice(0,40);
+el.innerHTML=slice.map(e=>{
+  const bodyInfo=BODY_SYSTEM_INFO[e.bodySystem]||{ic:""};
+  return '<div class="log-item"><div class="when">Day '+e.day+' · '+new Date(e.ts).toLocaleString()+'</div>'+
+  '<div><strong>'+e.name+'</strong> — '+e.problem+'</div>'+
+  '<div class="muted">'+e.outcome+' · +'+e.rp+' RP · '+e.pr+(e.isMaya?' · Maya':'')+'</div>'+
+  (e.bodySystem?'<div class="muted" style="font-size:.75rem;margin-top:2px">'+bodyInfo.ic+' '+e.bodySystem+'</div>':'')+
+  (e.diagnosis?'<div class="muted" style="font-size:.75rem;margin-top:2px"><strong>Diagnosis:</strong> '+e.diagnosis+' · '+(["","Low","Moderate","High"][e.confidence]||"—")+'</div>':'')+
+  '<div class="muted" style="font-size:.75rem;margin-top:2px">'+(e.notes||'')+'</div></div>';
+}).join("")+(S.log.length>40?'<div class="muted" style="text-align:center;margin-top:8px">Showing latest 40 of '+S.log.length+' sessions</div>':"");
+}
+function switchCodexTab(tab){
+S.codexTab=tab;
+document.getElementById("codexLore").style.display=tab==="lore"?"":"none";
+document.getElementById("codexArchive").style.display=tab==="archive"?"":"none";
+document.getElementById("codexInv").style.display=tab==="inv"?"":"none";
+const shop=document.getElementById("codexShop");
+if(shop)shop.style.display=tab==="shop"?"":"none";
+document.getElementById("ctabLore").classList.toggle("on",tab==="lore");
+document.getElementById("ctabArchive").classList.toggle("on",tab==="archive");
+document.getElementById("ctabInv").classList.toggle("on",tab==="inv");
+const cshop=document.getElementById("ctabShop");
+if(cshop)cshop.classList.toggle("on",tab==="shop");
+if(tab==="archive")renderArchive();
+if(tab==="inv")renderInventory();
+if(tab==="shop")renderShop();
+if(tab==="lore")renderCodexLore();
+}
+function renderCodexLore(){
+  if(!S.chronicleUnlocked)S.chronicleUnlocked=["ch0"];
+  let html='<h3>Chronicle of the Still-Room</h3>';
+  html+=CHRONICLE.map(ch=>{
+    const open=S.chronicleUnlocked.includes(ch.id);
+    if(!open)return '<div class="card" style="opacity:.4"><span class="lore-tt">'+ch.ic+' ???</span><p class="muted" style="margin-top:6px">This chapter is still veiled by the Grey.</p></div>';
+    return '<div class="card story"><span class="lore-tt">'+ch.ic+' '+ch.title+'</span><p style="margin-top:6px;line-height:1.45">'+ch.body+'</p></div>';
+  }).join("");
+  html+='<h3>The Old Ways</h3>';
+  html+=LORE.map(l=>'<div class="card story"><span class="lore-tt">'+l.t+'</span><p style="margin-top:6px">'+l.b+'</p></div>').join("");
+  const found=(S.letters||[]).map(id=>SENNA_LETTERS.find(l=>l.id===id)).filter(Boolean);
+  if(found.length){
+    html+='<h3>Senna\'s Letters · '+found.length+'/'+SENNA_LETTERS.length+'</h3>';
+    html+=found.map(l=>'<div class="card story"><span class="lore-tt">✉ '+l.t+'</span><p style="margin-top:6px">'+l.b+'</p></div>').join("");
+  }else{
+    html+='<div class="muted" style="margin-top:10px;font-size:.78rem">Senna\'s letters sometimes appear after Breakthroughs.</div>';
+  }
+  document.getElementById("codexLore").innerHTML=html;
+}
+function canAfford(cost,token){
+  if((S.rp||0)<(cost||0))return false;
+  if((token||0)>0&&(S.tokens||0)<token)return false;
+  return true;
+}
+function payCost(cost,token){
+  S.rp-=(cost||0);
+  if(token)S.tokens=(S.tokens||0)-token;
+}
+function renderShop(){
+  if(!S.upgrades)S.upgrades={};
+  if(!S.buffs)S.buffs=[];
+  if(!S.flags)S.flags={};
+  if(S.tokens==null)S.tokens=0;
+  const tab=S.shopTab||"upgrades";
+  const moon=getMoon();
+  let html='<div class="card glow"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="muted" style="font-size:.72rem">STILL-ROOM MARKET</div><div style="font-weight:700;margin-top:2px">'+Math.floor(S.rp)+' RP · 🪙 '+(S.tokens||0)+' tokens</div></div><div class="muted" style="font-size:.78rem">'+moon.ic+' '+moon.n+'</div></div>';
+  if((S.buffs||[]).length)html+='<p class="muted" style="margin-top:6px;font-size:.75rem">Active next session: '+S.buffs.join(", ")+'</p>';
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin:8px 0">'+
+    [{id:"upgrades",l:"🔧 Build"},{id:"buffs",l:"🍋 Buffs"},{id:"shelf",l:"🎒 Shelf"},{id:"gifts",l:"🎁 Gifts"},{id:"rare",l:"✨ Rare"},{id:"special",l:"☀️ Special"}].map(t=>
+      '<div class="choice ctab'+(tab===t.id?' on':'')+'" onclick="S.shopTab=\''+t.id+'\';renderShop()"><div class="t" style="font-size:.72rem">'+t.l+'</div></div>'
+    ).join("")+'</div>';
+
+  function row(ic,name,costLine,d,btn){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+ic+' '+name+'</strong><span class="muted" style="font-size:.75rem">'+costLine+'</span></div><p class="muted" style="margin-top:4px;font-size:.8rem">'+d+'</p>'+btn+'</div>';
+  }
+  function buyBtn(fn,label){return '<button class="btn sm" style="margin-top:8px" onclick="'+fn+'">'+(label||"Buy")+'</button>'}
+
+  if(tab==="upgrades"){
+    html+='<p class="muted" style="font-size:.75rem;margin-bottom:6px">Permanent still-room upgrades. Own '+(Object.keys(S.upgrades).length)+'/'+UPGRADES.length+'.</p>';
+    html+=UPGRADES.map(u=>{
+      const owned=!!S.upgrades[u.id];
+      return row(u.ic,u.name,owned?"Owned":u.cost+" RP",u.d,owned?"":buyBtn("buyUpgrade('"+u.id+"')","Install"));
+    }).join("");
+  }else if(tab==="buffs"){
+    html+='<p class="muted" style="font-size:.75rem;margin-bottom:6px">Consumables apply to your <strong>next</strong> full session.</p>';
+    html+=SHOP_BUFFS.map(b=>{
+      const cost=(b.cost?b.cost+" RP":"")+(b.token?" · 🪙"+b.token:"");
+      return row(b.ic,b.name,cost,b.d,buyBtn("buyBuff('"+b.id+"')"));
+    }).join("");
+  }else if(tab==="shelf"){
+    html+='<p class="muted" style="font-size:.75rem;margin-bottom:6px">Stock color remedies for equipping.</p>';
+    html+=SHOP_REMEDIES.map(r=>row(r.ic,r.name,r.cost+" RP",r.d,buyBtn("buyRemedy('"+r.itemId+"',"+r.cost+")"))).join("");
+  }else if(tab==="rare"){
+    html+='<p class="muted" style="font-size:.75rem;margin-bottom:6px">Rare tools — RP + Road Tokens.</p>';
+    html+=SHOP_RARE.map(r=>{
+      const cost=r.cost+" RP"+(r.token?" · 🪙"+r.token:"");
+      return row(r.ic,r.name,cost,r.d,buyBtn("buyRare('"+r.id+"')"));
+    }).join("");
+  }else if(tab==="gifts"){
+    html+='<p class="muted" style="font-size:.75rem;margin-bottom:6px">Staff gifts raise rapport (chronicle & perks).</p>';
+    html+=SHOP_GIFTS.map(g=>{
+      const cost=g.cost+" RP"+(g.token?" · 🪙"+g.token:"");
+      return row(g.ic,g.name,cost,g.d,buyBtn("buyGift('"+g.id+"')"));
+    }).join("");
+  }else if(tab==="special"){
+    html+=SHOP_SPECIAL.map(s=>{
+      const owned=s.flag&&S.flags[s.flag];
+      const cost=s.cost+" RP"+(s.token?" · 🪙"+s.token:"");
+      return row(s.ic,s.name,owned?"Owned":cost,s.d,owned?"":buyBtn("buySpecial('"+s.id+"')"));
+    }).join("");
+  }
+  document.getElementById("codexShop").innerHTML=html;
+}
+function buyUpgrade(id){
+  const u=UPGRADES.find(x=>x.id===id);if(!u)return;
+  if(!S.upgrades)S.upgrades={};
+  if(S.upgrades[id]){toast("Already owned");return}
+  if(!canAfford(u.cost,0)){toast("Need "+u.cost+" RP");return}
+  payCost(u.cost,0);S.upgrades[id]=true;save();renderShop();toast("🔧 Installed: "+u.name);
+}
+function buyBuff(id){
+  const b=SHOP_BUFFS.find(x=>x.id===id);if(!b)return;
+  if(!canAfford(b.cost,b.token)){toast("Cannot afford");return}
+  if(!S.buffs)S.buffs=[];
+  if(S.buffs.indexOf(b.buff)>=0){toast("Already stocked for next session");return}
+  payCost(b.cost,b.token);S.buffs.push(b.buff);save();renderShop();toast(b.ic+" Ready for next session");
+}
+function buyRemedy(itemId,cost){
+  if(!canAfford(cost,0)){toast("Need "+cost+" RP");return}
+  payCost(cost,0);S.inventory[itemId]=(S.inventory[itemId]||0)+1;save();renderShop();toast("🎒 Added to Shelf");
+}
+function buyRare(id){
+  const r=SHOP_RARE.find(x=>x.id===id);if(!r)return;
+  if(!canAfford(r.cost,r.token)){toast("Need RP and tokens");return}
+  payCost(r.cost,r.token);S.inventory[r.itemId]=(S.inventory[r.itemId]||0)+1;save();renderShop();toast(r.ic+" Rare secured");
+}
+function buyGift(id){
+  const g=SHOP_GIFTS.find(x=>x.id===id);if(!g)return;
+  if(!canAfford(g.cost,g.token)){toast("Cannot afford");return}
+  payCost(g.cost,g.token);
+  if(!S.staffState)S.staffState={duty:[],moods:{},event:null,eventDay:0,rapport:{}};
+  if(!S.staffState.rapport)S.staffState.rapport={};
+  S.staffState.rapport[g.staff]=(S.staffState.rapport[g.staff]||0)+(g.rap||2);
+  save();renderShop();toast("🎁 "+g.name+" delivered");
+}
+function buySpecial(id){
+  const s=SHOP_SPECIAL.find(x=>x.id===id);if(!s)return;
+  if(s.flag&&S.flags[s.flag]){toast("Already owned");return}
+  if(!canAfford(s.cost,s.token)){toast("Cannot afford");return}
+  if(id==="sp_token"){
+    payCost(s.cost,0);S.tokens=(S.tokens||0)+1;save();renderShop();toast("🪙 +1 Road Token");return;
+  }
+  if(id==="sp_att"){
+    payCost(s.cost,0);S.att=ATT_MAX;S.attTimer=0;save();renderShop();toast("💤 Attention full");return;
+  }
+  if(id==="sp_day"){
+    payCost(s.cost,0);S.day=(S.day||1)+1;S.staffState.eventDay=-1;ensureStaffDay();save();renderShop();toast("☀️ A new dawn");return;
+  }
+  if(id==="sp_hint"){
+    payCost(s.cost,s.token);if(!S.flags)S.flags={};S.flags.hintWhisper=true;save();renderShop();toast("📜 Whisper unlocked");return;
+  }
+}
+function renderArchive(){
+const filFam=S.archiveFilterFam||"All",filOut=S.archiveFilterOut||"All",filBody=S.archiveFilterBody||"All";
+const names=[...new Set(S.log.map(e=>e.name))];
+let entries=names.map(n=>{
+const recs=S.log.filter(e=>e.name===n);
+const fams=[...new Set(recs.map(r=>r.family))];
+const outcomes=[...new Set(recs.map(r=>r.outcome))];
+const bodies=[...new Set(recs.map(r=>r.bodySystem).filter(Boolean))];
+return{name:n,recs,fams,outcomes,bodies,isMaya:recs.some(r=>r.isMaya)};
+});
+if(filFam!=="All")entries=entries.filter(e=>e.fams.includes(filFam));
+if(filOut!=="All")entries=entries.filter(e=>e.outcomes.includes(filOut));
+if(filBody!=="All")entries=entries.filter(e=>e.bodies.includes(filBody));
+entries.sort((a,b)=>b.recs.length-a.recs.length);
+const allFams=[...new Set(S.log.map(e=>e.family))];
+const allOuts=[...new Set(S.log.map(e=>e.outcome))];
+const allBodies=[...new Set(S.log.map(e=>e.bodySystem).filter(Boolean))];
+const famOpts='<option'+(filFam==="All"?" selected":"")+'>All</option>'+allFams.map(f=>'<option'+(f===filFam?" selected":"")+'>'+f+'</option>').join("");
+const outOpts='<option'+(filOut==="All"?" selected":"")+'>All</option>'+allOuts.map(o=>'<option'+(o===filOut?" selected":"")+'>'+o+'</option>').join("");
+const bodyOpts='<option'+(filBody==="All"?" selected":"")+'>All</option>'+allBodies.map(b=>'<option'+(b===filBody?" selected":"")+'>'+b+'</option>').join("");
+const controls='<div class="card" style="display:grid;gap:8px">'+
+  '<div><label>Family</label><select onchange="S.archiveFilterFam=this.value;renderArchive()">'+famOpts+'</select></div>'+
+  '<div><label>Outcome</label><select onchange="S.archiveFilterOut=this.value;renderArchive()">'+outOpts+'</select></div>'+
+  '<div><label>Body system</label><select onchange="S.archiveFilterBody=this.value;renderArchive()">'+bodyOpts+'</select></div></div>';
+if(!S.log.length){document.getElementById("codexArchive").innerHTML='<div class="empty">The Archive is empty.<br>Treat a patient to begin a record.</div>';return}
+if(!entries.length){document.getElementById("codexArchive").innerHTML=controls+'<div class="empty">No records match this view.</div>';return}
+document.getElementById("codexArchive").innerHTML=controls+entries.map(e=>{
+const mem=S.patientMemory[e.name];
+const note=mem&&mem.visits>1?'<p class="muted" style="margin-top:6px;font-size:.78rem">🧠 Remembered: '+mem.visits+' visits · last seen Day '+mem.lastDay+' · '+mem.lastOutcome+' ('+mem.lastFamily+')'+(mem.lastBody?' · '+mem.lastBody:'')+'</p>':'';
+const lastPr=P.find(x=>x.id===e.recs[0].pr);
+const bs=getBackstory(e.name,lastPr);
+const sid="arcbs_"+String(e.name).replace(/\W/g,"_");
+const arcBadge=STORY_ARCS[e.name]?' <span class="pill returning-pill">Story</span>':'';
+return '<div class="card'+(e.isMaya||STORY_ARCS[e.name]?' glow':'')+'">'+
+  '<div style="display:flex;justify-content:space-between;align-items:center"><strong>'+e.name+arcBadge+'</strong><span class="muted" style="font-size:.75rem">'+e.recs.length+' visit'+(e.recs.length>1?"s":"")+'</span></div>'+
+  '<div class="muted" style="font-size:.75rem;margin-top:2px">'+bs.role+'</div>'+
+  '<div style="margin-top:4px">'+e.fams.map(f=>'<span class="pill">'+f+'</span>').join("")+' '+e.bodies.map(b=>'<span class="pill body-pill">'+((BODY_SYSTEM_INFO[b]&&BODY_SYSTEM_INFO[b].ic)||"")+' '+b+'</span>').join("")+'</div>'+
+  note+
+  '<div class="muted" style="margin-top:8px;cursor:pointer;font-size:.75rem" onclick="toggleBackstory(\''+sid+'\')">📖 Backstory <span id="'+sid+'_t">▸</span></div>'+
+  '<div id="'+sid+'" style="display:none;margin-top:6px;font-size:.8rem;line-height:1.45">'+bs.story+'</div></div>';
+}).join("");
+}
+function renderInventory(){
+const owned=Object.keys(S.inventory||{}).filter(k=>S.inventory[k]>0);
+const eq=S.equipped?ITEMS.find(i=>i.id===S.equipped):null;
+let html='<div class="card"><p class="muted" style="font-size:.75rem">EQUIPPED REMEDY</p><p style="font-weight:700;margin-top:4px">'+(eq?eq.ic+' '+eq.name:'None equipped')+'</p><p class="muted" style="font-size:.78rem;margin-top:2px">'+(eq?'Matches '+eq.color+' cases · tap the shelf below to change':'Tap an item on the shelf below to equip it. Matching colors give a small edge in session step 2.')+'</p>'+(eq?'<button class="btn sm sec" style="margin-top:8px" onclick="S.equipped=null;save();renderInventory()">Unequip</button>':'')+'</div>';
+if(!owned.length){html+='<div class="empty">The shelf is bare.<br>Breakthroughs &amp; Improvements sometimes leave a remedy behind.</div>';document.getElementById("codexInv").innerHTML=html;return}
+html+='<div class="badge-grid">'+owned.map(id=>{
+const it=ITEMS.find(x=>x.id===id);if(!it)return"";const n=S.inventory[id];const isEq=S.equipped===id;
+return '<div class="badge on" style="cursor:pointer;opacity:1'+(isEq?';border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)':'')+'" onclick="equipItem(\''+id+'\')"><div class="ic">'+it.ic+'</div><div class="n">'+it.name+(isEq?' ✓':'')+'</div><div class="d">×'+n+' · '+it.color+'</div></div>';
+}).join("")+'</div>';
+document.getElementById("codexInv").innerHTML=html;
+}
+function equipItem(id){S.equipped=S.equipped===id?null:id;save();renderInventory();toast(S.equipped?"🎒 Equipped":"Unequipped")}
+function saveSetup(){S.clinic=document.getElementById("inClinic").value||"Willow Bend Clinic";S.healer=document.getElementById("inHealer").value;save();toast("Saved")}
+
+let _lastFrame=performance.now(),_persistAcc=0,_rankIdxCache=-1,_homeOn=true,_meterFrame=0;
+function tick(now){
+const dt=Math.min(500,now-_lastFrame);_lastFrame=now;
+// Soft pause when tab is hidden — saves battery on phones
+if(typeof document.hidden!=="undefined"&&document.hidden){requestAnimationFrame(tick);return}
+S.lastTick=Date.now();
+let metersDirty=false;
+if(S.att<ATT_MAX){
+  S.attTimer=(S.attTimer||0)+dt;
+  const regenMs=(S.upgrades&&S.upgrades.up_clock)?(ATT_REGEN_MS*0.8):ATT_REGEN_MS;
+  while(S.attTimer>=regenMs&&S.att<ATT_MAX){
+    S.attTimer-=regenMs;S.att++;metersDirty=true;
+    if(_homeOn)toast("Attention +1");
+  }
+  if(S.att>=ATT_MAX)S.attTimer=0;
+  metersDirty=true;
+}else{S.attTimer=0}
+if(_rankIdxCache<0)_rankIdxCache=RANKS.findIndex(r=>r.n===S.rank);
+if(_rankIdxCache>0){
+  S.passiveAccum=(S.passiveAccum||0)+_rankIdxCache*0.12*dt/1000;
+  if(S.passiveAccum>=1){const whole=Math.floor(S.passiveAccum);S.rp+=whole;S.passiveAccum-=whole;metersDirty=true}
+}
+// Update meters at ~10fps when dirty, not every paint
+_meterFrame++;
+if(metersDirty||_meterFrame%6===0)updateMeters(false);
+_persistAcc+=dt;
+if(_persistAcc>5000){_persistAcc=0;safeSet("hhc2",JSON.stringify(S))}
+requestAnimationFrame(tick);
+}
+try{load()}catch(e){console.error("boot load",e)}
+try{ui()}catch(e){console.error("boot ui",e)}
+try{
+  const home=$("sc-home");
+  _homeOn=!!(home&&home.classList.contains("on"));
+  if(_homeOn)setActionBar('<button class="btn" id="btnOpenDoor" onclick="openWaitingRoom()">▶ Open the door</button>');
+}catch(e){}
+try{requestAnimationFrame(tick)}catch(e){}
+// Track whether home is visible without querying every frame
+document.addEventListener("visibilitychange",()=>{/* tick handles hidden */},{passive:true});
+</script>
+</body>
+</html>
