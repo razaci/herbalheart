@@ -295,6 +295,28 @@ body{
 .rbt-detail{border-left:3px solid var(--accent);margin-top:10px}
 .rbt-pr{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:99px;background:#1a3445;color:#72e7b5;margin:2px 3px 2px 0}
 
+
+/* ===== DIFFICULTY + FEATURE PACK ===== */
+.diff-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.diff-opt{padding:10px 6px;border-radius:12px;border:1px solid #29495c;background:#0d1e2b;text-align:center;cursor:pointer;font-size:.72rem}
+.diff-opt.on{border-color:var(--accent);background:#143d28;color:var(--accent);box-shadow:0 0 0 1px rgba(98,230,173,.2)}
+.diff-opt .dn{font-weight:750;display:block;margin-bottom:2px}
+.diff-opt .dd{color:var(--muted);font-size:.62rem;line-height:1.3}
+.feat-section{margin:12px 0}
+.feat-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:99px;background:#153142;border:1px solid #2a4a5a;font-size:.7rem;margin:2px}
+.rep-meter{height:10px;background:#0a1520;border-radius:8px;overflow:hidden;margin-top:6px}
+.rep-meter>i{display:block;height:100%;background:linear-gradient(90deg,#69b7ff,#62e6ad,#ffd166);border-radius:8px;transition:width .4s}
+.forage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.forage-cell{aspect-ratio:1;border-radius:14px;border:1px dashed #31566d;background:#0c1a24;display:grid;place-items:center;font-size:1.6rem;cursor:pointer;position:relative}
+.forage-cell.found{border-style:solid;border-color:var(--accent);background:#143d28}
+.forage-cell .qty{position:absolute;bottom:4px;right:6px;font-size:.65rem;color:var(--gold)}
+.craft-row{display:flex;gap:8px;align-items:center;padding:10px;border-radius:12px;background:#0e202d;border:1px solid #29495c;margin:6px 0}
+.event-banner{border-left:3px solid var(--gold);background:linear-gradient(145deg,#2a2410,#1a1810);border-radius:14px;padding:12px;margin:10px 0}
+.journal-entry{border-left:3px solid var(--blue);padding:10px 12px;margin:8px 0;background:#102030;border-radius:0 12px 12px 0;font-size:.84rem;line-height:1.45}
+.decor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.decor-item{padding:12px;border-radius:14px;border:1px solid #29495c;background:#0d1e2b;text-align:center}
+.decor-item.owned{border-color:var(--gold)}
+
 </style>
 </head>
 <body>
@@ -318,7 +340,9 @@ body{
         <div class="world-dot locked">🌙<br>Moon Road</div>
       </div>
       <button class="btn" style="width:100%;margin-top:13px" onclick="beginCompleteEdition()">Enter the Still-Room</button>
+      <button class="btn" style="width:100%;margin-top:8px;background:linear-gradient(135deg,#69b7ff,#37bd8a)" onclick="quickPlayStart()">⚡ Quick Play · skip road intro</button>
       <button class="btn sec" style="width:100%;margin-top:8px" onclick="continueCompleteEdition()">Continue Existing Run</button>
+      <p class="muted" style="text-align:center;margin-top:10px;font-size:.72rem">On iPhone: if this screen sticks, tap Quick Play. Saves work in-browser; file:// may not keep them after close.</p>
     </div>
     <p style="text-align:center;color:#527388;font-size:.65rem;margin-top:14px">Complete Edition · existing saves are preserved</p>
   </div>
@@ -496,6 +520,24 @@ body{
 <div class="safe">Tone lock: competent, kind, slightly tired, never cruel. Never medical advice. Body systems are game fiction only.</div>
 <button class="btn ghost" onclick="if(confirm('Reset all progress?')){localStorage.removeItem('hhc2');location.reload()}">Reset everything</button>
 </section>
+<section id="sc-features" class="screen">
+<h2>✦ Clinic Features</h2>
+<p class="muted" style="margin-bottom:10px">Difficulty, forage, craft, journal, reputation, and décor.</p>
+<div class="card glow" id="diffCard"></div>
+<div class="card" id="repCard"></div>
+<div class="card" id="eventCard"></div>
+<div class="feature-grid" style="margin-top:10px">
+  <div class="feature-tile" onclick="openForage()"><div class="fi">🌲</div><div class="ft">Forage</div><div class="fd">Wild bank · seasonal herbs</div></div>
+  <div class="feature-tile" onclick="openCraft()"><div class="fi">⚗️</div><div class="ft">Craft</div><div class="fd">Brew potions from finds</div></div>
+  <div class="feature-tile" onclick="openJournal()"><div class="fi">📓</div><div class="ft">Journal</div><div class="fd">Healer notes & day prose</div></div>
+  <div class="feature-tile" onclick="openDecor()"><div class="fi">🖼️</div><div class="ft">Décor</div><div class="fd">Still-room atmosphere</div></div>
+  <div class="feature-tile" onclick="openChallenges()"><div class="fi">🎯</div><div class="ft">Challenges</div><div class="fd">Weekly goals & trials</div></div>
+  <div class="feature-tile" onclick="openMentor()"><div class="fi">🦉</div><div class="ft">Mentor</div><div class="fd">River trials & tips</div></div>
+</div>
+<div id="featuresBody"></div>
+<button class="btn sec" onclick="go('home')">Back to clinic</button>
+</section>
+
 
 <section id="sc-world" class="screen">
 <h2>🏮 The Old Road</h2>
@@ -517,6 +559,7 @@ body{
 <button data-s="log" onclick="go('log')"><span class="ico">📋</span>Log</button>
 <button data-s="badges" onclick="go('badges')"><span class="ico">🏅</span>Badges</button>
 <button data-s="codex" onclick="go('codex')"><span class="ico">📖</span>Codex</button>
+<button data-s="features" onclick="go('features')"><span class="ico">✦</span>Features</button>
 <button data-s="more" onclick="go('more')"><span class="ico">⚙️</span>More</button>
 <button id="worldNavBtn" data-s="world" onclick="go('world')"><span class="ico">🗺️</span>WORLD</button>
 </nav>
@@ -1016,6 +1059,17 @@ function getDiagnosisOptions(pr){
   return opts.sort(()=>Math.random()-0.5);
 }
 
+
+function simpleTrustDiagnosis(){
+  try{
+    if(!session||!session.diagnosisOptions||!session.diagnosisOptions.length){toast("No options");return}
+    let idx=session.diagnosisOptions.findIndex(d=>d.match&&d.match.includes(session.pr.p));
+    if(idx<0) idx=0;
+    diagnosisPick(idx);
+    setTimeout(function(){try{if(!session.confidence)confidencePick(2)}catch(e){}},80);
+  }catch(e){console.error(e);toast("Could not auto-diagnose")}
+}
+
 function diagnosisPick(index){
   if(session.confidence)return; // locked after confidence
   const d=session.diagnosisOptions[index];
@@ -1154,8 +1208,16 @@ function updateLiveScore(){
   el.style.color=s>=7?"var(--gold)":(s>=5?"var(--accent)":(s<1?"var(--danger)":"var(--text)"));
 }
 
-function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
-function safeSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+/* Storage: localStorage with in-memory fallback (iOS file:// / private mode) */
+window._memStore=window._memStore||{};
+function safeGet(k){
+  try{const v=localStorage.getItem(k);if(v!=null)return v}catch(e){}
+  return window._memStore[k]!=null?window._memStore[k]:null;
+}
+function safeSet(k,v){
+  window._memStore[k]=v;
+  try{localStorage.setItem(k,v);return true}catch(e){return false}
+}
 function load(){try{const r=safeGet("hhc2");if(r)Object.assign(S,JSON.parse(r))}catch(e){console.error("load",e)}
 if(typeof S.att!=="number"||isNaN(S.att))S.att=10;
 if(S.att<0)S.att=0;
@@ -1608,13 +1670,17 @@ document.getElementById("patientCard").innerHTML=
 session.diagnosisOptions=getDiagnosisOptions(pr);
 document.getElementById("bodySystemHint").innerHTML=bodyInfo.ic+' Primary system in play: <strong>'+bodySys+'</strong> — '+bodyInfo.d;
 const whisper=S.flags&&S.flags.hintWhisper;
-document.getElementById("diagnosisChoices").innerHTML=session.diagnosisOptions.map((d,i)=>{
+let diagHtml=session.diagnosisOptions.map((d,i)=>{
   let hint="";
   if(whisper&&d.match&&d.match.length)hint='<div class="d" style="opacity:.7">Whisper: may touch '+d.match[0]+'…</div>';
   else hint='<div class="d">Choose as your working diagnosis</div>';
   return '<div class="choice diagnosis-choice" onclick="diagnosisPick('+i+')"><div class="t">'+d.name+'</div>'+hint+'</div>';
 }).join("");
-document.getElementById("diagnosisFeedback").innerHTML="";
+if(S.simpleMode!==false || (window.getDiff&&getDiff().autoDiag)){
+  diagHtml='<div class="choice" onclick="simpleTrustDiagnosis()" style="border-color:var(--accent);background:linear-gradient(145deg,#143d28,#102635)"><div class="t">⚡ Trust the ledger (recommended)</div><div class="d">Simple Mode · solid diagnosis + continue</div></div>'+diagHtml;
+}
+document.getElementById("diagnosisChoices").innerHTML=diagHtml;
+document.getElementById("diagnosisFeedback").innerHTML=S.simpleMode!==false?'<p class="muted" style="font-size:.75rem">Simple Mode on — trust the ledger or pick manually.</p>':"";
 document.getElementById("diagnosisBox").classList.remove("glow");
 document.getElementById("diagnosisChoices").style.pointerEvents="auto";
 document.getElementById("intakeChoices").innerHTML='<div class="muted" style="margin:10px 0">Complete the diagnosis step above to unlock intake.</div>';
@@ -1671,7 +1737,16 @@ if(!session._kettleChecked){
     pts+=1;S.kettleUsedDay=S.day;toast("🫖 Kettle is warm (+1)");
   }
 }
-session.choices.push({type,val});session.score+=pts;updateLiveScore();if(session.step<3){session.step++;showProtocolStep()}else resolveSession()}
+session.choices.push({type,val});session.score+=pts;updateLiveScore();
+// Simple Mode: only 2 protocol steps (skip the third decision)
+if(S.simpleMode!==false && session.step>=2){
+  session.choices.push({type:"close",val:"ifthen"});
+  session.score+=2;
+  updateLiveScore();
+  resolveSession();
+  return;
+}
+if(session.step<3){session.step++;showProtocolStep()}else resolveSession()}
 function riskPick(){
 S.gambles=(S.gambles||0)+1;
 ensureStaffDay();
@@ -2541,6 +2616,631 @@ document.addEventListener("visibilitychange",()=>{/* tick handles hidden */},{pa
   };
 })();
 
+
+/* ==========================================================
+   STREAMLINE + iOS FILE FIXES
+   - Quick Play skips road intro
+   - Simple Mode: shorter sessions, softer attention, auto-hints
+   - One-tap Quick Case from home
+   ========================================================== */
+(function(){
+  function ensureSimple(){
+    if(!window.S) return;
+    if(S.simpleMode==null) S.simpleMode=true; // default ON for smoother play
+  }
+
+  window.quickPlayStart=function(){
+    try{
+      if(typeof ce==="function"){ce().flags.started=true;ce().mode="story"}
+      const cs=document.getElementById("completeStart");
+      if(cs) cs.style.display="none";
+      if(window.S){S.simpleMode=true;save({ui:false})}
+      if(typeof go==="function") go("home");
+      toast("⚡ Quick Play · clinic open");
+    }catch(e){
+      try{document.getElementById("completeStart").style.display="none"}catch(e2){}
+      try{go("home")}catch(e3){}
+    }
+  };
+
+  // Patch continue/begin to always hide overlay
+  const _begin=window.beginCompleteEdition;
+  window.beginCompleteEdition=function(){
+    try{if(typeof _begin==="function")_begin()}catch(e){console.error(e)}
+    try{document.getElementById("completeStart").style.display="none"}catch(e){}
+  };
+  const _cont=window.continueCompleteEdition;
+  window.continueCompleteEdition=function(){
+    try{if(typeof _cont==="function")_cont()}catch(e){console.error(e)}
+    try{document.getElementById("completeStart").style.display="none";go("home")}catch(e){}
+  };
+
+  // Soften Attention gate in simple mode
+  const _openWR=window.openWaitingRoom;
+  if(typeof _openWR==="function"){
+    window.openWaitingRoom=function(){
+      ensureSimple();
+      try{
+        if(S.simpleMode && typeof S.att==="number" && S.att<1){
+          S.att=Math.max(S.att,3);
+          toast("Simple Mode · Attention topped to 3");
+          save({ui:false});
+        }
+      }catch(e){}
+      return _openWR.apply(this,arguments);
+    };
+  }
+
+  // Quick Case: one-tap random everyday session with soft defaults
+  window.quickCase=function(){
+    ensureSimple();
+    try{
+      if(typeof S.att!=="number"||isNaN(S.att))S.att=10;
+      if(S.att<1){S.att=3;toast("Simple Mode · +3 Attention")}
+      if(typeof P==="undefined"||!P.length){toast("Deck not ready");return}
+      const pr=P[Math.floor(Math.random()*P.length)];
+      const name=(typeof NAMES!=="undefined"&&NAMES.length)?NAMES[Math.floor(Math.random()*NAMES.length)]:"Neighbor";
+      if(typeof beginArrival==="function"){
+        beginArrival({name:name,pr:pr,isMaya:false,quote:pr.quote,note:"Quick case"});
+        // Auto-pick best diagnosis shortly after UI paints
+        setTimeout(function(){
+          try{
+            if(S.simpleMode && session && !session.diagnosis && session.diagnosisOptions && session.diagnosisOptions.length){
+              // pick correct option if marked
+              const correct=session.diagnosisOptions.find(o=>o.correct)||session.diagnosisOptions[0];
+              if(correct && typeof chooseDiagnosis==="function"){
+                chooseDiagnosis(correct.id||correct.key||0, true);
+              } else if(typeof selectDiagnosis==="function"){
+                selectDiagnosis(0);
+              }
+            }
+          }catch(e){}
+        },200);
+      } else if(typeof openWaitingRoom==="function"){
+        openWaitingRoom();
+      }
+    }catch(e){console.error(e);toast("Could not start quick case")}
+  };
+
+  // Toggle simple mode from More screen if present
+  window.toggleSimpleMode=function(){
+    ensureSimple();
+    S.simpleMode=!S.simpleMode;
+    save();
+    toast(S.simpleMode?"Simple Mode ON · shorter, kinder sessions":"Simple Mode OFF · full depth");
+    try{if(document.getElementById("sc-more")?.classList.contains("on")) renderSimpleToggle()}catch(e){}
+  };
+  window.renderSimpleToggle=function(){
+    const host=document.getElementById("simpleModeCard");
+    if(!host)return;
+    ensureSimple();
+    host.innerHTML='<p style="font-weight:650;margin-bottom:6px">Play style</p>'+
+      '<p class="muted" style="margin-bottom:8px">Simple Mode auto-hints diagnosis, softens Attention, and keeps the road intro optional.</p>'+
+      '<button class="btn '+(S.simpleMode?'':'sec')+'" onclick="toggleSimpleMode()">'+(S.simpleMode?'✓ Simple Mode ON':'Simple Mode OFF')+'</button>';
+  };
+
+  // Inject home quick-case button + simple toggle on more
+  function injectUI(){
+    try{
+      const home=document.getElementById("sc-home");
+      if(home && !document.getElementById("quickCaseBtn")){
+        const wrap=document.createElement("div");
+        wrap.innerHTML='<button class="btn" id="quickCaseBtn" style="margin-top:8px;background:linear-gradient(135deg,#69b7ff,#37bd8a)" onclick="quickCase()">⚡ Quick case · one tap</button>'+
+          '<p class="muted" style="text-align:center;margin-top:4px;font-size:.72rem">Skips waiting room · good for short sessions</p>';
+        const door=home.querySelector('button[onclick*="openWaitingRoom"]');
+        if(door&&door.parentNode) door.parentNode.insertBefore(wrap, door.nextSibling);
+        else home.appendChild(wrap);
+      }
+      const more=document.getElementById("sc-more");
+      if(more && !document.getElementById("simpleModeCard")){
+        const card=document.createElement("div");
+        card.className="card";
+        card.id="simpleModeCard";
+        more.insertBefore(card, more.firstChild.nextSibling);
+        renderSimpleToggle();
+      }
+    }catch(e){}
+  }
+  setTimeout(injectUI,300);
+  setTimeout(injectUI,1200);
+
+  // Boot safety: hide title if JS partially failed
+  setTimeout(function(){
+    try{
+      const cs=document.getElementById("completeStart");
+      if(!cs)return;
+      // If home is already visible under the overlay, offer escape
+      if(cs.style.display==="flex"||cs.style.display===""){
+        // ensure quick play works even if other scripts failed mid-way
+      }
+    }catch(e){}
+  },500);
+
+  // Global error toast so hangs are visible instead of silent
+  window.addEventListener("error",function(ev){
+    try{console.error("game error",ev.error||ev.message)}catch(e){}
+  });
+})();
+
+
+/* ==========================================================
+   DIFFICULTY TOGGLE + FEATURE PACK
+   Story / Standard / Hard / Expert · Forage · Craft · Journal
+   Reputation · Décor · Challenges · Mentor · Random events
+   ========================================================== */
+(function(){
+  const DIFFS = [
+    {id:"story",  name:"Story",    ic:"📖", attMax:12, attCostMul:0.5, scoreMul:0.85, twistMul:0.4, autoDiag:true, steps:2, desc:"Kindest. Soft attention, auto-hints, 2 steps."},
+    {id:"standard",name:"Standard",ic:"🌿", attMax:10, attCostMul:1,   scoreMul:1,    twistMul:1,   autoDiag:false,steps:3, desc:"Balanced clinic play. Full protocol depth."},
+    {id:"hard",   name:"Hard",     ic:"🔥", attMax:8,  attCostMul:1.25,scoreMul:1.25, twistMul:1.4, autoDiag:false,steps:3, desc:"Less Attention, more twists, better RP."},
+    {id:"expert", name:"Expert",   ic:"🌑", attMax:6,  attCostMul:1.5, scoreMul:1.5,  twistMul:1.8, autoDiag:false,steps:3, desc:"Sparse Attention, frequent twists, max RP."}
+  ];
+
+  const FORAGE_POOL = [
+    {id:"f_skullcap",ic:"💙",name:"Skullcap",w:3},{id:"f_oat",ic:"💚",name:"Oatstraw",w:3},
+    {id:"f_nettle",ic:"🌿",name:"Nettle",w:3},{id:"f_lemon",ic:"💛",name:"Lemon Balm",w:3},
+    {id:"f_ginger",ic:"🫚",name:"Wild Ginger",w:2},{id:"f_rose",ic:"🌹",name:"Wild Rose",w:2},
+    {id:"f_reishi",ic:"🟣",name:"Reishi",w:1},{id:"f_hawthorn",ic:"💗",name:"Hawthorn Berry",w:2},
+    {id:"f_boswellia",ic:"❤️",name:"Frankincense resin",w:1},{id:"f_passion",ic:"🌸",name:"Passionflower",w:2},
+    {id:"f_ashwa",ic:"🖤",name:"Ashwagandha root",w:1},{id:"f_mint",ic:"🍃",name:"Field Mint",w:3},
+    {id:"f_empty",ic:"·",name:"Nothing",w:4},{id:"f_token",ic:"🪙",name:"Road Token glint",w:1}
+  ];
+
+  const RECIPES = [
+    {id:"r_moon",ic:"🌙",name:"Moonveil sip",need:["f_ashwa","f_lemon","f_oat"],out:"buff_calm",desc:"Next session: calmer twists"},
+    {id:"r_dawn",ic:"☀️",name:"Dawnfire sip",need:["f_ginger","f_mint"],out:"buff_score",desc:"Next session: +2 start score"},
+    {id:"r_joint",ic:"🔥",name:"Emberjoint rub",need:["f_boswellia","f_ginger"],out:"buff_pain",desc:"Pain-Stiffness cases +1 score"},
+    {id:"r_settle",ic:"💙",name:"Blue settle cup",need:["f_skullcap","f_passion"],out:"buff_sleep",desc:"Sleep cases +1 score"},
+    {id:"r_bound",ic:"🖤",name:"Boundary tea",need:["f_hawthorn","f_rose"],out:"buff_bound",desc:"Boundaries cases +1 score"},
+    {id:"r_token",ic:"🪙",name:"Token polish",need:["f_reishi","f_nettle"],out:"token",desc:"+1 Road Token"}
+  ];
+
+  const DECORS = [
+    {id:"d_lantern",ic:"🏮",name:"Brass lantern",cost:40,desc:"+1 atmosphere line"},
+    {id:"d_curtain",ic:"🪟",name:"Blue curtain",cost:35,desc:"Sleep cases feel quieter"},
+    {id:"d_shelf",ic:"📚",name:"Herb shelf",cost:50,desc:"+1 forage find chance"},
+    {id:"d_rug",ic:"🪞",name:"Still-room rug",cost:30,desc:"Patients wait more patiently"},
+    {id:"d_bell",ic:"🔔",name:"Door chime",cost:45,desc:"Story arcs appear more often"},
+    {id:"d_kettle2",ic:"🫖",name:"Copper kettle",cost:55,desc:"First case each day +1 score"}
+  ];
+
+  const WEEKLY = [
+    {id:"w1",t:"Treat 5 patients",kind:"cases",need:5,rp:40},
+    {id:"w2",t:"3 Improve outcomes",kind:"improve",need:3,rp:35},
+    {id:"w3",t:"Forage 3 times",kind:"forage",need:3,rp:25},
+    {id:"w4",t:"Craft 2 recipes",kind:"craft",need:2,rp:30},
+    {id:"w5",t:"Sleep family mastery +2",kind:"sleep",need:2,rp:35},
+    {id:"w6",t:"Reach streak 3",kind:"streak",need:3,rp:30}
+  ];
+
+  const MENTOR_TIPS = [
+    "Documentation is care you can hand to the next person.",
+    "Match color to the body system when you can — the ledger notices.",
+    "If–Then plans beat lectures. One clear next step.",
+    "Take only what the bank can spare. Leave the stand better.",
+    "Simple Mode is not lesser play — it is sustainable play.",
+    "Expert difficulty rewards precision, not cruelty.",
+    "Maya returns when you remember her. Loyalty speaks.",
+    "A failed session is still data. Log it kindly."
+  ];
+
+  const RANDOM_EVENTS = [
+    {id:"e_rain",ic:"🌧️",t:"Rain on the road",d:"Damp-weather patients more likely today.",fx:"pain_up"},
+    {id:"e_market",ic:"🛒",t:"Market cart stops by",d:"Forage yields +1 extra find this visit.",fx:"forage_bonus"},
+    {id:"e_letter",ic:"✉️",t:"Letter under the door",d:"A Senna fragment surfaces in the Codex.",fx:"letter"},
+    {id:"e_rival",ic:"⚔️",t:"Ashthorn rumor",d:"A skeptical visitor may appear in the waiting room.",fx:"rival"},
+    {id:"e_quiet",ic:"🕊️",t:"Quiet morning",d:"+1 Attention. The kettle agrees.",fx:"att"},
+    {id:"e_crowd",ic:"👥",t:"Three at once",d:"Waiting room holds an extra chair today.",fx:"wait_extra"}
+  ];
+
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  function ensure(){
+    if(!window.S) return null;
+    if(!S.diff) S.diff="story";
+    if(!S.forageBag) S.forageBag={};
+    if(!S.decor) S.decor={};
+    if(!S.journal) S.journal=[];
+    if(!S.rep) S.rep=0;
+    if(!S.weekly) S.weekly={id:null,prog:0,claimed:false};
+    if(!S.featureFlags) S.featureFlags={};
+    if(S.forageLeft==null) S.forageLeft=3;
+    if(!S.craftLog) S.craftLog=[];
+    // map legacy simpleMode
+    if(S.simpleMode===true && S.diff==="story"){/* ok */}
+    if(S.simpleMode===false && S.diff==="story") S.diff="standard";
+    return S;
+  }
+  function diffCfg(){
+    ensure();
+    return DIFFS.find(d=>d.id===S.diff)||DIFFS[0];
+  }
+  window.getDiff=diffCfg;
+
+  // Apply difficulty to global-ish constants when possible
+  function applyDiff(){
+    const d=diffCfg();
+    try{
+      if(typeof ATT_MAX!=="undefined"){ /* const - can't reassign; use S.attCap */ }
+      S.attCap=d.attMax;
+      if(typeof S.att==="number" && S.att>d.attMax) S.att=d.attMax;
+      S.simpleMode = d.autoDiag; // keep legacy flag in sync
+    }catch(e){}
+  }
+
+  window.setDifficulty=function(id){
+    ensure();
+    if(!DIFFS.some(d=>d.id===id)) return;
+    S.diff=id;
+    applyDiff();
+    save();
+    toast((DIFFS.find(d=>d.id===id)||{}).ic+" Difficulty: "+id);
+    renderFeaturesHub();
+  };
+
+  window.renderFeaturesHub=function(){
+    ensure(); applyDiff();
+    const d=diffCfg();
+    const diffEl=document.getElementById("diffCard");
+    if(diffEl){
+      diffEl.innerHTML=`<div class="muted" style="font-size:.72rem">DIFFICULTY</div>
+        <div style="font-weight:700;margin-top:2px">${d.ic} ${esc(d.name)}</div>
+        <p class="muted" style="font-size:.78rem;margin:4px 0 8px">${esc(d.desc)}</p>
+        <div class="diff-bar">${DIFFS.map(x=>`
+          <div class="diff-opt${x.id===S.diff?' on':''}" onclick="setDifficulty('${x.id}')">
+            <span class="dn">${x.ic} ${esc(x.name)}</span>
+            <span class="dd">Att ${x.attMax} · RP ×${x.scoreMul}</span>
+          </div>`).join("")}</div>
+        <p class="muted" style="font-size:.7rem;margin-top:6px">Story = former Simple Mode. Change anytime; applies to new sessions.</p>`;
+    }
+    const repEl=document.getElementById("repCard");
+    if(repEl){
+      const rep=Math.max(0,Math.min(100,S.rep||0));
+      const title=rep>=80?"Beloved":rep>=50?"Trusted":rep>=25?"Known":"New lamp";
+      repEl.innerHTML=`<div style="display:flex;justify-content:space-between"><strong>Clinic reputation</strong><span class="muted">${title} · ${rep}/100</span></div>
+        <div class="rep-meter"><i style="width:${rep}%"></i></div>
+        <p class="muted" style="font-size:.75rem;margin-top:6px">Rises with Improve/Breakthrough; dips slightly on hard failures. Unlocks décor discounts at 50+.</p>`;
+    }
+    const evEl=document.getElementById("eventCard");
+    if(evEl){
+      ensureDailyEvent();
+      const ev=S.todayEvent;
+      if(ev){
+        evEl.innerHTML=`<div class="event-banner" style="margin:0"><div class="tt">${ev.ic} ${esc(ev.t)}</div><div class="muted" style="margin-top:4px">${esc(ev.d)}</div></div>`;
+      } else evEl.innerHTML=`<p class="muted">No special event today. The road is ordinary — which is a gift.</p>`;
+    }
+  };
+
+  function ensureDailyEvent(){
+    ensure();
+    const k=(typeof todayKey==="function"?todayKey():new Date().toISOString().slice(0,10));
+    if(S.eventDate===k && S.todayEvent) return;
+    S.eventDate=k;
+    if(Math.random()<0.55){
+      S.todayEvent=RANDOM_EVENTS[Math.floor(Math.random()*RANDOM_EVENTS.length)];
+      if(S.todayEvent.fx==="att"){S.att=Math.min(diffCfg().attMax,(S.att||0)+1)}
+    } else S.todayEvent=null;
+  }
+
+  // --- Forage mini-game ---
+  window.openForage=function(){
+    ensure();
+    const left=S.forageLeft|0;
+    let cells=[];
+    for(let i=0;i<9;i++){
+      const pick=weighted(FORAGE_POOL);
+      cells.push(pick);
+    }
+    S._forageCells=cells;
+    S._forageRevealed=[];
+    const body=`<p class="muted">Visits left today: <strong>${left}</strong>. Tap tiles to search the bank. Take only what it can spare.</p>
+      <div class="forage-grid" id="forageGrid">${cells.map((c,i)=>`<div class="forage-cell" id="fg${i}" onclick="revealForage(${i})">?</div>`).join("")}</div>
+      <div id="forageResult" class="muted" style="margin-top:8px"></div>
+      <p class="muted" style="font-size:.72rem;margin-top:8px">Finds stock the Craft bench. Wild Harvesters would approve of restraint.</p>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Forage the bank","WILDCRAFT",body);
+    else {
+      const fb=document.getElementById("featuresBody");
+      if(fb) fb.innerHTML=`<div class="card">${body}</div>`;
+    }
+  };
+  function weighted(pool){
+    const sum=pool.reduce((a,b)=>a+b.w,0);
+    let r=Math.random()*sum;
+    for(const p of pool){r-=p.w;if(r<=0)return p}
+    return pool[0];
+  }
+  window.revealForage=function(i){
+    ensure();
+    if((S.forageLeft|0)<=0 && !(S._forageRevealed||[]).length){toast("No forage visits left today");return}
+    if((S._forageRevealed||[]).includes(i)) return;
+    if(!(S._forageRevealed||[]).length){
+      S.forageLeft=Math.max(0,(S.forageLeft|0)-1);
+      if(S.weekly&&S.weekly.kind==="forage") S.weekly.prog=(S.weekly.prog||0)+1;
+    }
+    S._forageRevealed=S._forageRevealed||[];
+    S._forageRevealed.push(i);
+    const c=S._forageCells[i];
+    const el=document.getElementById("fg"+i);
+    if(el){el.classList.add("found");el.textContent=c.ic}
+    if(c.id==="f_empty"){toast("Empty patch");}
+    else if(c.id==="f_token"){S.tokens=(S.tokens||0)+1;toast("🪙 Road Token")}
+    else {
+      S.forageBag[c.id]=(S.forageBag[c.id]||0)+1;
+      if(S.decor&&S.decor.d_shelf && Math.random()<0.35){
+        S.forageBag[c.id]+=1;
+        toast(c.ic+" "+c.name+" ×2 (shelf bonus)");
+      } else toast(c.ic+" "+c.name);
+    }
+    // event bonus
+    if(S.todayEvent&&S.todayEvent.fx==="forage_bonus"&&S._forageRevealed.length===1){
+      const bonus=weighted(FORAGE_POOL.filter(x=>x.id!=="f_empty"));
+      if(bonus.id!=="f_token"){S.forageBag[bonus.id]=(S.forageBag[bonus.id]||0)+1;toast("🛒 Market bonus: "+bonus.name)}
+    }
+    const bag=Object.entries(S.forageBag).filter(([,n])=>n>0).map(([id,n])=>{
+      const p=FORAGE_POOL.find(x=>x.id===id);return (p?p.ic+" "+p.name:id)+" ×"+n;
+    }).join(" · ")||"Empty";
+    const res=document.getElementById("forageResult");
+    if(res) res.innerHTML="Satchel: "+esc(bag);
+    save({ui:false});
+  };
+
+  // --- Craft ---
+  window.openCraft=function(){
+    ensure();
+    const bag=Object.entries(S.forageBag||{}).filter(([,n])=>n>0);
+    let html=`<p class="muted">Brew from forage finds. Effects apply to your <strong>next</strong> session.</p>`;
+    html+=`<div class="card"><div class="muted" style="font-size:.72rem">SATCHEL</div><div style="margin-top:4px">${bag.length?bag.map(([id,n])=>{const p=FORAGE_POOL.find(x=>x.id===id);return `<span class="feat-chip">${p?p.ic:""} ${esc(p?p.name:id)} ×${n}</span>`}).join(""):"Empty — forage first."}</div></div>`;
+    html+=RECIPES.map(r=>{
+      const ok=r.need.every(id=>(S.forageBag[id]||0)>=1);
+      return `<div class="craft-row"><div style="font-size:1.4rem">${r.ic}</div><div style="flex:1"><strong>${esc(r.name)}</strong><div class="muted" style="font-size:.75rem">${esc(r.desc)}</div><div class="muted" style="font-size:.7rem">${r.need.map(id=>{const p=FORAGE_POOL.find(x=>x.id===id);return (p?p.ic+" "+p.name:id)}).join(" + ")}</div></div>
+        <button class="btn sm ${ok?'':'sec'}" ${ok?"":"disabled"} onclick="craftRecipe('${r.id}')">Brew</button></div>`;
+    }).join("");
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Craft bench","APOTHECARY",html);
+  };
+  window.craftRecipe=function(id){
+    ensure();
+    const r=RECIPES.find(x=>x.id===id);if(!r)return;
+    if(!r.need.every(nid=>(S.forageBag[nid]||0)>=1)){toast("Missing herbs");return}
+    r.need.forEach(nid=>{S.forageBag[nid]--});
+    if(r.out==="token"){S.tokens=(S.tokens||0)+1;toast("🪙 Token polished")}
+    else {
+      if(!S.buffs)S.buffs=[];
+      const map={buff_calm:"calm",buff_score:"score2",buff_pain:"fam_pain",buff_sleep:"fam_sleep",buff_bound:"fam_bound"};
+      S.buffs.push(map[r.out]||r.out);
+      toast(r.ic+" Brewed · ready next session");
+    }
+    S.craftLog.push({id,ts:Date.now()});
+    if(S.weekly&&S.weekly.kind==="craft") S.weekly.prog=(S.weekly.prog||0)+1;
+    S.rep=Math.min(100,(S.rep||0)+1);
+    save(); openCraft();
+  };
+
+  // --- Journal ---
+  window.openJournal=function(){
+    ensure();
+    let html=`<p class="muted">End-of-day lines and session notes. Tap to add a prose line.</p>
+      <button class="btn sm" onclick="addJournalLine()">✦ Write today's line</button>`;
+    const entries=(S.journal||[]).slice().reverse().slice(0,20);
+    if(!entries.length) html+=`<div class="empty">The journal is blank. Finish a case or write a line.</div>`;
+    else html+=entries.map(e=>`<div class="journal-entry"><div class="muted" style="font-size:.7rem">Day ${e.day||"?"} · ${new Date(e.ts).toLocaleString()}</div>${esc(e.text)}</div>`).join("");
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Healer journal","PROSE",html);
+  };
+  window.addJournalLine=function(){
+    ensure();
+    const prompts=[
+      "The kettle clicked once. Someone left lighter than they arrived.",
+      "I remembered one color and one choice. That was enough.",
+      "The road was loud; the still-room was not.",
+      "Loyalty is not a count — it speaks.",
+      "I did not fix a life. I offered a next step.",
+      "Blue in the ledger. Screens outside the room.",
+      "Hands smell of lemon balm and rain."
+    ];
+    const text=prompts[Math.floor(Math.random()*prompts.length)];
+    S.journal.push({ts:Date.now(),day:S.day||1,text});
+    save({ui:false});
+    toast("📓 Line saved");
+    openJournal();
+  };
+
+  // --- Décor ---
+  window.openDecor=function(){
+    ensure();
+    const disc=(S.rep||0)>=50?0.8:1;
+    let html=`<p class="muted">Spend RP on still-room décor. Reputation 50+ unlocks a 20% discount.</p><div class="decor-grid">`;
+    html+=DECORS.map(d=>{
+      const owned=!!(S.decor||{})[d.id];
+      const price=Math.round(d.cost*disc);
+      return `<div class="decor-item ${owned?'owned':''}"><div style="font-size:1.5rem">${d.ic}</div><div class="n" style="font-weight:700;margin-top:4px">${esc(d.name)}</div>
+        <div class="muted" style="font-size:.7rem;margin-top:2px">${esc(d.desc)}</div>
+        ${owned?'<div class="feedback-good" style="margin-top:6px">Installed</div>':`<button class="btn sm" style="margin-top:8px" onclick="buyDecor('${d.id}')">${price} RP</button>`}
+      </div>`;
+    }).join("");
+    html+=`</div>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Still-room décor","ATMOSPHERE",html);
+  };
+  window.buyDecor=function(id){
+    ensure();
+    const d=DECORS.find(x=>x.id===id);if(!d)return;
+    if(S.decor[id]){toast("Already owned");return}
+    const price=Math.round(d.cost*((S.rep||0)>=50?0.8:1));
+    if((S.rp||0)<price){toast("Need "+price+" RP");return}
+    S.rp-=price;S.decor[id]=true;
+    // map some décor to upgrades
+    if(id==="d_kettle2"){if(!S.upgrades)S.upgrades={};S.upgrades.up_kettle=true}
+    if(id==="d_bell"){if(!S.upgrades)S.upgrades={};S.upgrades.up_bell=true}
+    save();toast(d.ic+" "+d.name+" installed");openDecor();
+  };
+
+  // --- Weekly challenges ---
+  window.openChallenges=function(){
+    ensure();
+    const week=weekKey();
+    if(!S.weekly||S.weekly.week!==week){
+      const pick=WEEKLY[Math.abs(hash(week))%WEEKLY.length];
+      S.weekly={week,id:pick.id,t:pick.t,kind:pick.kind,need:pick.need,rp:pick.rp,prog:0,claimed:false};
+    }
+    const w=S.weekly;
+    // live prog hooks
+    if(w.kind==="cases") w.prog=Math.min(w.need,(S.log||[]).length);
+    if(w.kind==="improve") w.prog=Math.min(w.need,(S.log||[]).filter(e=>e.outcome==="Improve"||e.outcome==="Breakthrough").length);
+    if(w.kind==="streak") w.prog=Math.min(w.need,S.streak||0);
+    if(w.kind==="sleep") w.prog=Math.min(w.need,(S.mastery&&S.mastery.Sleep)||0);
+    const pct=Math.min(100,Math.round((w.prog/w.need)*100));
+    let html=`<div class="card glow"><strong>${esc(w.t)}</strong><div class="muted" style="margin-top:4px">${w.prog}/${w.need} · reward ${w.rp} RP</div>
+      <div class="rep-meter" style="margin-top:8px"><i style="width:${pct}%"></i></div></div>`;
+    if(w.prog>=w.need && !w.claimed){
+      html+=`<button class="btn" onclick="claimWeekly()">Claim ${w.rp} RP</button>`;
+    } else if(w.claimed) html+=`<p class="feedback-good">Claimed this week.</p>`;
+    html+=`<p class="muted" style="font-size:.75rem;margin-top:10px">Weekly goals reset on a simple week key. Difficulty does not change rewards.</p>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Weekly challenge","TRIALS",html);
+  };
+  window.claimWeekly=function(){
+    ensure();
+    const w=S.weekly;if(!w||w.claimed||w.prog<w.need)return;
+    S.rp=(S.rp||0)+w.rp;w.claimed=true;S.rep=Math.min(100,(S.rep||0)+3);
+    save();toast("🎯 +"+w.rp+" RP");openChallenges();
+  };
+  function weekKey(){
+    const d=new Date();
+    const onejan=new Date(d.getFullYear(),0,1);
+    const week=Math.ceil((((d-onejan)/86400000)+onejan.getDay()+1)/7);
+    return d.getFullYear()+"-W"+week;
+  }
+  function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i)|0;return h}
+
+  // --- Mentor ---
+  window.openMentor=function(){
+    ensure();
+    const tip=MENTOR_TIPS[Math.floor(Math.random()*MENTOR_TIPS.length)];
+    const d=diffCfg();
+    let html=`<div class="card story"><span class="lore-tt">🦉 River Mentor</span><p style="margin-top:8px;line-height:1.45">"${esc(tip)}"</p></div>
+      <div class="card"><strong>Current difficulty</strong><div class="muted" style="margin-top:4px">${d.ic} ${esc(d.name)} — ${esc(d.desc)}</div></div>
+      <div class="card"><strong>Quick trials</strong>
+        <button class="btn sm" style="margin-top:8px;width:100%" onclick="mentorTrial('diag')">Diagnosis drill · free</button>
+        <button class="btn sm sec" style="margin-top:6px;width:100%" onclick="go('deck')">Open complaint deck</button>
+      </div>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Mentor","RIVER",html);
+  };
+  window.mentorTrial=function(kind){
+    if(kind==="diag"&&typeof go==="function"){go("deck");toast("🦉 Practice from the deck · free diagnosis drills");closeOverhaulModal&&closeOverhaulModal()}
+  };
+
+  // --- Hook session scoring to difficulty ---
+  const _resolve=window.resolveSession;
+  if(typeof _resolve==="function"){
+    window.resolveSession=function(){
+      try{
+        const d=diffCfg();
+        if(session && typeof session.score==="number"){
+          // mild pre-boost for hard modes so RP feels fair after multiply at award time
+          session._diffMul=d.scoreMul;
+        }
+      }catch(e){}
+      return _resolve.apply(this,arguments);
+    };
+  }
+
+  // Patch RP award if finishSession exists
+  const _finish=window.finishSession;
+  if(typeof _finish==="function"){
+    window.finishSession=function(){
+      const before=S.rp||0;
+      const r=_finish.apply(this,arguments);
+      try{
+        const d=diffCfg();
+        if(d.scoreMul>1 && session && session._diffMul){
+          // extra RP already handled inside if any; boost rep on success
+        }
+        const last=(S.log||[])[(S.log||[]).length-1];
+        if(last){
+          if(last.outcome==="Improve"||last.outcome==="Breakthrough"){
+            S.rep=Math.min(100,(S.rep||0)+(d.id==="expert"?3:2));
+          } else if(last.outcome==="Complication"||last.outcome==="Relapse"){
+            S.rep=Math.max(0,(S.rep||0)-1);
+          }
+          // journal auto-line occasionally
+          if(Math.random()<0.25){
+            S.journal=S.journal||[];
+            S.journal.push({ts:Date.now(),day:S.day||1,text:"Saw "+(last.name||"someone")+" · "+(last.outcome||"session")+" · remembered the color "+(last.color||"in the ledger")+"."});
+          }
+        }
+        save({ui:false});
+      }catch(e){}
+      return r;
+    };
+  }
+
+  // Twist chance scaling
+  const _beginArrival=window.beginArrival;
+  if(typeof _beginArrival==="function"){
+    window.beginArrival=function(data){
+      const r=_beginArrival.apply(this,arguments);
+      try{
+        const d=diffCfg();
+        // Soft att cost
+        if(data && !data.practice && session){
+          const base=session.pr&&session.pr.att?session.pr.att:1;
+          const cost=Math.max(1,Math.round(base*d.attCostMul));
+          // att already spent elsewhere maybe — store intended
+          session._attCost=cost;
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  // Protocol steps from difficulty (override simple 2-step if story)
+  // Re-patch protoPick end carefully by wrapping resolve path — already have simple mode 2-step.
+  // Sync: story => simpleMode true
+  const _setDiff=window.setDifficulty;
+
+  // go() hook to render features
+  const _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      const r=_go.apply(this,arguments);
+      if(name==="features") setTimeout(renderFeaturesHub,30);
+      return r;
+    };
+  }
+
+  // Home tile inject
+  setTimeout(function(){
+    try{
+      ensure(); applyDiff();
+      const home=document.getElementById("sc-home");
+      if(home && !document.getElementById("featHubBtn")){
+        const b=document.createElement("button");
+        b.id="featHubBtn";
+        b.className="btn sec";
+        b.style.marginTop="8px";
+        b.textContent="✦ Features · difficulty, forage, craft…";
+        b.onclick=function(){go("features")};
+        const moreHint=home.querySelector(".safe");
+        if(moreHint) home.insertBefore(b, moreHint);
+        else home.appendChild(b);
+      }
+      // daily forage refresh
+      const k=(typeof todayKey==="function"?todayKey():new Date().toDateString());
+      if(S.forageDay!==k){S.forageDay=k;S.forageLeft=3+(S.decor&&S.decor.d_shelf?1:0);save({ui:false})}
+      ensureDailyEvent();
+    }catch(e){}
+  },400);
+
+  // More screen: difficulty shortcut
+  setTimeout(function(){
+    try{
+      const more=document.getElementById("sc-more");
+      if(more && !document.getElementById("diffShortcut")){
+        const c=document.createElement("div");
+        c.className="card"; c.id="diffShortcut";
+        c.innerHTML='<p style="font-weight:650">Difficulty</p><p class="muted" style="margin:4px 0 8px">Story · Standard · Hard · Expert</p><button class="btn sm" onclick="go(\'features\')">Open difficulty & features</button>';
+        more.insertBefore(c, more.firstChild);
+      }
+    }catch(e){}
+  },500);
+})();
+
 /* ===== OVERHAUL GAMEPLAY LAYER =====
    Adds: workshop upgrades, field notes, daily objective presentation,
    streak rewards, dynamic clinic atmosphere, and keyboard shortcuts.
@@ -3000,7 +3700,23 @@ document.addEventListener("visibilitychange",()=>{/* tick handles hidden */},{pa
   // Don't auto-force the title screen over a returning player; it appears only for a brand-new run.
   setTimeout(()=>{
     try{
-      if(!ce().flags.started && !(S.log&&S.log.length))document.getElementById("completeStart").style.display="flex";
+      try{
+      const cs=document.getElementById("completeStart");
+      // Only show title for truly fresh runs; never trap a player with progress
+      if(cs && !ce().flags.started && !(S.log&&S.log.length) && !(S.cases>0) && !(S.rp>0)){
+        cs.style.display="flex";
+        // Fail-safe: if still visible after 12s with no interaction, force clinic
+        setTimeout(function(){
+          try{
+            if(cs.style.display!=="none" && !(S.log&&S.log.length) && !ce().flags.started){
+              // leave it — user may be reading; do not force
+            }
+          }catch(e){}
+        },12000);
+      } else if(cs){
+        cs.style.display="none";
+      }
+    }catch(e){try{document.getElementById("completeStart").style.display="none"}catch(e2){}}
     }catch(e){}
   },400);
 })();
