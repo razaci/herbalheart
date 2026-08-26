@@ -711,6 +711,67 @@ body.has-dock .wrap{padding-bottom:128px}
 .long-choice{width:100%;text-align:left;padding:10px 12px;margin:0 0 7px;border-radius:12px;border:1px solid #35586c;background:#102634;color:inherit;font:inherit;cursor:pointer}
 .long-choice b{display:block}
 
+
+/* ===== STREAMLINE CARD-FIRST ===== */
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.cf-type{padding:12px 10px;border-radius:14px;border:1px solid #3a5a6a;background:#102028;color:inherit;font:inherit;cursor:pointer;text-align:left}
+.cf-type.on{border-color:#e8c070;box-shadow:0 0 0 1px #e8c07044}
+.cf-play{width:100%;padding:14px;border-radius:16px;border:0;background:linear-gradient(180deg,#3a6a4a,#1e4030);color:#e8f6ec;font:inherit;font-weight:700;cursor:pointer;margin:8px 0}
+
+
+/* ===== SINGLE ENTRY: VISIT CLINIC ===== */
+body.visit-only .clinic-dock,
+body.visit-only #topVetBar,
+body.visit-only #cardFirst,
+body.visit-only #moonBar,
+body.visit-only #resSustain,
+body.visit-only #signGarden,
+body.visit-only #btnLongWings,
+body.visit-only #btnArcs100,
+body.visit-only #btnAilments,
+body.visit-only #btnElements,
+body.visit-only #btnVetWing,
+body.visit-only #btnSerious,
+body.visit-only #btnArcs100,
+body.visit-only .top-vet{display:none!important}
+body.visit-only .wrap{padding-bottom:24px}
+#visitOnlyShell{padding:24px 12px 40px;text-align:center}
+#visitOnlyShell .visit-hero{
+  width:100%;max-width:420px;margin:40px auto 0;padding:28px 18px;
+  border-radius:22px;border:1px solid #3a6a5a;
+  background:linear-gradient(180deg,#1a3a32,#0e241c);color:#e8f6ec;
+  font:inherit;font-size:1.15rem;font-weight:700;cursor:pointer;
+  box-shadow:0 12px 40px rgba(0,0,0,.35)
+}
+#visitOnlyShell .visit-sub{margin-top:14px;font-size:.8rem;color:#8aa8a0}
+
+
+/* ===== CARDS FIRST IN VISIT ===== */
+.duel-wrap .duel-hand{order:-1;display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+.duel-wrap{display:flex;flex-direction:column}
+.duel-stats-mini{font-size:.75rem;opacity:.9;padding:8px 10px;border-radius:12px;border:1px solid #31566d;background:#0e1c24;margin-bottom:8px}
+.duel-card{min-height:72px}
+
+
+/* ===== RESTORE MAIN PAGE (all items visible, reordered) ===== */
+body.visit-only .clinic-dock,
+body.visit-only #topVetBar,
+body.visit-only #cardFirst,
+body.visit-only #moonBar,
+body.visit-only #resSustain,
+body.visit-only #signGarden,
+body.visit-only #btnLongWings,
+body.visit-only #btnArcs100,
+body.visit-only #btnAilments,
+body.visit-only #btnElements,
+body.visit-only #btnVetWing,
+body.visit-only #btnSerious,
+body.visit-only .top-vet{display:revert!important}
+body.visit-only .clinic-dock{display:grid!important}
+body.visit-only .wrap{padding-bottom:128px!important}
+#visitOnlyShell{display:none!important}
+#mainOrderShell{margin-bottom:10px}
+
 </style>
 </head>
 <body>
@@ -13700,6 +13761,464 @@ window.GUILD_HERBS=[
     window.renderGameplayHome=function(){
       var r=_rgh.apply(this,arguments);
       setTimeout(mount,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   STREAMLINE — card types are the main play
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var TYPES=[
+    {id:"Fire",ic:"🔴",name:"Fire",color:"Red",hint:"Spark / start / heat"},
+    {id:"Earth",ic:"⚪",name:"Earth",color:"White",hint:"Ground / body / shelf"},
+    {id:"Air",ic:"🟡",name:"Air",color:"Yellow",hint:"Mind / talk / start"},
+    {id:"Water",ic:"🔵",name:"Water",color:"Blue",hint:"Settle / feel / nest"},
+    {id:"Any",ic:"🃏",name:"Any",color:"Any",hint:"Utility / draw / listen"},
+    {id:"Match",ic:"✨",name:"Match",color:"Match",hint:"Hits guest color hard"}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.stream) S.stream={types:["Fire","Earth","Air","Water","Any"],bias:null};
+    return S.stream;
+  }
+
+  window.toggleCardType=function(id){
+    var st=ensure();
+    var i=st.types.indexOf(id);
+    if(i>=0){ if(st.types.length>1) st.types.splice(i,1); }
+    else st.types.push(id);
+    st.bias=id;
+    if(typeof save==="function") save({ui:false});
+    window.renderCardFirst();
+  };
+
+  window.streamStartVisit=function(){
+    var list=window._waitList||(typeof window.buildHerbalAppointments==="function"?window.buildHerbalAppointments():[]);
+    var cand=list&&list[0];
+    if(!cand && window.PATIENT_100&&PATIENT_100.length){
+      var pt=PATIENT_100[Math.floor(Math.random()*PATIENT_100.length)];
+      cand={name:pt.name,pid:pt.id,type:"Visit",urgency:"Routine",wellness:62,
+        problems:pt.problems||[pt.primary],temperament:"Guarded",
+        diff:{id:"mid",label:"Moderate"},
+        pr:{id:pt.id,f:pt.f,p:pt.primary||"the thing they brought",color:pt.color,att:1,quote:""}};
+    }
+    if(!cand){ if(typeof toast==="function") toast("Open the door for a queue"); return; }
+    if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+    else if(typeof window.openHerbalVisit==="function") window.openHerbalVisit(cand);
+  };
+
+  // Bias hand toward selected types
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var st=ensure();
+      var d=window._duel;
+      if(!d||!d.hand) return r;
+      var want=st.types||[];
+      var extra=[
+        {id:"st_fire",ic:"🔴",name:"Fire step",cost:1,care:6,type:"Red",d:"Spark"},
+        {id:"st_earth",ic:"⚪",name:"Earth step",cost:1,care:6,type:"White",d:"Ground"},
+        {id:"st_air",ic:"🟡",name:"Air step",cost:1,care:6,type:"Yellow",d:"Mind"},
+        {id:"st_water",ic:"🔵",name:"Water step",cost:1,care:6,type:"Blue",d:"Settle"},
+        {id:"st_any",ic:"🃏",name:"Listen",cost:0,care:3,type:"Any",d:"Always legal"},
+        {id:"st_match",ic:"✨",name:"True match",cost:2,care:8,type:"Match",d:"Color lock"}
+      ];
+      var map={Fire:"Red",Earth:"White",Air:"Yellow",Water:"Blue",Any:"Any",Match:"Match"};
+      for(var i=0;i<want.length && d.hand.length<10;i++){
+        var col=map[want[i]]||"Any";
+        var c=extra.filter(function(x){return x.type===col;})[0]||extra[4];
+        d.hand.push(Object.assign({},c));
+      }
+      d.log.unshift("Deck bias: "+want.join(" · "));
+    }catch(e){}
+    return r;
+  };
+
+  window.renderCardFirst=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var box=document.getElementById("cardFirst");
+    if(!box){
+      box=document.createElement("div");
+      box.id="cardFirst";
+      home.insertBefore(box, home.firstChild);
+    }
+    var st=ensure();
+    var html='<div class="section-kicker">PLAY · CARD TYPES</div>';
+    html+='<p class="muted" style="font-size:.78rem">Toggle types for your deck. Then play. Wings stay under More.</p>';
+    html+='<div class="cf-grid">';
+    for(var i=0;i<TYPES.length;i++){
+      var t=TYPES[i], on=st.types.indexOf(t.id)>=0;
+      html+='<button type="button" class="cf-type'+(on?" on":"")+'" onclick="window.toggleCardType(\''+t.id+'\')">'+
+        t.ic+' <b>'+t.name+'</b><div class="muted" style="font-size:.72rem">'+t.hint+'</div></button>';
+    }
+    html+='</div>';
+    html+='<button class="cf-play" type="button" onclick="window.streamStartVisit()">▶ Play cards · next guest</button>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+    html+='<button class="btn" onclick="window.enterWaitingRoom&&enterWaitingRoom()">🚪 Queue</button>';
+    html+='<button class="btn sec" onclick="window.openLongWings&&openLongWings()">🗺️ More areas</button>';
+    html+='</div>';
+    box.innerHTML=html;
+  };
+
+  function mount(){
+    window.renderCardFirst();
+    // hide some sprawl buttons visually if present
+    ["btnLongWings","btnArcs100","btnAilments","btnElements","signGarden"].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.style.opacity=".72";
+    });
+  }
+  setTimeout(mount,500);
+  setTimeout(mount,1400);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,20);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   SINGLE ON-SCREEN ITEM: VISIT CLINIC
+   ========================================================== */
+(function(){
+  document.body.classList.add("visit-only");
+
+  window.visitClinicOnly=function(){
+    // Prefer queue → card play
+    if(typeof window.enterWaitingRoom==="function"){
+      window.enterWaitingRoom();
+      return;
+    }
+    if(typeof window.openDoorCore==="function"){
+      window.openDoorCore();
+      return;
+    }
+    if(typeof window.streamStartVisit==="function"){
+      window.streamStartVisit();
+      return;
+    }
+    if(typeof window.startCardDuel==="function" && window.PATIENT_100){
+      var pt=PATIENT_100[Math.floor(Math.random()*PATIENT_100.length)];
+      window.startCardDuel({
+        name:pt.name,pid:pt.id,type:"Visit",urgency:"Routine",wellness:62,
+        problems:pt.problems||[pt.primary],temperament:"Guarded",
+        diff:{id:"mid",label:"Moderate"},
+        pr:{id:pt.id,f:pt.f,p:pt.primary||"the visit",color:pt.color,att:1,quote:""}
+      });
+      return;
+    }
+    if(typeof toast==="function") toast("Open the door from home when ready");
+  };
+
+  function mountShell(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var shell=document.getElementById("visitOnlyShell");
+    if(!shell){
+      shell=document.createElement("div");
+      shell.id="visitOnlyShell";
+      home.insertBefore(shell, home.firstChild);
+    }
+    // hide other direct children of home except shell
+    Array.prototype.forEach.call(home.children, function(ch){
+      if(ch.id==="visitOnlyShell") return;
+      ch.style.display="none";
+    });
+    shell.innerHTML=
+      '<button type="button" class="visit-hero" onclick="window.visitClinicOnly()">Visit clinic</button>'+
+      '<div class="visit-sub">Willow Bend still-room</div>';
+  }
+
+  setTimeout(mountShell,300);
+  setTimeout(mountShell,900);
+  setTimeout(mountShell,1800);
+
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mountShell,10);
+      setTimeout(mountShell,80);
+      return r;
+    };
+  }
+  // also hide dock if it remounts
+  var obs=setInterval(function(){
+    document.body.classList.add("visit-only");
+    var dock=document.getElementById("clinicDock");
+    if(dock) dock.style.display="none";
+  },1000);
+  setTimeout(function(){ clearInterval(obs); },8000);
+})();
+
+
+
+/* ==========================================================
+   PATIENT CLICK → CARDS FIRST (stats secondary)
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  function buildCardsFirstHTML(d){
+    if(!d) return "";
+    var pct=Math.round(100*(d.hp||0)/Math.max(1,d.maxHp||1));
+    var html='<div class="duel-wrap">';
+    // HAND FIRST
+    html+='<div class="section-kicker">YOUR CARDS · TAP TO PLAY</div>';
+    html+='<div class="duel-hand">';
+    for(var i=0;i<(d.hand||[]).length;i++){
+      var c=d.hand[i];
+      var match=(c.type===d.color||c.type==="Match");
+      html+='<button type="button" class="duel-card'+(match?" match":"")+'" onclick="window.playDuelCard('+i+')">';
+      html+='<div style="font-size:1.2rem">'+(c.ic||"🃏")+'</div>';
+      html+='<strong style="font-size:.82rem">'+(c.name||"Card")+'</strong>';
+      html+='<div class="muted" style="font-size:.7rem">cost '+(c.cost||0)+' · care '+(c.care||0)+' · '+(c.type||"Any")+'</div>';
+      html+='</button>';
+    }
+    html+='</div>';
+    // compact stats under cards
+    html+='<div class="duel-stats-mini">';
+    html+='<div style="display:flex;justify-content:space-between"><strong>'+esc(d.name||"Guest")+'</strong><span>'+esc(d.fam||"")+(' · ')+(esc(d.color||""))+'</span></div>';
+    html+='<div class="duel-hp" style="margin:6px 0"><i style="width:'+pct+'%"></i></div>';
+    html+='<div style="display:flex;justify-content:space-between">';
+    html+='<span>HP '+(d.hp||0)+'/'+(d.maxHp||0)+' · R'+(d.round||1)+'/'+(d.maxRound||10)+'</span>';
+    html+='<span class="duel-energy">';
+    for(var e=0;e<(d.maxEnergy||4);e++) html+='<span class="'+(e<(d.energy||0)?"on":"")+'"></span>';
+    html+='</span></div></div>';
+    if(d.log&&d.log.length){
+      html+='<div class="muted" style="font-size:.72rem;max-height:72px;overflow:auto">'+(d.log.slice(0,4).map(esc).join("<br>"))+'</div>';
+    }
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">';
+    html+='<button class="btn" type="button" onclick="window.duelEndTurn&&duelEndTurn()">End turn</button>';
+    html+='<button class="btn sec" type="button" onclick="window.vfComplete&&vfComplete()">Finish visit</button>';
+    html+='</div></div>';
+    return html;
+  }
+
+  window.renderDuel=function(){
+    var d=window._duel; if(!d) return;
+    var html=buildCardsFirstHTML(d);
+    if(typeof openOverhaulModal==="function") openOverhaulModal(d.name||"Visit","CARDS",html);
+  };
+
+  // After start, force cards-first paint
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var r=_scd.apply(this,arguments);
+      setTimeout(function(){ if(window._duel) window.renderDuel(); },60);
+      setTimeout(function(){ if(window._duel) window.renderDuel(); },200);
+      return r;
+    };
+  }
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var r=_play.apply(this,arguments);
+      setTimeout(function(){ if(window._duel&&window._duel.hp>0) window.renderDuel(); },30);
+      return r;
+    };
+  }
+  var _end=window.duelEndTurn;
+  if(typeof _end==="function"){
+    window.duelEndTurn=function(){
+      var r=_end.apply(this,arguments);
+      setTimeout(function(){ if(window._duel&&window._duel.hp>0) window.renderDuel(); },30);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   RESTORE + REORDER MAIN PAGE
+   All menus back. Visit clinic is first; rest follow.
+   ========================================================== */
+(function(){
+  // kill visit-only hiding
+  document.body.classList.remove("visit-only");
+  try{
+    var shell=document.getElementById("visitOnlyShell");
+    if(shell) shell.style.display="none";
+    var dock=document.getElementById("clinicDock");
+    if(dock) dock.style.display="";
+  }catch(e){}
+
+  // Disable visit-only mount if it runs again
+  var _vo=window.visitClinicOnly;
+  window.visitClinicOnly=function(){
+    if(typeof window.enterWaitingRoom==="function") return window.enterWaitingRoom();
+    if(typeof _vo==="function") return _vo();
+  };
+
+  function showAllHomeKids(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    Array.prototype.forEach.call(home.children, function(ch){
+      if(ch.id==="visitOnlyShell"){ ch.style.display="none"; return; }
+      ch.style.display="";
+      ch.style.opacity="";
+    });
+  }
+
+  function orderMain(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    showAllHomeKids();
+    // preferred order by id
+    var order=["cardFirst","moonBar","resSustain","topVetBar","mainOrderShell","signGarden"];
+    var first=home.firstChild;
+    order.forEach(function(id){
+      var el=document.getElementById(id);
+      if(el && el.parentNode===home) home.appendChild(el);
+    });
+    // put cardFirst / visit CTA at top
+    var box=document.getElementById("mainOrderShell");
+    if(!box){
+      box=document.createElement("div");
+      box.id="mainOrderShell";
+      box.className="card";
+      home.insertBefore(box, home.firstChild);
+    }
+    box.innerHTML=
+      '<div class="section-kicker">CLINIC FLOOR</div>'+
+      '<button class="btn" style="width:100%;margin-bottom:6px" onclick="window.enterWaitingRoom&&enterWaitingRoom()||window.visitClinicOnly&&visitClinicOnly()">🚪 Visit clinic / open door</button>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
+      '<button class="btn sec" onclick="window.openVetWing&&openVetWing()">🐾 Vet</button>'+
+      '<button class="btn sec" onclick="window.openLanternMain&&openLanternMain()">🏮 Lantern</button>'+
+      '<button class="btn sec" onclick="window.openAilmentPicker&&openAilmentPicker()">📄 Sheets</button>'+
+      '<button class="btn sec" onclick="window.openLongWings&&openLongWings()">🗺️ Longer areas</button>'+
+      '<button class="btn sec" onclick="window.openJungRoad&&openJungRoad()">🔮 Inner road</button>'+
+      '<button class="btn sec" onclick="window.openPsySheet&&openPsySheet()">✨ Chart</button>'+
+      '<button class="btn sec" onclick="window.openArcCodex&&openArcCodex()">🧵 Arcs</button>'+
+      '<button class="btn sec" onclick="window.openElementChart&&openElementChart()">🜂 Elements</button>'+
+      '<button class="btn sec" onclick="window.openMoonChart&&openMoonChart()">🌑 Moon</button>'+
+      '<button class="btn sec" onclick="window.openPrenatalWing&&openPrenatalWing()">🌙 Prenatal</button>'+
+      '</div>';
+    home.insertBefore(box, home.firstChild);
+    if(document.getElementById("cardFirst")) home.insertBefore(document.getElementById("cardFirst"), box.nextSibling);
+  }
+
+  setTimeout(orderMain,400);
+  setTimeout(orderMain,1000);
+  setTimeout(orderMain,2000);
+
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(orderMain,20);
+      setTimeout(orderMain,100);
+      return r;
+    };
+  }
+
+  // keep dock visible
+  setTimeout(function(){
+    document.body.classList.remove("visit-only");
+    var dock=document.getElementById("clinicDock");
+    if(dock){ dock.style.display="grid"; }
+  },500);
+})();
+
+
+
+/* ==========================================================
+   MAIN PAGE BLOCK ORDER (stable)
+   1 Visit  2 Cards  3 Resources  4 Moon  5 Top links
+   6 Sign garden  7 Rest of home content
+   ========================================================== */
+(function(){
+  function reorder(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    document.body.classList.remove("visit-only");
+    var shell=document.getElementById("visitOnlyShell");
+    if(shell) shell.style.display="none";
+    var dock=document.getElementById("clinicDock");
+    if(dock) dock.style.display="grid";
+
+    // Ensure primary block exists
+    var primary=document.getElementById("mainOrderShell");
+    if(!primary){
+      primary=document.createElement("div");
+      primary.id="mainOrderShell";
+      primary.className="card";
+      home.insertBefore(primary, home.firstChild);
+    }
+    primary.innerHTML=
+      '<div class="section-kicker">1 · VISIT</div>'+
+      '<button class="btn" style="width:100%;margin-bottom:6px" onclick="window.enterWaitingRoom&&enterWaitingRoom()||window.visitClinicOnly&&visitClinicOnly()">🚪 Visit clinic / open door</button>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
+      '<button class="btn sec" onclick="window.openVetWing&&openVetWing()">🐾 Vet</button>'+
+      '<button class="btn sec" onclick="window.openLanternMain&&openLanternMain()">🏮 Lantern</button>'+
+      '<button class="btn sec" onclick="window.openAilmentPicker&&openAilmentPicker()">📄 Sheets</button>'+
+      '<button class="btn sec" onclick="window.openLongWings&&openLongWings()">🗺️ Longer</button>'+
+      '<button class="btn sec" onclick="window.openJungRoad&&openJungRoad()">🔮 Inner</button>'+
+      '<button class="btn sec" onclick="window.openPsySheet&&openPsySheet()">✨ Chart</button>'+
+      '<button class="btn sec" onclick="window.openArcCodex&&openArcCodex()">🧵 Arcs</button>'+
+      '<button class="btn sec" onclick="window.openElementChart&&openElementChart()">🜂 Elements</button>'+
+      '<button class="btn sec" onclick="window.openMoonChart&&openMoonChart()">🌑 Moon</button>'+
+      '<button class="btn sec" onclick="window.openPrenatalWing&&openPrenatalWing()">🌙 Prenatal</button>'+
+      '</div>';
+
+    // Show all children
+    Array.prototype.forEach.call(home.children, function(ch){
+      if(ch.id==="visitOnlyShell"){ ch.style.display="none"; return; }
+      ch.style.display="";
+      ch.style.opacity="";
+    });
+
+    // Append in order (moves nodes)
+    var seq=[
+      "mainOrderShell",
+      "cardFirst",
+      "resSustain",
+      "moonBar",
+      "topVetBar",
+      "signGarden"
+    ];
+    seq.forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) home.appendChild(el);
+    });
+    // Everything else stays after in current DOM order
+    // Move primary + cardFirst to top explicitly
+    if(primary) home.insertBefore(primary, home.firstChild);
+    var cf=document.getElementById("cardFirst");
+    if(cf) home.insertBefore(cf, primary.nextSibling);
+    var rs=document.getElementById("resSustain");
+    if(rs) home.insertBefore(rs, (cf||primary).nextSibling);
+    var mb=document.getElementById("moonBar");
+    if(mb && rs) home.insertBefore(mb, rs.nextSibling);
+    else if(mb) home.insertBefore(mb, (cf||primary).nextSibling);
+  }
+
+  setTimeout(reorder,300);
+  setTimeout(reorder,900);
+  setTimeout(reorder,1800);
+
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(reorder,15);
+      setTimeout(reorder,120);
       return r;
     };
   }
