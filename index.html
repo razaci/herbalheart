@@ -455,6 +455,21 @@ body{
   border:1px solid #29495c;background:#0e202d;margin:6px 0}
 .flame-big{font-size:2.4rem;text-align:center;filter:drop-shadow(0 0 16px rgba(255,209,102,.35))}
 
+
+/* ===== VET-STYLE HERBAL CLINIC VISIT ===== */
+.vet-visit{max-width:100%}
+.vet-patient{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.vet-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(145deg,#1a3a4a,#0f2430);border:1px solid #31566d;display:grid;place-items:center;font-size:1.6rem}
+.vet-actions{display:grid;gap:8px;margin:10px 0}
+.vet-action{width:100%;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid #29495c;background:linear-gradient(145deg,#123040,#0d1e2b);color:var(--text);cursor:pointer;font:inherit;font-weight:650}
+.vet-action:disabled{opacity:.45;cursor:not-allowed}
+.vet-action .va-t{font-size:.88rem}
+.vet-action .va-d{font-size:.72rem;color:var(--muted);font-weight:500;margin-top:3px}
+.vet-action.done{border-color:#2a5a40;background:#143028}
+.vet-meter{height:8px;background:#0a1520;border-radius:99px;overflow:hidden;margin:6px 0}
+.vet-meter>i{display:block;height:100%;background:linear-gradient(90deg,#62e6ad,#4db6e8);border-radius:99px}
+.vet-queue-card{border-left:3px solid var(--accent)}
+
 </style>
 </head>
 <body>
@@ -4292,7 +4307,7 @@ document.addEventListener("visibilitychange",()=>{/* tick handles hidden */},{pa
     </div>
     <p class="flow-hint">Flow: buy herb → Open the door → buff applies on next real session</p>`;
     if(typeof openOverhaulModal==="function") openOverhaulModal("Lantern Guild","HERB MARKET · "+list.length+" shown",html);
-    else if(typeof window.openLanternGuild==="function"&&window.openLanternGuild!==arguments.callee){/* later override */} else { if(typeof window.showGuildPanel==="function") window.showGuildPanel(html); else if(typeof window.showGuildPanel==="function") window.showGuildPanel(html,"Herb Market"); else if(typeof toast==="function") toast("Opening guild…"); }
+    else if(typeof window.openLanternGuild==="function"&&window.openLanternGuild!==arguments.callee){/* later override */} else { if(typeof window.showGuildPanel==="function") window.showGuildPanel(html); else toast("Guild panel unavailable"); }
   };
 
 window.buyGuildHerb=function(id){
@@ -7721,6 +7736,447 @@ window.GUILD_HERBS=[
     if(!t) return;
     // if a button title/text is Guild and handler failed, no-op
   }, true);
+})();
+
+
+
+
+
+
+
+/* ==========================================================
+   HERBAL CLINIC = VET FRONTIER SHAPE
+   Appointments · cases · exam / diagnostics / treatment
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  // Case library — same role as SEED.diagnoses / chief complaints in VF
+  var HERBAL_CASES=[
+    {id:"HC01",type:"Wellness",urgency:"Routine",f:"Sleep",color:"Blue",p:"Trouble falling asleep",
+      complaint:"Routine settle check — guest wants a calmer night pattern.",
+      signs:"Racing thoughts at lights-out, tea helps a little, no sharp pain.",
+      examHint:"Nervous system soft, breath high in the chest.",
+      labHint:"Ledger leans Blue · nervine terrain.",
+      treatHint:"Wind-down If–Then + gentle nervine."},
+    {id:"HC02",type:"Illness",urgency:"Urgent",f:"Sleep",color:"Blue",p:"Night waking, hard to return",
+      complaint:"Wakes at 2–3am, mind bright, body tired.",
+      signs:"Fragmented sleep, mild dread before bed, caffeine late.",
+      examHint:"Startle high; shoulders held.",
+      labHint:"Blue with a flicker of Yellow (vigilance).",
+      treatHint:"Night return plan · magnesium or skullcap lore."},
+    {id:"HC03",type:"Wellness",urgency:"Routine",f:"Focus",color:"Yellow",p:"Scattered attention at work",
+      complaint:"Wellness focus tune-up before a hard week.",
+      signs:"Tabs open forever, starts many tasks, finishes few.",
+      examHint:"Eyes jump; posture forward-collapse.",
+      labHint:"Yellow ledger · clear one next step.",
+      treatHint:"Single-task protocol + rosemary edge."},
+    {id:"HC04",type:"Illness",urgency:"Urgent",f:"Focus",color:"Yellow",p:"Brain fog after meals",
+      complaint:"Fog and irritability 30–60 minutes after eating.",
+      signs:"Heavy head, sweet cravings, hard to word-find.",
+      examHint:"Sluggish affect after describing lunch.",
+      labHint:"Yellow with Orange digestive crosstalk.",
+      treatHint:"Meal timing + bitter / ginger support."},
+    {id:"HC05",type:"Illness",urgency:"Urgent",f:"Pain-Stiffness",color:"Red",p:"Morning joint stiffness",
+      complaint:"Stiff on rising; eases after moving; worse in damp weather.",
+      signs:"Knees and hands complain first hour of day.",
+      examHint:"Guarded gait on arrival; warms while talking.",
+      labHint:"Red / Orange warmth ledger.",
+      treatHint:"Warmth, gentle range, turmeric/boswellia lore."},
+    {id:"HC06",type:"Illness",urgency:"Routine",f:"Digestive",color:"Orange",p:"Bloating after meals",
+      complaint:"Pressure and bloating; avoids social meals.",
+      signs:"Belching, tight belt by evening, stress-linked.",
+      examHint:"Hand on belly when describing dinner.",
+      labHint:"Orange settle · not emergency.",
+      treatHint:"Slow meals, peppermint or fennel tea."},
+    {id:"HC07",type:"Illness",urgency:"Urgent",f:"Mood-Energy",color:"Green",p:"Low mood, flat mornings",
+      complaint:"Flat on waking; little lift until late day.",
+      signs:"Skipped walks, heavy limbs, interest thinned.",
+      examHint:"Soft voice; long pauses.",
+      labHint:"Green nutritive / adaptogen terrain.",
+      treatHint:"Morning light + oatstraw/ashwagandha lore."},
+    {id:"HC08",type:"Illness",urgency:"Urgent",f:"Boundaries",color:"Black",p:"Cannot say no at work",
+      complaint:"Overloaded; agrees then resents; sleep suffers.",
+      signs:"Phone always on; no lunch break; guilt spikes.",
+      examHint:"Apologizes for taking chair time.",
+      labHint:"Black boundary ledger.",
+      treatHint:"One scripted no this week + motherwort/hawthorn lore."},
+    {id:"HC09",type:"Wellness",urgency:"Routine",f:"Home-Environment",color:"White",p:"Home feels chaotic, hard to rest",
+      complaint:"Wants a calmer room rhythm — not a crisis.",
+      signs:"Clutter near bed, screens in sleep space.",
+      examHint:"Mentions noise and light together.",
+      labHint:"White / Blue environment settle.",
+      treatHint:"One zone reset · nettle/tea as ritual anchor."},
+    {id:"HC10",type:"Illness",urgency:"Critical",f:"Mood-Energy",color:"Violet",p:"Panic spikes, cannot catch breath",
+      complaint:"Sudden spikes; fear of next one; avoiding outings.",
+      signs:"Tingling, tight chest, sleep avoidance.",
+      examHint:"Breath shallow; checks exits.",
+      labHint:"Violet calm · do not overwhelm with advice.",
+      treatHint:"Grounding sequence + skullcap/lavender settle."},
+    {id:"HC11",type:"Illness",urgency:"Urgent",f:"Pain-Stiffness",color:"Red",p:"Tension headaches by afternoon",
+      complaint:"Band-like pressure after screens; eases with air.",
+      signs:"Jaw clench, shoulder hike, skips water.",
+      examHint:"Temples rubbed while talking.",
+      labHint:"Red tension · also Yellow over-focus.",
+      treatHint:"Breaks, hydration, peppermint/chrysanthemum lore."},
+    {id:"HC12",type:"Wellness",urgency:"Routine",f:"Digestive",color:"Orange",p:"Wants steadier digestion before travel",
+      complaint:"Preventive still-room visit before a trip.",
+      signs:"Mild unpredictability when routines break.",
+      examHint:"Organized notebook of foods.",
+      labHint:"Orange preventive.",
+      treatHint:"Travel kit: ginger, simple meal rules."}
+  ];
+
+  var NAMES_POOL=["Miso","Bramble","Nova","Atlas","Rowan","Sable","Ivy","Quill","Ash","Moss","Cedar","Wren","Lumen","Pike","Orrin","Vale"];
+  var TIMES=["09:00","10:15","11:30","13:30","15:00"];
+
+  function ensure(){
+    if(!window.S) return null;
+    if(!S.patientMemory) S.patientMemory={};
+    if(typeof S.att!=="number") S.att=10;
+    if(typeof S.rp!=="number") S.rp=0;
+    return S;
+  }
+
+  /** Build VF-like appointments into waiting list */
+  window.buildHerbalAppointments=function(){
+    ensure();
+    var list=[];
+    var day=S.day||1;
+    for(var i=0;i<5;i++){
+      var hc=HERBAL_CASES[(day-1+i*3)%HERBAL_CASES.length];
+      // occasional reshuffle
+      if(Math.random()<0.35) hc=HERBAL_CASES[Math.floor(Math.random()*HERBAL_CASES.length)];
+      var name=NAMES_POOL[(day+i*5)%NAMES_POOL.length];
+      // returning memory
+      var returning=!!(S.patientMemory[name]&&S.patientMemory[name].visits);
+      var pr={
+        id:hc.id,f:hc.f,p:hc.p,color:hc.color,att:hc.urgency==="Critical"?3:(hc.urgency==="Urgent"?2:1),
+        quote:hc.complaint,tags:[hc.type,hc.urgency]
+      };
+      // merge with real P catalog if matching family exists
+      try{
+        if(typeof P!=="undefined"&&P.length){
+          var matches=P.filter(function(x){return x.f===hc.f;});
+          if(matches.length){
+            var base=matches[Math.floor(Math.random()*matches.length)];
+            pr=Object.assign({},base,{p:hc.p,color:hc.color||base.color,att:pr.att,quote:hc.complaint});
+          }
+        }
+      }catch(e){}
+      list.push({
+        name:name,
+        pr:pr,
+        quote:hc.complaint,
+        time:TIMES[i]||"Walk-in",
+        type:hc.type==="Wellness"?"Wellness Visit":"Illness Visit",
+        urgency:hc.urgency,
+        caseId:hc.id,
+        caseData:hc,
+        returning:returning,
+        status:"Waiting",
+        wellness: returning ? Math.min(95,(S.patientMemory[name].lastWellness||70)+5) : (60+Math.floor(Math.random()*30))
+      });
+    }
+    // follow-ups first
+    try{
+      var pending=(S.followUps||[]).filter(function(f){return !f.done;});
+      if(pending.length){
+        var f=pending[0];
+        var pr2=(typeof P!=="undefined"&&P.find(function(x){return x.id===f.prId;}))||list[0].pr;
+        list.unshift({
+          name:f.name,pr:Object.assign({},pr2,{att:Math.min(3,(pr2.att||1)+1)}),
+          quote:f.quote||"You said I could come back if it didn't land.",
+          time:"Follow-up",type:"Follow-up Visit",urgency:"Urgent",
+          caseData:HERBAL_CASES[0],followUp:true,followId:f.id,returning:true,status:"Waiting",
+          wellness:55
+        });
+        if(list.length>5) list.pop();
+      }
+    }catch(e){}
+    window._waitList=list;
+    return list;
+  };
+
+  window.openHerbalVisit=function(cand){
+    ensure();
+    if(!cand||!cand.pr){ toast("Empty chair"); return; }
+    var cost=cand.pr.att||1;
+    if(S.att<cost){ toast("Too tired — need "+cost+" Attention (have "+S.att+")"); return; }
+    if(cand.advanced && (cand.rpCost||8)>S.rp){ toast("Need "+(cand.rpCost||8)+" RP"); return; }
+
+    // Charge visit start energy like VF (−8 energy)
+    S.att=Math.max(0,S.att-Math.min(cost,2));
+
+    window._visit={
+      cand:cand,
+      name:cand.name,
+      pr:cand.pr,
+      caseData:cand.caseData||null,
+      type:cand.type||"Visit",
+      urgency:cand.urgency||"Routine",
+      time:cand.time||"",
+      wellness:cand.wellness||70,
+      score:0,
+      done:{},
+      examScore:null,
+      labResult:null,
+      treated:false,
+      steps:0
+    };
+    renderVFVisit();
+  };
+
+  function renderVFVisit(){
+    var v=window._visit; if(!v) return;
+    var pr=v.pr, c=v.caseData;
+    var complaint=(c&&c.complaint)||v.cand.quote||pr.quote||pr.p;
+    var html="";
+    html+='<div class="vet-visit">';
+    html+='<div class="vet-patient"><div class="vet-avatar">'+( {"Sleep":"😴","Focus":"🎯","Boundaries":"🛡️","Mood-Energy":"🌿","Pain-Stiffness":"🦴","Digestive":"🫖","Home-Environment":"🏠"}[pr.f]||"🌿")+'</div>';
+    html+='<div style="flex:1"><strong style="font-size:1.1rem">'+esc(v.name)+'</strong>';
+    html+='<div class="muted" style="font-size:.78rem;margin-top:2px">'+esc(pr.f)+' · '+esc(pr.color||"")+' · '+esc(v.time)+' · '+esc(v.urgency)+'</div></div>';
+    html+='<span class="pill">'+esc(v.type)+'</span></div>';
+
+    html+='<div class="card" style="margin:0 0 10px"><b>Chief complaint</b>';
+    html+='<p style="margin:6px 0 0">'+esc(complaint)+'</p>';
+    if(c&&c.signs) html+='<p class="muted" style="margin:8px 0 0;font-size:.8rem"><b>Signs:</b> '+esc(c.signs)+'</p>';
+    html+='</div>';
+
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
+    html+='<div class="card" style="margin:0;padding:10px;text-align:center"><div class="muted" style="font-size:.65rem">WELLNESS</div><div style="font-size:1.2rem;font-weight:800">'+Math.round(v.wellness)+'</div></div>';
+    html+='<div class="card" style="margin:0;padding:10px;text-align:center"><div class="muted" style="font-size:.65rem">SCORE</div><div style="font-size:1.2rem;font-weight:800">'+v.score+'</div></div>';
+    html+='<div class="card" style="margin:0;padding:10px;text-align:center"><div class="muted" style="font-size:.65rem">ATT</div><div style="font-size:1.2rem;font-weight:800">'+(S.att|0)+'</div></div>';
+    html+='</div>';
+    html+='<div class="vet-meter"><i style="width:'+Math.min(100,v.wellness)+'%"></i></div>';
+
+    html+='<h3 style="margin:12px 0 8px;font-size:.95rem">Clinical actions</h3>';
+    html+='<div class="vet-actions">';
+
+    // EXAM — like Physical Exam $95/$140
+    var examCost=v.type.indexOf("Wellness")>=0?0:1;
+    html+='<button type="button" class="vet-action'+(v.done.exam?" done":"")+'" '+(v.done.exam?"disabled":"")+' onclick="window.vfExam()">';
+    html+='<div class="va-t">🩺 Physical / Still-room Exam'+(examCost?" — 1 Att":" — free")+'"</div>';
+    html+='<div class="va-d">'+(v.done.exam?("Score "+v.examScore+"/100"):"Observe body, breath, and story.")+'</div></button>';
+
+    // LAB — like Run Diagnostics $75
+    html+='<button type="button" class="vet-action'+(v.done.lab?" done":"")+'" '+(v.done.lab?"disabled":"")+' onclick="window.vfLab()">';
+    html+='<div class="va-t">🧪 Herb / Ledger Diagnostics — 1 Att + 2 RP</div>';
+    html+='<div class="va-d">'+(v.done.lab?(v.labResult||"Recorded"):"Match terrain color and pattern.")+'</div></button>';
+
+    // TREAT — like Supportive Treatment $110
+    html+='<button type="button" class="vet-action'+(v.done.treat?" done":"")+'" '+(v.done.treat?"disabled":"")+' onclick="window.vfTreat()">';
+    html+='<div class="va-t">🌿 Supportive Herbal Treatment — 1 Att</div>';
+    html+='<div class="va-d">'+(v.done.treat?"Treatment applied":"Tea, remedy, or protocol step.")+'</div></button>';
+
+    // Optional remedy boost if loadout
+    html+='<button type="button" class="vet-action'+(v.done.boost?" done":"")+'" onclick="window.vfBoost()">';
+    html+='<div class="va-t">✨ Apply Loadout / Pouch Buff</div>';
+    html+='<div class="va-d">'+(v.done.boost?"Buff applied":"Uses armed herb if available.")+'</div></button>';
+
+    html+='</div>';
+
+    html+='<button type="button" class="btn" style="width:100%;margin-top:10px" onclick="window.vfComplete()">✓ Complete visit</button>';
+    html+='<button type="button" class="btn sec" style="width:100%;margin-top:6px" onclick="window.cancelHerbalVisit()">Cancel</button>';
+    html+='</div>';
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal(v.name,"CLINIC VISIT",html);
+    else if(typeof showGuildPanel==="function") showGuildPanel(html,"Visit · "+v.name);
+  }
+
+  window.vfExam=function(){
+    var v=window._visit; if(!v||v.done.exam) return;
+    var cost=v.type.indexOf("Wellness")>=0?0:1;
+    if(cost&&S.att<cost){ toast("Need Attention"); return; }
+    if(cost) S.att-=cost;
+    // Clinical score like VF performExam
+    var score=Math.max(55,Math.min(99, v.wellness + Math.floor(Math.random()*16)-8 + (S.rp>40?2:0)));
+    v.examScore=Math.round(score);
+    v.score+= score>80?3:2;
+    v.done.exam=true; v.steps++;
+    if(score>80) S.rp=(S.rp||0)+2;
+    var hint=(v.caseData&&v.caseData.examHint)||"Guest softens as they are heard.";
+    toast("🩺 Exam "+v.examScore+"/100");
+    if(typeof save==="function") save({ui:false});
+    // Show findings briefly then re-render
+    if(typeof openOverhaulModal==="function"){
+      openOverhaulModal("Exam findings","🩺",
+        '<div class="card"><b>Clinical score: '+v.examScore+'/100</b><p style="margin-top:8px">'+esc(hint)+'</p></div>'+
+        '<button class="btn" style="width:100%;margin-top:10px" onclick="window._rerenderVF()">Continue visit</button>');
+    } else renderVFVisit();
+  };
+  window._rerenderVF=function(){ renderVFVisit(); };
+
+  window.vfLab=function(){
+    var v=window._visit; if(!v||v.done.lab) return;
+    if(S.att<1){ toast("Need 1 Attention"); return; }
+    if((S.rp||0)<2){ toast("Need 2 RP for diagnostics"); return; }
+    S.att-=1; S.rp-=2;
+    var abnormal=Math.random()<(.25+(100-v.wellness)/250);
+    var hint=(v.caseData&&v.caseData.labHint)||(abnormal?"Pattern needs a tighter protocol.":"Ledger is readable — steady course.");
+    v.labResult=abnormal?"Terrain strain detected — "+hint : "No sharp discord — "+hint;
+    v.score+=abnormal?2:3;
+    v.wellness=Math.min(100,v.wellness+(abnormal?1:4));
+    v.done.lab=true; v.steps++;
+    S.rp+=abnormal?1:2; // bill-like return
+    toast("🧪 Diagnostics recorded");
+    if(typeof save==="function") save({ui:false});
+    if(typeof openOverhaulModal==="function"){
+      openOverhaulModal("Ledger report","🧪",
+        '<div class="card"><b>'+esc(v.labResult)+'</b><p class="muted" style="margin-top:8px">Color family: '+esc(v.pr.color||"?")+' · '+esc(v.pr.f||"")+'</p></div>'+
+        '<button class="btn good" style="width:100%;margin-top:10px" onclick="window._rerenderVF()">Apply result</button>');
+    } else renderVFVisit();
+  };
+
+  window.vfTreat=function(){
+    var v=window._visit; if(!v||v.done.treat) return;
+    if(S.att<1){ toast("Need 1 Attention"); return; }
+    S.att-=1;
+    v.wellness=Math.min(100,v.wellness+8);
+    v.score+=3;
+    v.done.treat=true; v.treated=true; v.steps++;
+    S.rp=(S.rp||0)+6;
+    var hint=(v.caseData&&v.caseData.treatHint)||"Supportive still-room care applied.";
+    toast("🌿 Treatment applied");
+    if(typeof save==="function") save({ui:false});
+    if(typeof openOverhaulModal==="function"){
+      openOverhaulModal("Treatment","🌿",
+        '<div class="card"><b>Supportive care complete</b><p style="margin-top:8px">'+esc(hint)+'</p><p class="muted">Wellness now '+Math.round(v.wellness)+'</p></div>'+
+        '<button class="btn good" style="width:100%;margin-top:10px" onclick="window._rerenderVF()">Continue</button>');
+    } else renderVFVisit();
+  };
+
+  window.vfBoost=function(){
+    var v=window._visit; if(!v||v.done.boost) return;
+    var has=S.equipped||(S.loadout&&S.loadout.buff)||(S.buffs&&S.buffs.length);
+    if(!has){ toast("No loadout herb armed — Guild / Pouch first"); return; }
+    v.score+=2; v.wellness=Math.min(100,v.wellness+3);
+    v.done.boost=true; v.steps++;
+    S.rp=(S.rp||0)+3;
+    toast("✨ Loadout buff applied");
+    if(typeof save==="function") save({ui:false});
+    renderVFVisit();
+  };
+
+  window.vfComplete=function(){
+    var v=window._visit; if(!v) return;
+    var score=v.score, outcome, rp, flavor;
+    if(score>=9||(v.treated&&v.examScore&&v.examScore>=85)){ outcome="Breakthrough"; rp=20+Math.floor(Math.random()*8); flavor="A real shift — the kind they will remember."; }
+    else if(score>=5||v.treated){ outcome="Improve"; rp=12+Math.floor(Math.random()*5); flavor="Steadier. They leave with one clear next step."; }
+    else if(score>=3){ outcome="Plateau"; rp=7; flavor="Heard. Not dramatic. That still counts."; }
+    else if(score>=1){ outcome="Stuck"; rp=3; flavor="Unchanged today — follow-up may help."; }
+    else { outcome="Setback"; rp=1; flavor="Hard visit. Guard is up."; }
+
+    if(v.urgency==="Critical") rp=Math.round(rp*1.4);
+    if(v.cand.followUp&&(outcome==="Improve"||outcome==="Breakthrough"||outcome==="Plateau")){
+      try{ var fu=(S.followUps||[]).find(function(f){return f.id===v.cand.followId;}); if(fu) fu.done=true; }catch(e){}
+    }
+
+    S.rp=(S.rp||0)+rp;
+    if(outcome==="Breakthrough"||outcome==="Improve"){
+      S.streak=(S.streak||0)+1;
+      if(S.mastery&&v.pr.f!=null&&S.mastery[v.pr.f]!=null) S.mastery[v.pr.f]=Math.min(5,(S.mastery[v.pr.f]||0)+1);
+    } else if(outcome==="Setback"||outcome==="Stuck") S.streak=0;
+
+    // Follow-up slip on poor outcome
+    if(outcome==="Setback"||outcome==="Stuck"){
+      if(!S.followUps) S.followUps=[];
+      S.followUps.push({id:"fu_"+Date.now(),name:v.name,prId:v.pr.id,dayMade:S.day||1,extraAtt:1,quote:"Last time didn't land. Can we try again?",done:false});
+      if(typeof S.lanternFuel==="number") S.lanternFuel=Math.max(0,S.lanternFuel-5);
+    }
+
+    var entry={ts:new Date().toISOString(),day:S.day||1,name:v.name,pr:v.pr.id,family:v.pr.f,problem:v.pr.p,bodySystem:"",diagnosis:v.pr.color||"",diagnosisCorrect:!!v.done.lab,confidence:v.done.exam?2:1,outcome:outcome,rp:rp,score:score,notes:Object.keys(v.done).join(" → "),isMaya:false,twist:null};
+    if(!S.log) S.log=[]; S.log.unshift(entry);
+    if(!S.patientMemory) S.patientMemory={};
+    var mem=S.patientMemory[v.name]||{visits:0,families:[]};
+    mem.visits++; mem.lastDay=S.day||1; mem.lastOutcome=outcome; mem.lastFamily=v.pr.f; mem.lastWellness=v.wellness;
+    if(v.pr.f&&mem.families.indexOf(v.pr.f)<0) mem.families.push(v.pr.f);
+    S.patientMemory[v.name]=mem;
+    if(!S._cascadeLog) S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Clinic visit "+v.name+": "+outcome+" · exam "+(v.examScore||"—")+" · +"+rp+" RP"});
+
+    if(typeof save==="function") save();
+    window._visit=null;
+    try{closeOverhaulModal();}catch(e){}
+    try{closeGuildPanel();}catch(e){}
+
+    var res='<div class="outcome-flash '+(outcome==="Breakthrough"||outcome==="Improve"?"good":outcome==="Setback"?"bad":"")+'">';
+    res+='<div class="big">'+esc(outcome)+'</div><div>+'+rp+' RP · visit score '+score+(v.examScore!=null?" · exam "+v.examScore+"/100":"")+'</div>';
+    res+='<p class="muted" style="margin-top:8px">'+esc(flavor)+'</p>';
+    res+='<p class="muted" style="margin-top:6px">Wellness now ~'+Math.round(v.wellness)+'</p>';
+    res+='<button class="btn" style="margin-top:12px;width:100%" onclick="closeOverhaulModal();go(\'home\')">Back to clinic</button></div>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Visit complete","OUTCOME",res);
+    else toast(outcome+" · +"+rp+" RP");
+    try{renderGameplayHome();}catch(e){}
+    try{renderFlowBoard();}catch(e){}
+  };
+
+  window.cancelHerbalVisit=function(){ window._visit=null; try{closeOverhaulModal();}catch(e){} try{closeGuildPanel();}catch(e){} };
+
+  function paintVFQueue(){
+    try{
+      var list=window._waitList, el=document.getElementById("waitList");
+      if(!el) return;
+      if(!list||!list.length) list=window.buildHerbalAppointments();
+      var html='<div class="card" style="margin-bottom:10px"><h2 style="margin:0 0 4px;font-size:1rem">Today\'s queue</h2><p class="muted" style="margin:0;font-size:.8rem">'+list.filter(function(x){return x.status!=="Completed";}).length+' waiting · still-room open</p></div>';
+      for(var i=0;i<list.length;i++){
+        var c=list[i]; if(c.status==="Completed") continue;
+        var pr=c.pr||{};
+        var em={"Sleep":"😴","Focus":"🎯","Boundaries":"🛡️","Mood-Energy":"🌿","Pain-Stiffness":"🦴","Digestive":"🫖","Home-Environment":"🏠"}[pr.f]||"🌿";
+        var urg=c.urgency||"Routine";
+        var urgStyle=urg==="Critical"?"background:#3a1a1a;color:#ff7474":urg==="Urgent"?"background:#3a2a10;color:#ffd166":"";
+        html+='<div class="card vet-queue-card" style="margin-bottom:10px">';
+        html+='<div class="vet-patient"><div class="vet-avatar">'+em+'</div><div style="flex:1">';
+        html+='<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><strong>'+esc(c.name)+'</strong><span class="pill" style="'+urgStyle+'">'+esc(c.time||"")+'</span></div>';
+        html+='<div class="muted" style="font-size:.75rem;margin-top:2px">'+esc(c.type||"Visit")+' · '+esc(urg)+' · Att '+(pr.att||1)+'</div>';
+        html+='<div class="muted" style="font-size:.8rem;margin-top:4px">'+esc(pr.p||"")+'</div>';
+        html+='<div class="vet-meter" style="margin-top:6px"><i style="width:'+(c.wellness||70)+'%"></i></div>';
+        html+='</div></div>';
+        html+='<button type="button" class="btn" style="width:100%;margin-top:8px" onclick="window.openHerbalVisit(window._waitList['+i+'])">▶ Start Visit</button></div>';
+      }
+      el.innerHTML=html;
+    }catch(e){ console.warn(e); }
+  }
+
+  // Door opens VF-style appointments
+  var _door=window.openDoorCore;
+  window.openDoorCore=function(){
+    window.buildHerbalAppointments();
+    // ensure wait screen
+    try{
+      document.querySelectorAll(".screen").forEach(function(sc){sc.classList.remove("on");});
+      var wait=document.getElementById("sc-wait");
+      if(wait) wait.classList.add("on");
+    }catch(e){}
+    if(typeof _door==="function"){ try{ _door.apply(this,arguments);}catch(e){} }
+    setTimeout(paintVFQueue,40);
+    setTimeout(paintVFQueue,120);
+    toast("🚪 Clinic queue open");
+  };
+
+  var _ow=window.openWaitingRoom;
+  if(typeof _ow==="function"){
+    window.openWaitingRoom=function(){
+      window.buildHerbalAppointments();
+      var r=_ow.apply(this,arguments);
+      setTimeout(paintVFQueue,50);
+      return r;
+    };
+  }
+
+  // Home greeting
+  setTimeout(function(){
+    try{
+      var home=document.getElementById("sc-home");
+      if(!home||document.getElementById("vetClinicHello")) return;
+      var box=document.createElement("div");
+      box.id="vetClinicHello"; box.className="card glow";
+      box.innerHTML='<h2 style="margin:0 0 6px;font-size:1.05rem">Good morning, healer 🌿</h2><p class="muted" style="margin:0;font-size:.84rem">Today\'s caseload is on the door. <strong>Start Visit</strong> → Exam → Diagnostics → Treatment — same clinic rhythm as a vet queue, still-room tools.</p>';
+      var flow=document.getElementById("flowBoard");
+      if(flow&&flow.parentNode) flow.parentNode.insertBefore(box, flow);
+      else home.insertBefore(box, home.firstChild);
+    }catch(e){}
+  },600);
 })();
 
 </script>
