@@ -681,6 +681,21 @@ body{
 .ail-btn{width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border-radius:12px;border:1px solid #31566d;background:#102634;color:var(--text);font:inherit;cursor:pointer}
 .sheet-herb{padding:8px 0;border-bottom:1px solid #1e3544;font-size:.82rem}
 
+
+/* ===== STICKY CLINIC DOCK + VET 100 ===== */
+.clinic-dock{
+  position:fixed;left:0;right:0;bottom:56px;z-index:165;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  padding:6px 8px 8px;background:linear-gradient(180deg,rgba(8,18,26,.2),rgba(8,18,26,.96));
+  border-top:1px solid #31566d;
+}
+.clinic-dock button{
+  font:inherit;font-size:.58rem;line-height:1.15;padding:6px 4px;border-radius:10px;
+  border:1px solid #31566d;background:#102634;color:#d7e6ef;cursor:pointer
+}
+body.has-dock .wrap{padding-bottom:128px}
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+
 </style>
 </head>
 <body>
@@ -12386,6 +12401,189 @@ window.GUILD_HERBS=[
   }
 
   window.REGEN_CARDS=REGEN_CARDS;
+})();
+
+
+
+/* ==========================================================
+   VET 100 PROBLEMS + 16 ADVANCED FEATURES + STICKY DOCK
+   Fiction only. Not veterinary advice.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var SPECIES=["Dog","Cat","Rabbit","Guinea pig","Parrot","Ferret","Hamster"];
+  var IC={"Dog":"🐶","Cat":"🐱","Rabbit":"🐰","Guinea pig":"🐹","Parrot":"🦜","Ferret":"🦦","Hamster":"🐹"};
+  var NAMES=["Miso","Bramble","Nettle","Pip","Cobalt","Lumen","Quill","Moss","Ash","Wren","Sable","Ivy","Rowan","Vale","Echo","Hale","Pell","Juniper","Thorn","Briar","Nova","Atlas","River","Cedar","Sol","Nim","Orrin","Pike","Frost","Bell","Grey","Loch","Hart","Reed","Shaw","Quinn","Dale","Wynn","Brook","Vale"];
+  var PROBS=[
+    ["Storm anxiety","Paces before thunder","Safe den + white noise + wrap search","dog anxiety wrap"],
+    ["Itchy paws after walks","Licks feet","Wipe paws; balm search; vet if open skin","dog paw balm"],
+    ["Stiff mornings","Slow to rise","Warm rest; short walks; joint token","dog joint supplement"],
+    ["Won't finish meals","Walks away mid-bowl","Scheduled meals; puzzle bowl","slow feeder dog bowl"],
+    ["Senior night pacing","Hall at 2am","Daylight walk; orthopedic bed","orthopedic dog bed"],
+    ["Hairballs","Gags on rug","Brush routine; gel search","cat hairball gel"],
+    ["Midnight zoomies","3am races","Play-eat-sleep cycle; puzzle feeder","cat puzzle feeder"],
+    ["Stress outside the box","Clean box refused","Extra box; rule out medical","covered cat litter box"],
+    ["Ankle ambush","Hallway hunter","Wand play then meal","feather wand toy"],
+    ["Selective hay","Leaves timothy","Hay first always","timothy hay"],
+    ["Hide after a move","Frozen when lifted","Tunnels + quiet room","guinea pig hideout"],
+    ["Plucks when loud","Bare patch","Quiet hours + forage toys","bird foraging toy"],
+    ["Carsick on short trips","Drools in crate","Crate cover; vet if severe","calming crate cover"],
+    ["Chews door frames","Home alone","Kong-style forage; more walks","dog puzzle toy"],
+    ["Scoots the carpet","Itchy rear","Not a herb fix — vet anal glands","pet wipes unscented"],
+    ["Water-shy after bath","Hides from tub","Gentle wipe-downs","pet bathing wipes"],
+    ["New-baby barking","Guards the hallway","Desensitization lore; space","dog crate mat"],
+    ["Window chatter","Birds on the sill","Film the glass; perch elsewhere","window film privacy"],
+    ["Overgrooming belly","Bald streak","Stress + medical rule-out","cat calming diffuser"],
+    ["Won't use new bed","Sleeps on floor","Scent the old blanket","orthopedic pet bed"]
+  ];
+  var FAMS=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+  var COLS={Sleep:"Blue",Focus:"Yellow",Boundaries:"Black","Mood-Energy":"Green","Pain-Stiffness":"Red",Digestive:"Orange","Home-Environment":"White"};
+
+  window.VET_100=(function(){
+    var arr=[];
+    for(var i=0;i<100;i++){
+      var sp=SPECIES[i%SPECIES.length];
+      var pr=PROBS[i%PROBS.length];
+      var fam=FAMS[i%FAMS.length];
+      arr.push({
+        id:"PET-"+String(i+1).padStart(3,"0"),
+        name:NAMES[i%NAMES.length]+(i>=NAMES.length?" "+(1+Math.floor(i/NAMES.length)):""),
+        species:sp,ic:IC[sp]||"🐾",
+        prob:pr[0],signs:pr[1],sol:pr[2],amz:[pr[3]],
+        family:fam,color:COLS[fam]||"Blue"
+      });
+    }
+    return arr;
+  })();
+
+  var ADV=[
+    {id:"triage",ic:"🚨",name:"Triage board",d:"Sort urgent vs wait"},
+    {id:"refer",ic:"🏥",name:"Refer real vet",d:"ER / clinic list fiction"},
+    {id:"owner",ic:"👤",name:"Owner script",d:"One next step for the human"},
+    {id:"follow",ic:"↻",name:"Pet follow-up",d:"Book return care"},
+    {id:"diet",ic:"🥣",name:"Meal map",d:"Schedule + puzzle feed"},
+    {id:"den",ic:"🛏️",name:"Den design",d:"Quiet zone kit"},
+    {id:"groom",ic:"✂️",name:"Coat / paw station",d:"Wipe + brush tokens"},
+    {id:"senior",ic:"🪶",name:"Senior hour",d:"Slower visits"},
+    {id:"storm",ic:"⛈️",name:"Storm protocol",d:"Den + noise plan"},
+    {id:"travel",ic:"🚗",name:"Travel crate plan",d:"Car / crate rehearsal"},
+    {id:"enrich",ic:"🎾",name:"Enrichment deck",d:"Hunt-play cards"},
+    {id:"record",ic:"📋",name:"Pet chart",d:"Signs log"},
+    {id:"pair",ic:"👥",name:"Multi-pet house",d:"Resource guard lore"},
+    {id:"kit",ic:"🏮",name:"Buy pet kit",d:"8 RP comfort kit"},
+    {id:"sheet",ic:"📄",name:"Species sheet",d:"Amazon searches"},
+    {id:"quiet",ic:"🔇",name:"Quiet exam",d:"No rush card"}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={rp:50};
+    if(!S.petArc) S.petArc={};
+    if(!S.petKit) S.petKit=0;
+    if(!S.petChart) S.petChart=[];
+    return S;
+  }
+
+  window.openVetWing=function(){
+    ensure();
+    var html='<div class="section-kicker">VET WING · 100 PROBLEMS</div>';
+    html+='<p class="muted" style="font-size:.75rem">Fiction. Not veterinary care. Collapse, toxin, no-urine, not-eating rabbit → real ER.</p>';
+    html+='<div class="adv-grid">';
+    for(var a=0;a<ADV.length;a++){
+      html+='<button class="btn sm" onclick="window.vetAdv(\''+ADV[a].id+'\')">'+ADV[a].ic+' '+esc(ADV[a].name)+'</button>';
+    }
+    html+='</div>';
+    html+='<div class="muted" style="font-size:.7rem;margin:8px 0">Pet kits ×'+(S.petKit||0)+' · charts '+(S.petChart.length||0)+'</div>';
+    var list=window.VET_100;
+    for(var i=0;i<list.length;i++){
+      var p=list[i];
+      html+='<button type="button" class="vet-pet" onclick="window.startPetVisit100('+i+')">';
+      html+='<strong>'+p.ic+' '+esc(p.name)+' · '+esc(p.species)+'</strong>';
+      html+='<span class="muted" style="font-size:.76rem">'+esc(p.prob)+' → '+esc(p.sol)+'</span></button>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Vet wing","100 + 16",html);
+  };
+
+  window.startPetVisit100=function(idx){
+    var p=window.VET_100[idx]; if(!p) return;
+    ensure();
+    var stage=S.petArc[p.id]||0;
+    var cand={
+      name:p.name+" ("+p.species+")",pid:p.id,type:"Pet visit",
+      urgency:stage>=2?"Urgent":"Routine",wellness:58+stage*6,
+      problems:[p.prob,p.signs,p.sol],temperament:"Guarded",
+      diff:{id:stage>=3?"hard":"mid",label:stage>=3?"Hard":"Moderate"},
+      pr:{id:p.id,f:p.family,p:p.prob,color:p.color,att:1,quote:p.prob},
+      pet:true,petData:p,species:p.species
+    };
+    try{closeOverhaulModal();}catch(e){}
+    if(typeof startCardDuel==="function") startCardDuel(cand);
+    setTimeout(function(){
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-pet-sol]")) return;
+      var div=document.createElement("div");
+      div.dataset.petSol="1"; div.className="card";
+      div.innerHTML='<div class="section-kicker">PROBLEM → SOLUTION (FICTION)</div>'+
+        '<p><strong>'+esc(p.prob)+'</strong></p><p class="muted">'+esc(p.signs)+'</p>'+
+        '<p>'+esc(p.sol)+'</p>'+
+        '<a class="amz-link" target="_blank" rel="noopener" href="'+amz(p.amz[0])+'">🛒 '+esc(p.amz[0])+'</a>'+
+        '<p class="muted" style="font-size:.7rem;margin-top:6px">Confirm any product with a veterinarian.</p>';
+      body.insertBefore(div, body.firstChild);
+    },140);
+  };
+
+  window.vetAdv=function(id){
+    ensure();
+    if(id==="kit"){
+      if((S.rp||0)<8){ if(typeof toast==="function") toast("Need 8 RP"); return; }
+      S.rp-=8; S.petKit++;
+      if(typeof toast==="function") toast("🐾 Pet comfort kit ×"+S.petKit);
+      if(typeof save==="function") save();
+      return;
+    }
+    if(id==="record"){
+      S.petChart.push({day:S.day||1,t:"Chart note"});
+      if(typeof toast==="function") toast("📋 Chart saved");
+      return;
+    }
+    if(id==="sheet"){
+      if(typeof openAilmentPicker==="function") openAilmentPicker();
+      return;
+    }
+    if(id==="refer"){
+      var html='<p>Real care lives at a licensed clinic. This wing does not treat.</p>';
+      html+='<p><a class="amz-link" target="_blank" rel="noopener" href="https://www.avma.org/resources-tools/pet-owners">📗 AVMA pet-owner resources</a></p>';
+      html+='<button class="btn" style="width:100%" onclick="window.openVetWing()">Back</button>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Refer","VET",html);
+      return;
+    }
+    if(typeof toast==="function") toast((ADV.filter(function(x){return x.id===id;})[0]||{ic:"🐾"}).ic+" "+id+" ready");
+  };
+
+  // Sticky dock — always visible above nav
+  function mountDock(){
+    if(document.getElementById("clinicDock")) return;
+    document.body.classList.add("has-dock");
+    var d=document.createElement("div");
+    d.id="clinicDock"; d.className="clinic-dock";
+    d.innerHTML=
+      '<button type="button" onclick="window.enterWaitingRoom&&enterWaitingRoom()||window.openDoorCore&&openDoorCore()">🚪 Door</button>'+
+      '<button type="button" onclick="window.openVetWing&&openVetWing()">🐾 Vet</button>'+
+      '<button type="button" onclick="window.openAilmentPicker&&openAilmentPicker()">📄 Sheets</button>'+
+      '<button type="button" onclick="window.openLanternMain&&openLanternMain()">🏮 Lantern</button>'+
+      '<button type="button" onclick="window.openPrenatalWing&&openPrenatalWing()">🌙 Prenatal</button>'+
+      '<button type="button" onclick="window.openRoadStory&&openRoadStory()">🛤️ Road</button>'+
+      '<button type="button" onclick="window.openArcCodex&&openArcCodex()">🧵 Arcs</button>'+
+      '<button type="button" onclick="window.go&&go(\'home\')">🏠 Floor</button>';
+    document.body.appendChild(d);
+  }
+  setTimeout(mountDock,400);
+  setTimeout(mountDock,1400);
+
+  // Keep old startPetVisit working
+  window.startPetVisit=function(idx){ window.startPetVisit100(idx%100); };
 })();
 
 </script>
