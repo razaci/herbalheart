@@ -882,6 +882,85 @@ body.has-dock .wrap{padding-bottom:24px!important}
 .chart-row{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;margin:4px 0;border-bottom:1px solid #1e3544;padding-bottom:4px}
 .chart-pill{display:inline-block;padding:2px 8px;border-radius:99px;background:#1a2834;font-size:.72rem;margin:2px}
 
+
+/* ===== GAME SKIN ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap');
+html,body{
+  background:#070b0e !important;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, #163028 0%, transparent 55%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.015) 0 1px, transparent 1px 3px) !important;
+  color:#e4efe8 !important;
+  font-family:"Source Sans 3", system-ui, sans-serif !important;
+}
+body::before{
+  content:"";
+  position:fixed;inset:10px;pointer-events:none;z-index:5;
+  border:2px solid #2f5a4a;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.45), 0 0 0 8px #0a1210;
+  border-radius:18px;
+}
+#app, main, .wrap, #sc-home{
+  max-width:430px;margin:0 auto;
+}
+.brand, h1, .section-kicker{
+  font-family:"Cinzel", serif !important;
+  letter-spacing:.12em !important;
+  color:#c9e8d4 !important;
+}
+.section-kicker{
+  font-size:.62rem !important;
+  border-bottom:1px solid #2a4a3e;
+  padding-bottom:4px;
+}
+.card, .psy-box, .fx-tile{
+  background:linear-gradient(180deg,#13221c,#0d1714) !important;
+  border:1px solid #3a6a58 !important;
+  box-shadow:0 2px 0 #08110e, inset 0 1px 0 rgba(180,220,200,.08) !important;
+  border-radius:12px !important;
+}
+.fx-tile{
+  min-height:70px !important;
+  position:relative;
+}
+.fx-tile::after{
+  content:"";
+  position:absolute;right:8px;top:8px;width:6px;height:6px;border-radius:50%;
+  background:#7ec8a0;box-shadow:0 0 6px #7ec8a0;opacity:.5;
+}
+.fx-tile.hero{
+  background:linear-gradient(180deg,#1c3a2e,#102018) !important;
+  border-color:#6ad0a0 !important;
+}
+.btn{
+  background:linear-gradient(180deg,#1b332a,#12241e) !important;
+  border:1px solid #4a7a64 !important;
+  color:#e8f6ee !important;
+  border-radius:10px !important;
+  box-shadow:0 2px 0 #0a1612 !important;
+  text-transform:none;
+}
+.btn:active{transform:translateY(1px);box-shadow:0 1px 0 #0a1612 !important}
+.btn.sec{background:#101c18 !important;border-color:#35584c !important;color:#c5d8ce !important}
+.btn.ghost{background:transparent !important;border-color:#2a4a40 !important}
+#rpgHud{
+  background:linear-gradient(180deg,#10241c,#0a1612) !important;
+  border:1px solid #4a8a68 !important;
+}
+.lvl-track{background:#06120e !important;border-color:#2a5a44 !important}
+.lvl-fill{background:linear-gradient(90deg,#1f6a44,#8af0b8) !important}
+#overhaulModal, .modal, #ohModal{
+  background:rgba(4,8,8,.72) !important;
+}
+#overhaulModalBody, .modal-card, #ohBody{
+  background:#101c18 !important;
+  border:1px solid #3a6a58 !important;
+  border-radius:16px !important;
+}
+.heat-cell{border-color:#2a4a40 !important}
+.dtab th{background:#15241e !important}
+.fx-sec{color:#8fb8a4 !important}
+
 </style>
 </head>
 <body>
@@ -17200,6 +17279,221 @@ window.GUILD_HERBS=[
         // append a tile into inner-work if section exists
       }
       setTimeout(mount,20);
+      return r;
+    };
+  }
+})();
+
+
+
+/* Game chrome title on floor */
+(function(){
+  function paint(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    if(!document.getElementById("gameTitleBar")){
+      var bar=document.createElement("div");
+      bar.id="gameTitleBar";
+      bar.style.cssText="text-align:center;padding:10px 8px 4px;position:relative;z-index:2";
+      bar.innerHTML='<div style="font-family:Cinzel,serif;letter-spacing:.18em;font-size:.72rem;opacity:.7">STILL-ROOM</div>'+
+        '<div style="font-family:Cinzel,serif;font-size:1.25rem;color:#d4f0e0">WILLOW BEND</div>'+
+        '<div style="font-size:.68rem;opacity:.6;margin-top:2px">herbal clinic · card hour</div>';
+      home.insertBefore(bar, home.firstChild);
+    }
+  }
+  setTimeout(paint,200);
+  setTimeout(paint,900);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paint,20);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   CUSTOM HOUR ATELIER · set everything, press GO, heal
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var FAM=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+  var COLORS=["Red","Yellow","Blue","White","Orange","Green","Black"];
+  var DIFFS=[{id:1,n:"Quiet desk"},{id:2,n:"Busy week"},{id:3,n:"Relapse weather"},{id:4,n:"Red-light case"}];
+
+  function def(){
+    if(!window.S) window.S={};
+    if(!S.customHour){
+      S.customHour={
+        who:"random", name:"",
+        fam:"Sleep", color:"Blue",
+        diff:1, moon:"auto",
+        path:"trust", theatrical:true,
+        vet:false, autoPlay:true, rounds:8
+      };
+    }
+    return S.customHour;
+  }
+
+  function pickPatient(ch){
+    if(ch.vet){
+      var pets=window.VET_100||[];
+      var p=pets[Math.floor(Math.random()*Math.max(1,pets.length))]||{name:"Moth the cat",species:"cat",prob:"itch",sol:"gentle comb"};
+      return {
+        name:p.name||"Pet guest", pid:"vet-"+p.id, type:"Vet", urgency:"Wing",
+        wellness:55, problems:[p.prob||"comfort"], temperament:"Animal",
+        fam:"Pain-Stiffness", color:ch.color||"Green",
+        diff:{id:"mid",label:"Vet"},
+        pr:{id:"vet",f:"Pain-Stiffness",p:p.prob||"comfort",color:ch.color||"Green",att:1,quote:""}
+      };
+    }
+    var list=window.PATIENT_100||[];
+    var chosen=null;
+    if(ch.who==="named" && ch.name){
+      for(var i=0;i<list.length;i++){
+        if(String(list[i].name).toLowerCase().indexOf(ch.name.toLowerCase())>=0){ chosen=list[i]; break; }
+      }
+    }
+    if(!chosen && list.length) chosen=list[Math.floor(Math.random()*list.length)];
+    var fam=ch.fam||(chosen&&chosen.f)||"Sleep";
+    var name=(ch.who==="named"&&ch.name)?ch.name:((chosen&&chosen.name)||"Walk-in guest");
+    return {
+      name:name,
+      pid:(chosen&&(chosen.id||chosen.name))||name,
+      type:"Custom hour", urgency:"Atelier",
+      wellness:50+Math.floor(Math.random()*20),
+      problems:[(chosen&&chosen.primary)||fam+" weather"],
+      temperament:"Custom",
+      fam:fam, color:ch.color||"Blue",
+      diff:{id:ch.diff>=3?"hard":"mid", label:(DIFFS[ch.diff-1]||DIFFS[0]).n},
+      pr:{id:name,f:fam,p:(chosen&&(chosen.p||chosen.primary))||fam+" thread",color:ch.color||"Blue",att:1,quote:""}
+    };
+  }
+
+  window.openCustomHour=function(){
+    var ch=def();
+    var html='<div class="section-kicker">CUSTOM HOUR · ATELIER</div>';
+    html+='<p class="muted" style="font-size:.75rem">Set the pieces. Press GO. The still-room takes the guest and plays the heal.</p>';
+
+    html+='<div class="card"><b>Guest</b>';
+    html+='<div style="display:flex;gap:6px;margin:6px 0">';
+    html+='<button class="btn sm'+(ch.who==="random"?"":" sec")+'" onclick="window.setCustom(\'who\',\'random\')">Random</button>';
+    html+='<button class="btn sm'+(ch.who==="named"?"":" sec")+'" onclick="window.setCustom(\'who\',\'named\')">Named</button>';
+    html+='</div>';
+    html+='<input id="chName" value="'+esc(ch.name)+'" placeholder="Name if named" style="width:100%;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/>';
+    html+='<label style="display:block;margin-top:8px;font-size:.8rem"><input type="checkbox" id="chVet" '+(ch.vet?"checked":"")+'> Vet wing (animal guest)</label>';
+    html+='</div>';
+
+    html+='<div class="card"><b>Problem family</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    FAM.forEach(function(f){
+      html+='<button class="btn sm'+(ch.fam===f?"":" sec")+'" onclick="window.setCustom(\'fam\',\''+f+'\')">'+f+'</button>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="card"><b>Color / element</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    COLORS.forEach(function(c){
+      html+='<button class="btn sm'+(ch.color===c?"":" sec")+'" onclick="window.setCustom(\'color\',\''+c+'\')">'+c+'</button>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="card"><b>Difficulty</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    DIFFS.forEach(function(d){
+      html+='<button class="btn sm'+(ch.diff===d.id?"":" sec")+'" onclick="window.setCustom(\'diff\','+d.id+')">'+d.n+'</button>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="card"><b>Path focus</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    ["trust","settle","action","boundary","body","gut","refer","plan"].forEach(function(p){
+      html+='<button class="btn sm'+(ch.path===p?"":" sec")+'" onclick="window.setCustom(\'path\',\''+p+'\')">'+p+'</button>';
+    });
+    html+='</div>';
+    html+='<label style="display:block;margin-top:8px;font-size:.8rem"><input type="checkbox" id="chTheat" '+(ch.theatrical?"checked":"")+'> Theatrical Q&amp;A</label>';
+    html+='<label style="display:block;font-size:.8rem"><input type="checkbox" id="chAuto" '+(ch.autoPlay?"checked":"")+'> Auto-play heal after GO</label>';
+    html+='</div>';
+
+    html+='<button class="btn hero" style="width:100%;padding:16px;font-size:1.05rem;margin-top:8px" onclick="window.goCustomHour()">GO · take them and heal</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close atelier</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Custom hour","GO",html);
+  };
+
+  window.setCustom=function(k,v){
+    var ch=def();
+    ch[k]=v;
+    if(typeof save==="function") save({ui:false});
+    window.openCustomHour();
+  };
+
+  window.goCustomHour=function(){
+    var ch=def();
+    var nameEl=document.getElementById("chName");
+    var vetEl=document.getElementById("chVet");
+    var thEl=document.getElementById("chTheat");
+    var auEl=document.getElementById("chAuto");
+    if(nameEl) ch.name=nameEl.value;
+    if(vetEl) ch.vet=!!vetEl.checked;
+    if(thEl) ch.theatrical=!!thEl.checked;
+    if(auEl) ch.autoPlay=!!auEl.checked;
+    if(typeof window.setClinicLevel==="function") window.setClinicLevel(ch.diff||1);
+    if(window.S && S.mean && ch.path) S.mean[ch.path]=(S.mean[ch.path]||0)+1;
+    var cand=pickPatient(ch);
+    window._customRun={ch:ch,cand:cand};
+    try{ closeOverhaulModal(); }catch(e){}
+    if(typeof toast==="function") toast("GO · "+cand.name);
+    if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+    if(ch.theatrical && window.openJovialQA){
+      setTimeout(function(){ window.openJovialQA(cand); },400);
+    }
+    if(ch.autoPlay) setTimeout(function(){ window.autoHealRun(); }, ch.theatrical?1400:500);
+  };
+
+  window.autoHealRun=function(){
+    var d=window._duel;
+    if(!d) return;
+    var steps=0;
+    function tick(){
+      d=window._duel;
+      if(!d || d.hp<=0 || steps++>24){
+        if(d && d.hp>0 && window.vfComplete) window.vfComplete();
+        return;
+      }
+      var idx=-1;
+      if(d.hand){
+        for(var i=0;i<d.hand.length;i++){
+          if((d.hand[i].cost||0)<=(d.energy||0)){ idx=i; break; }
+        }
+      }
+      if(idx>=0 && window.playDuelCard) window.playDuelCard(idx);
+      else if(window.endDuelTurn) window.endDuelTurn();
+      else if(window.vfComplete && d.hp<=4) window.vfComplete();
+      setTimeout(tick, 280);
+    }
+    tick();
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnCustomHour")) return;
+    var b=document.createElement("button");
+    b.id="btnCustomHour";
+    b.className="btn";
+    b.style.cssText="width:100%;margin-top:8px;padding:14px;font-size:1rem";
+    b.textContent="GO · Custom hour atelier";
+    b.onclick=function(){ window.openCustomHour(); };
+    var fm=document.getElementById("frontMatrix");
+    if(fm && fm.parentNode) fm.parentNode.insertBefore(b, fm.nextSibling);
+    else home.appendChild(b);
+  }
+  setTimeout(mount,500);
+  setTimeout(mount,1400);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,30);
       return r;
     };
   }
