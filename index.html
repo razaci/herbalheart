@@ -806,6 +806,82 @@ body.has-dock .wrap{padding-bottom:24px!important}
 .heat-bar{flex:1;height:10px;border-radius:99px;background:#1a303c;overflow:hidden}
 .heat-bar>i{display:block;height:100%;border-radius:99px}
 
+
+/* ===== HEAT LEGEND ===== */
+.heat-leg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.heat-leg button{font:inherit;font-size:.72rem;padding:6px 8px;border-radius:99px;border:1px solid #3a5a6a;background:#102028;color:#d7e6ef;cursor:pointer}
+.heat-leg button.on{border-color:#e8c070;background:#2a2410}
+.heat-scale{display:flex;height:12px;border-radius:99px;overflow:hidden;margin:6px 0}
+.heat-scale span{flex:1}
+.heat-tip{font-size:.75rem;color:#8aa0aa;margin:4px 0 8px}
+
+
+/* ===== DATA TABLES ===== */
+.dtab{width:100%;border-collapse:collapse;font-size:.72rem;margin:6px 0}
+.dtab th,.dtab td{border:1px solid #2a4555;padding:5px 6px;text-align:left;vertical-align:top}
+.dtab th{background:#152836;color:#c5d8e4}
+.dtab tr:nth-child(even) td{background:#0e1c24}
+.dtab-wrap{overflow:auto;max-height:280px}
+
+
+/* ===== PSY READOUT ===== */
+.psy-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.psy-grid{grid-template-columns:1fr}}
+.psy-box{padding:10px;border-radius:14px;border:1px solid #4a3a6a;background:#161022}
+.psy-box h4{margin:0 0 6px;font-size:.82rem;letter-spacing:.04em}
+.psy-meter{height:8px;border-radius:99px;background:#241830;overflow:hidden;margin:3px 0 8px}
+.psy-meter>i{display:block;height:100%;background:#c4a0ff}
+.psy-plain{font-size:.8rem;line-height:1.45}
+
+
+/* ===== FRONT MATRIX ===== */
+.fx-matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.fx-matrix .fx-span{grid-column:1/-1}
+.fx-tile{padding:12px 10px;border-radius:14px;border:1px solid #35586c;background:#102028;color:inherit;font:inherit;cursor:pointer;text-align:left;min-height:64px}
+.fx-tile b{display:block;font-size:.88rem}
+.fx-tile span{display:block;font-size:.68rem;opacity:.75;margin-top:3px;line-height:1.25}
+.fx-tile.hero{background:linear-gradient(180deg,#1a3a32,#0e241c);border-color:#3a6a5a;min-height:72px}
+.fx-tile.hero b{font-size:1rem}
+.fx-sec{margin:12px 0 4px;font-size:.68rem;letter-spacing:.08em;opacity:.65;text-transform:uppercase}
+
+
+/* ===== RPG HUD ===== */
+.rpg-hud{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rpg-stat{font-size:.75rem}
+.rpg-xp{height:8px;border-radius:99px;background:#1a3038;overflow:hidden;margin:4px 0 8px}
+.rpg-xp>i{display:block;height:100%;background:#7ec8a0}
+
+
+/* ===== VISUAL LEVEL BAR ===== */
+.lvl-wrap{margin:6px 0 10px}
+.lvl-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+.lvl-top .lv{font-size:1.05rem;font-weight:700;color:#b8f0d0}
+.lvl-top .cls{font-size:.78rem;opacity:.85}
+.lvl-track{height:14px;border-radius:99px;background:#0c1a20;border:1px solid #2a4a58;overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.lvl-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#2a6a48,#7ec8a0 60%,#c8f0d8);box-shadow:0 0 12px rgba(126,200,160,.35);transition:width .35s ease}
+.lvl-meta{display:flex;justify-content:space-between;font-size:.68rem;opacity:.7;margin-top:3px}
+.lvl-pips{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
+.lvl-pips i{width:8px;height:8px;border-radius:50%;background:#1e3a44;display:block}
+.lvl-pips i.on{background:#7ec8a0;box-shadow:0 0 6px #7ec8a0}
+
+
+/* ===== XP ANIMATIONS ===== */
+.xp-float{position:fixed;left:50%;top:36%;transform:translate(-50%,0);z-index:400;
+  font-weight:800;font-size:1.35rem;color:#b8f0d0;text-shadow:0 0 12px rgba(126,200,160,.8);
+  pointer-events:none;animation:xpFloat 1.1s ease-out forwards}
+.xp-float.lvl{color:#ffe9a8;font-size:1.5rem;text-shadow:0 0 16px rgba(255,220,120,.9)}
+@keyframes xpFloat{0%{opacity:0;transform:translate(-50%,12px) scale(.85)}15%{opacity:1;transform:translate(-50%,0) scale(1.08)}100%{opacity:0;transform:translate(-50%,-48px) scale(1)}}
+.lvl-track.pulse .lvl-fill{animation:xpPulse .55s ease}
+@keyframes xpPulse{0%{filter:brightness(1)}40%{filter:brightness(1.6)}100%{filter:brightness(1)}}
+.lvl-wrap.levelup{animation:lvlFlash .8s ease}
+@keyframes lvlFlash{0%{box-shadow:0 0 0 rgba(255,220,120,0)}30%{box-shadow:0 0 28px rgba(255,220,120,.55)}100%{box-shadow:0 0 0 rgba(255,220,120,0)}}
+
+
+/* ===== PATIENT CHART SCREEN ===== */
+.chart-wheel{width:100%;max-width:280px;margin:8px auto;display:block}
+.chart-row{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;margin:4px 0;border-bottom:1px solid #1e3544;padding-bottom:4px}
+.chart-pill{display:inline-block;padding:2px 8px;border-radius:99px;background:#1a2834;font-size:.72rem;margin:2px}
+
 </style>
 </head>
 <body>
@@ -15229,6 +15305,1831 @@ window.GUILD_HERBS=[
       return r;
     };
   }
+})();
+
+
+
+/* Interactive heatmap legend */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  window._heatFilter=window._heatFilter||"all";
+
+  var LAYERS=[
+    {id:"all",label:"All layers",tip:"Every touch — grid + bars together."},
+    {id:"grid",label:"Play field",tip:"5×5 board. Hot cells = more taps in that hash slot."},
+    {id:"types",label:"Card types",tip:"Red Fire, Blue Water, Yellow Air, White Earth, Any, Match."},
+    {id:"paths",label:"Path marks",tip:"Trust, settle, action, boundary, body, gut, refer, device, plan."},
+    {id:"syn",label:"Synergies",tip:"Combos that actually fired (Listen+Refer, Night nest…)."},
+    {id:"el",label:"Elements",tip:"Fire / Earth / Air / Water from the cards you play."},
+    {id:"ui",label:"Floor / UI",tip:"Main-page and modal buttons you press."}
+  ];
+
+  function heatColor(v, max){
+    var t=max<=0?0:Math.min(1, v/max);
+    var r=Math.round(20+t*220), g=Math.round(40+t*80), b=Math.round(80-t*50);
+    return "rgb("+r+","+g+","+b+")";
+  }
+
+  function bars(obj){
+    var keys=Object.keys(obj||{});
+    if(!keys.length) return '<p class="muted" style="font-size:.75rem">No data in this layer yet.</p>';
+    var max=1;
+    keys.forEach(function(k){ if(obj[k]>max) max=obj[k]; });
+    keys.sort(function(a,b){ return obj[b]-obj[a]; });
+    var html="";
+    keys.slice(0,14).forEach(function(k){
+      var pct=Math.round(100*obj[k]/max);
+      html+='<div class="heat-bar-row"><span class="label">'+esc(k)+'</span><div class="heat-bar"><i style="width:'+pct+'%;background:'+heatColor(obj[k],max)+'"></i></div><span>'+obj[k]+'</span></div>';
+    });
+    return html;
+  }
+
+  window.setHeatFilter=function(id){
+    window._heatFilter=id;
+    window.openHeatmaps();
+  };
+
+  var _open=window.openHeatmaps;
+  window.openHeatmaps=function(){
+    var h=(window.S&&S.heat)||{types:{},paths:{},syn:{},el:{},ui:{},grid:new Array(25).fill(0),total:0};
+    if(!h.grid) h.grid=new Array(25).fill(0);
+    var f=window._heatFilter||"all";
+    var layer=null;
+    for(var i=0;i<LAYERS.length;i++) if(LAYERS[i].id===f) layer=LAYERS[i];
+    var gmax=1;
+    h.grid.forEach(function(v){ if(v>gmax) gmax=v; });
+
+    var html='<div class="section-kicker">HEATMAPS · INTERACTIVE LEGEND</div>';
+    html+='<p class="muted" style="font-size:.75rem">'+(h.total||0)+' touches · tap a layer to isolate it</p>';
+    html+='<div class="heat-leg">';
+    for(var j=0;j<LAYERS.length;j++){
+      var L=LAYERS[j];
+      html+='<button type="button" class="'+(L.id===f?"on":"")+'" onclick="window.setHeatFilter(\''+L.id+'\')">'+esc(L.label)+'</button>';
+    }
+    html+='</div>';
+    html+='<div class="heat-tip">'+esc(layer&&layer.tip||"")+'</div>';
+    html+='<div class="heat-scale">';
+    for(var s=0;s<8;s++) html+='<span style="background:'+heatColor(s,7)+'"></span>';
+    html+='</div>';
+    html+='<div style="display:flex;justify-content:space-between;font-size:.68rem;color:#8aa0aa"><span>Cool · unused</span><span>Hot · habit</span></div>';
+
+    if(f==="all"||f==="grid"){
+      html+='<div class="card"><b>Play field</b><div class="heat-grid">';
+      for(var g=0;g<25;g++){
+        html+='<div class="heat-cell" style="background:'+heatColor(h.grid[g]||0,gmax)+'" title="cell '+g+' · '+(h.grid[g]||0)+'">'+(h.grid[g]||"")+'</div>';
+      }
+      html+='</div></div>';
+    }
+    if(f==="all"||f==="types") html+='<div class="card"><b>Card types</b>'+bars(h.types)+'</div>';
+    if(f==="all"||f==="paths") html+='<div class="card"><b>Path marks</b>'+bars(h.paths)+'</div>';
+    if(f==="all"||f==="syn") html+='<div class="card"><b>Synergies</b>'+bars(h.syn)+'</div>';
+    if(f==="all"||f==="el") html+='<div class="card"><b>Elements</b>'+bars(h.el)+'</div>';
+    if(f==="all"||f==="ui") html+='<div class="card"><b>Floor / UI</b>'+bars(h.ui)+'</div>';
+
+    html+='<button class="btn sec" style="width:100%" onclick="window.resetHeat()">Reset heat</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Heatmaps","LEGEND",html);
+  };
+})();
+
+
+
+/* ==========================================================
+   DATA TABLES EXPLORER
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  function table(headers, rows){
+    var h='<div class="dtab-wrap"><table class="dtab"><thead><tr>';
+    headers.forEach(function(x){ h+='<th>'+esc(x)+'</th>'; });
+    h+='</tr></thead><tbody>';
+    rows.forEach(function(r){
+      h+='<tr>';
+      r.forEach(function(c){ h+='<td>'+esc(c)+'</td>'; });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    return h;
+  }
+
+  window.openDataTables=function(tab){
+    tab=tab||"patients";
+    var html='<div class="section-kicker">DATA TABLES</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">';
+    ["patients","cards","paths","difficulty","moon","redlight","pets","heat"].forEach(function(t){
+      html+='<button class="btn sm'+(t===tab?"":" sec")+'" onclick="window.openDataTables(\''+t+'\')">'+t+'</button>';
+    });
+    html+='</div>';
+
+    if(tab==="patients"){
+      var list=window.PATIENT_100||[];
+      var rows=[];
+      for(var i=0;i<Math.min(list.length,40);i++){
+        var p=list[i];
+        rows.push([p.id||i+1, p.name, p.f||p.family||"", p.color||"", p.diff||"", (p.problems&&p.problems[0])||p.primary||""]);
+      }
+      html+='<p class="muted" style="font-size:.72rem">Showing '+rows.length+' of '+(list.length||0)+' roster rows</p>';
+      html+=table(["ID","Name","Family","Color","Diff","Primary"], rows);
+    }
+    else if(tab==="cards"){
+      var cards=(window.MORE_CARDS||[]).concat(window.FX_CARDS||[]).concat(window.REGEN_CARDS||[]);
+      // also help offers if any
+      var rows=cards.slice(0,50).map(function(c){
+        return [c.ic||"", c.name, c.cost, c.care, c.type, c.d||c.mean||""];
+      });
+      html+=table(["","Name","Cost","Care","Type","Note"], rows);
+    }
+    else if(tab==="paths"){
+      var m=(window.S&&S.mean)||{};
+      var rows=[["trust",m.trust||0],["settle",m.settle||0],["action",m.action||0],["boundary",m.boundary||0],["body",m.body||0],["gut",m.gut||0],["refer",m.refer||0],["device",m.device||0],["plan",m.plan||0],["sustain",m.sustain||0]];
+      html+=table(["Path","Count"], rows);
+    }
+    else if(tab==="difficulty"){
+      html+=table(["Level","Name","Label","HP mult","Rounds","Energy"],[
+        [1,"Quiet desk","Easy","1.0",10,5],
+        [2,"Busy week","Moderate","1.25",11,4],
+        [3,"Relapse weather","Hard","1.55",12,4],
+        [4,"Red-light case","Severe","1.9",13,3]
+      ]);
+      var lv=window.clinicLevel&&window.clinicLevel();
+      if(lv) html+='<p class="muted">Current: '+esc(lv.name)+' ('+esc(lv.label)+')</p>';
+    }
+    else if(tab==="moon"){
+      var phases=window.MOON_PHASES||[];
+      var rows=phases.map(function(p){ return [p.ic,p.name,p.care,p.note]; });
+      if(!rows.length) rows=[["—","(phases load in play)","—","—"]];
+      html+=table(["","Phase","Care ×","Note"], rows);
+      if(window.getMoonPhase){
+        var cur=window.getMoonPhase();
+        html+='<p class="muted">Now: '+(cur.ic||"")+' '+esc(cur.name||"")+'</p>';
+      }
+    }
+    else if(tab==="redlight"){
+      html+=table(["Kit","Amazon search","Care","Cost","Note"],[
+        ["Panel","red light therapy panel",7,2,"Consumer search"],
+        ["Face mask","red light therapy face mask",5,1,"Cosmetic lore"],
+        ["Wrap/belt","red light therapy belt wrap",6,2,"Joint comfort story"],
+        ["Bulb","red light therapy bulb",4,1,"Room terrain"],
+        ["Goggles","red light therapy goggles",3,0,"Eye protection"],
+        ["Timer","kitchen timer analog",3,0,"Session limit"]
+      ]);
+    }
+    else if(tab==="pets"){
+      var pets=window.VET_100||[];
+      var rows=[];
+      for(var i=0;i<Math.min(pets.length,30);i++){
+        var p=pets[i];
+        rows.push([p.id, p.name, p.species, p.prob, p.sol]);
+      }
+      html+='<p class="muted" style="font-size:.72rem">'+rows.length+' of '+(pets.length||0)+' pet cases</p>';
+      html+=table(["ID","Name","Species","Problem","Solution"], rows);
+    }
+    else if(tab==="heat"){
+      var h=(window.S&&S.heat)||{};
+      var rows=[["total",h.total||0]];
+      ["types","paths","syn","el","ui"].forEach(function(k){
+        var o=h[k]||{};
+        Object.keys(o).forEach(function(key){ rows.push([k+"."+key, o[key]]); });
+      });
+      html+=table(["Key","Count"], rows.slice(0,40));
+    }
+
+    html+='<button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Data tables","TABLES",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnDataTables")) return;
+    var b=document.createElement("button");
+    b.id="btnDataTables"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="📊 Data tables";
+    b.onclick=function(){ window.openDataTables("patients"); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,30);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   EASY PSYCHE READOUT — Freud + Jung (game fiction)
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function bar(n,max){
+    var pct=Math.min(100, Math.round(100*(n||0)/Math.max(1,max||1)));
+    return '<div class="psy-meter"><i style="width:'+pct+'%"></i></div>';
+  }
+
+  function gather(){
+    var p=(window.S&&S.psy)||{T:0,F:0,S:0,N:0,E:0,I:0,shadow:{},picks:0,secretSign:null};
+    var m=(window.S&&S.mean)||{trust:0,settle:0,action:0,boundary:0,body:0,gut:0,refer:0,device:0,plan:0};
+    var r=typeof window.readJungProfile==="function"?window.readJungProfile():{
+      sign:p.secretSign||"—",attitude:(p.E>=p.I?"Extraversion":"Introversion"),
+      superior:"—",auxiliary:"—",inferior:"—",shadow:"unmarked",picks:p.picks||0,raw:p
+    };
+    // Freud mapping from play (fiction)
+    var idScore=(m.action||0)+(m.body||0)+(m.gut||0)+((p.E||0));
+    var egoScore=(m.plan||0)+(m.trust||0)+(m.refer||0)+((p.T||0));
+    var superScore=(m.boundary||0)+(m.settle||0)+((p.I||0));
+    var tot=Math.max(1,idScore+egoScore+superScore);
+    return {p:p,m:m,r:r,idScore:idScore,egoScore:egoScore,superScore:superScore,tot:tot};
+  }
+
+  function freudPlain(g){
+    var lead="Ego";
+    if(g.idScore>=g.egoScore && g.idScore>=g.superScore) lead="Id";
+    else if(g.superScore>=g.egoScore && g.superScore>=g.idScore) lead="Superego";
+    var lines={
+      Id:"Want and motion are loud in your play — steps, body, appetite. Freud called this the id: drive before the lecture.",
+      Ego:"You keep picking plans, listening, and referring. That's ego work in this game: hold the hour between want and rule.",
+      Superego:"Boundaries and quiet settle show up a lot. The inner rule-keeper (superego) is running more of the table."
+    };
+    return {lead:lead, text:lines[lead]};
+  }
+
+  function jungPlain(g){
+    var r=g.r;
+    return "Attitude: "+r.attitude+". You lead with "+r.superior+", backed by "+r.auxiliary+". The tender/inferior function is "+r.inferior+" — it shows when you're tired. Shadow figure in play: "+r.shadow+".";
+  }
+
+  window.openPsySheet=function(){
+    var g=gather();
+    var f=freudPlain(g);
+    var j=jungPlain(g);
+    var maxF=Math.max(g.p.T,g.p.F,g.p.S,g.p.N,1);
+    var html='<div class="section-kicker">PSYCHE READOUT</div>';
+    html+='<p class="muted" style="font-size:.72rem">Game fiction from your choices. Not a diagnosis. Not therapy.</p>';
+    html+='<p>Secret chart sign: <b>'+esc(g.r.sign)+'</b> · '+esc(g.r.picks||0)+' inner/road ticks</p>';
+
+    html+='<div class="psy-grid">';
+    html+='<div class="psy-box"><h4>FREUD · STRUCTURE</h4>';
+    html+='<div class="psy-plain"><b>Leading in play: '+esc(f.lead)+'</b></div>';
+    html+='Id (want / motion)'+bar(g.idScore,g.tot);
+    html+='Ego (plan / hold the hour)'+bar(g.egoScore,g.tot);
+    html+='Superego (rule / edge)'+bar(g.superScore,g.tot);
+    html+='<p class="psy-plain">'+esc(f.text)+'</p>';
+    html+='<p class="muted" style="font-size:.72rem">Id ← action + body + gut · Ego ← plan + trust + refer · Superego ← boundary + settle</p>';
+    html+='</div>';
+
+    html+='<div class="psy-box"><h4>JUNG · FUNCTIONS</h4>';
+    html+='<p class="psy-plain">'+esc(j)+'</p>';
+    html+='Thinking'+bar(g.p.T,maxF)+'Feeling'+bar(g.p.F,maxF)+'Sensation'+bar(g.p.S,maxF)+'Intuition'+bar(g.p.N,maxF);
+    html+='<p class="muted" style="font-size:.72rem">E '+((g.p.E)||0)+' · I '+((g.p.I)||0)+' · Shadow: '+esc(g.r.shadow)+'</p>';
+    html+='</div></div>';
+
+    html+='<div class="card"><h4 style="margin:0 0 6px">PLAIN LANGUAGE</h4>';
+    html+='<p class="psy-plain"><b>Freud (this game):</b> three rooms. Id wants. Superego rules. Ego is the still-room — the hour between them.</p>';
+    html+='<p class="psy-plain"><b>Jung (this game):</b> four ways of seeing (think / feel / sense / intuit) and two directions (out / in). The unused function is the tender one. The shadow is the figure you keep meeting on the inner road.</p>';
+    html+='<p class="psy-plain"><b>What to do with it:</b> nothing medical. If the readout says "refer" or the hour is too heavy, that is the still-room knowing its limit.</p></div>';
+
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">';
+    html+='<button class="btn" onclick="window.openJungRoad&&openJungRoad()">Walk inner road</button>';
+    html+='<button class="btn sec" onclick="closeOverhaulModal()">Close</button></div>';
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Psyche readout","FREUD · JUNG",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var b=document.getElementById("btnPsyRead");
+    if(!b){
+      b=document.createElement("button");
+      b.id="btnPsyRead"; b.className="btn"; b.style.marginTop="6px";
+      b.textContent="🧠 Psyche readout · Freud & Jung";
+      b.onclick=function(){ window.openPsySheet(); };
+      home.appendChild(b);
+    }
+  }
+  setTimeout(mount,600);
+  setTimeout(mount,1600);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,30);
+      return r;
+    };
+  }
+})();
+
+
+
+
+
+
+
+/* ==========================================================
+   LORE · COLLECTIVE UNCONSCIOUS — narrative text
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var NARR=[
+    "Under the still-room floor there is a basement the clinic did not dig.",
+    "Jung called the upper rooms ordinary enough. First the ego — the I that opens the door, writes the note, holds the hour. Beneath it, the personal unconscious: everything this one life set down and forgot — weak visits, unfinished letters, the path marks that accumulate when nobody is watching. Deeper still lies what he named the collective unconscious: not a diary and not a diagnosis, but a shared cellar of forms. Furniture the human species keeps finding in the dark, no matter which village lights the lamp.",
+    "Those forms are the archetypes. They are not characters living in the walls. They are patterns that wear faces when a night is long enough. The Shadow is what the hour refuses to own; it steps forward on the inner road when you take the hard card. The Persona is the clinic voice guests hear — needed, polished, and never the whole Self. Anima and Animus arrive as bridge-images: a letter, a dream guest, a sentence that does not sound like your usual mouth. The Self is not a trophy on the shelf but a direction — the quiet center the work keeps aiming toward without promising arrival.",
+    "Other figures borrow the floor for an hour. The Mother pattern shelters and sometimes smothers; nest cards and home-terrain touch it without naming it. The Hero is rarely grand here — only one next step, the motion that refuses the stuck story. The Trickster slips in as the odd card, the joke that opens a lock. The Wise Old One is the sentence that ends the miracle talk: refer, limit, close the door with honesty.",
+    "Freud, in this house, keeps three rooms on the main floor. The Id wants — action, body, appetite. The Superego rules — boundary, settle, the inner edge. The Ego is the still-room itself: the hour held between want and rule. Jung does not deny those rooms. He only opens a trapdoor. Under personal memory, he said, the same images return in myth and dream because they were never only personal to begin with.",
+    "So when a guest's night feels older than their week, or the same shadow figure meets you again on the inner road, the clinic has a lore-word for it: the collective basement. Willow Bend does not treat it as a medical scan. It treats it as a story the work walks through — carefully, without claiming to own the dark under everyone else's feet.",
+    "Game fiction. Study notes. Not therapy. If the hour is too heavy, the still-room knows its limit: refer out, and rest."
+  ];
+
+  window.openCollectiveLore=function(){
+    var html='<div class="section-kicker">LORE · THE STILL-ROOM BASEMENT</div>';
+    html+='<div class="card" style="line-height:1.55;font-size:.86rem">';
+    for(var i=0;i<NARR.length;i++){
+      html+='<p style="margin:0 0 12px">'+(i===0?'<b>'+esc(NARR[i])+'</b>':esc(NARR[i]))+'</p>';
+    }
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+    html+='<button class="btn" onclick="window.openPsySheet&&openPsySheet()">🧠 Psyche readout</button>';
+    html+='<button class="btn sec" onclick="window.openJungRoad&&openJungRoad()">🔮 Inner road</button>';
+    html+='</div>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Collective unconscious","NARRATIVE",html);
+  };
+
+  // softer blurb on psyche sheet
+  var _psy=window.openPsySheet;
+  if(typeof _psy==="function"){
+    window.openPsySheet=function(){
+      _psy.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        var old=body.querySelector("[data-cu-lore]");
+        if(old) old.remove();
+        var div=document.createElement("div");
+        div.dataset.cuLore="1";
+        div.className="card";
+        div.innerHTML='<p style="font-size:.82rem;line-height:1.5;margin:0 0 8px">Under the personal marks, the lore says, there is a shared basement — forms that return on the inner road. The clinic walks it as story, not as a scan of you.</p>'+
+          '<button class="btn sm" type="button" onclick="window.openCollectiveLore()">Read the narrative</button>';
+        body.appendChild(div);
+      },80);
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var b=document.getElementById("btnCULore");
+    if(!b){
+      b=document.createElement("button");
+      b.id="btnCULore"; b.className="btn sec"; b.style.marginTop="6px";
+      b.textContent="🌑 Collective unconscious lore";
+      home.appendChild(b);
+    }
+    b.onclick=function(){ window.openCollectiveLore(); };
+  }
+  setTimeout(mount,500);
+  setTimeout(mount,1500);
+})();
+
+
+
+/* ==========================================================
+   THEATRICAL / JOVIAL Q&A + FICTIONAL COMMENTARY
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var ASIDES=[
+    "(The kettle clears its throat like a tiny critic.)",
+    "(Somewhere a jar label peels itself for dramatic effect.)",
+    "(The still-room applauds politely. One clap. Maybe two.)",
+    "(Fiction footnote: this is not a medical interview. It is dinner theater with herbs.)",
+    "(A moth auditioned for this scene and was not cast.)",
+    "(Your notes write themselves in a hand that is slightly too theatrical.)",
+    "(The moon, offstage, whispers 'commit to the bit.')",
+    "(Jung in the basement: 'I am only lore today.' Freud upstairs: 'I wanted the good chair.')",
+    "(A spoon falls. The spoon meant it.)",
+    "(The guest's zodiac coughs into a napkin and pretends nothing happened.)"
+  ];
+
+  var QBANK={
+    Sleep:[
+      {q:"If your pillow filed a complaint, what would it say?", a:["'Too much plot at 2am.'","'Stop rehearsing arguments.'","'I quit. Hire a rock.'"]},
+      {q:"When the night opens its stage curtains, who walks on first?", a:["A worry with a monologue.","A phone that thinks it's Romeo.","Silence, finally cast as lead."]},
+      {q:"Rate your last sleep like a play: standing ovation or walkout?", a:["Walkout at intermission.","Polite golf-clap rest.","Encore. I almost bowed."]}
+    ],
+    Focus:[
+      {q:"Your attention is a circus. Which act keeps stealing the spotlight?", a:["The tab-juggler.","The doom-scroll trapeze.","The 'I'll just check one thing' clown."]},
+      {q:"If focus were a guest, would you offer tea or an exit?", a:["Tea, then lose the cup.","Exit, pursued by a bear (notification).","I'd book a return visit."]},
+      {q:"What unfinished sentence is living rent-free in your forehead?", a:["'As soon as…'","'I should…'","'Where was I—'"]}
+    ],
+    Boundaries:[
+      {q:"When someone asks for 'just a quick favor,' what does your mouth do before your spine arrives?", a:["Says yes in three languages.","Smiles like a hostage.","Invent a dentist appointment."]},
+      {q:"Draw your boundary as a costume. Are you wearing it or is it in the closet?", a:["Closet, with mothballs of guilt.","I'm wearing it inside-out.","Full armor. Squeaky."]},
+      {q:"If No were a character, would it get a speaking role this week?", a:["Cameo. Blink and miss it.","Understudy, still learning lines.","Lead. Standing ovation."]}
+    ],
+    "Mood-Energy":[
+      {q:"Your energy is a weather report. What's the local forecast?", a:["Fog with scattered motivation.","Thunderous maybe.","Clear, with a chance of nap."]},
+      {q:"Who keeps borrowing your spoons and never bringing them back?", a:["The group chat.","My own ambition.","A meeting that should've been a myth."]},
+      {q:"If today had a laugh track, where would it play?", a:["At my to-do list.","When I said 'I'm fine.'","During the heroic making of toast."]}
+    ],
+    "Pain-Stiffness":[
+      {q:"Your shoulder is writing a memoir. What's the working title?", a:["'I Carried That.'","'From Desk, With Grudge.'","'Please Stretch Me, I'm Dramatic.'"]},
+      {q:"On a scale of mild plot device to full Shakespearean limp, where are we?", a:["Plot device with ambitions.","Act III soliloquy.","Iambic pentameter of ouch."]},
+      {q:"What would your joints like the director to yell?", a:["'Cut! Hydrate!'","'Fewer stairs, more glory.'","'That's a wrap on hunching.'"]}
+    ],
+    Digestive:[
+      {q:"Your stomach is a food critic. What's the review of last night?", a:["Two stars. 'Ambitious but chaotic.'","'Why was the plot so spicy?'","'I'd return for the bland sequel.'"]},
+      {q:"If hunger and habit had a duel at dawn, who won?", a:["Habit, with a croissant.","Hunger, dramatically.","They eloped. Bad sequel."]},
+      {q:"What meal would make your gut stand up and slow-clap?", a:["Something boring and kind.","Soup that means well.","Anything not eaten over a keyboard."]}
+    ],
+    "Home-Environment":[
+      {q:"If your room were a stage set, what would the audience notice first?", a:["The laundry mountain as metaphor.","A lamp that has opinions.","The heroic pile of almost-done."]},
+      {q:"What object in the house is currently judging you?", a:["The plant I named and neglected.","The charger that has seen things.","The chair that remembers my posture."]},
+      {q:"One prop change would improve the whole play. Which?", a:["Dimmer lights, softer plot.","A bin for the paper chorus.","Shoes that know the door."]}
+    ]
+  };
+
+  var REACTS=[
+    "Ha. The still-room takes notes with a flourish.",
+    "That's a line worthy of the night log.",
+    "Fiction stamp applied. Truth adjacent. Carry on.",
+    "The jars rattle approvingly. Or indigestively. Hard to say.",
+    "I'll put that in the chart under 'theatrical but useful.'",
+    "The guest bows. You bow. The kettle upstages you both."
+  ];
+
+  function famOf(cand){
+    return (cand&&((cand.pr&&cand.pr.f)||cand.fam||cand.family))||"Sleep";
+  }
+
+  window.openJovialQA=function(cand){
+    cand=cand||window._pendingCand||window._visit||{};
+    var fam=famOf(cand);
+    var bank=QBANK[fam]||QBANK.Sleep;
+    var item=bank[Math.floor(Math.random()*bank.length)];
+    var aside=ASIDES[Math.floor(Math.random()*ASIDES.length)];
+    window._jovialQ={cand:cand,item:item,fam:fam};
+    var html='<div class="section-kicker">THEATRICAL INTAKE · '+esc(fam)+'</div>';
+    html+='<p class="muted" style="font-size:.75rem">'+esc(aside)+'</p>';
+    html+='<p style="font-size:.95rem;line-height:1.45;font-weight:600">“'+esc(item.q)+'”</p>';
+    for(var i=0;i<item.a.length;i++){
+      html+='<button class="btn" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.answerJovial('+i+')">'+esc(item.a[i])+'</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="window.answerJovial(-1)">Dodge with jazz hands</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal((cand.name||"Guest")+" · Q","JOVIAL",html);
+  };
+
+  window.answerJovial=function(i){
+    var j=window._jovialQ||{};
+    var item=j.item||{a:[]};
+    var ans=i<0?"(Jazz hands. The question trips, recovers, bows.)":item.a[i];
+    var react=REACTS[Math.floor(Math.random()*REACTS.length)];
+    var aside=ASIDES[Math.floor(Math.random()*ASIDES.length)];
+    if(window.heatTouch) window.heatTouch("ui","jovial-qa");
+    if(window.noteMeaning) window.noteMeaning("trust","jovial listen");
+    var html='<div class="section-kicker">SCENE NOTES</div>';
+    html+='<p style="font-size:.9rem;line-height:1.5"><b>Guest:</b> '+esc(ans)+'</p>';
+    html+='<p style="font-size:.85rem;line-height:1.45;color:#d4c0ff"><b>Clinic:</b> '+esc(react)+'</p>';
+    html+='<p class="muted" style="font-size:.75rem">'+esc(aside)+'</p>';
+    html+='<button class="btn" style="width:100%" onclick="window.openJovialQA(window._jovialQ&&window._jovialQ.cand)">Another question (encore)</button>';
+    html+='<button class="btn sec" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Back to the hour</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Commentary","LAUGH",html);
+    if(typeof toast==="function") toast("🎭 "+react.slice(0,40));
+  };
+
+  // Hook into card choice / visit start lightly
+  var _occ=window.openCardChoice;
+  if(typeof _occ==="function"){
+    window.openCardChoice=function(cand){
+      // offer theatrical intake button after a beat via choice UI patch
+      var r=_occ.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-jov]")) return;
+        var b=document.createElement("button");
+        b.dataset.jov="1";
+        b.className="btn sec";
+        b.style.width="100%";
+        b.style.marginTop="6px";
+        b.textContent="🎭 Theatrical questions (jovial)";
+        b.onclick=function(){ window.openJovialQA(cand); };
+        body.appendChild(b);
+      },100);
+      return r;
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnJovial")) return;
+    var b=document.createElement("button");
+    b.id="btnJovial"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="🎭 Theatrical Q&A";
+    b.onclick=function(){ window.openJovialQA({name:"Walk-in guest",fam:"Sleep",pr:{f:"Sleep"}}); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+})();
+
+
+
+/* ==========================================================
+   CARDS WITH PSYCHOLOGY LESSONS (advance with path/level)
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  // lesson tiers: 0 novice, 1 practiced, 2 deep
+  var PSY_CARDS=[
+    {id:"listen",ic:"👂",name:"Listen twice",cost:0,care:4,type:"Any",mean:"trust",
+      lessons:[
+        "Lesson: Listening is not waiting to speak. Rogers called it unconditional positive regard in action — presence before advice.",
+        "Lesson: The second listen often hears the feeling under the plot. Content is the costume; affect is the actor.",
+        "Lesson: In Jung's terms, good listening lets the other speak without your Persona grabbing the mic."
+      ]},
+    {id:"nest",ic:"🛏️",name:"Nest the room",cost:1,care:5,type:"Blue",mean:"settle",
+      lessons:[
+        "Lesson: Environment shapes arousal. Soft light and fewer cues can downshift the nervous system (polyvagal-friendly terrain, in plain talk).",
+        "Lesson: Attachment theory's 'secure base' is sometimes a literal room that stops arguing with the body.",
+        "Lesson: Jung's Mother archetype can shelter or smother — nesting is offering base, not takeover."
+      ]},
+    {id:"step",ic:"➡️",name:"One next step",cost:1,care:6,type:"Yellow",mean:"action",
+      lessons:[
+        "Lesson: Behavioral activation: small motion beats waiting for motivation to arrive fully formed.",
+        "Lesson: Self-efficacy (Bandura) grows from mastery experiences — one finished step, not a manifesto.",
+        "Lesson: The Hero archetype here is humble: not a quest, just refusal of the stuck scene."
+      ]},
+    {id:"no",ic:"🚫",name:"Clean no script",cost:2,care:7,type:"Black",mean:"boundary",
+      lessons:[
+        "Lesson: A boundary is information, not a punishment. Assertiveness ≠ aggression.",
+        "Lesson: Freud's Superego can sound like endless shoulds; a clean no is Ego choosing the hour.",
+        "Lesson: People-pleasing often trades short-term calm for long-term resentment — the body keeps the receipt."
+      ]},
+    {id:"body",ic:"🧡",name:"Warm the joints",cost:1,care:6,type:"Red",mean:"body",
+      lessons:[
+        "Lesson: Interoception — noticing the body — is a skill. Pain and stress share pathways; gentle attention can widen the window of tolerance.",
+        "Lesson: Somatic cues are data. They are not always drama, and not always 'all in the head.'",
+        "Lesson: Jung's Sensation function trusts what the senses report. Warmth is information, not a miracle."
+      ]},
+    {id:"gut",ic:"🫖",name:"Simple table",cost:1,care:5,type:"Orange",mean:"gut",
+      lessons:[
+        "Lesson: Routines around meals regulate more than calories — predictability is a nervous-system cue.",
+        "Lesson: Emotional eating is often regulation, not moral failure. Curiosity beats shame.",
+        "Lesson: The Id wants; the Ego can still set a kind table without a lecture from the Superego."
+      ]},
+    {id:"refer",ic:"🏥",name:"Name a clinician",cost:0,care:8,type:"Match",mean:"refer",
+      lessons:[
+        "Lesson: Scope of practice is ethics. Knowing the limit is competence, not defeat.",
+        "Lesson: Help-seeking is a skill. Stigma shrinks when referral is treated as ordinary.",
+        "Lesson: The Wise Old One archetype ends the miracle talk. The still-room is not the hospital."
+      ]},
+    {id:"red",ic:"🔴",name:"Red-light session",cost:2,care:7,type:"Red",mean:"device",
+      lessons:[
+        "Lesson: Placebo and ritual can change experience even when the mechanism is ordinary — expectation is part of care.",
+        "Lesson: Tools are not substitutes for red-flag triage. Devices don't clear emergencies.",
+        "Lesson: Persona loves a gadget story. Shadow work asks whether the lamp is avoiding a harder conversation."
+      ]},
+    {id:"write",ic:"📝",name:"If–Then on paper",cost:1,care:6,type:"Any",mean:"plan",
+      lessons:[
+        "Lesson: Implementation intentions (If X, then Y) bridge intention and behavior better than vague goals.",
+        "Lesson: Externalizing a plan reduces working-memory load — paper holds what the forehead drops.",
+        "Lesson: Ego function: mediate between wish and world with one written hinge."
+      ]},
+    {id:"phone",ic:"📱",name:"Phone face-down",cost:1,care:5,type:"Blue",mean:"settle",
+      lessons:[
+        "Lesson: Variable rewards (notifications) train checking. Face-down is friction against a slot-machine loop.",
+        "Lesson: Attention is a finite resource; stimulus control is environmental design, not pure willpower.",
+        "Lesson: The Trickster loves the glow. Putting it down is choosing which stage gets the spotlight."
+      ]},
+    {id:"walk",ic:"🚶",name:"Five-minute walk",cost:1,care:5,type:"Green",mean:"action",
+      lessons:[
+        "Lesson: Acute movement can shift affect and attention — body leads, mood sometimes follows.",
+        "Lesson: Five minutes lowers the activation energy; perfectionism wants forty-five and gets zero.",
+        "Lesson: Sensation + action: the psyche is not only thoughts in a chair."
+      ]},
+    {id:"flame",ic:"🪔",name:"Feed the flame",cost:0,care:3,type:"Any",mean:"sustain",
+      lessons:[
+        "Lesson: Caregiver fatigue is real. Sustaining the helper is part of the work, not vanity.",
+        "Lesson: Resource models: you cannot pour from an empty still-room.",
+        "Lesson: The Self as direction includes keeping the lamp lit — not burning the house for light."
+      ]},
+    {id:"shadow",ic:"🌑",name:"Name the shadow",cost:1,care:6,type:"Black",mean:"trust",
+      lessons:[
+        "Lesson: Jung's Shadow is disowned material — not evil by default, just unintegrated.",
+        "Lesson: Projection puts our shadow on others; naming it is the start of taking it back.",
+        "Lesson: Meeting the shadow with curiosity (not only shame) is individuation work in miniature."
+      ]},
+    {id:"persona",ic:"🎭",name:"Loosen the mask",cost:1,care:5,type:"Yellow",mean:"boundary",
+      lessons:[
+        "Lesson: Persona is the social face. Useful in the waiting room; costly if it is the only face.",
+        "Lesson: Over-identification with role (helper, fixer, good one) exhausts the person behind the title.",
+        "Lesson: A little mask-off in a safe hour is not unprofessional — it is human."
+      ]},
+    {id:"self",ic:"◎",name:"Aim toward Self",cost:2,care:7,type:"Match",mean:"plan",
+      lessons:[
+        "Lesson: Jung's Self is the whole-making center — a direction of integration, not a brand.",
+        "Lesson: Individuation is becoming more yourself, not more special than others.",
+        "Lesson: In clinic fiction: one honest step toward congruence beats a speech about destiny."
+      ]}
+  ];
+
+  function lessonTier(){
+    var m=(window.S&&S.mean)||{};
+    var picks=((window.S&&S.psy&&S.psy.picks)||0);
+    var sum=0;
+    Object.keys(m).forEach(function(k){ if(typeof m[k]==="number") sum+=m[k]; });
+    if(sum>=20 || picks>=12) return 2;
+    if(sum>=8 || picks>=5) return 1;
+    return 0;
+  }
+
+  function cardWithLesson(c){
+    var t=lessonTier();
+    var lessons=c.lessons||["Lesson: Care is attention with a boundary."];
+    var lesson=lessons[Math.min(t, lessons.length-1)];
+    var o=Object.assign({},c);
+    o.d=lesson;
+    o.lesson=lesson;
+    o.lessonTier=t;
+    return o;
+  }
+
+  // Replace OFFER used by card choice if present
+  window.PSY_LESSON_CARDS=PSY_CARDS;
+
+  var _occ=window.openCardChoice;
+  window.openCardChoice=function(cand){
+    window._pendingCand=cand;
+    var tier=lessonTier();
+    var pool=PSY_CARDS.map(cardWithLesson);
+    // mild shuffle
+    for(var i=pool.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=pool[i]; pool[i]=pool[j]; pool[j]=t;
+    }
+    var offer=pool.slice(0,6);
+    window._cardOffer=offer;
+    window._cardPicked=[];
+    var html='<div class="section-kicker">CHOOSE CARDS · PSY LESSONS (tier '+(tier+1)+'/3)</div>';
+    html+='<p class="muted" style="font-size:.75rem">Lessons deepen as your path marks and inner-road ticks grow. Fiction + study notes — not therapy.</p>';
+    html+='<p style="font-size:.8rem">Picked: 0/3</p>';
+    for(var i=0;i<offer.length;i++){
+      var c=offer[i];
+      html+='<button type="button" class="btn sec" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.togglePickCard('+i+')">';
+      html+=c.ic+' <b>'+esc(c.name)+'</b> · cost '+c.cost+' · care '+c.care;
+      html+='<div class="muted" style="font-size:.72rem;line-height:1.35;margin-top:4px">'+esc(c.lesson)+'</div></button>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="window.confirmCardChoice()">Start with selected (need 3)</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window.confirmCardChoice(true)">Skip — random hand</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Help kit · lessons","PSY",html);
+    // keep theatrical button
+    setTimeout(function(){
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-jov]")) return;
+      var b=document.createElement("button");
+      b.dataset.jov="1"; b.className="btn sec"; b.style.width="100%"; b.style.marginTop="6px";
+      b.textContent="🎭 Theatrical questions (jovial)";
+      b.onclick=function(){ window.openJovialQA(cand); };
+      body.appendChild(b);
+    },80);
+  };
+
+  // When playing, show lesson toast
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      try{
+        var d=window._duel;
+        var c=d&&d.hand&&d.hand[idx];
+        if(c&&(c.lesson||c.d)&&String(c.d||c.lesson).indexOf("Lesson:")===0){
+          if(typeof toast==="function") toast("📘 "+String(c.lesson||c.d).slice(0,48));
+          if(d.log) d.log.unshift("📘 "+(c.lesson||c.d));
+        }
+      }catch(e){}
+      return _play.apply(this,arguments);
+    };
+  }
+
+  window.openLessonCodex=function(){
+    var tier=lessonTier();
+    var html='<div class="section-kicker">PSYCHOLOGY LESSON CODEX · tier '+(tier+1)+'/3</div>';
+    html+='<p class="muted" style="font-size:.75rem">Advance by playing path-marked cards and walking the inner road. Not a curriculum of diagnosis.</p>';
+    PSY_CARDS.forEach(function(c){
+      var L=c.lessons[Math.min(tier,c.lessons.length-1)];
+      html+='<div class="card">'+c.ic+' <b>'+esc(c.name)+'</b><div class="muted" style="font-size:.78rem;line-height:1.4;margin-top:4px">'+esc(L)+'</div></div>';
+    });
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Lesson codex","BOOK",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnLessonCodex")) return;
+    var b=document.createElement("button");
+    b.id="btnLessonCodex"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="📘 Lesson codex";
+    b.onclick=function(){ window.openLessonCodex(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+})();
+
+
+
+
+
+
+
+/* ==========================================================
+   TREATMENT LOG · history + revisit schedule
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function ensure(){
+    if(!window.S) window.S={day:1};
+    if(!S.treatLog) S.treatLog=[];
+    if(!S.revisit) S.revisit=[];
+    return S;
+  }
+  window.pushTreatLog=function(entry){
+    ensure();
+    var e={
+      id:"T"+Date.now(),
+      day:S.day||1,
+      when:new Date().toISOString(),
+      name:(entry&&entry.name)||"Guest",
+      pid:(entry&&entry.pid)||"",
+      fam:(entry&&entry.fam)||"",
+      score:(entry&&entry.score)||0,
+      problem:(entry&&entry.problem)||"",
+      notes:(entry&&entry.notes)||"",
+      color:(entry&&entry.color)||"",
+      stage:(entry&&entry.stage)
+    };
+    S.treatLog.unshift(e);
+    if(S.treatLog.length>80) S.treatLog.length=80;
+    if(typeof save==="function") save({ui:false});
+  };
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var d=window._duel||{};
+        var v=window._visit||{};
+        window.pushTreatLog({
+          name:d.name||v.name||"Guest",
+          pid:d.pid||v.pid||"",
+          fam:d.fam||(v.pr&&v.pr.f)||"",
+          score:d.score||v.score||0,
+          problem:d.problemNow||(v.problems&&v.problems[0])||"",
+          notes:(d.log&&d.log.slice(0,3).join(" | "))||"",
+          color:d.color||"",
+          stage:d.problemStage
+        });
+      }catch(err){}
+      return _vf.apply(this,arguments);
+    };
+  }
+  window.openTreatLog=function(){
+    ensure();
+    var html='<div class="section-kicker">TREATMENT LOG</div>';
+    html+='<p class="muted" style="font-size:.75rem">Past visits. Tap a guest for details and revisit schedule.</p>';
+    if(S.revisit.length){
+      html+='<div class="card"><b>Scheduled revisits</b>';
+      for(var r=0;r<S.revisit.length;r++){
+        var rv=S.revisit[r];
+        html+='<div style="font-size:.8rem;margin:6px 0;display:flex;justify-content:space-between;gap:6px;align-items:center">';
+        html+='<span>'+esc(rv.name)+' · day '+(rv.day||"?")+' · '+esc(rv.note||"follow-up")+'</span>';
+        html+='<button class="btn sm" type="button" onclick="window.startRevisit('+r+')">See now</button></div>';
+      }
+      html+='</div>';
+    }
+    if(!S.treatLog.length){
+      html+='<p class="muted">No visits logged yet. Finish a card visit to fill the book.</p>';
+    } else {
+      for(var i=0;i<S.treatLog.length;i++){
+        var e=S.treatLog[i];
+        html+='<button class="btn sec" type="button" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.openTreatEntry('+i+')">';
+        html+='<b>'+esc(e.name)+'</b> · day '+(e.day||"?")+' · score '+(e.score||0);
+        html+='<div class="muted" style="font-size:.72rem">'+esc(e.fam||"");
+        if(e.problem) html+=' · '+esc(String(e.problem).slice(0,48));
+        html+='</div></button>';
+      }
+    }
+    html+='<button class="btn ghost" type="button" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Treatment log","LOG",html);
+  };
+  window.openTreatEntry=function(idx){
+    ensure();
+    var e=S.treatLog[idx];
+    if(!e) return;
+    var html='<div class="section-kicker">VISIT RECORD</div>';
+    html+='<div class="card">';
+    html+='<p><b>'+esc(e.name)+'</b> · day '+(e.day||"?")+'</p>';
+    html+='<p class="muted" style="font-size:.78rem">Family: '+esc(e.fam||"-")+' · Score: '+(e.score||0)+' · Stage: '+(e.stage!=null?e.stage:"-")+'</p>';
+    if(e.problem) html+='<p style="font-size:.85rem"><b>Problem:</b> '+esc(e.problem)+'</p>';
+    if(e.notes) html+='<p class="muted" style="font-size:.78rem">'+esc(e.notes)+'</p>';
+    html+='</div>';
+    html+='<div class="section-kicker">REVISIT SCHEDULE</div>';
+    html+='<button class="btn" type="button" style="width:100%;margin-bottom:6px" onclick="window.scheduleRevisit('+idx+',1)">Tomorrow (day +1)</button>';
+    html+='<button class="btn sec" type="button" style="width:100%;margin-bottom:6px" onclick="window.scheduleRevisit('+idx+',3)">In 3 days</button>';
+    html+='<button class="btn sec" type="button" style="width:100%;margin-bottom:6px" onclick="window.scheduleRevisit('+idx+',7)">In a week</button>';
+    html+='<button class="btn" type="button" style="width:100%;margin-bottom:6px" onclick="window.startRevisitFromLog('+idx+')">Revisit now</button>';
+    html+='<button class="btn ghost" type="button" style="width:100%" onclick="window.openTreatLog()">Back to log</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(e.name,"RECORD",html);
+  };
+  window.scheduleRevisit=function(idx, plusDays){
+    ensure();
+    var e=S.treatLog[idx];
+    if(!e) return;
+    var day=(S.day||1)+(plusDays||1);
+    S.revisit.push({
+      name:e.name, pid:e.pid, fam:e.fam, color:e.color,
+      problem:e.problem, day:day, note:"follow-up +"+plusDays+"d", from:e.id
+    });
+    if(typeof save==="function") save();
+    if(typeof toast==="function") toast("Revisit day "+day+" · "+e.name);
+    window.openTreatLog();
+  };
+  function candFrom(e){
+    return {
+      name:e.name, pid:e.pid||e.name, type:"Revisit", urgency:"Follow-up", wellness:58,
+      problems:e.problem?[e.problem]:["return visit"], temperament:"Known",
+      fam:e.fam, color:e.color||"Blue",
+      diff:{id:"mid",label:"Follow-up"},
+      pr:{id:e.pid||e.name,f:e.fam||"Sleep",p:e.problem||"return visit",color:e.color||"Blue",att:1,quote:""}
+    };
+  }
+  window.startRevisitFromLog=function(idx){
+    ensure();
+    var e=S.treatLog[idx];
+    if(!e) return;
+    try{ closeOverhaulModal(); }catch(err){}
+    if(typeof window.startCardDuel==="function") window.startCardDuel(candFrom(e));
+  };
+  window.startRevisit=function(ridx){
+    ensure();
+    var e=S.revisit[ridx];
+    if(!e) return;
+    S.revisit.splice(ridx,1);
+    if(typeof save==="function") save({ui:false});
+    try{ closeOverhaulModal(); }catch(err){}
+    if(typeof window.startCardDuel==="function") window.startCardDuel(candFrom(e));
+  };
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnTreatLog")) return;
+    var b=document.createElement("button");
+    b.id="btnTreatLog"; b.className="btn"; b.style.marginTop="6px";
+    b.textContent="Treatment log";
+    b.onclick=function(){ window.openTreatLog(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,600);
+  setTimeout(mount,1600);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,30);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   FRONT PAGE MATRIX · organized feature grid
+   ========================================================== */
+(function(){
+  function tile(cls, title, sub, fn){
+    return '<button type="button" class="fx-tile '+cls+'" onclick="'+fn+'"><b>'+title+'</b><span>'+sub+'</span></button>';
+  }
+
+  window.paintFrontMatrix=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var box=document.getElementById("frontMatrix");
+    if(!box){
+      box=document.createElement("div");
+      box.id="frontMatrix";
+      home.insertBefore(box, home.firstChild);
+    }
+    var lv=(window.clinicLevel&&window.clinicLevel())||{name:"Quiet desk",label:"Easy"};
+    var moon=(window.getMoonPhase&&window.getMoonPhase())||{ic:"",name:""};
+    var logN=((window.S&&S.treatLog)||[]).length;
+    var revN=((window.S&&S.revisit)||[]).length;
+    var tier=0;
+    try{
+      var m=(window.S&&S.mean)||{};
+      var sum=0; Object.keys(m).forEach(function(k){ if(typeof m[k]==="number") sum+=m[k]; });
+      var picks=((window.S&&S.psy&&S.psy.picks)||0);
+      if(sum>=20||picks>=12) tier=2; else if(sum>=8||picks>=5) tier=1;
+    }catch(e){}
+
+    var h='<div class="section-kicker">WILLOW BEND · CLINIC FLOOR</div>';
+
+    h+='<div class="fx-sec">Play</div><div class="fx-matrix">';
+    h+=tile("hero fx-span","Visit clinic / open door","Queue · choose 3 cards · longer duel","window.runVisitLoadout&&runVisitLoadout()||window.enterWaitingRoom&&enterWaitingRoom()");
+    h+=tile("","Vet wing","Animal cases & solutions","window.openVetWing&&openVetWing()");
+    h+=tile("","Lantern & guild","Herbs, stock, loadout","window.openLanternMain&&openLanternMain()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Care tools</div><div class="fx-matrix">';
+    h+=tile("","Treatment log","Visits: "+logN+" · revisits: "+revN,"window.openTreatLog&&openTreatLog()");
+    h+=tile("","Ailment sheets","Herb findings + searches","window.openAilmentPicker&&openAilmentPicker()");
+    h+=tile("","Red-light desk","Amazon kit searches","window.openRedLightDesk&&openRedLightDesk()");
+    h+=tile("","Lesson codex","Psych lessons tier "+(tier+1)+"/3","window.openLessonCodex&&openLessonCodex()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Longer wings</div><div class="fx-matrix">';
+    h+=tile("","Longer areas hub","Night · greenhouse · case week","window.openLongWings&&openLongWings()");
+    h+=tile("","Night clinic","8 late rooms","window.openNightClinic&&openNightClinic()");
+    h+=tile("","Greenhouse year","10 seasons","window.openGreenhouse&&openGreenhouse()");
+    h+=tile("","Case week","7-day file","window.openCaseWeek&&openCaseWeek()");
+    h+=tile("","Apprentice","8 stations","window.openApprentice&&openApprentice()");
+    h+=tile("","Letter desk","6 letters","window.openLetters&&openLetters()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Inner work & lore</div><div class="fx-matrix">';
+    h+=tile("","Psyche readout","Freud bars · Jung functions","window.openPsySheet&&openPsySheet()");
+    h+=tile("","Inner road","Shadow · secret chart","window.openJungRoad&&openJungRoad()");
+    h+=tile("","Old road","Story cards","window.openRoadStory&&openRoadStory()");
+    h+=tile("","Collective lore","Narrative basement","window.openCollectiveLore&&openCollectiveLore()");
+    h+=tile("","Theatrical Q&A","Jovial intake","window.openJovialQA&&openJovialQA({name:\"Walk-in\",fam:\"Sleep\",pr:{f:\"Sleep\"}})");
+    h+=tile("","Character arcs","100 guests staged","window.openArcCodex&&openArcCodex()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Table & data</div><div class="fx-matrix">';
+    h+=tile("","Difficulty · "+lv.label,lv.name,"window.paintDiffBar&&paintDiffBar();var e=document.getElementById(\"diffBar\");if(e)e.scrollIntoView({behavior:\"smooth\"})");
+    h+=tile("","Moon · "+(moon.ic||"")+" "+(moon.name||""),"Phase care multiplier","window.openMoonChart&&openMoonChart()");
+    h+=tile("","Elements","Fire Earth Air Water","window.openElementChart&&openElementChart()");
+    h+=tile("","Card mechanics","Rules of the duel","window.openCardMechanics&&openCardMechanics()");
+    h+=tile("","Synergies","Combo icons","window.openSynergyGuide&&openSynergyGuide()");
+    h+=tile("","Heatmaps","Play habits","window.openHeatmaps&&openHeatmaps()");
+    h+=tile("","Data tables","Patients cards paths","window.openDataTables&&openDataTables(\"patients\")");
+    h+=tile("","Prenatal lore","Folklore calendar","window.openPrenatalWing&&openPrenatalWing()");
+    h+='</div>';
+
+    box.innerHTML=h;
+    // hide duplicate mainOrderShell clutter if present
+    var mos=document.getElementById("mainOrderShell");
+    if(mos) mos.style.display="none";
+    var vos=document.getElementById("visitOnlyShell");
+    if(vos) vos.style.display="none";
+  };
+
+  setTimeout(window.paintFrontMatrix,400);
+  setTimeout(window.paintFrontMatrix,1200);
+  setTimeout(window.paintFrontMatrix,2200);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(window.paintFrontMatrix,20);
+      setTimeout(window.paintFrontMatrix,100);
+      return r;
+    };
+  }
+})();
+
+
+
+/* Front matrix tile copy (refined descriptions) */
+(function(){
+  function tile(cls, title, sub, fn){
+    return '<button type="button" class="fx-tile '+cls+'" onclick="'+fn+'"><b>'+title+'</b><span>'+sub+'</span></button>';
+  }
+  window.paintFrontMatrix=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var box=document.getElementById("frontMatrix");
+    if(!box){
+      box=document.createElement("div");
+      box.id="frontMatrix";
+      home.insertBefore(box, home.firstChild);
+    }
+    var lv=(window.clinicLevel&&window.clinicLevel())||{name:"Quiet desk",label:"Easy"};
+    var moon=(window.getMoonPhase&&window.getMoonPhase())||{ic:"",name:"—",care:1};
+    var logN=((window.S&&S.treatLog)||[]).length;
+    var revN=((window.S&&S.revisit)||[]).length;
+    var tier=0;
+    try{
+      var m=(window.S&&S.mean)||{};
+      var sum=0; Object.keys(m).forEach(function(k){ if(typeof m[k]==="number") sum+=m[k]; });
+      var picks=((window.S&&S.psy&&S.psy.picks)||0);
+      if(sum>=20||picks>=12) tier=2; else if(sum>=8||picks>=5) tier=1;
+    }catch(e){}
+    var heat=((window.S&&S.heat&&S.heat.total)||0);
+
+    var h='<div class="section-kicker">WILLOW BEND · CLINIC FLOOR</div>';
+
+    h+='<div class="fx-sec">Play</div><div class="fx-matrix">';
+    h+=tile("hero fx-span","Visit clinic","Open the door. Pick three help cards. Play the still-room duel.","window.runVisitLoadout&&runVisitLoadout()||window.enterWaitingRoom&&enterWaitingRoom()");
+    h+=tile("","Vet wing","Pets with common troubles — match a problem to a gentle plan.","window.openVetWing&&openVetWing()");
+    h+=tile("","Lantern & guild","Buy herbs, stock the pouch, spend RP before the hour begins.","window.openLanternMain&&openLanternMain()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Care tools</div><div class="fx-matrix">';
+    h+=tile("","Treatment log",logN+" visit"+(logN===1?"":"s")+" on file · "+revN+" revisit"+(revN===1?"":"s")+" waiting.","window.openTreatLog&&openTreatLog()");
+    h+=tile("","Ailment sheets","Tap a complaint — herb findings and search links, fiction-framed.","window.openAilmentPicker&&openAilmentPicker()");
+    h+=tile("","Red-light desk","Consumer lamp kits for hard cases — searches only, not cures.","window.openRedLightDesk&&openRedLightDesk()");
+    h+=tile("","Lesson codex","Psychology notes on every card · now tier "+(tier+1)+" of 3.","window.openLessonCodex&&openLessonCodex()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Longer wings</div><div class="fx-matrix">';
+    h+=tile("","Longer areas","Night rooms, greenhouse year, case week — one hub.","window.openLongWings&&openLongWings()");
+    h+=tile("","Night clinic","Eight late scenes when the street goes quiet.","window.openNightClinic&&openNightClinic()");
+    h+=tile("","Greenhouse year","Ten seasons from bare beds to seed again.","window.openGreenhouse&&openGreenhouse()");
+    h+=tile("","Case week","One guest across seven days of choices.","window.openCaseWeek&&openCaseWeek()");
+    h+=tile("","Apprentice","Eight stations that teach the craft of the hour.","window.openApprentice&&openApprentice()");
+    h+=tile("","Letter desk","Six replies that keep the thread warm.","window.openLetters&&openLetters()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Inner work & lore</div><div class="fx-matrix">';
+    h+=tile("","Psyche readout","Freud Id/Ego/Superego bars · Jung functions, plain language.","window.openPsySheet&&openPsySheet()");
+    h+=tile("","Inner road","Shadow cards and the secret chart — walk, then read.","window.openJungRoad&&openJungRoad()");
+    h+=tile("","Old road","Story-card path with depth and Amazon lore links.","window.openRoadStory&&openRoadStory()");
+    h+=tile("","Collective lore","Jung basement as still-room narrative — not a diagnosis.","window.openCollectiveLore&&openCollectiveLore()");
+    h+=tile("","Theatrical Q&A","Jovial intake with asides, laugh-track options, fiction stamps.","window.openJovialQA&&openJovialQA({name:\"Walk-in\",fam:\"Sleep\",pr:{f:\"Sleep\"}})");
+    h+=tile("","Character arcs","Stage-by-stage returns for the hundred-guest roster.","window.openArcCodex&&openArcCodex()");
+    h+='</div>';
+
+    h+='<div class="fx-sec">Table & data</div><div class="fx-matrix">';
+    h+=tile("","Difficulty · "+lv.label,lv.name+" — HP, energy, and round length scale here.","window.setClinicLevel&&setClinicLevel("+(lv.id||1)+");window.paintDiffBar&&paintDiffBar()");
+    h+=tile("","Moon · "+(moon.ic||"")+" "+(moon.name||"—"),"Care ×"+(moon.care||1)+" tonight · phase chart.","window.openMoonChart&&openMoonChart()");
+    h+=tile("","Elements","Fire, Earth, Air, Water matchups on every care card.","window.openElementChart&&openElementChart()");
+    h+=tile("","Card mechanics","Cost, care, types, turns — the duel in one page.","window.openCardMechanics&&openCardMechanics()");
+    h+=tile("","Synergies","Play paired cards in one visit for a bonus chip.","window.openSynergyGuide&&openSynergyGuide()");
+    h+=tile("","Heatmaps",heat+" touches logged · see what you actually use.","window.openHeatmaps&&openHeatmaps()");
+    h+=tile("","Data tables","Roster, cards, paths, moon, kits — sortable sheets.","window.openDataTables&&openDataTables(\"patients\")");
+    h+=tile("","Prenatal lore","Folklore calendar and vitamin tokens — not medical advice.","window.openPrenatalWing&&openPrenatalWing()");
+    h+='</div>';
+
+    box.innerHTML=h;
+    var mos=document.getElementById("mainOrderShell");
+    if(mos) mos.style.display="none";
+    var vos=document.getElementById("visitOnlyShell");
+    if(vos) vos.style.display="none";
+  };
+})();
+
+
+
+/* ==========================================================
+   RPG MECHANICS · XP, level, stats, class path
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  function ensure(){
+    if(!window.S) window.S={day:1,rp:50};
+    if(!S.rpg){
+      S.rpg={xp:0,level:1,mind:1,heart:1,body:1,will:1,className:"Novice herbalist",perk:""};
+    }
+    return S.rpg;
+  }
+
+  function xpToNext(lv){ return 40 + lv*25; }
+
+  function classFromPaths(){
+    var m=(S.mean)||{};
+    var pairs=[
+      ["trust",m.trust||0,"Listener"],
+      ["settle",m.settle||0,"Nester"],
+      ["action",m.action||0,"Stepper"],
+      ["boundary",m.boundary||0,"Warden"],
+      ["body",m.body||0,"Somatic"],
+      ["gut",m.gut||0,"Table-keeper"],
+      ["refer",m.refer||0,"Guide"],
+      ["plan",m.plan||0,"Scribe"],
+      ["device",m.device||0,"Lampwright"]
+    ];
+    pairs.sort(function(a,b){ return b[1]-a[1]; });
+    var top=pairs[0];
+    if(!top || top[1]<2) return "Novice herbalist";
+    return top[2];
+  }
+
+  window.rpgGrantXp=function(n, why){
+    var r=ensure();
+    r.xp+=(n||0);
+    var ups=0;
+    while(r.xp>=xpToNext(r.level) && r.level<30){
+      r.xp-=xpToNext(r.level);
+      r.level++;
+      ups++;
+      // rotate stat bump
+      var keys=["mind","heart","body","will"];
+      r[keys[(r.level-1)%4]]++;
+      if(window.bumpResources) window.bumpResources({rp:3,focus:1,flame:4});
+    }
+    r.className=classFromPaths();
+    if(typeof save==="function") save({ui:false});
+    if(ups && typeof toast==="function") toast("LEVEL "+r.level+" · "+r.className);
+    if(why && typeof toast==="function" && !ups) toast("+"+n+" XP · "+why);
+    if(window.paintRpgHud) window.paintRpgHud();
+    return r;
+  };
+
+  window.rpgBonuses=function(){
+    var r=ensure();
+    return {
+      care: Math.floor(r.level/3) + Math.floor((r.body+r.heart)/4),
+      energy: r.level>=8 ? 1 : 0,
+      hpReduce: Math.floor(r.will/5),
+      draw: r.mind>=6 ? 1 : 0
+    };
+  };
+
+  // Grant XP on visit complete
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var d=window._duel||{};
+        var sc=d.score||0;
+        var xp=8 + Math.min(20, sc*2) + ((d.redAlert)?4:0);
+        window.rpgGrantXp(xp, "visit");
+      }catch(e){}
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  // Apply bonuses at duel start
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var res=_scd.apply(this,arguments);
+      try{
+        var d=window._duel;
+        var b=window.rpgBonuses();
+        if(d){
+          d.maxEnergy=(d.maxEnergy||4)+b.energy;
+          d.energy=d.maxEnergy;
+          d.rpgCare=b.care;
+          if(b.hpReduce) d.hp=Math.max(8, d.hp-b.hpReduce*2);
+          if(b.draw && d.hand){
+            var extra={id:"rpg_draw",ic:"📘",name:"Study extra",cost:0,care:2,type:"Any",d:"Mind perk"};
+            d.hand.push(extra);
+          }
+          d.log.unshift("RPG Lv"+(ensure().level)+" "+ensure().className+" · +"+b.care+" care");
+        }
+      }catch(e){}
+      return res;
+    };
+  }
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var r=_play.apply(this,arguments);
+      try{
+        d=window._duel;
+        var b=window.rpgBonuses();
+        if(d && b.care && d.hp>0){
+          d.hp=Math.max(0, d.hp-b.care);
+          if(d.log && d.log[0] && d.log[0].indexOf("RPG care")<0){
+            // silent extra
+          }
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  window.openRpgSheet=function(){
+    var r=ensure();
+    var need=xpToNext(r.level);
+    var pct=Math.round(100*r.xp/need);
+    var b=window.rpgBonuses();
+    var html='<div class="section-kicker">RPG SHEET</div>';
+    html+='<div class="card"><p><b>Lv '+r.level+'</b> · '+esc(r.className)+'</p>';
+    html+='<div class="rpg-xp"><i style="width:'+pct+'%"></i></div>';
+    html+='<p class="muted" style="font-size:.75rem">XP '+r.xp+' / '+need+'</p>';
+    html+='<div class="rpg-hud">';
+    html+='<div class="rpg-stat">🧠 Mind '+r.mind+'<div class="muted">draw perk at 6</div></div>';
+    html+='<div class="rpg-stat">💗 Heart '+r.heart+'<div class="muted">care bonus</div></div>';
+    html+='<div class="rpg-stat">🧡 Body '+r.body+'<div class="muted">care bonus</div></div>';
+    html+='<div class="rpg-stat">🛡️ Will '+r.will+'<div class="muted">softer affliction</div></div>';
+    html+='</div></div>';
+    html+='<div class="card"><b>Live bonuses</b><p class="muted" style="font-size:.8rem">+'+b.care+' care on plays · +'+b.energy+' energy · affliction −'+(b.hpReduce*2)+' · extra draw '+(b.draw?"yes":"no")+'</p></div>';
+    html+='<p class="muted" style="font-size:.72rem">Class follows your strongest path mark. Level-ups rotate Mind → Heart → Body → Will and gift a little RP / flame.</p>';
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("RPG","SHEET",html);
+  };
+
+  window.paintRpgHud=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("rpgHud");
+    if(!el){
+      el=document.createElement("div");
+      el.id="rpgHud";
+      el.className="card";
+      home.insertBefore(el, home.firstChild);
+    }
+    var r=ensure();
+    var need=xpToNext(r.level);
+    var pct=Math.round(100*r.xp/Math.max(1,need));
+    el.innerHTML='<div class="section-kicker">RPG</div>'+
+      '<div style="display:flex;justify-content:space-between"><b>Lv '+r.level+' '+esc(r.className)+'</b><button class="btn sm" onclick="window.openRpgSheet()">Sheet</button></div>'+
+      '<div class="rpg-xp"><i style="width:'+pct+'%"></i></div>'+
+      '<p class="muted" style="font-size:.72rem">XP '+r.xp+'/'+need+' · Mind '+r.mind+' Heart '+r.heart+' Body '+r.body+' Will '+r.will+'</p>';
+  };
+
+  // Matrix tile hook
+  var _pfm=window.paintFrontMatrix;
+  if(typeof _pfm==="function"){
+    window.paintFrontMatrix=function(){
+      var res=_pfm.apply(this,arguments);
+      setTimeout(window.paintRpgHud,30);
+      return res;
+    };
+  }
+
+  setTimeout(window.paintRpgHud,500);
+  setTimeout(window.paintRpgHud,1500);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var out=_rgh.apply(this,arguments);
+      setTimeout(window.paintRpgHud,40);
+      return out;
+    };
+  }
+})();
+
+
+
+/* Visual level bar — overrides RPG HUD paint */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function xpToNext(lv){ return 40 + lv*25; }
+
+  window.paintRpgHud=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    if(!window.S) window.S={};
+    if(!S.rpg) S.rpg={xp:0,level:1,mind:1,heart:1,body:1,will:1,className:"Novice herbalist"};
+    var r=S.rpg;
+    var need=xpToNext(r.level||1);
+    var xp=r.xp||0;
+    var pct=Math.max(0,Math.min(100, Math.round(100*xp/Math.max(1,need))));
+    var el=document.getElementById("rpgHud");
+    if(!el){
+      el=document.createElement("div");
+      el.id="rpgHud";
+      el.className="card";
+      home.insertBefore(el, home.firstChild);
+    }
+    var pips="";
+    var show=Math.min(20, r.level||1);
+    for(var i=1;i<=20;i++){
+      pips+='<i class="'+(i<=show?"on":"")+'"></i>';
+    }
+    el.innerHTML=
+      '<div class="section-kicker">LEVEL</div>'+
+      '<div class="lvl-wrap">'+
+        '<div class="lvl-top"><span class="lv">Lv '+(r.level||1)+'</span><span class="cls">'+esc(r.className||"Novice")+'</span></div>'+
+        '<div class="lvl-track"><div class="lvl-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="lvl-meta"><span>XP '+xp+' / '+need+'</span><span>'+pct+'%</span></div>'+
+        '<div class="lvl-pips">'+pips+'</div>'+
+        '<p class="muted" style="font-size:.72rem;margin:6px 0 0">Mind '+(r.mind||1)+' · Heart '+(r.heart||1)+' · Body '+(r.body||1)+' · Will '+(r.will||1)+'</p>'+
+        '<button class="btn sm" style="margin-top:6px" type="button" onclick="window.openRpgSheet&&openRpgSheet()">Full RPG sheet</button>'+
+      '</div>';
+  };
+
+  setTimeout(window.paintRpgHud,400);
+  setTimeout(window.paintRpgHud,1200);
+  setTimeout(window.paintRpgHud,2200);
+})();
+
+
+
+/* XP animation effects */
+(function(){
+  window.animXpGain=function(n, leveled){
+    try{
+      var el=document.createElement("div");
+      el.className="xp-float"+(leveled?" lvl":"");
+      el.textContent=leveled?("LEVEL UP · +"+(n||0)+" XP"):("+"+(n||0)+" XP");
+      document.body.appendChild(el);
+      setTimeout(function(){ try{ el.remove(); }catch(e){} },1100);
+      var track=document.querySelector("#rpgHud .lvl-track");
+      if(track){
+        track.classList.remove("pulse");
+        void track.offsetWidth;
+        track.classList.add("pulse");
+      }
+      var wrap=document.querySelector("#rpgHud .lvl-wrap");
+      if(leveled && wrap){
+        wrap.classList.remove("levelup");
+        void wrap.offsetWidth;
+        wrap.classList.add("levelup");
+      }
+      if(window.sfx && window.sfx.ok) window.sfx.ok();
+      if(window.paintRpgHud) setTimeout(window.paintRpgHud, 80);
+    }catch(e){}
+  };
+
+  var _grant=window.rpgGrantXp;
+  if(typeof _grant==="function"){
+    window.rpgGrantXp=function(n, why){
+      var before=window.S&&S.rpg?S.rpg.level:1;
+      var r=_grant.apply(this,arguments);
+      var after=(r&&r.level)||(window.S&&S.rpg&&S.rpg.level)||before;
+      window.animXpGain(n||0, after>before);
+      return r;
+    };
+  }
+})();
+
+
+
+/* XP / level-up sound effects for animations */
+(function(){
+  var ctx=null;
+  function ac(){
+    try{
+      if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
+      if(ctx.state==="suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, gain, when){
+    var c=ac(); if(!c) return;
+    var t=c.currentTime+(when||0);
+    var o=c.createOscillator();
+    var g=c.createGain();
+    o.type=type||"sine";
+    o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain||0.08, t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+dur+0.02);
+  }
+  window.sfxXp=function(){
+    // soft chime up
+    tone(523.25, 0.12, "sine", 0.07, 0);
+    tone(659.25, 0.14, "sine", 0.06, 0.08);
+  };
+  window.sfxLevelUp=function(){
+    // brighter arpeggio
+    tone(392, 0.15, "triangle", 0.08, 0);
+    tone(523.25, 0.15, "triangle", 0.08, 0.1);
+    tone(659.25, 0.15, "triangle", 0.09, 0.2);
+    tone(783.99, 0.28, "sine", 0.1, 0.32);
+  };
+  var _anim=window.animXpGain;
+  window.animXpGain=function(n, leveled){
+    try{
+      if(leveled) window.sfxLevelUp();
+      else window.sfxXp();
+    }catch(e){}
+    if(typeof _anim==="function") return _anim.apply(this,arguments);
+  };
+  // unlock audio on first tap
+  document.addEventListener("pointerdown", function once(){
+    ac();
+    document.removeEventListener("pointerdown", once);
+  }, {passive:true});
+})();
+
+
+
+/* ==========================================================
+   HAPTIC FEEDBACK PATTERNS
+   Vibration API where supported (many Android browsers).
+   iOS often no-ops — safe to call.
+   ========================================================== */
+(function(){
+  function canVibrate(){
+    return typeof navigator!=="undefined" && typeof navigator.vibrate==="function";
+  }
+  function vibe(pattern){
+    try{
+      if(!canVibrate()) return false;
+      // respect optional mute flag
+      if(window.S && S.funToggles && S.funToggles.haptics===false) return false;
+      navigator.vibrate(0);
+      navigator.vibrate(pattern);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  window.HAPTICS={
+    tap: function(){ return vibe(12); },
+    soft: function(){ return vibe([18, 30, 18]); },
+    xp: function(){ return vibe([15, 40, 25]); },
+    levelUp: function(){ return vibe([30, 40, 30, 40, 60]); },
+    care: function(){ return vibe([20, 25, 35]); },
+    warn: function(){ return vibe([40, 30, 40, 30, 80]); },
+    success: function(){ return vibe([25, 20, 25, 20, 50]); },
+    select: function(){ return vibe(10); }
+  };
+
+  // Wire to XP anim
+  var _anim=window.animXpGain;
+  window.animXpGain=function(n, leveled){
+    try{
+      if(leveled) window.HAPTICS.levelUp();
+      else window.HAPTICS.xp();
+    }catch(e){}
+    if(typeof _anim==="function") return _anim.apply(this,arguments);
+  };
+
+  // Card play
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      try{ window.HAPTICS.care(); }catch(e){}
+      return _play.apply(this,arguments);
+    };
+  }
+
+  // Synergy flash
+  var _flash=window.flashSynergy;
+  if(typeof _flash==="function"){
+    window.flashSynergy=function(){
+      try{ window.HAPTICS.success(); }catch(e){}
+      return _flash.apply(this,arguments);
+    };
+  }
+
+  // UI taps on matrix tiles
+  document.addEventListener("click", function(e){
+    try{
+      var t=e.target.closest(".fx-tile, .duel-card, .cf-type, .visit-hero");
+      if(t) window.HAPTICS.select();
+    }catch(err){}
+  }, true);
+
+  window.openHapticsPanel=function(){
+    var on=!(window.S && S.funToggles && S.funToggles.haptics===false);
+    var html='<div class="section-kicker">HAPTICS</div>';
+    html+='<p class="muted" style="font-size:.78rem">Patterns use the Vibration API when the browser allows it. Many iPhones will stay silent here; Android Chrome usually works.</p>';
+    html+='<p>Status: <b>'+(canVibrate()?"API available":"not available on this browser")+'</b> · '+(on?"enabled":"muted")+'</p>';
+    html+='<button class="btn" style="width:100%;margin:4px 0" onclick="window.HAPTICS.tap()">Test · tap</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.HAPTICS.xp()">Test · XP</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.HAPTICS.levelUp()">Test · level up</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.HAPTICS.care()">Test · care</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.HAPTICS.success()">Test · synergy</button>';
+    html+='<button class="btn" style="width:100%;margin:4px 0" onclick="window.toggleHaptics()">Toggle haptics '+(on?"OFF":"ON")+'</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Haptics","PULSE",html);
+  };
+  window.toggleHaptics=function(){
+    if(!window.S) window.S={};
+    if(!S.funToggles) S.funToggles={};
+    S.funToggles.haptics = S.funToggles.haptics===false ? true : false;
+    if(typeof save==="function") save({ui:false});
+    window.openHapticsPanel();
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnHaptics")) return;
+    var b=document.createElement("button");
+    b.id="btnHaptics"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="Haptics";
+    b.onclick=function(){ window.openHapticsPanel(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+})();
+
+
+
+/* ==========================================================
+   CLINIC HOROSCOPE SCREEN · per-patient chart
+   Fiction / folklore. Not astronomy-grade natal work.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  var SIGNS=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  var GLY=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+  var EL=["Fire","Earth","Air","Water","Fire","Earth","Air","Water","Fire","Earth","Air","Water"];
+  var MOD=["Cardinal","Fixed","Mutable","Cardinal","Fixed","Mutable","Cardinal","Fixed","Mutable","Cardinal","Fixed","Mutable"];
+  var HOUSES=["self","money/worth","mind/voice","home","joy/create","craft/health","other people","depth","meaning","vocation","friends","hidden"];
+  var PHASES=["New","Waxing Crescent","First Quarter","Waxing Gibbous","Full","Waning Gibbous","Last Quarter","Waning Crescent"];
+  var ANIM=["Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat","Monkey","Rooster","Dog","Pig"];
+
+  function hash(str){
+    var n=0, s=String(str||"guest");
+    for(var i=0;i<s.length;i++) n=((n*31)+s.charCodeAt(i))>>>0;
+    return n;
+  }
+  function pick(arr, n){ return arr[n%arr.length]; }
+
+  window.buildPatientChart=function(cand){
+    cand=cand||window._duel||window._pendingCand||{};
+    var key=cand.pid||cand.id||cand.name||"guest";
+    var h=hash(key);
+    var sunI=(typeof window.getPatientSign==="function")
+      ? Math.max(0, SIGNS.indexOf(window.getPatientSign(key, cand.name)))
+      : (h%12);
+    if(sunI<0) sunI=h%12;
+    var moonI=(h>>3)%12;
+    var riseI=(h>>7)%12;
+    var mercI=(h>>5)%12;
+    var venI=(h>>9)%12;
+    var marI=(h>>11)%12;
+    var phaseI=(h>>2)%8;
+    var houseI=(h>>4)%12;
+    var year=1960+(h%50);
+    return {
+      name:cand.name||"Guest",
+      pid:key,
+      sun:SIGNS[sunI], sunG:GLY[sunI], sunEl:EL[sunI], sunMod:MOD[sunI],
+      moon:SIGNS[moonI], moonG:GLY[moonI], moonEl:EL[moonI],
+      rise:SIGNS[riseI], riseG:GLY[riseI],
+      merc:SIGNS[mercI], ven:SIGNS[venI], mar:SIGNS[marI],
+      phase:PHASES[phaseI],
+      houseFocus:HOUSES[houseI],
+      houseN:houseI+1,
+      year:year,
+      animal:pick(ANIM, year),
+      note:cand.problemNow||(cand.pr&&cand.pr.p)||""
+    };
+  };
+
+  function wheelSvg(ch){
+    var labels=GLY;
+    var parts="";
+    for(var i=0;i<12;i++){
+      var a=(i*30-90)*Math.PI/180;
+      var b=((i+1)*30-90)*Math.PI/180;
+      var x1=100+88*Math.cos(a), y1=100+88*Math.sin(a);
+      var x2=100+88*Math.cos(b), y2=100+88*Math.sin(b);
+      var fill=["#3a2020","#2a2a18","#20303a","#1a2830"][i%4];
+      parts+='<path d="M100,100 L'+x1+','+y1+' A88,88 0 0,1 '+x2+','+y2+' Z" fill="'+fill+'" stroke="#0e1c24" stroke-width="1"/>';
+      var mx=100+70*Math.cos((a+b)/2), my=100+70*Math.sin((a+b)/2);
+      parts+='<text x="'+mx+'" y="'+my+'" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="#e8f0f4">'+labels[i]+'</text>';
+    }
+    function dot(sign, color, r){
+      var i=SIGNS.indexOf(sign); if(i<0) i=0;
+      var ang=(i*30+15-90)*Math.PI/180;
+      var x=100+r*Math.cos(ang), y=100+r*Math.sin(ang);
+      return '<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+color+'" stroke="#fff" stroke-width="0.6"/>';
+    }
+    parts+=dot(ch.sun,"#f0c040",52);
+    parts+=dot(ch.moon,"#c8d0e0",40);
+    parts+=dot(ch.rise,"#80d0c0",28);
+    parts+='<circle cx="100" cy="100" r="16" fill="#0e1c24" stroke="#8aa0aa"/>';
+    parts+='<text x="100" y="104" text-anchor="middle" font-size="9" fill="#d0e0ea">ASC</text>';
+    return '<svg class="chart-wheel" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">'+parts+'</svg>';
+  }
+
+  window.openPatientChart=function(cand){
+    var ch=window.buildPatientChart(cand);
+    window._lastChart=ch;
+    var html='<div class="section-kicker">CLINIC CHART · '+esc(ch.name)+'</div>';
+    html+='<p class="muted" style="font-size:.72rem">Folklore sheet filled by the still-room. Not a professional natal reading.</p>';
+    html+=wheelSvg(ch);
+    html+='<p class="muted" style="font-size:.7rem;text-align:center">Gold = Sun · Silver = Moon · Teal = Rising</p>';
+
+    html+='<div class="card"><b>Horoscope (sun)</b>';
+    html+='<div class="chart-row"><span>Sun</span><span>'+ch.sunG+' '+esc(ch.sun)+' · '+esc(ch.sunEl)+' · '+esc(ch.sunMod)+'</span></div>';
+    html+='<div class="chart-row"><span>Moon</span><span>'+ch.moonG+' '+esc(ch.moon)+' · '+esc(ch.moonEl)+'</span></div>';
+    html+='<div class="chart-row"><span>Rising</span><span>'+ch.riseG+' '+esc(ch.rise)+'</span></div>';
+    html+='<p style="font-size:.78rem;margin-top:6px">Style of the hour: '+esc(ch.sunEl)+' sun in a '+esc(ch.sunMod).toLowerCase()+' sign. Mood weather leans '+esc(ch.moonEl).toLowerCase()+'.</p></div>';
+
+    html+='<div class="card"><b>Birth-chart sketch</b>';
+    html+='<div class="chart-row"><span>Mercury</span><span>'+esc(ch.merc)+'</span></div>';
+    html+='<div class="chart-row"><span>Venus</span><span>'+esc(ch.ven)+'</span></div>';
+    html+='<div class="chart-row"><span>Mars</span><span>'+esc(ch.mar)+'</span></div>';
+    html+='<p style="font-size:.78rem">House emphasis (fiction): <b>'+ch.houseN+'</b> — '+esc(ch.houseFocus)+'.</p>';
+    html+='<span class="chart-pill">Sun '+ch.sunG+'</span><span class="chart-pill">Moon '+ch.moonG+'</span><span class="chart-pill">ASC '+ch.riseG+'</span></div>';
+
+    html+='<div class="card"><b>Lunar charts</b>';
+    html+='<div class="chart-row"><span>Phase at "birth" (seeded)</span><span>'+esc(ch.phase)+'</span></div>';
+    if(window.getMoonPhase){
+      var now=window.getMoonPhase();
+      html+='<div class="chart-row"><span>Clinic moon now</span><span>'+(now.ic||"")+' '+esc(now.name||"")+'</span></div>';
+    }
+    html+='<p style="font-size:.78rem">Year-token (folklore): '+ch.year+' · '+esc(ch.animal)+'.</p></div>';
+
+    if(ch.note) html+='<p class="muted" style="font-size:.75rem">Visit thread: '+esc(String(ch.note).slice(0,120))+'</p>';
+
+    html+='<button class="btn" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Back to the hour</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Chart · "+ch.name,"STARS",html);
+  };
+
+  // Inject button during duel / card choice
+  function injectBtn(){
+    var body=document.getElementById("overhaulModalBody");
+    if(!body||body.querySelector("[data-chart-btn]")) return;
+    if(!window._duel && !window._pendingCand && !window._visit) return;
+    var b=document.createElement("button");
+    b.dataset.chartBtn="1";
+    b.className="btn sec";
+    b.style.width="100%";
+    b.style.marginTop="8px";
+    b.textContent="Clinic horoscope · birth & lunar chart";
+    b.onclick=function(){ window.openPatientChart(window._duel||window._pendingCand||window._visit); };
+    body.appendChild(b);
+  }
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var r=_scd.apply(this,arguments);
+      setTimeout(injectBtn,120);
+      setTimeout(injectBtn,350);
+      return r;
+    };
+  }
+  var _occ=window.openCardChoice;
+  if(typeof _occ==="function"){
+    window.openCardChoice=function(cand){
+      var r=_occ.apply(this,arguments);
+      setTimeout(injectBtn,120);
+      return r;
+    };
+  }
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(injectBtn,60);
+      return r;
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnPatChart")) return;
+    var b=document.createElement("button");
+    b.id="btnPatChart"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="Patient charts";
+    b.onclick=function(){
+      var list=window.PATIENT_100||[];
+      var html='<div class="section-kicker">OPEN A CHART</div>';
+      html+='<p class="muted" style="font-size:.75rem">Or start a visit — the chart button sits on the hour.</p>';
+      for(var i=0;i<Math.min(12,list.length);i++){
+        var p=list[i];
+        html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:4px" onclick="window.openPatientChart({name:\''+String(p.name).replace(/'/g,"")+'\' ,pid:\''+(p.id||p.name)+'\'})">'+esc(p.name)+'</button>';
+      }
+      html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Charts","LIST",html);
+    };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+})();
+
+
+
+/* ==========================================================
+   PATIENT PSYCHOANALYSIS · Jung + Freud sheets
+   Game fiction. Not a clinical assessment.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function hash(str){
+    var n=0, s=String(str||"guest");
+    for(var i=0;i<s.length;i++) n=((n*31)+s.charCodeAt(i))>>>0;
+    return n;
+  }
+  function bar(n,max){
+    var pct=Math.min(100, Math.round(100*(n||0)/Math.max(1,max||1)));
+    return '<div class="psy-meter"><i style="width:'+pct+'%"></i></div>';
+  }
+
+  var SHADOWS=["the forgotten child","the critic","the abandoned task","the too-bright helper","the door they will not open","the joke that hides a flinch"];
+  var PERSONAS=["competent one","easy guest","the tired parent","the witty deflector","the quiet good patient"];
+  var INFERIOR=["Feeling","Thinking","Sensation","Intuition"];
+  var ATT=["Introversion","Extraversion"];
+  var FUN=["Thinking","Feeling","Sensation","Intuition"];
+  var DRIVES=["competence","belonging","rest","control","recognition","safety"];
+
+  window.buildPatientPsy=function(cand){
+    cand=cand||window._duel||window._pendingCand||{};
+    var key=cand.pid||cand.id||cand.name||"guest";
+    var h=hash(key+"psy");
+    var T=(h%7)+1, F=((h>>3)%7)+1, S=((h>>6)%7)+1, N=((h>>9)%7)+1;
+    var E=((h>>2)%8)+1, I=((h>>5)%8)+1;
+    var idS=((h>>4)%9)+3, egoS=((h>>7)%9)+3, superS=((h>>10)%9)+3;
+    var tot=idS+egoS+superS;
+    var lead="Ego";
+    if(idS>=egoS && idS>=superS) lead="Id";
+    else if(superS>=egoS && superS>=idS) lead="Superego";
+    var fns=[["Thinking",T],["Feeling",F],["Sensation",S],["Intuition",N]];
+    fns.sort(function(a,b){ return b[1]-a[1]; });
+    return {
+      name:cand.name||"Guest",
+      pid:key,
+      fam:cand.fam||(cand.pr&&cand.pr.f)||"",
+      T:T,F:F,S:S,N:N,E:E,I:I,
+      attitude:E>=I?"Extraversion":"Introversion",
+      superior:fns[0][0], auxiliary:fns[1][0], inferior:fns[3][0],
+      shadow:SHADOWS[h%SHADOWS.length],
+      persona:PERSONAS[(h>>4)%PERSONAS.length],
+      idS:idS,egoS:egoS,superS:superS,tot:tot,lead:lead,
+      drive:DRIVES[h%DRIVES.length],
+      note:cand.problemNow||(cand.pr&&cand.pr.p)||""
+    };
+  };
+
+  window.openPatientPsy=function(cand, tab){
+    tab=tab||"both";
+    var p=window.buildPatientPsy(cand);
+    window._lastPsy=p;
+    var maxF=Math.max(p.T,p.F,p.S,p.N,1);
+    var html='<div class="section-kicker">PATIENT ANALYSIS · '+esc(p.name)+'</div>';
+    html+='<p class="muted" style="font-size:.72rem">Still-room fiction sheets. Not diagnosis. Not therapy.</p>';
+    html+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">';
+    html+='<button class="btn sm'+(tab==="both"?"":" sec")+'" onclick="window.openPatientPsy(window._lastPsySrc||window._duel,\'both\')">Both</button>';
+    html+='<button class="btn sm'+(tab==="freud"?"":" sec")+'" onclick="window.openPatientPsy(window._lastPsySrc||window._duel,\'freud\')">Freud</button>';
+    html+='<button class="btn sm'+(tab==="jung"?"":" sec")+'" onclick="window.openPatientPsy(window._lastPsySrc||window._duel,\'jung\')">Jung</button>';
+    html+='<button class="btn sm sec" onclick="window.openPatientChart&&openPatientChart(window._lastPsySrc||window._duel)">Horoscope</button>';
+    html+='</div>';
+    window._lastPsySrc=cand||window._lastPsySrc;
+
+    if(tab==="both"||tab==="freud"){
+      html+='<div class="psy-box" style="margin-bottom:8px"><h4>FREUD · STRUCTURE</h4>';
+      html+='<p class="psy-plain"><b>Leading room: '+esc(p.lead)+'</b> · apparent drive: '+esc(p.drive)+'</p>';
+      html+='Id (want)'+bar(p.idS,p.tot);
+      html+='Ego (hold the hour)'+bar(p.egoS,p.tot);
+      html+='Superego (inner rule)'+bar(p.superS,p.tot);
+      html+='<p class="psy-plain">In this fiction the guest\'s '+esc(p.lead).toLowerCase()+' is loudest. Id is appetite and motion. Superego is the lecture. Ego is whether they can keep the hour between the two.</p>';
+      html+='<p class="muted" style="font-size:.72rem">Persona they wear in clinic: '+esc(p.persona)+'</p></div>';
+    }
+    if(tab==="both"||tab==="jung"){
+      html+='<div class="psy-box"><h4>JUNG · FUNCTIONS & SHADOW</h4>';
+      html+='<p class="psy-plain">Attitude: <b>'+esc(p.attitude)+'</b>. Lead function <b>'+esc(p.superior)+'</b>, helper '+esc(p.auxiliary)+'. Tender/inferior: '+esc(p.inferior)+'.</p>';
+      html+='Thinking'+bar(p.T,maxF)+'Feeling'+bar(p.F,maxF)+'Sensation'+bar(p.S,maxF)+'Intuition'+bar(p.N,maxF);
+      html+='<p class="psy-plain">Shadow figure in play: <b>'+esc(p.shadow)+'</b>. Persona: '+esc(p.persona)+'. The collective basement (lore) is the shared floor under this one life — see Collective lore.</p></div>';
+    }
+    if(p.note) html+='<p class="muted" style="font-size:.75rem">Visit thread: '+esc(String(p.note).slice(0,140))+'</p>';
+    html+='<button class="btn" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Back to the hour</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Analysis · "+p.name,"PSY",html);
+  };
+
+  function inject(){
+    var body=document.getElementById("overhaulModalBody");
+    if(!body||body.querySelector("[data-psy-btn]")) return;
+    if(!window._duel && !window._pendingCand && !window._visit) return;
+    var b=document.createElement("button");
+    b.dataset.psyBtn="1";
+    b.className="btn";
+    b.style.width="100%";
+    b.style.marginTop="6px";
+    b.textContent="Psychoanalyze guest · Jung & Freud sheets";
+    b.onclick=function(){ window.openPatientPsy(window._duel||window._pendingCand||window._visit,"both"); };
+    body.appendChild(b);
+  }
+
+  ["startCardDuel","openCardChoice","renderDuel"].forEach(function(name){
+    var orig=window[name];
+    if(typeof orig!=="function") return;
+    window[name]=function(){
+      var r=orig.apply(this,arguments);
+      setTimeout(inject,100);
+      setTimeout(inject,320);
+      return r;
+    };
+  });
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnPatPsy")) return;
+    var b=document.createElement("button");
+    b.id="btnPatPsy"; b.className="btn"; b.style.marginTop="6px";
+    b.textContent="Patient analysis (Jung / Freud)";
+    b.onclick=function(){
+      var list=window.PATIENT_100||[];
+      var html='<div class="section-kicker">ANALYZE A GUEST</div>';
+      html+='<p class="muted" style="font-size:.75rem">Sheets are seeded per name. Open during a visit for the current hour.</p>';
+      for(var i=0;i<Math.min(14,list.length);i++){
+        var p=list[i];
+        var nm=String(p.name||"").replace(/'/g,"");
+        html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:4px" onclick="window.openPatientPsy({name:\''+nm+'\',pid:\''+(p.id||nm)+'\',fam:\''+(p.f||"")+'\',pr:{f:\''+(p.f||"")+'\',p:\'\'}},\'both\')">'+esc(p.name)+'</button>';
+      }
+      html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Analysis roster","LIST",html);
+    };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
 })();
 
 </script>
