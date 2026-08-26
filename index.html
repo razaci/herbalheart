@@ -961,6 +961,38 @@ body::before{
 .dtab th{background:#15241e !important}
 .fx-sec{color:#8fb8a4 !important}
 
+
+
+
+
+/* Larger type + dynamic buttons on original dark skin */
+html,body{font-size:17px !important;line-height:1.4 !important}
+.fx-tile{min-height:78px !important}
+.fx-tile b{font-size:1rem !important}
+.fx-tile span{font-size:.8rem !important}
+.btn{
+  font-size:1rem !important;
+  font-weight:700 !important;
+  padding:12px 14px !important;
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease !important;
+}
+.btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.btn:active{transform:translateY(2px)}
+.btn.sm{font-size:.86rem !important;padding:8px 10px !important}
+
+
+
+/* ===== HOUR SPINE ===== */
+.desk-hide{display:none !important}
+.energy-pips{letter-spacing:2px;font-size:1.1rem}
+.care-pop{position:fixed;left:50%;top:42%;transform:translate(-50%,0);z-index:500;
+  font-weight:800;font-size:1.4rem;color:#b8f0d0;pointer-events:none;
+  animation:xpFloat 0.7s ease-out forwards}
+.clock-bar{font-size:.85rem;margin:6px 0}
+.vet-banner{background:#3a2a10;border:1px solid #c8a050;padding:6px 8px;margin:6px 0;font-size:.8rem}
+.match-good{outline:2px solid #7ec8a0}
+.match-meh{opacity:.55}
+
 </style>
 </head>
 <body>
@@ -17770,6 +17802,728 @@ window.GUILD_HERBS=[
   setTimeout(mount,1700);
 })();
 
+
+
+/* Refined trait increment logic */
+(function(){
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.playerProf){
+      S.playerProf={clicks:0,moves:0,cards:0,pauses:0,refers:0,owns:0,visit:0,customGo:0,
+        style:{curious:0,careful:0,swift:0,deep:0}};
+    }
+    if(!S.playerProf._last) S.playerProf._last={t:0,key:""};
+    return S.playerProf;
+  }
+
+  function bumpStyle(key, n){
+    var p=ensure();
+    if(!p.style[key]) p.style[key]=0;
+    p.style[key]+= (n==null?1:n);
+  }
+
+  // Debounce identical clicks within 400ms
+  function fresh(key){
+    var p=ensure();
+    var now=Date.now();
+    if(p._last.key===key && now-p._last.t<400) return false;
+    p._last={t:now,key:key};
+    return true;
+  }
+
+  window.notePlayerMove=function(kind, amt){
+    var p=ensure();
+    if(window._autoHealTick) return; // no credit during auto-heal
+    amt=amt==null?1:amt;
+    if(!fresh(kind)) return;
+    p.moves+=amt;
+    if(kind==="click") p.clicks+=amt;
+    else if(kind==="card") { p.cards+=amt; bumpStyle("swift",1); }
+    else if(kind==="pause") { p.pauses+=amt; bumpStyle("careful",2); }
+    else if(kind==="refer") { p.refers+=amt; bumpStyle("careful",1); bumpStyle("deep",1); }
+    else if(kind==="own") { p.owns+=amt; bumpStyle("deep",2); }
+    else if(kind==="visit") { p.visit+=amt; bumpStyle("swift",1); }
+    else if(kind==="go") { p.customGo+=amt; bumpStyle("swift",1); }
+    else if(kind==="lore"||kind==="codex"||kind==="chart") bumpStyle("curious",2);
+    else if(kind==="haptics") bumpStyle("careful",1);
+    else if(kind==="psy"||kind==="shadow") bumpStyle("deep",2);
+    else if(kind==="curious") bumpStyle("curious",1);
+    else if(kind==="careful") bumpStyle("careful",1);
+    else if(kind==="swift") bumpStyle("swift",1);
+    else if(kind==="deep") bumpStyle("deep",1);
+    if(p.moves%10===0 && typeof save==="function") save({ui:false});
+  };
+
+  // Mark auto-heal so increments skip
+  var _ah=window.autoHealRun;
+  if(typeof _ah==="function"){
+    window.autoHealRun=function(){
+      window._autoHealTick=true;
+      var r=_ah.apply(this,arguments);
+      setTimeout(function(){ window._autoHealTick=false; }, 8000);
+      return r;
+    };
+  }
+
+  // Prefer data-trait on clicks
+  document.addEventListener("click", function(e){
+    try{
+      var t=e.target.closest("[data-trait], button, .fx-tile, .duel-card");
+      if(!t) return;
+      var trait=t.getAttribute && t.getAttribute("data-trait");
+      if(trait){ window.notePlayerMove(trait); return; }
+      var lab=(t.textContent||"").toLowerCase();
+      window.notePlayerMove("click");
+      if(/lore|codex|chart|data table|heatmap|element/.test(lab)) window.notePlayerMove("lore");
+      else if(/psy|jung|freud|shadow|inner road|profile/.test(lab)) window.notePlayerMove("psy");
+      else if(/pause|tic|haptic|refer|safety/.test(lab)) window.notePlayerMove(lab.indexOf("refer")>=0?"refer":"pause");
+    }catch(err){}
+  }, true);
+
+  // Tag matrix tiles after paint
+  var _pfm=window.paintFrontMatrix;
+  if(typeof _pfm==="function"){
+    window.paintFrontMatrix=function(){
+      var r=_pfm.apply(this,arguments);
+      setTimeout(function(){
+        document.querySelectorAll(".fx-tile").forEach(function(el){
+          if(el.getAttribute("data-trait")) return;
+          var t=(el.textContent||"").toLowerCase();
+          var k="swift";
+          if(/lore|codex|chart|table|heat|element|moon/.test(t)) k="curious";
+          else if(/psy|jung|road|shadow|profile|analysis/.test(t)) k="deep";
+          else if(/tic|haptic|log/.test(t)) k="careful";
+          el.setAttribute("data-trait", k);
+        });
+      }, 40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   CLIENT LAB · change one person, see what happens
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var FAM=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+  var COLORS=["Red","Yellow","Blue","White","Orange","Green","Black"];
+
+  function listPatients(){
+    return window.PATIENT_100||[];
+  }
+
+  window._clientLab=window._clientLab||null;
+
+  function preview(c){
+    var lv=c.diff||1;
+    var hp=Math.round(16*(1+(lv-1)*0.28));
+    var energy=lv>=4?3:lv>=2?4:5;
+    var rounds=9+lv;
+    var el={Red:"Fire",Yellow:"Air",Blue:"Water",White:"Earth",Orange:"Earth",Green:"Water",Black:"Air"};
+    return {
+      hp:hp, energy:energy, rounds:rounds,
+      element:el[c.color]||"Water",
+      stage:c.stage||1
+    };
+  }
+
+  window.openClientLab=function(idx){
+    var list=listPatients();
+    if(!list.length){
+      if(typeof openOverhaulModal==="function")
+        openOverhaulModal("Client lab","LAB",'<p>Roster not loaded.</p><button class="btn" onclick="closeOverhaulModal()">Close</button>');
+      return;
+    }
+    if(idx==null){
+      var html='<div class="section-kicker">CLIENT LAB</div>';
+      html+='<p class="muted" style="font-size:.75rem">Pick a guest. Change their hour. Watch the preview update.</p>';
+      for(var i=0;i<Math.min(24,list.length);i++){
+        var p=list[i];
+        html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:4px" onclick="window.openClientLab('+i+')">'+esc(p.name)+' · '+esc(p.f||"")+'</button>';
+      }
+      html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Clients","LAB",html);
+      return;
+    }
+    var src=list[idx]||list[0];
+    if(!window._clientLab || window._clientLab.idx!==idx){
+      window._clientLab={
+        idx:idx,
+        name:src.name,
+        pid:src.id||src.name,
+        fam:src.f||"Sleep",
+        color:src.color||"Blue",
+        diff:1,
+        stage:1,
+        theatrical:false
+      };
+    }
+    var c=window._clientLab;
+    var pv=preview(c);
+    var html='<div class="section-kicker">CLIENT · '+esc(c.name)+'</div>';
+    html+='<p class="muted" style="font-size:.72rem">Edits apply to this lab copy only until you press Play hour.</p>';
+
+    html+='<div class="card"><b>Live preview</b>';
+    html+='<div class="chart-row"><span>Affliction HP</span><span>'+pv.hp+'</span></div>';
+    html+='<div class="chart-row"><span>Energy / rounds</span><span>'+pv.energy+' · '+pv.rounds+'</span></div>';
+    html+='<div class="chart-row"><span>Element</span><span>'+esc(pv.element)+' from '+esc(c.color)+'</span></div>';
+    html+='<div class="chart-row"><span>Problem family</span><span>'+esc(c.fam)+'</span></div>';
+    html+='<div class="chart-row"><span>Stage</span><span>'+c.stage+' / 4</span></div>';
+    html+='<p style="font-size:.75rem;margin-top:6px" class="muted">Raising difficulty lifts HP and shortens energy. Stage 4 is red-alert weather (refer, don’t force a lamp).</p></div>';
+
+    html+='<div class="card"><b>Family</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    FAM.forEach(function(f){
+      html+='<button class="btn sm'+(c.fam===f?"":" sec")+'" onclick="window.labSet(\'fam\',\''+f+'\')">'+f+'</button>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="card"><b>Color</b><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">';
+    COLORS.forEach(function(col){
+      html+='<button class="btn sm'+(c.color===col?"":" sec")+'" onclick="window.labSet(\'color\',\''+col+'\')">'+col+'</button>';
+    });
+    html+='</div></div>';
+
+    html+='<div class="card"><b>Difficulty</b><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">';
+    [1,2,3,4].forEach(function(d){
+      html+='<button class="btn sm'+(c.diff===d?"":" sec")+'" onclick="window.labSet(\'diff\','+d+')">L'+d+'</button>';
+    });
+    html+='</div>';
+    html+='<div style="margin-top:8px"><b>Stage</b><div style="display:flex;gap:4px;margin-top:6px">';
+    [1,2,3,4].forEach(function(st){
+      html+='<button class="btn sm'+(c.stage===st?"":" sec")+'" onclick="window.labSet(\'stage\','+st+')">S'+st+'</button>';
+    });
+    html+='</div></div></div>';
+
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+    html+='<button class="btn sec" onclick="window.openPatientChart({name:\''+String(c.name).replace(/'/g,"")+'\',pid:\''+c.pid+'\'})">Chart</button>';
+    html+='<button class="btn sec" onclick="window.openPatientPsy({name:\''+String(c.name).replace(/'/g,"")+'\',pid:\''+c.pid+'\',fam:\''+c.fam+'\'},\'both\')">Jung / Freud</button>';
+    html+='</div>';
+    html+='<button class="btn" style="width:100%;margin-top:8px" onclick="window.playClientLab()">Play this hour</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window.openClientLab()">Back to list</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(c.name,"LAB",html);
+  };
+
+  window.labSet=function(k,v){
+    if(!window._clientLab) return;
+    window._clientLab[k]=v;
+    window.openClientLab(window._clientLab.idx);
+  };
+
+  window.playClientLab=function(){
+    var c=window._clientLab;
+    if(!c) return;
+    if(typeof window.setClinicLevel==="function") window.setClinicLevel(c.diff||1);
+    var cand={
+      name:c.name, pid:c.pid, type:"Lab", urgency:"Client lab", wellness:52,
+      problems:[c.fam+" · stage "+c.stage], temperament:"Lab copy",
+      fam:c.fam, color:c.color,
+      diff:{id:c.diff>=3?"hard":"mid",label:"Lab L"+c.diff},
+      problemStage:c.stage,
+      pr:{id:c.pid,f:c.fam,p:c.fam+" thread",color:c.color,att:1,quote:""}
+    };
+    try{ closeOverhaulModal(); }catch(e){}
+    if(typeof toast==="function") toast("Lab hour · "+c.name);
+    if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnClientLab")) return;
+    var b=document.createElement("button");
+    b.id="btnClientLab"; b.className="btn"; b.style.marginTop="6px";
+    b.textContent="Client lab · change one guest";
+    b.onclick=function(){ window.openClientLab(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+})();
+
+
+
+/* ==========================================================
+   30 NAMED CATS & DOGS · personality trait cards
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var NAMED_PETS=[
+    {id:"c1",sp:"Cat",name:"Miso",trait:"Velvet inspector",card:"Checks every bag. Trusts slowly. Warm if you sit still.",care:"Settle + listen. No sudden hands."},
+    {id:"c2",sp:"Cat",name:"Soot",trait:"Night clerk",card:"Works the dark hours. Talks with a look. Hides when the room is loud.",care:"Dim lamp. One quiet pass."},
+    {id:"c3",sp:"Cat",name:"Pip",trait:"Pocket comedian",card:"Steals hair ties. Forgives fast. Needs a window more than a speech.",care:"Play, then rest. Short visit."},
+    {id:"c4",sp:"Cat",name:"Nettle",trait:"Honest critic",card:"Bites the truth. Not mean — precise. Hates perfume and hurry.",care:"Boundary. Slow approach."},
+    {id:"c5",sp:"Cat",name:"Cloud",trait:"Soft weather",card:"Sleeps in squares of sun. Anxiety shows as over-groom.",care:"Nest the room. Gentle comb story."},
+    {id:"c6",sp:"Cat",name:"Juniper",trait:"Garden sentinel",card:"Owns the sill. Chirps at birds. Startles at vacuums.",care:"Window time. No loud tools."},
+    {id:"c7",sp:"Cat",name:"Pebble",trait:"Small philosopher",card:"Sits on paper you need. Thinks in loafs. Slow blink is a treaty.",care:"Let them choose the chair."},
+    {id:"c8",sp:"Cat",name:"Harrow",trait:"Ex-stray tactician",card:"Food first, people second. Resource-guards bowls. Brilliant at doors.",care:"Space around dishes. Refer if fear-bites."},
+    {id:"c9",sp:"Cat",name:"Lumen",trait:"Lamp familiar",card:"Follows warm light. Night restless if the house never goes dark.",care:"Dusk routine. Phone face-down."},
+    {id:"c10",sp:"Cat",name:"Bridget",trait:"Matron of the radiator",card:"Rules heat sources. Grumbles, then purrs. Hates being lifted mid-nap.",care:"Ask first. Warm joints card."},
+    {id:"c11",sp:"Cat",name:"Ink",trait:"Under-bed diplomat",card:"Peeks, then vanishes. Trust is a treaty renewed daily.",care:"Sit on the floor. No scooping."},
+    {id:"c12",sp:"Cat",name:"Fig",trait:"Breakfast lawyer",card:"Schedules meals to the minute. Drama if late. Loves ritual.",care:"Same bowl, same hour."},
+    {id:"c13",sp:"Cat",name:"Wren",trait:"High singer",card:"Talks through the visit. Lonely when days are empty.",care:"Voice on a timer. Company, not crowd."},
+    {id:"c14",sp:"Cat",name:"Ash",trait:"Smoke-and-mirrors",card:"Looks unbothered. Stress is in the tail. Hides illness well.",care:"Watch the tail. Refer if off-food."},
+    {id:"c15",sp:"Cat",name:"Clover",trait:"Lucky clutter",card:"Knocks one thing, never two. Playful chaos. Young nerves.",care:"Wand play, then stop while winning."},
+    {id:"d1",sp:"Dog",name:"Moss",trait:"Mud theologian",card:"Believes in ditches. Soft mouth. Worries when you pack a bag.",care:"Walk + one next step. Departure practice."},
+    {id:"d2",sp:"Dog",name:"Biscuit",trait:"Hospitality desk",card:"Greets everyone. Burns out after the third guest. Soft stomach.",care:"Simple table. Quiet after company."},
+    {id:"d3",sp:"Dog",name:"Hearth",trait:"Stove dog",card:"Lives where people cook. Sighs like an uncle. Joint weather.",care:"Warm the joints. Short stairs."},
+    {id:"d4",sp:"Dog",name:"Rook",trait:"Watchful chess piece",card:"Patrols the fence line. Barks policy. Needs a job or invents one.",care:"Task: sniff walk. Boundary for windows."},
+    {id:"d5",sp:"Dog",name:"Pearl",trait:"Velvet worry",card:"Flinches at weather. Bonds hard. Thunder is a plot.",care:"Nest + phone down. Sound plan."},
+    {id:"d6",sp:"Dog",name:"Tinder",trait:"Spark apprentice",card:"Young. Mouthy. Learns by rehearsal, not lecture.",care:"One next step. Short sessions."},
+    {id:"d7",sp:"Dog",name:"Marrow",trait:"Old library",card:"Knows the house better than you. Slow rise. Dignity first.",care:"Ramp story. No hauled hips."},
+    {id:"d8",sp:"Dog",name:"Pike",trait:"River idiot (affectionate)",card:"Will swim a feeling. Recall is optional. Joy is a hazard.",care:"Long line. Water with a plan."},
+    {id:"d9",sp:"Dog",name:"Sable",trait:"Shadow partner",card:"One-person dog. Polite to others, true to one. Separation weather.",care:"Leave-and-return drills. Not guilt."},
+    {id:"d10",sp:"Dog",name:"Quill",trait:"Office dog",card:"Loves keyboards. Under-desk diplomat. Needs midday air.",care:"Walk at noon. Chew that is legal."},
+    {id:"d11",sp:"Dog",name:"Bramble",trait:"Thorn-and-honey",card:"On-leash philosopher, off-leash essay. Reactive to other dogs at the gate.",care:"Space. Parallel walks. Refer if escalating."},
+    {id:"d12",sp:"Dog",name:"Noodle",trait:"Comedy spine",card:"Long dog. Slips under furniture. Back weather after jumps.",care:"No sofa leaps. Warm + floor beds."},
+    {id:"d13",sp:"Dog",name:"Cinder",trait:"Rescue chapter two",card:"New name, old map. Startles at hands from above.",care:"Side approach. Choice to come."},
+    {id:"d14",sp:"Dog",name:"Harbor",trait:"Dock watcher",card:"Steady. Loves routine more than adventure. Grieves change of house.",care:"Keep one object from the old room."},
+    {id:"d15",sp:"Dog",name:"Jasper",trait:"Pocket siren",card:"Small. Big opinion. Guards the couch like a kingdom.",care:"Trade, don't grab. Clean no for laps."}
+  ];
+  window.NAMED_PETS=NAMED_PETS;
+
+  window.openPetTraitCard=function(id){
+    var p=null;
+    for(var i=0;i<NAMED_PETS.length;i++) if(NAMED_PETS[i].id===id) p=NAMED_PETS[i];
+    if(!p) return;
+    var html='<div class="section-kicker">'+esc(p.sp).toUpperCase()+' · TRAIT CARD</div>';
+    html+='<div class="card"><p style="font-family:Cinzel,serif;font-size:1.1rem;margin:0">'+esc(p.name)+'</p>';
+    html+='<p><b>'+esc(p.trait)+'</b></p>';
+    html+='<p style="font-size:.85rem;line-height:1.45">'+esc(p.card)+'</p>';
+    html+='<p class="muted" style="font-size:.8rem"><b>Hour hint:</b> '+esc(p.care)+'</p></div>';
+    html+='<button class="btn" style="width:100%" onclick="window.playNamedPet(\''+p.id+'\')">Play this guest</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window.openNamedPets()">Back to roster</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(p.name,"PET",html);
+  };
+
+  window.openNamedPets=function(filter){
+    filter=filter||"all";
+    var html='<div class="section-kicker">THIRTY NAMES · TRAIT CARDS</div>';
+    html+='<div style="display:flex;gap:4px;margin-bottom:8px">';
+    html+='<button class="btn sm'+(filter==="all"?"":" sec")+'" onclick="window.openNamedPets(\'all\')">All 30</button>';
+    html+='<button class="btn sm'+(filter==="Cat"?"":" sec")+'" onclick="window.openNamedPets(\'Cat\')">15 cats</button>';
+    html+='<button class="btn sm'+(filter==="Dog"?"":" sec")+'" onclick="window.openNamedPets(\'Dog\')">15 dogs</button>';
+    html+='</div>';
+    NAMED_PETS.forEach(function(p){
+      if(filter!=="all" && p.sp!==filter) return;
+      html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:4px" onclick="window.openPetTraitCard(\''+p.id+'\')">';
+      html+='<b>'+esc(p.name)+'</b> · '+esc(p.sp)+'<div class="muted" style="font-size:.72rem">'+esc(p.trait)+'</div></button>';
+    });
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Named pets","VET",html);
+  };
+
+  window.playNamedPet=function(id){
+    var p=null;
+    for(var i=0;i<NAMED_PETS.length;i++) if(NAMED_PETS[i].id===id) p=NAMED_PETS[i];
+    if(!p) return;
+    try{ closeOverhaulModal(); }catch(e){}
+    var cand={
+      name:p.name+" the "+p.sp.toLowerCase(),
+      pid:p.id, type:"Vet", urgency:"Named",
+      wellness:58, problems:[p.trait], temperament:p.trait,
+      fam:"Pain-Stiffness", color:p.sp==="Cat"?"Black":"Orange",
+      diff:{id:"mid",label:"Vet"},
+      pr:{id:p.id,f:"Pain-Stiffness",p:p.care,color:p.sp==="Cat"?"Black":"Orange",att:1,quote:p.card}
+    };
+    if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnNamedPets")) return;
+    var b=document.createElement("button");
+    b.id="btnNamedPets"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="30 cats & dogs · trait cards";
+    b.onclick=function(){ window.openNamedPets("all"); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+})();
+
+
+
+/* ==========================================================
+   PLAYER SETUP · input stats → rewrite birth / zodiac / chart
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  var SIGNS=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  var GLY=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+  var CUT=[20,19,21,20,21,21,23,23,23,23,22,22]; // sun sign starts ~this day of month 1-12 = Apr... wait
+  // month 1 Aries starts Mar 21 — handle via month+day helper
+  function sunFromMD(m,d){
+    // m 1-12
+    var table=[[3,21,"Aries"],[4,20,"Taurus"],[5,21,"Gemini"],[6,21,"Cancer"],[7,23,"Leo"],[8,23,"Virgo"],[9,23,"Libra"],[10,23,"Scorpio"],[11,22,"Sagittarius"],[12,22,"Capricorn"],[1,20,"Aquarius"],[2,19,"Pisces"]];
+    // walk backward
+    var order=["Capricorn","Aquarius","Pisces","Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius"];
+    if(m===1) return d>=20?"Aquarius":"Capricorn";
+    if(m===2) return d>=19?"Pisces":"Aquarius";
+    if(m===3) return d>=21?"Aries":"Pisces";
+    if(m===4) return d>=20?"Taurus":"Aries";
+    if(m===5) return d>=21?"Gemini":"Taurus";
+    if(m===6) return d>=21?"Cancer":"Gemini";
+    if(m===7) return d>=23?"Leo":"Cancer";
+    if(m===8) return d>=23?"Virgo":"Leo";
+    if(m===9) return d>=23?"Libra":"Virgo";
+    if(m===10) return d>=23?"Scorpio":"Libra";
+    if(m===11) return d>=22?"Sagittarius":"Scorpio";
+    return d>=22?"Capricorn":"Sagittarius";
+  }
+  function hash(str){
+    var n=0,s=String(str||"");
+    for(var i=0;i<s.length;i++) n=((n*31)+s.charCodeAt(i))>>>0;
+    return n;
+  }
+  function idx(sign){ var i=SIGNS.indexOf(sign); return i<0?0:i; }
+
+  function compute(form){
+    var m=parseInt(form.month,10)||1;
+    var d=parseInt(form.day,10)||1;
+    var y=parseInt(form.year,10)||2000;
+    var hour=parseInt(form.hour,10);
+    if(isNaN(hour)) hour=12;
+    var sun=sunFromMD(m,d);
+    var h=hash(form.name+"|"+y+"|"+m+"|"+d+"|"+hour+"|"+(form.place||""));
+    var moon=SIGNS[(idx(sun)+((h>>3)%7)-3+12)%12];
+    var rise;
+    if(form.rising && SIGNS.indexOf(form.rising)>=0) rise=form.rising;
+    else rise=SIGNS[(hour+m+d)%12];
+    var merc=SIGNS[(idx(sun)+((h>>5)%3)-1+12)%12];
+    var ven=SIGNS[(idx(sun)+((h>>7)%5)-2+12)%12];
+    var mar=SIGNS[(idx(sun)+((h>>9)%4)-1+12)%12];
+    var phases=["New","Waxing Crescent","First Quarter","Waxing Gibbous","Full","Waning Gibbous","Last Quarter","Waning Crescent"];
+    var animals=["Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat","Monkey","Rooster","Dog","Pig"];
+    return {
+      name:form.name||"Player",
+      month:m,day:d,year:y,hour:hour,place:form.place||"",
+      sun:sun, sunG:GLY[idx(sun)],
+      moon:moon, moonG:GLY[idx(moon)],
+      rise:rise, riseG:GLY[idx(rise)],
+      merc:merc, ven:ven, mar:mar,
+      phase:phases[(d+hour)%8],
+      animal:animals[((y-1924)%12+12)%12],
+      history:form.history||"",
+      note:"Chart rewritten from player setup."
+    };
+  }
+
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.playerSetup) S.playerSetup={name:"",month:3,day:21,year:1990,hour:12,place:"",rising:"",history:""};
+    return S.playerSetup;
+  }
+
+  window.applyPlayerSetup=function(){
+    var f=ensure();
+    f.name=(document.getElementById("psName")||{}).value||f.name;
+    f.month=(document.getElementById("psMo")||{}).value||f.month;
+    f.day=(document.getElementById("psDa")||{}).value||f.day;
+    f.year=(document.getElementById("psYr")||{}).value||f.year;
+    f.hour=(document.getElementById("psHr")||{}).value||f.hour;
+    f.place=(document.getElementById("psPl")||{}).value||"";
+    f.rising=(document.getElementById("psRise")||{}).value||"";
+    f.history=(document.getElementById("psHist")||{}).value||"";
+    var chart=compute(f);
+    S.playerChart=chart;
+    S.playerSetup=f;
+    if(window.S.psy) S.psy.secretSign=chart.sun;
+    if(typeof save==="function") save();
+    if(typeof toast==="function") toast("Chart rewritten · "+chart.sunG+" "+chart.sun);
+    window.openPlayerSetup();
+  };
+
+  window.openPlayerSetup=function(){
+    var f=ensure();
+    var ch=window.S.playerChart;
+    var html='<div class="section-kicker">PLAYER SETUP · REWRITE THE CHART</div>';
+    html+='<p class="muted" style="font-size:.72rem">Enter birth-history fiction. The still-room recomputes sun, moon, rising, inner planets, lunar phase, year-token. Not a real natal service.</p>';
+    html+='<div class="card">';
+    html+='<label style="font-size:.75rem">Name</label><input id="psName" value="'+esc(f.name)+'" style="width:100%;margin:4px 0 8px;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">';
+    html+='<div><label style="font-size:.72rem">Month</label><input id="psMo" type="number" min="1" max="12" value="'+(f.month||3)+'" style="width:100%;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/></div>';
+    html+='<div><label style="font-size:.72rem">Day</label><input id="psDa" type="number" min="1" max="31" value="'+(f.day||21)+'" style="width:100%;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/></div>';
+    html+='<div><label style="font-size:.72rem">Year</label><input id="psYr" type="number" min="1924" max="2026" value="'+(f.year||1990)+'" style="width:100%;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/></div>';
+    html+='</div>';
+    html+='<label style="font-size:.72rem">Hour (0–23, optional)</label><input id="psHr" type="number" min="0" max="23" value="'+(f.hour||12)+'" style="width:100%;margin:4px 0 8px;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/>';
+    html+='<label style="font-size:.72rem">Place (flavor)</label><input id="psPl" value="'+esc(f.place||"")+'" placeholder="town / clinic" style="width:100%;margin:4px 0 8px;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8"/>';
+    html+='<label style="font-size:.72rem">Rising override (blank = from hour)</label>';
+    html+='<select id="psRise" style="width:100%;margin:4px 0 8px;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8">';
+    html+='<option value="">auto</option>';
+    SIGNS.forEach(function(sg){ html+='<option value="'+sg+'"'+(f.rising===sg?" selected":"")+'>'+sg+'</option>'; });
+    html+='</select>';
+    html+='<label style="font-size:.72rem">Birth-history note (fiction)</label>';
+    html+='<textarea id="psHist" rows="3" style="width:100%;margin:4px 0;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8">'+esc(f.history||"")+'</textarea>';
+    html+='</div>';
+    html+='<button class="btn" style="width:100%" onclick="window.applyPlayerSetup()">Write chart into the game</button>';
+
+    if(ch){
+      html+='<div class="card" style="margin-top:10px"><b>Current rewritten chart</b>';
+      html+='<div class="chart-row"><span>Sun</span><span>'+ch.sunG+' '+esc(ch.sun)+'</span></div>';
+      html+='<div class="chart-row"><span>Moon</span><span>'+ch.moonG+' '+esc(ch.moon)+'</span></div>';
+      html+='<div class="chart-row"><span>Rising</span><span>'+ch.riseG+' '+esc(ch.rise)+'</span></div>';
+      html+='<div class="chart-row"><span>Mercury / Venus / Mars</span><span>'+esc(ch.merc)+' · '+esc(ch.ven)+' · '+esc(ch.mar)+'</span></div>';
+      html+='<div class="chart-row"><span>Lunar phase (seeded)</span><span>'+esc(ch.phase)+'</span></div>';
+      html+='<div class="chart-row"><span>Year-token</span><span>'+esc(ch.animal)+'</span></div>';
+      if(ch.history) html+='<p style="font-size:.78rem;margin-top:6px">'+esc(ch.history)+'</p>';
+      html+='</div>';
+      html+='<button class="btn sec" style="width:100%" onclick="window.openPatientChart({name:S.playerChart.name,pid:\'PLAYER\'})">Open as clinic chart</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Player setup","BIRTH",html);
+  };
+
+  // When charting the player id, use rewritten data
+  var _bpc=window.buildPatientChart;
+  if(typeof _bpc==="function"){
+    window.buildPatientChart=function(cand){
+      var key=(cand&&(cand.pid||cand.id||cand.name))||"";
+      if(String(key).toUpperCase()==="PLAYER" && window.S && S.playerChart){
+        var c=S.playerChart;
+        return Object.assign({}, c, {name:c.name||"Player", pid:"PLAYER"});
+      }
+      return _bpc.apply(this,arguments);
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnPSetup")) return;
+    var b=document.createElement("button");
+    b.id="btnPSetup"; b.className="btn"; b.style.marginTop="6px";
+    b.textContent="Player setup · rewrite chart";
+    b.onclick=function(){ window.openPlayerSetup(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+})();
+
+
+
+
+
+
+
+/* Undo 90s wrap if present */
+(function(){
+  function unwrap(){
+    var box=document.getElementById("win95");
+    if(!box) return;
+    var home=document.getElementById("sc-home");
+    if(home && box.parentNode){
+      box.parentNode.insertBefore(home, box);
+    }
+    box.remove();
+  }
+  setTimeout(unwrap,50);
+  setTimeout(unwrap,400);
+})();
+
+
+
+
+/* ==========================================================
+   GAMEPLAY PACK · spine, desk, clock, memory, fail, feel
+   ========================================================== */
+(function(){
+  function esc(v){
+    return String(v==null?"":v).split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+  }
+
+  window.openDeskDrawer=function(){
+    var html='<div class="section-kicker">DESK DRAWER</div>';
+    html+='<p class="muted" style="font-size:.75rem">Side tools. The hour lives on Visit.</p>';
+    var names=["Treatment log","Client lab","Player setup","Player profile","Lesson codex","Function stacks","TIC / Shadow rules","Psyche readout","Named pets","Lantern","Vet wing","Longer wings","Heatmaps","Data tables","Haptics","RPG sheet"];
+    var fns=["openTreatLog","openClientLab","openPlayerSetup","openPlayerProfile","openLessonCodex","openFunctionCodex","openTicCodex","openPsySheet","openNamedPets","openLanternMain","openVetWing","openLongWings","openHeatmaps","openDataTables","openHapticsPanel","openRpgSheet"];
+    for(var i=0;i<names.length;i++){
+      html+='<button class="btn sec" style="width:100%;margin-bottom:4px" data-fn="'+fns[i]+'">'+names[i]+'</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close desk</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Desk","DRAWER",html);
+    setTimeout(function(){
+      var body=document.getElementById("overhaulModalBody");
+      if(!body) return;
+      body.querySelectorAll("[data-fn]").forEach(function(b){
+        b.onclick=function(){ var f=window[b.getAttribute("data-fn")]; if(typeof f==="function") f(); };
+      });
+    },50);
+  };
+
+  function spineFloor(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    home.querySelectorAll("button").forEach(function(b){
+      if(b.id==="btnDeskSpine"||b.id==="btnCustomHour") return;
+      var t=(b.textContent||"").toLowerCase();
+      if(t.indexOf("visit")>=0||t.indexOf("custom hour")>=0||t.indexOf("go")===0) return;
+      if(b.id && b.id.indexOf("btn")===0) b.classList.add("desk-hide");
+    });
+    if(!document.getElementById("btnDeskSpine")){
+      var d=document.createElement("button");
+      d.id="btnDeskSpine";
+      d.className="btn sec";
+      d.style.width="100%";
+      d.style.marginTop="8px";
+      d.textContent="Desk · logs, lab, lore";
+      d.onclick=function(){ window.openDeskDrawer(); };
+      home.appendChild(d);
+    }
+  }
+  setTimeout(spineFloor,900);
+  setTimeout(spineFloor,2000);
+
+  window.memoryFor=function(name){
+    var log=(window.S&&S.treatLog)||[];
+    for(var i=0;i<log.length;i++){
+      if(log[i].name===name) return log[i];
+    }
+    return null;
+  };
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var mem=window.memoryFor(cand&&cand.name);
+      if(mem && cand){
+        cand._memory="Last hour: score "+(mem.score||0)+(mem.problem?" · "+mem.problem:"");
+        cand._return=true;
+      }
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel;
+        if(d){
+          d.maxTurns=5;
+          d.turn=1;
+          d._shadowUsed=false;
+          if(mem){
+            d._memory=cand._memory;
+            d.log.unshift("MEMORY · "+cand._memory);
+          }
+          if(/vet|cat|dog|pet/i.test(String((cand&&cand.type)||(cand&&cand.name)||""))) d._vet=true;
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        var d=window._duel;
+        if(!body||!d) return;
+        if(!body.querySelector("[data-clock]")){
+          var c=document.createElement("div");
+          c.dataset.clock="1";
+          c.className="clock-bar";
+          var pips="";
+          var maxE=d.maxEnergy||4;
+          var en=d.energy||0;
+          for(var i=0;i<maxE;i++) pips+=(i<en?"●":"○");
+          c.innerHTML="Turn "+(d.turn||1)+" / "+(d.maxTurns||5)+" · Energy <span class='energy-pips'>"+pips+"</span>";
+          body.insertBefore(c, body.firstChild);
+        }
+        if(d._vet && !body.querySelector(".vet-banner")){
+          var v=document.createElement("div");
+          v.className="vet-banner";
+          v.textContent="Vet hour · "+(d.name||"animal guest");
+          body.insertBefore(v, body.firstChild);
+        }
+        if(d._memory && !body.querySelector("[data-mem]")){
+          var m=document.createElement("p");
+          m.dataset.mem="1";
+          m.className="muted";
+          m.style.fontSize=".75rem";
+          m.textContent=d._memory;
+          body.insertBefore(m, body.firstChild);
+        }
+      },60);
+      return r;
+    };
+  }
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var care=0;
+      try{ care=(d.hand[idx].care||0); }catch(e){}
+      var r=_play.apply(this,arguments);
+      try{
+        var pop=document.createElement("div");
+        pop.className="care-pop";
+        pop.textContent="-"+care+" care";
+        document.body.appendChild(pop);
+        setTimeout(function(){ try{ pop.remove(); }catch(e){} },700);
+        if(window.sfxXp) window.sfxXp();
+        if(d && d.hp<=0 && window.sfxLevelUp) window.sfxLevelUp();
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _end=window.endDuelTurn;
+  if(typeof _end==="function"){
+    window.endDuelTurn=function(){
+      var d=window._duel;
+      if(d){
+        d.turn=(d.turn||1)+1;
+        if(d.turn>(d.maxTurns||5)){
+          window.hourTimeout();
+          return;
+        }
+      }
+      if(window.sfxXp) window.sfxXp();
+      return _end.apply(this,arguments);
+    };
+  }
+
+  window.hourTimeout=function(){
+    var d=window._duel;
+    if(!d){ if(window.vfComplete) window.vfComplete(); return; }
+    d.problemStage=Math.min(4,(d.problemStage||1)+1);
+    if(window.S){
+      S.revisit=S.revisit||[];
+      S.revisit.push({name:d.name,day:(S.day||1)+2,note:"unfinished hour · stage "+d.problemStage,fam:d.fam,problem:d.problemNow});
+    }
+    if(typeof toast==="function") toast("Hour ended · stage "+d.problemStage+" · revisit set");
+    if(window.vfComplete) window.vfComplete();
+  };
+
+  var _osb=window.offerShadowBeat;
+  if(typeof _osb==="function"){
+    window.offerShadowBeat=function(){
+      var d=window._duel;
+      if(d && d._shadowUsed) return;
+      if(d) d._shadowUsed=true;
+      return _osb.apply(this,arguments);
+    };
+  }
+
+  var _occ=window.openCardChoice;
+  if(typeof _occ==="function"){
+    window.openCardChoice=function(cand){
+      var r=_occ.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        var color=(cand&&(cand.color||(cand.pr&&cand.pr.color)))||"";
+        body.querySelectorAll("button").forEach(function(b){
+          var t=b.textContent||"";
+          if(color && t.indexOf(color)>=0) b.classList.add("match-good");
+        });
+      },80);
+      return r;
+    };
+  }
+})();
 </script>
 </body>
 </html>
