@@ -706,6 +706,11 @@ body.has-dock .wrap{padding-bottom:128px}
 .prof-bar{height:8px;border-radius:99px;background:#1a303c;overflow:hidden;margin:4px 0 8px}
 .prof-bar>i{display:block;height:100%;background:#c4a0ff}
 
+
+/* ===== LONGER WINGS ===== */
+.long-choice{width:100%;text-align:left;padding:10px 12px;margin:0 0 7px;border-radius:12px;border:1px solid #35586c;background:#102634;color:inherit;font:inherit;cursor:pointer}
+.long-choice b{display:block}
+
 </style>
 </head>
 <body>
@@ -12988,6 +12993,716 @@ window.GUILD_HERBS=[
   }
 
   window.ZODIAC=ZODIAC;
+})();
+
+
+
+/* ==========================================================
+   ZODIAC TRAITS → PATIENT DIALOGUE
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var LINES={
+    Aries:[
+      "Don't give me the long version. Give me the first move.",
+      "I already tried waiting. Waiting is what got me here.",
+      "If this works, I'll know in a day — not a month."
+    ],
+    Taurus:[
+      "Slow is fine. Lectures are not.",
+      "I need something that stays when the week gets heavy.",
+      "If it costs my quiet, I'm out."
+    ],
+    Gemini:[
+      "I have three versions of this problem. Which one do you want?",
+      "I can talk myself into anything. That's the trouble.",
+      "Give me a step small enough to finish before I invent a new plan."
+    ],
+    Cancer:[
+      "The room matters more than the advice, if I'm honest.",
+      "I came because somewhere feels safer than home tonight.",
+      "Don't fix me. Help me nest this for one night."
+    ],
+    Leo:[
+      "I still want to leave with my dignity intact.",
+      "If you treat me like a project, I'll leave smiling and not come back.",
+      "Make the step something I can be proud of doing."
+    ],
+    Virgo:[
+      "I already optimized. That's not why I'm stuck.",
+      "One clean If–Then. Not a system.",
+      "Good enough is hard for me. That's the actual problem."
+    ],
+    Libra:[
+      "I said yes again. That's why I'm tired.",
+      "Help me make a no that doesn't start a war.",
+      "Fairness matters. So does my Tuesday."
+    ],
+    Scorpio:[
+      "Don't soft-sell me. I can tell.",
+      "I'll test whatever you say. Not to be difficult — to know it's real.",
+      "If this is a door, I need to know I can close it."
+    ],
+    Sagittarius:[
+      "I don't need a philosophy. I need a next mile.",
+      "Meaning helps — until it becomes a speech.",
+      "Point me at the horizon and get out of the way."
+    ],
+    Capricorn:[
+      "Rest still feels like I'm failing someone.",
+      "Structure works. Permission is what I lack.",
+      "Don't tell me to relax. Tell me it's allowed."
+    ],
+    Aquarius:[
+      "Weird is fine. Useless is not.",
+      "I'll try the odd tool if you don't make it a personality.",
+      "I don't need to belong here. I need it to work."
+    ],
+    Pisces:[
+      "I disappear into other people's weather.",
+      "Give me one edge that stays when I leave this room.",
+      "Soft is not the same as gone."
+    ]
+  };
+
+  var REACT={
+    Aries:["Already moving.","Too slow — next.","That's a start."],
+    Taurus:["I can live with that.","Don't rush me.","Steady."],
+    Gemini:["Or we could also— no. This one.","Okay. One track.","Say it again shorter."],
+    Cancer:["The room helped more than you know.","I'll try it at home.","Thank you for not pushing."],
+    Leo:["I'll do it if it doesn't look like giving up.","Keep my name on it.","Fine — with dignity."],
+    Virgo:["Write it as an If–Then.","Messy is the hard part.","One step. Documented."],
+    Libra:["Is that fair to them? …Is it fair to me?","A small no. I can practice.","Balance, not a performance."],
+    Scorpio:["I'll know if it's real.","Don't flinch.","Door stays mine."],
+    Sagittarius:["Horizon's clear.","No sermon. Good.","Next mile."],
+    Capricorn:["Permission noted.","Structure I can keep.","Duty includes rest — I'll try."],
+    Aquarius:["Odd works.","Alone is a choice, not a religion.","Fine. Weird tool accepted."],
+    Pisces:["One edge. I'll hold it.","I'm still here.","Soft, not dissolved."]
+  };
+
+  function zod(){ return window.ZODIAC||{}; }
+  function signOf(cand){
+    if(!cand) return "Virgo";
+    var pid=cand.pid||cand.name||"guest";
+    if(typeof window.getPatientSign==="function") return window.getPatientSign(pid, cand.name);
+    return cand.sign||"Virgo";
+  }
+
+  window.zodiacDialogue=function(cand, kind){
+    var sign=signOf(cand);
+    var pool=(kind==="react"?REACT:LINES)[sign]||LINES.Virgo;
+    var i=Math.floor(Math.random()*pool.length);
+    return {sign:sign, text:pool[i], trait:(zod()[sign]||{}).line||""};
+  };
+
+  function injectDialogue(cand){
+    if(!cand) return cand;
+    var sign=signOf(cand);
+    var z=zod()[sign]||{};
+    var d=window.zodiacDialogue(cand);
+    cand.sign=sign;
+    cand.horo=z;
+    cand.quote=d.text;
+    cand.zodiacLine=z.line||"";
+    cand.zodiacGift=z.gift||"";
+    cand.zodiacShadow=z.shadow||"";
+    if(cand.pr){
+      cand.pr.quote=d.text;
+      cand.pr.sign=sign;
+    }
+    if(!cand.problems) cand.problems=[];
+    var tag=sign+" · "+(z.el||"")+" · "+(z.gift||"");
+    if(cand.problems.indexOf(tag)<0) cand.problems.unshift(tag);
+    return cand;
+  }
+
+  var _arc=window.applyArcToCandidate;
+  if(typeof _arc==="function"){
+    window.applyArcToCandidate=function(cand){
+      var c=_arc.apply(this,arguments)||cand;
+      return injectDialogue(c);
+    };
+  }
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      injectDialogue(cand);
+      var r=_scd.apply(this,arguments);
+      setTimeout(function(){
+        try{
+          var body=document.getElementById("overhaulModalBody");
+          if(!body||body.querySelector("[data-zod-dlg]")) return;
+          var sign=signOf(cand);
+          var z=zod()[sign]||{};
+          var dlg=window.zodiacDialogue(cand);
+          var div=document.createElement("div");
+          div.dataset.zodDlg="1";
+          div.className="card";
+          div.style.borderColor="#5a4a7a";
+          div.innerHTML='<div class="section-kicker">'+(z.ic||"✨")+' '+esc(sign)+' · THEY SAY</div>'+
+            '<p style="font-style:italic;line-height:1.4">“'+esc(dlg.text)+'”</p>'+
+            '<p class="muted" style="font-size:.78rem">Gift: '+esc(z.gift||"")+' · Watch: '+esc(z.shadow||"")+'</p>'+
+            '<button class="btn sm" type="button">Another line</button>';
+          div.querySelector("button").onclick=function(){
+            var n=window.zodiacDialogue(cand);
+            div.querySelector("p").textContent="“"+n.text+"”";
+          };
+          body.insertBefore(div, body.firstChild);
+        }catch(e){}
+      },160);
+      return r;
+    };
+  }
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var r=_play.apply(this,arguments);
+      try{
+        if(d && Math.random()<0.4){
+          var react=window.zodiacDialogue({pid:d.pid,name:d.name,sign:d.sign},"react");
+          d.log.unshift((react.sign||"")+" · “"+react.text+"”");
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   ZODIAC ELEMENT INTERACTIONS — Fire Earth Air Water
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  // Card type → element
+  var TYPE_EL={Red:"Fire",Yellow:"Air",Blue:"Water",White:"Earth",Orange:"Earth",Green:"Water",Black:"Air",Any:"Any",Match:"Match",Kit:"Earth"};
+  // Sign element from ZODIAC
+  function signEl(sign){
+    var z=window.ZODIAC&&window.ZODIAC[sign];
+    return (z&&z.el)||"Earth";
+  }
+  function cardEl(card){
+    if(!card) return "Any";
+    if(card.element) return card.element;
+    return TYPE_EL[card.type]||"Any";
+  }
+
+  // Classic game triangle + harmony
+  // Fire feeds on Air (strong), opposed by Water (weak), kindled by Earth fuel (mild+)
+  // Water softens Fire, feeds Earth, scattered by Air
+  // Air feeds Fire, dries Earth, moves Water
+  // Earth banks Fire, drinks Water, resists Air
+  var MATRIX={
+    Fire:{Fire:1.0,Earth:1.25,Air:1.4,Water:0.65,Any:1.0},
+    Earth:{Fire:0.85,Earth:1.1,Air:0.75,Water:1.35,Any:1.0},
+    Air:{Fire:1.3,Earth:1.2,Air:1.0,Water:0.8,Any:1.0},
+    Water:{Fire:1.45,Earth:0.9,Air:1.15,Water:1.1,Any:1.0}
+  };
+  var FLAVOR={
+    "Fire>Air":"Fire rides the Air — spark finds fuel",
+    "Fire>Earth":"Fire banks on Earth — controlled heat",
+    "Fire>Water":"Water smothers the Fire — soft miss",
+    "Water>Fire":"Water cools the burn — deep care",
+    "Water>Air":"Water rides mist — odd clear",
+    "Earth>Water":"Earth drinks Water — steady settle",
+    "Earth>Air":"Air slips off Earth — light touch",
+    "Air>Fire":"Air feeds Fire — bright hit",
+    "Air>Earth":"Air lifts dust — idea moves stone",
+    "Water>Earth":"Water muddies — slower step",
+    "Earth>Fire":"Earth banks Fire — less flare",
+    "Air>Water":"Air chops the Water — scatter"
+  };
+
+  window.elementMultiplier=function(cardElement, patientElement){
+    var row=MATRIX[cardElement];
+    if(!row) return 1;
+    return row[patientElement]!=null?row[patientElement]:1;
+  };
+
+  window.elementFlavor=function(ce, pe){
+    var key=ce+">"+pe;
+    return FLAVOR[key]||(ce+" meets "+pe);
+  };
+
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    var card=d&&d.hand&&d.hand[idx];
+    var pe=d&&(d.element||signEl(d.sign))||"Earth";
+    var ce=cardEl(card);
+    // tag card so careFor / base path can be boosted after
+    if(d && card){
+      d._pendingEl={ce:ce,pe:pe,mult:window.elementMultiplier(ce,pe)};
+    }
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    try{
+      d=window._duel;
+      if(d && d._pendingEl){
+        var pe2=d._pendingEl.pe, ce2=d._pendingEl.ce, m=d._pendingEl.mult;
+        d._pendingEl=null;
+        if(m!==1 && d.hp>0){
+          // apply residual from multiplier vs assumed base ~care
+          // If strong, chip extra; if weak, refund a little HP (softer)
+          if(m>1){
+            var extra=Math.round((m-1)*4);
+            d.hp=Math.max(0,d.hp-extra);
+            d.score=(d.score||0)+1;
+            d.log.unshift("🜂 "+window.elementFlavor(ce2,pe2)+" · ×"+m.toFixed(2)+" (+"+extra+")");
+          } else if(m<1){
+            var soft=Math.round((1-m)*3);
+            d.hp=Math.min(d.maxHp||d.hp+soft, d.hp+soft);
+            d.log.unshift("🜄 "+window.elementFlavor(ce2,pe2)+" · ×"+m.toFixed(2)+" (soft)");
+          }
+          if(typeof toast==="function") toast((m>1?"🔥":"💧")+" "+ce2+" → "+pe2);
+        } else if(m===1){
+          d.log.unshift("🜔 "+ce2+" meets "+pe2+" · neutral");
+        }
+      }
+    }catch(e){}
+    return r;
+  };
+
+  // Deal element-aware cards + show matrix tip on duel start
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    if(cand){
+      var sign=cand.sign||(typeof window.getPatientSign==="function"?window.getPatientSign(cand.pid||cand.name,cand.name):"Virgo");
+      cand.sign=sign;
+      cand.element=signEl(sign);
+    }
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(d && cand){
+        d.sign=cand.sign;
+        d.element=cand.element||signEl(cand.sign);
+        d.pid=cand.pid;
+        d.name=cand.name;
+      }
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-el-mat]")) return;
+        var pe=(window._duel&&window._duel.element)||"Earth";
+        var div=document.createElement("div");
+        div.dataset.elMat="1";
+        div.className="card";
+        div.innerHTML='<div class="section-kicker">ELEMENT TABLE · PATIENT '+esc(pe)+'</div>'+
+          '<p class="muted" style="font-size:.78rem">Fire↗Air  Water↗Fire  Earth↗Water  Air↗Fire · weak: Fire↘Water, Earth↘Air</p>'+
+          '<p style="font-size:.8rem">Match colors to elements: 🔴Fire 🟡Air 🔵Water ⚪Earth · Orange/White→Earth Green→Water Black→Air</p>';
+        body.insertBefore(div, body.firstChild);
+      },200);
+    }catch(e){}
+    return r;
+  };
+
+  // Element chart reference
+  window.openElementChart=function(){
+    var html='<div class="section-kicker">ZODIAC ELEMENT INTERACTIONS</div>';
+    html+='<p class="muted" style="font-size:.78rem">Care cards interact with the patient\'s element (from their sign).</p>';
+    html+='<div class="card"><b>Strong</b><br>🔥 Fire → Air (spark)<br>💧 Water → Fire (cool the burn)<br>🌍 Earth → Water (drink & settle)<br>🌬 Air → Fire (feed the flame)</div>';
+    html+='<div class="card"><b>Soft / weak</b><br>🔥 Fire → Water (smothered)<br>🌍 Earth → Air (dust slips)<br>🌬 Air → Water (scatter)<br>💧 Water → Earth (mud)</div>';
+    html+='<div class="card"><b>Sign map</b><br>Fire: Aries Leo Sag<br>Earth: Taurus Virgo Cap<br>Air: Gemini Libra Aqua<br>Water: Cancer Scorpio Pisces</div>';
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Elements","CHART",html);
+  };
+
+  setTimeout(function(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnElements")) return;
+    var b=document.createElement("button");
+    b.id="btnElements"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="🜂 Element chart";
+    b.onclick=function(){ window.openElementChart(); };
+    home.appendChild(b);
+  },1200);
+})();
+
+
+
+/* ==========================================================
+   MOON PHASE EFFECTS
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var PHASES=[
+    {id:"new",ic:"🌑",name:"New Moon",care:0.9,focus:1,flame:1,draw:0,note:"Quiet starts. Small steps hold.",tag:"I,N"},
+    {id:"wax_c",ic:"🌒",name:"Waxing Crescent",care:1.0,focus:1,flame:0,draw:1,note:"Intention gains a little weight.",tag:"N,F"},
+    {id:"first",ic:"🌓",name:"First Quarter",care:1.1,focus:0,flame:0,draw:0,note:"Action weather. Push meets resistance.",tag:"T,E"},
+    {id:"wax_g",ic:"🌔",name:"Waxing Gibbous",care:1.15,focus:0,flame:1,draw:0,note:"Refine the step already in motion.",tag:"S,T"},
+    {id:"full",ic:"🌕",name:"Full Moon",care:1.25,focus:0,flame:0,draw:1,note:"Bright table. Feelings louder. Breakthroughs easier.",tag:"F,E"},
+    {id:"wan_g",ic:"🌖",name:"Waning Gibbous",care:1.1,focus:1,flame:0,draw:0,note:"Share what worked. Teach the room.",tag:"F,T"},
+    {id:"last",ic:"🌗",name:"Last Quarter",care:0.95,focus:0,flame:1,draw:0,note:"Release. Cut what does not serve.",tag:"T,I"},
+    {id:"wan_c",ic:"🌘",name:"Waning Crescent",care:0.85,focus:2,flame:2,draw:0,note:"Rest terrain. Soft care; deep recover.",tag:"I,S"}
+  ];
+
+  // Approximate phase from day-of-cycle (29.53d) using real date + in-game day
+  window.getMoonPhase=function(){
+    var now=new Date();
+    // Known new moon reference approx: 2000-01-06
+    var ref=Date.UTC(2000,0,6,18,14,0);
+    var day=(S&&S.day)?(S.day%30):0;
+    var age=((now.getTime()-ref)/86400000 + day*0.3) % 29.530588;
+    if(age<0) age+=29.530588;
+    var idx=Math.floor((age/29.530588)*8)%8;
+    return PHASES[idx];
+  };
+
+  window.moonCareMult=function(){
+    var p=window.getMoonPhase();
+    return (p&&p.care)||1;
+  };
+
+  function paintMoon(){
+    try{
+      var p=window.getMoonPhase();
+      var home=document.getElementById("sc-home");
+      if(!home) return;
+      var el=document.getElementById("moonBar");
+      if(!el){
+        el=document.createElement("div");
+        el.id="moonBar";
+        el.className="card";
+        el.style.fontSize=".8rem";
+        home.insertBefore(el, home.firstChild);
+      }
+      el.innerHTML='<div class="section-kicker">MOON</div>'+
+        p.ic+' <b>'+esc(p.name)+'</b> · care ×'+p.care+
+        '<div class="muted" style="margin-top:4px">'+esc(p.note)+'</div>'+
+        '<button class="btn sm" style="margin-top:6px" type="button" id="btnMoonDetail">Phase effects</button>';
+      var b=document.getElementById("btnMoonDetail");
+      if(b) b.onclick=function(){ window.openMoonChart(); };
+    }catch(e){}
+  }
+
+  window.openMoonChart=function(){
+    var cur=window.getMoonPhase();
+    var html='<div class="section-kicker">MOON PHASE EFFECTS</div>';
+    html+='<p class="muted" style="font-size:.78rem">Current: '+cur.ic+' <b>'+esc(cur.name)+'</b></p>';
+    for(var i=0;i<PHASES.length;i++){
+      var p=PHASES[i];
+      var on=p.id===cur.id;
+      html+='<div class="card" style="'+(on?'border-color:#c4a0ff':'')+'">'+p.ic+' <b>'+esc(p.name)+'</b> · care ×'+p.care+
+        '<div class="muted" style="font-size:.78rem">'+esc(p.note)+'</div></div>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Moon","PHASE",html);
+  };
+
+  // Apply mult after care plays
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    var hpBefore=d?d.hp:null;
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    try{
+      d=window._duel;
+      var p=window.getMoonPhase();
+      if(d && hpBefore!=null && p && p.care!==1){
+        var dealt=hpBefore-d.hp;
+        if(dealt>0 && p.care>1){
+          var extra=Math.round(dealt*(p.care-1));
+          if(extra>0){ d.hp=Math.max(0,d.hp-extra); d.log.unshift(p.ic+" "+p.name+" · +"+extra+" moon care"); }
+        } else if(dealt>0 && p.care<1){
+          // refund a bit — softer moon
+          var soft=Math.round(dealt*(1-p.care));
+          d.hp=Math.min(d.maxHp||hpBefore, d.hp+soft);
+          d.log.unshift(p.ic+" "+p.name+" · soft table (−"+soft+")");
+        }
+      }
+    }catch(e){}
+    return r;
+  };
+
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var p=window.getMoonPhase();
+      var d=window._duel;
+      if(d){
+        d.moon=p;
+        if(p.draw && d.hand.length<10){
+          var pool=(window.FX_CARDS||[]).concat(window.MORE_CARDS||[]);
+          if(pool.length) d.hand.push(Object.assign({}, pool[Math.floor(Math.random()*pool.length)]));
+        }
+        d.log.unshift(p.ic+" "+p.name+" over the table · "+p.note);
+      }
+      // mild psy tick
+      if(typeof window.readJungProfile==="function" && p.tag){
+        // addPsy may be private — skip if missing
+      }
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-moon]")) return;
+        var div=document.createElement("div");
+        div.dataset.moon="1";
+        div.className="card";
+        div.innerHTML=p.ic+' <b>'+esc(p.name)+'</b> · care ×'+p.care+'<div class="muted" style="font-size:.78rem">'+esc(p.note)+'</div>';
+        body.insertBefore(div, body.firstChild);
+      },90);
+    }catch(e){}
+    return r;
+  };
+
+  // Visit complete: moon resource gift
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      var p=window.getMoonPhase();
+      if(window.bumpResources) window.bumpResources({focus:p.focus||0, flame:p.flame?p.flame*3:0});
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  setTimeout(paintMoon,700);
+  setTimeout(paintMoon,1800);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paintMoon,40);
+      return r;
+    };
+  }
+
+  window.MOON_PHASES=PHASES;
+})();
+
+
+
+/* ==========================================================
+   GLOBAL UPDATE · LONGER PLAY AREAS
+   Night clinic · Greenhouse · Case week · Apprentice · Letters
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+  function bump(o){ if(window.bumpResources) window.bumpResources(o); }
+
+  function ensure(){
+    if(!window.S) window.S={day:1,rp:50};
+    if(!S.long) S.long={night:0,green:0,case:0,appr:0,letter:0,flags:{}};
+    return S.long;
+  }
+
+  /* ---------- NIGHT CLINIC : 8 rooms ---------- */
+  var NIGHT=[
+    {t:"Lantern lock",n:"The street is already quiet. You choose how the night opens.",
+      c:[{k:"Keep one lamp",d:"Small light, long oil."},{k:"Light the whole row",d:"Bright, burns faster."},{k:"Dark waiting bench",d:"Guests speak softer."}]},
+    {t:"The late knock",n:"Someone who almost didn't come.",
+      c:[{k:"Open immediately",d:"Trust first."},{k:"Ask through the door",d:"Safety first."},{k:"Offer tea first",d:"Room before questions."}]},
+    {t:"Night chart",n:"Three names. One hour.",
+      c:[{k:"See the urgent one",d:"Triage."},{k:"See the returning one",d:"Thread."},{k:"See the new one",d:"Begin."}]},
+    {t:"Still-room at 1am",n:"The kettle ticks. The house listens.",
+      c:[{k:"Walk the shelves",d:"Inventory as prayer."},{k:"Sit without fixing",d:"Presence."},{k:"Write tomorrow's first line",d:"Dawn gets a map."}]},
+    {t:"Dream guest",n:"They talk like a visit but may be sleep-talk.",
+      c:[{k:"Treat it as real",d:"Care anyway."},{k:"Name it as dream",d:"Boundary."},{k:"Take one true sentence",d:"Keep the seed."}]},
+    {t:"The almost-cancel",n:"A text: I shouldn't have come.",
+      c:[{k:"Stay on the bench with them",d:"No lecture."},{k:"Shorten the visit",d:"Dignity of leaving."},{k:"Book the return before they vanish",d:"Thread saved."}]},
+    {t:"Oil check",n:"Flame is a character at night.",
+      c:[{k:"Feed the lantern",d:"+flame."},{k:"Let it gutter",d:"Honest dark."},{k:"Share the last light",d:"Guest first."}]},
+    {t:"Dawn latch",n:"Night clinic closes by choosing how morning starts.",
+      c:[{k:"Sleep two hours",d:"+focus."},{k:"Open early anyway",d:"Duty."},{k:"Write the night log",d:"Memory."}]}
+  ];
+
+  window.openNightClinic=function(){
+    var L=ensure();
+    var i=Math.min(L.night||0, NIGHT.length-1);
+    var r=NIGHT[i];
+    var html='<div class="section-kicker">NIGHT CLINIC · ROOM '+(i+1)+'/'+NIGHT.length+'</div>';
+    html+='<h3>'+esc(r.t)+'</h3><p style="line-height:1.45">'+esc(r.n)+'</p>';
+    for(var k=0;k<r.c.length;k++){
+      html+='<button class="long-choice" onclick="window.nightPick('+k+')"><b>'+esc(r.c[k].k)+'</b><span class="muted">'+esc(r.c[k].d)+'</span></button>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Leave night</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Night clinic","LONG",html);
+  };
+  window.nightPick=function(k){
+    var L=ensure();
+    var i=Math.min(L.night||0, NIGHT.length-1);
+    var ch=NIGHT[i].c[k];
+    L.night=(L.night||0)+1;
+    if(L.night>=NIGHT.length){ L.night=0; L.flags.nightDone=(L.flags.nightDone||0)+1; bump({flame:12,focus:2,rp:3}); }
+    else bump({flame:4,focus:1});
+    if(typeof save==="function") save({ui:false});
+    var html='<div class="card glow"><b>'+esc(ch.k)+'</b><p>'+esc(ch.d)+'</p>';
+    html+='<button class="btn" style="width:100%" onclick="window.openNightClinic()">Next room</button></div>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(ch.k,"NIGHT",html);
+    if(window.sfx) window.sfx.ok();
+  };
+
+  /* ---------- GREENHOUSE : 10 seasons ---------- */
+  var GREEN=[
+    {t:"Bare beds",n:"Dirt is a plan, not a failure.",c:["Lay compost lore","Leave a path","Name the first row"]},
+    {t:"Seed tin",n:"Twelve packets. You may open three.",c:["Chamomile","Nettle","Lemon balm"]},
+    {t:"Water day",n:"Too much drowns. Too little sulks.",c:["Morning only","Check the finger test","Ask the bed"]},
+    {t:"Weeds as teachers",n:"Not every green is the crop.",c:["Pull kind","Leave the edges","Harvest the weed as tea-story"]},
+    {t:"Pest weather",n:"Something ate a leaf.",c:["Look closer","Companion plant lore","Accept a hole"]},
+    {t:"First cut",n:"You may harvest or wait.",c:["Cut a little","Wait for fullness","Dry a test bundle"]},
+    {t:"Dry-rack",n:"Air is part of the medicine-story.",c:["Shade dry","Paper bags","Label everything"]},
+    {t:"Jar day",n:"The greenhouse becomes the shelf.",c:["One jar gift","Sell a bundle (RP)","Keep the mother plant"]},
+    {t:"Frost warning",n:"The season turns without asking.",c:["Cloth the beds","Bring pots in","Let winter teach"]},
+    {t:"Seed again",n:"The year is a circle.",c:["Save seed","Trade seed","Rest the bed"]}
+  ];
+  window.openGreenhouse=function(){
+    var L=ensure();
+    var i=Math.min(L.green||0, GREEN.length-1);
+    var r=GREEN[i];
+    var html='<div class="section-kicker">GREENHOUSE · SEASON '+(i+1)+'/'+GREEN.length+'</div>';
+    html+='<h3>'+esc(r.t)+'</h3><p>'+esc(r.n)+'</p>';
+    for(var k=0;k<r.c.length;k++){
+      html+='<button class="long-choice" onclick="window.greenPick('+k+')">'+esc(r.c[k])+'</button>';
+    }
+    html+='<p class="muted" style="font-size:.75rem"><a class="amz-link" target="_blank" rel="noopener" href="'+amz("herb drying rack")+'">🛒 drying rack</a></p>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Leave beds</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Greenhouse","GROW",html);
+  };
+  window.greenPick=function(k){
+    var L=ensure();
+    L.green=(L.green||0)+1;
+    if(L.green>=GREEN.length){ L.green=0; L.flags.harvest=(L.flags.harvest||0)+1; bump({rp:6,flame:8}); if(typeof toast==="function") toast("🌾 Year harvested"); }
+    else bump({flame:3});
+    if(typeof save==="function") save({ui:false});
+    window.openGreenhouse();
+  };
+
+  /* ---------- CASE WEEK : 7 days ---------- */
+  var CASE=[
+    {d:"Day 1 · Intake",n:"A guest leaves three clues and a half-sentence.",c:["Write the clues","Follow the half-sentence","Ask who sent them"]},
+    {d:"Day 2 · House",n:"You visit the terrain (fiction walk).",c:["Kitchen first","Bedroom first","Doorstep first"]},
+    {d:"Day 3 · Pattern",n:"Same hour, different weather.",c:["Chart the hour","Name the weather","Invite a return"]},
+    {d:"Day 4 · Relapse",n:"The step worked, then the week got louder.",c:["No shame","Smaller step","Different door"]},
+    {d:"Day 5 · Ally",n:"Someone in their life is either help or static.",c:["Invite the ally","Protect the guest","Write a boundary script"]},
+    {d:"Day 6 · Choice",n:"Two honest plans. Only one fits Tuesday.",c:["The kind plan","The strict plan","Let them pick"]},
+    {d:"Day 7 · Close",n:"The case becomes a letter they keep.",c:["One page","One sentence","One token"]}
+  ];
+  window.openCaseWeek=function(){
+    var L=ensure();
+    var i=Math.min(L.case||0, CASE.length-1);
+    var r=CASE[i];
+    var html='<div class="section-kicker">CASE WEEK · '+esc(r.d)+'</div><p>'+esc(r.n)+'</p>';
+    for(var k=0;k<r.c.length;k++){
+      html+='<button class="long-choice" onclick="window.casePick()">'+esc(r.c[k])+'</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Desk later</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Case week","FILE",html);
+  };
+  window.casePick=function(){
+    var L=ensure();
+    L.case=(L.case||0)+1;
+    if(L.case>=CASE.length){ L.case=0; L.flags.cases=(L.flags.cases||0)+1; bump({att:2,rp:4,focus:2}); if(typeof toast==="function") toast("📁 Case tied"); }
+    else bump({att:1});
+    if(typeof save==="function") save({ui:false});
+    window.openCaseWeek();
+  };
+
+  /* ---------- APPRENTICE : 8 stations ---------- */
+  var APPR=[
+    {t:"Taste the air",n:"Name three smells before you name a herb."},
+    {t:"Label law",n:"If it isn't labeled, it isn't in the still-room."},
+    {t:"Listen twice",n:"The second sentence is usually the real one."},
+    {t:"Refer without shame",n:"The best card is sometimes a clinician."},
+    {t:"Flame budget",n:"Oil is a resource. So is you."},
+    {t:"One-page notes",n:"Memory is a kindness to tomorrow's you."},
+    {t:"Refuse the miracle",n:"Guests will ask. The room stays honest."},
+    {t:"Close the day",n:"Latch, log, sleep. In that order."}
+  ];
+  window.openApprentice=function(){
+    var L=ensure();
+    var i=Math.min(L.appr||0, APPR.length-1);
+    var r=APPR[i];
+    var html='<div class="section-kicker">APPRENTICE · STATION '+(i+1)+'/'+APPR.length+'</div>';
+    html+='<h3>'+esc(r.t)+'</h3><p>'+esc(r.n)+'</p>';
+    html+='<button class="long-choice" onclick="window.apprPick(1)">I practiced this</button>';
+    html+='<button class="long-choice" onclick="window.apprPick(0)">I skipped — honest</button>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Yard later</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Apprentice","TRIAL",html);
+  };
+  window.apprPick=function(ok){
+    var L=ensure();
+    L.appr=(L.appr||0)+1;
+    if(ok) bump({focus:1,flame:3});
+    if(L.appr>=APPR.length){ L.appr=0; L.flags.appr=(L.flags.appr||0)+1; bump({rp:8}); if(typeof toast==="function") toast("🎓 Station year done"); }
+    if(typeof save==="function") save({ui:false});
+    window.openApprentice();
+  };
+
+  /* ---------- LETTERS : 6 ---------- */
+  var LETT=[
+    {from:"Maya",n:"I slept twice. Then I didn't. I'm not writing for a lecture."},
+    {from:"Ellis",n:"The calendar is still full. I crossed one thing off. It felt illegal."},
+    {from:"Kai",n:"I closed a tab. Then I opened four. Send a smaller rule."},
+    {from:"Rae",n:"I said no at the door. My voice shook. That's the whole letter."},
+    {from:"A pet's person",n:"Bramble hid in the storm. We used the den. Thank you for not selling magic."},
+    {from:"The road",n:"You left a token on the stone. It is still there. So are you."}
+  ];
+  window.openLetters=function(){
+    var L=ensure();
+    var i=Math.min(L.letter||0, LETT.length-1);
+    var r=LETT[i];
+    var html='<div class="section-kicker">LETTER DESK · '+(i+1)+'/'+LETT.length+'</div>';
+    html+='<p><b>From '+esc(r.from)+'</b></p><p style="line-height:1.5;font-style:italic">“'+esc(r.n)+'”</p>';
+    html+='<button class="long-choice" onclick="window.letterPick()">Reply with one sentence</button>';
+    html+='<button class="long-choice" onclick="window.letterPick()">Keep the letter. Do not answer yet.</button>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close desk</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Letters","INK",html);
+  };
+  window.letterPick=function(){
+    var L=ensure();
+    L.letter=(L.letter||0)+1;
+    if(L.letter>=LETT.length){ L.letter=0; L.flags.letters=(L.flags.letters||0)+1; bump({focus:2,att:1}); }
+    if(typeof save==="function") save({ui:false});
+    window.openLetters();
+  };
+
+  window.openLongWings=function(){
+    var L=ensure();
+    var html='<div class="section-kicker">LONGER AREAS</div>';
+    html+='<button class="long-choice" onclick="window.openNightClinic()"><b>🌙 Night clinic</b> Room '+( (L.night||0)+1)+'/8</button>';
+    html+='<button class="long-choice" onclick="window.openGreenhouse()"><b>🌿 Greenhouse year</b> Season '+( (L.green||0)+1)+'/10</button>';
+    html+='<button class="long-choice" onclick="window.openCaseWeek()"><b>📁 Case week</b> '+(CASE[Math.min(L.case||0,6)].d)+'</button>';
+    html+='<button class="long-choice" onclick="window.openApprentice()"><b>🎓 Apprentice stations</b> '+( (L.appr||0)+1)+'/8</button>';
+    html+='<button class="long-choice" onclick="window.openLetters()"><b>✉️ Letter desk</b> '+( (L.letter||0)+1)+'/6</button>';
+    html+='<button class="long-choice" onclick="window.openJungRoad&&openJungRoad()"><b>🔮 Inner road</b></button>';
+    html+='<button class="long-choice" onclick="window.openRoadStory&&openRoadStory()"><b>🛤️ Old road</b></button>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Back</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Longer play","WINGS",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(home && !document.getElementById("btnLongWings")){
+      var b=document.createElement("button");
+      b.id="btnLongWings"; b.className="btn"; b.style.marginTop="8px";
+      b.textContent="🗺️ Longer areas";
+      b.onclick=function(){ window.openLongWings(); };
+      home.appendChild(b);
+    }
+    var dock=document.getElementById("clinicDock");
+    if(dock && !document.getElementById("dockLong")){
+      var d=document.createElement("button");
+      d.id="dockLong"; d.textContent="🗺️ Long";
+      d.onclick=function(){ window.openLongWings(); };
+      dock.appendChild(d);
+    }
+  }
+  setTimeout(mount,600);
+  setTimeout(mount,1600);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,40);
+      return r;
+    };
+  }
 })();
 
 </script>
