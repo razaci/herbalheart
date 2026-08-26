@@ -470,6 +470,16 @@ body{
 .vet-meter>i{display:block;height:100%;background:linear-gradient(90deg,#62e6ad,#4db6e8);border-radius:99px}
 .vet-queue-card{border-left:3px solid var(--accent)}
 
+
+/* ===== EXPANDED CARE + LOG + AMAZON ===== */
+.care-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.care-btn{padding:10px;border-radius:12px;border:1px solid #29495c;background:#0e202d;color:var(--text);cursor:pointer;text-align:left;font:inherit;font-size:.78rem;font-weight:650}
+.care-btn:disabled{opacity:.4}
+.care-btn.done{border-color:#2a5a40;background:#143028}
+.amz-link{display:inline-block;margin:4px 4px 0 0;padding:6px 10px;border-radius:99px;background:#1a2a18;border:1px solid #3a5a40;color:#9dcea8;font-size:.72rem;text-decoration:none}
+.log-patient{border-left:3px solid var(--accent);padding:10px;margin:8px 0;background:#0e202d;border-radius:0 12px 12px 0}
+.recovery-box{padding:12px;border-radius:14px;background:linear-gradient(145deg,#143028,#0e202d);border:1px solid #2a5a40;margin:8px 0}
+
 </style>
 </head>
 <body>
@@ -8177,6 +8187,265 @@ window.GUILD_HERBS=[
       else home.insertBefore(box, home.firstChild);
     }catch(e){}
   },600);
+})();
+
+
+
+/* ==========================================================
+   EXPANDED PATIENTS · CARE · RECOVERY LOG · AMAZON HERBS
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  // Amazon search queries by family (consumer product search only — not treatment)
+  var AMZ_BY_FAMILY={
+    "Sleep":["organic chamomile tea bags","passionflower herbal tea","magnesium glycinate supplement","lavender essential oil for sleep","blackout curtains"],
+    "Focus":["rosemary essential oil","organic green tea bags","bacopa monnieri capsules","lion's mane mushroom powder","B complex vitamins"],
+    "Boundaries":["motherwort herb tea","hawthorn berry tea","rose petal tea organic","lemon balm tea bags"],
+    "Mood-Energy":["ashwagandha root capsules","organic oatstraw tea","rhodiola rosea supplement","vitamin D3 drops","holy basil tulsi tea"],
+    "Pain-Stiffness":["turmeric curcumin capsules","boswellia serrata extract","ginger tea bags organic","epsom salt soak"],
+    "Digestive":["ginger tea bags","peppermint leaf tea","fennel seed tea","chamomile tea bags"],
+    "Home-Environment":["nettle leaf tea","humidifier quiet","white noise machine","blue light blocking glasses"]
+  };
+
+  var MEMORY_LINES={
+    "Maya":["I just need something that isn't another lecture.","The wind-down helped once. Then exams got louder.","I booked this before I talked myself out of it.","I told a friend about the still-room. Is that weird?"],
+    "default":["I don't need fancy. I need clear.","You remembered last time. That matters.","The street says you listen.","I almost cancelled. I'm glad I didn't."]
+  };
+
+  var EXTRA_CARE=[
+    {id:"breath",ic:"🌬️",name:"Breath settle",d:"Two minutes paced breath",score:1,att:0},
+    {id:"journal",ic:"📓",name:"One-line journal",d:"Write the next step once",score:1,att:0},
+    {id:"tea2",ic:"🍵",name:"Second cup",d:"Re-steep or switch blend",score:1,att:0},
+    {id:"body",ic:"🦴",name:"Body scan",d:"Feet, jaw, shoulders check",score:1,att:0},
+    {id:"boundary",ic:"🛡️",name:"Boundary script",d:"Practice one short no",score:2,att:1},
+    {id:"walk",ic:"🚶",name:"Doorway walk",d:"Three minutes of movement",score:1,att:0},
+    {id:"dark",ic:"🌙",name:"Light hygiene talk",d:"Screens and dimming plan",score:1,att:0},
+    {id:"referral",ic:"📤",name:"Kind referral note",d:"When fiction isn't enough",score:1,att:0,rp:2}
+  ];
+
+  function memLine(name, visits){
+    var arr=MEMORY_LINES[name]||MEMORY_LINES["default"];
+    var i=Math.min(arr.length-1, Math.max(0,(visits||1)-1));
+    return arr[i];
+  }
+
+  function recoveryBlurb(outcome, fam, name){
+    var map={
+      Breakthrough:"In the fiction of the still-room, "+name+" finds a clear next step that actually sticks for a few nights.",
+      Improve:name+" leaves with one workable practice. Not cured—steadier.",
+      Plateau:"Held and heard. The ledger marks steady, not spectacular.",
+      Stuck:"No shift today. A follow-up slip is honest care, not failure.",
+      Setback:"Hard session. Trust thins; the door stays open."
+    };
+    return (map[outcome]||"Visit closed.")+" Family focus: "+(fam||"general")+".";
+  }
+
+  // Enrich complete visit with detail + Amazon
+  var _vf=window.vfComplete;
+  window.vfComplete=function(){
+    var v=window._visit;
+    if(typeof _vf==="function") _vf.apply(this,arguments);
+    // After complete, v may be null — use last log
+    try{
+      var last=(S.log&&S.log[0])||null;
+      if(!last) return;
+      setTimeout(function(){ showPostVisitDetail(last); },200);
+    }catch(e){}
+  };
+
+  function showPostVisitDetail(entry){
+    try{
+      var fam=entry.family||"";
+      var amzList=AMZ_BY_FAMILY[fam]||AMZ_BY_FAMILY["Sleep"];
+      var visits=(S.patientMemory&&S.patientMemory[entry.name]&&S.patientMemory[entry.name].visits)||1;
+      var line=memLine(entry.name, visits);
+      var rec=recoveryBlurb(entry.outcome, fam, entry.name);
+
+      // Store rich recovery on entry
+      entry.recovery=rec;
+      entry.memoryLine=line;
+      entry.amzQueries=amzList.slice(0,3);
+      if(typeof save==="function") save({ui:false});
+
+      var html='<div class="recovery-box"><div class="section-kicker">RECOVERY · FICTION</div>';
+      html+='<p style="margin:6px 0">'+esc(rec)+'</p>';
+      html+='<p class="muted" style="font-style:italic;margin:8px 0">&ldquo;'+esc(line)+'&rdquo;</p>';
+      html+='<div class="muted" style="font-size:.75rem">Visits with '+esc(entry.name)+': '+visits+' · Outcome: '+esc(entry.outcome)+' · +'+entry.rp+' RP</div></div>';
+
+      html+='<div class="card"><div class="section-kicker">HOME SUPPORT · PRODUCT SEARCH ONLY</div>';
+      html+='<p class="muted" style="font-size:.75rem;margin:4px 0 8px">Optional consumer searches for comfort tools and teas. <strong>Not treatment.</strong> Persistent symptoms → real clinicians.</p>';
+      for(var i=0;i<amzList.length&&i<4;i++){
+        html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(amzList[i])+'">🛒 '+esc(amzList[i])+'</a>';
+      }
+      html+='</div>';
+
+      html+='<button class="btn" style="width:100%;margin-top:10px" onclick="closeOverhaulModal();go(\'home\')">Back to clinic</button>';
+      html+='<button class="btn sec" style="width:100%;margin-top:6px" onclick="window.openTreatmentLog()">Open treatment log</button>';
+
+      if(typeof openOverhaulModal==="function") openOverhaulModal("After the visit","CARE + RECOVERY",html);
+    }catch(e){console.warn(e)}
+  }
+
+  // Treatment log with patient detail
+  window.openTreatmentLog=function(){
+    try{
+      var logs=S.log||[];
+      var html='<div class="section-kicker">TREATMENT LOG</div>';
+      html+='<p class="muted" style="font-size:.8rem">Outcomes, memory lines, and optional product searches. Fiction only.</p>';
+      if(!logs.length) html+='<div class="empty">No visits yet.</div>';
+      for(var i=0;i<Math.min(logs.length,20);i++){
+        var e=logs[i];
+        var visits=(S.patientMemory&&S.patientMemory[e.name]&&S.patientMemory[e.name].visits)||"?";
+        html+='<div class="log-patient">';
+        html+='<div style="display:flex;justify-content:space-between;gap:8px"><strong>'+esc(e.name)+'</strong><span class="pill">'+esc(e.outcome)+'</span></div>';
+        html+='<div class="muted" style="font-size:.75rem;margin-top:2px">Day '+(e.day||"?")+' · '+esc(e.family||"")+' · '+esc(e.problem||"")+' · +'+e.rp+' RP</div>';
+        if(e.memoryLine) html+='<p style="font-style:italic;font-size:.82rem;margin:6px 0">&ldquo;'+esc(e.memoryLine)+'&rdquo;</p>';
+        else html+='<p style="font-style:italic;font-size:.82rem;margin:6px 0">&ldquo;'+esc(memLine(e.name, visits))+'&rdquo;</p>';
+        if(e.recovery) html+='<p class="muted" style="font-size:.78rem">'+esc(e.recovery)+'</p>';
+        var qs=e.amzQueries||AMZ_BY_FAMILY[e.family]||[];
+        if(qs.length){
+          html+='<div style="margin-top:6px">';
+          for(var j=0;j<Math.min(2,qs.length);j++) html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(qs[j])+'">🛒 '+esc(qs[j])+'</a>';
+          html+='</div>';
+        }
+        html+='<button class="btn sm sec" style="margin-top:8px" onclick="window.reopenLogDetail('+i+')">Details</button>';
+        html+='</div>';
+      }
+      html+='<button class="btn sec" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Close</button>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Treatment Log","LEDGER",html);
+    }catch(e){console.error(e)}
+  };
+
+  window.reopenLogDetail=function(i){
+    var e=(S.log||[])[i];
+    if(e) showPostVisitDetail(e);
+  };
+
+  // Longer visits: inject extra care grid into VF visit render
+  var _render=null;
+  // Hook after vfExam path by patching openHerbalVisit end — wrap renderVFVisit if we can find it
+  // Instead: add care options via button on visit modal using MutationObserver-like retry
+  window.vfExtraCare=function(id){
+    var v=window._visit; if(!v) return;
+    if(!v.extra) v.extra={};
+    if(v.extra[id]) return;
+    var a=null;
+    for(var i=0;i<EXTRA_CARE.length;i++) if(EXTRA_CARE[i].id===id) a=EXTRA_CARE[i];
+    if(!a) return;
+    if(a.att&&S.att<a.att){ toast("Need Attention"); return; }
+    if(a.att) S.att-=a.att;
+    v.score+=(a.score||1);
+    v.extra[id]=true;
+    v.steps=(v.steps||0)+1;
+    if(a.rp) S.rp=(S.rp||0)+a.rp;
+    toast(a.ic+" "+a.name);
+    // re-open visit UI with extras visible — call render if available
+    try{
+      if(typeof openHerbalVisit==="function"&&v.cand){
+        // soft re-render by completing partial state: keep _visit and rebuild via internal
+        if(window._rerenderVF) window._rerenderVF();
+        setTimeout(injectExtraCareUI,50);
+      }
+    }catch(e){}
+    setTimeout(injectExtraCareUI,30);
+  };
+
+  function injectExtraCareUI(){
+    try{
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||!window._visit) return;
+      if(body.querySelector("[data-extra-care]")) return;
+      var v=window._visit;
+      var box=document.createElement("div");
+      box.dataset.extraCare="1";
+      box.innerHTML='<h3 style="margin:12px 0 6px;font-size:.9rem">More care options</h3><div class="care-grid"></div>';
+      var grid=box.querySelector(".care-grid");
+      for(var i=0;i<EXTRA_CARE.length;i++){
+        var a=EXTRA_CARE[i];
+        var done=v.extra&&v.extra[a.id];
+        var b=document.createElement("button");
+        b.type="button";
+        b.className="care-btn"+(done?" done":"");
+        b.disabled=!!done;
+        b.textContent=a.ic+" "+a.name;
+        b.title=a.d;
+        (function(id){ b.onclick=function(){ window.vfExtraCare(id); }; })(a.id);
+        grid.appendChild(b);
+      }
+      // insert before complete button if possible
+      var complete=body.querySelector("button.btn");
+      if(complete&&complete.parentNode) complete.parentNode.insertBefore(box, complete);
+      else body.appendChild(box);
+    }catch(e){}
+  }
+
+  // When visit opens, inject extras after short delay
+  var _ohv=window.openHerbalVisit;
+  if(typeof _ohv==="function"){
+    window.openHerbalVisit=function(cand){
+      var r=_ohv.apply(this,arguments);
+      setTimeout(injectExtraCareUI,100);
+      setTimeout(injectExtraCareUI,300);
+      return r;
+    };
+  }
+  var _rr=window._rerenderVF;
+  if(typeof _rr==="function"){
+    window._rerenderVF=function(){
+      _rr.apply(this,arguments);
+      setTimeout(injectExtraCareUI,80);
+    };
+  }
+
+  // Home + features: treatment log button
+  setTimeout(function(){
+    try{
+      var home=document.getElementById("sc-home");
+      if(home&&!document.getElementById("btnTreatLog")){
+        var b=document.createElement("button");
+        b.id="btnTreatLog"; b.className="btn sec"; b.style.marginTop="8px";
+        b.textContent="📋 Treatment log · recovery & herbs";
+        b.onclick=function(){ openTreatmentLog(); };
+        var hello=document.getElementById("vetClinicHello");
+        if(hello&&hello.parentNode) hello.parentNode.insertBefore(b, hello.nextSibling);
+        else home.appendChild(b);
+      }
+      var more=document.getElementById("sc-more");
+      if(more&&!document.getElementById("logMoreCard")){
+        var c=document.createElement("div");
+        c.className="card"; c.id="logMoreCard";
+        c.innerHTML='<p style="font-weight:650">Treatment log</p><p class="muted" style="margin:4px 0 8px">Patient memory, recovery fiction, Amazon herb searches.</p><button class="btn sm" onclick="openTreatmentLog()">Open log</button>';
+        more.insertBefore(c, more.firstChild);
+      }
+    }catch(e){}
+  },900);
+
+  // Expand appointment builder with complaint-deck style variety from PR if present
+  var _build=window.buildHerbalAppointments;
+  if(typeof _build==="function"){
+    window.buildHerbalAppointments=function(){
+      var list=_build.apply(this,arguments);
+      try{
+        // Attach amazon queries + richer quotes from P catalog
+        if(list&&typeof P!=="undefined"){
+          for(var i=0;i<list.length;i++){
+            var c=list[i];
+            if(c.pr&&c.pr.f){
+              c.amzPreview=(AMZ_BY_FAMILY[c.pr.f]||[])[0]||"";
+            }
+            // memory line preview for returning
+            if(c.returning&&c.name){
+              var vis=(S.patientMemory[c.name]&&S.patientMemory[c.name].visits)||1;
+              c.memoryPreview=memLine(c.name, vis+1);
+            }
+          }
+        }
+      }catch(e){}
+      return list;
+    };
+  }
 })();
 
 </script>
