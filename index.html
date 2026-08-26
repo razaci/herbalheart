@@ -17132,6 +17132,79 @@ window.GUILD_HERBS=[
   setTimeout(mount,1800);
 })();
 
+
+
+/* ==========================================================
+   CLINIC CODEX · cognitive function stacks
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  window.openFunctionCodex=function(){
+    var html='<div class="section-kicker">CLINIC CODEX · FUNCTION STACKS</div>';
+    html+='<p class="muted" style="font-size:.72rem">Study notes for the still-room. Map, not a test. Not a diagnosis.</p>';
+
+    html+='<div class="card" style="line-height:1.5;font-size:.84rem">';
+    html+='<p>A <b>stack</b> is the usual order of four functions: how a guest tends to take in the world and decide, plus the quieter two that appear when they are tired or growing.</p></div>';
+
+    html+='<div class="card"><h4 style="margin:0 0 6px">THE EIGHT</h4>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Te</b> extraverted thinking — organize, criteria, efficiency</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Ti</b> introverted thinking — inner logic, precision</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Fe</b> extraverted feeling — group harmony, shared values</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Fi</b> introverted feeling — personal values, authenticity</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Se</b> extraverted sensation — present facts, body, now</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Si</b> introverted sensation — memory, body history, what worked</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Ne</b> extraverted intuition — possibilities, connections</p>';
+    html+='<p style="font-size:.78rem;margin:4px 0"><b>Ni</b> introverted intuition — one deep pattern, what this becomes</p></div>';
+
+    html+='<div class="card"><h4 style="margin:0 0 6px">FOUR CHAIRS IN THE HOUR</h4>';
+    html+='<p style="font-size:.8rem;line-height:1.45"><b>1 Dominant (superior)</b> — default lead; easiest, most “me.”</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45"><b>2 Auxiliary</b> — supports the lead; usually the other attitude (in if they lead out, and the reverse).</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45"><b>3 Tertiary</b> — less mature; arrives later in the story.</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45"><b>4 Inferior</b> — tender, awkward; often projected. Under fatigue it can seize the hour (“grip”).</p></div>';
+
+    html+='<div class="card"><h4 style="margin:0 0 6px">HOUSE RULES</h4>';
+    html+='<p style="font-size:.8rem;line-height:1.45">One perceiving pair (S/N) and one judging pair (T/F) sit in the top two. Dominant and auxiliary usually alternate extravert / introvert. Inferior is the opposite attitude of the dominant — Ni lead, Se under the floorboards.</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45">Example spoken in clinic shorthand: an INFJ-like stack is Ni – Fe – Ti – Se. Lead pattern inward, help from shared feeling, quieter thinking, tender now-body.</p></div>';
+
+    html+='<div class="card"><h4 style="margin:0 0 6px">JUNG AND THE LETTERS</h4>';
+    html+='<p style="font-size:.8rem;line-height:1.45">Jung named functions and attitudes. The sixteen letter-types and rigid stacks are later maps. Useful furniture. Not a lab result. Not a sentence about a person.</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45">In Willow Bend the psyche readout and the guest analysis sheets use a light version: E/I, T/F/S/N bars, superior / auxiliary / inferior, and a shadow line. Seeded fiction from the hour — not an inventory you should believe about yourself or a guest.</p></div>';
+
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">';
+    html+='<button class="btn" onclick="window.openPsySheet&&openPsySheet()">Your readout</button>';
+    html+='<button class="btn sec" onclick="window.openPatientPsy&&openPatientPsy(window._duel||{name:\'Walk-in\'},\'jung\')">Guest Jung sheet</button>';
+    html+='</div>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close codex</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Function stacks","CODEX",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnFnCodex")) return;
+    var b=document.createElement("button");
+    b.id="btnFnCodex"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="Codex · function stacks";
+    b.onclick=function(){ window.openFunctionCodex(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+
+  var _pfm=window.paintFrontMatrix;
+  if(typeof _pfm==="function"){
+    window.paintFrontMatrix=function(){
+      var r=_pfm.apply(this,arguments);
+      var box=document.getElementById("frontMatrix");
+      if(box && !box.innerHTML.includes("openFunctionCodex")){
+        // append a tile into inner-work if section exists
+      }
+      setTimeout(mount,20);
+      return r;
+    };
+  }
+})();
+
 </script>
 </body>
 </html>
