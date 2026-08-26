@@ -993,6 +993,42 @@ html,body{font-size:17px !important;line-height:1.4 !important}
 .match-good{outline:2px solid #7ec8a0}
 .match-meh{opacity:.55}
 
+
+/* ===== SPINE ANIMATIONS ===== */
+@keyframes spineIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes spinePulse{0%,100%{box-shadow:0 0 0 0 rgba(126,200,160,.0)}50%{box-shadow:0 0 0 6px rgba(126,200,160,.25)}}
+@keyframes spineSlide{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.spine-bar{display:flex;gap:4px;margin:8px 0;align-items:center;animation:spineIn .35s ease}
+.spine-bar .sp{
+  flex:1;text-align:center;font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:6px 2px;border:1px solid #2a4a3e;border-radius:8px;color:#8fb8a4;background:#0d1714;
+}
+.spine-bar .sp.on{border-color:#7ec8a0;color:#d4f0e0;animation:spinePulse 1.4s ease infinite;background:#143228}
+.spine-bar .sp.done{border-color:#3a6a50;color:#7ec8a0}
+#overhaulModalBody{animation:spineSlide .28s ease}
+.fx-tile.hero{animation:spinePulse 2.2s ease infinite}
+
+
+/* ===== EASING CURVES ===== */
+:root{
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-in-out:cubic-bezier(.45,0,.55,1);
+  --ease-back:cubic-bezier(.34,1.56,.64,1);
+  --ease-soft:cubic-bezier(.25,.8,.25,1);
+}
+@keyframes spineIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spinePulse{0%,100%{box-shadow:0 0 0 0 rgba(126,200,160,0)}50%{box-shadow:0 0 0 7px rgba(126,200,160,.28)}}
+@keyframes spineSlide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.spine-bar{animation:spineIn .45s var(--ease-out) both}
+.spine-bar .sp{transition:border-color .35s var(--ease-soft), background .35s var(--ease-soft), color .35s var(--ease-soft)}
+.spine-bar .sp.on{animation:spinePulse 1.6s var(--ease-in-out) infinite}
+#overhaulModalBody{animation:spineSlide .38s var(--ease-out) both}
+.fx-tile,.btn,.card{
+  transition:transform .2s var(--ease-back), filter .2s var(--ease-soft), box-shadow .25s var(--ease-soft) !important;
+}
+.lvl-fill{transition:width .55s var(--ease-out) !important}
+.xp-float,.care-pop{animation-timing-function:var(--ease-out) !important}
+
 </style>
 </head>
 <body>
@@ -18626,6 +18662,695 @@ window.GUILD_HERBS=[
     window.renderGameplayHome=function(){
       var r=_rgh.apply(this,arguments);
       setTimeout(paint,30);
+      return r;
+    };
+  }
+})();
+
+
+
+/* Spine step bar + panel animation */
+(function(){
+  window.spineStep=function(n){
+    window._spineN=n||1;
+    var labels=["Visit","Cards","Hour","Log"];
+    var html='<div class="spine-bar">';
+    for(var i=0;i<labels.length;i++){
+      var cls="sp";
+      if(i+1<n) cls+=" done";
+      if(i+1===n) cls+=" on";
+      html+='<div class="'+cls+'">'+(i+1)+" "+labels[i]+"</div>";
+    }
+    html+="</div>";
+    return html;
+  };
+  function inject(n){
+    window._spineN=n;
+    var body=document.getElementById("overhaulModalBody");
+    if(!body) return;
+    if(body.querySelector(".spine-bar")) {
+      body.querySelector(".spine-bar").outerHTML=window.spineStep(n);
+      return;
+    }
+    body.insertAdjacentHTML("afterbegin", window.spineStep(n));
+  }
+  var _occ=window.openCardChoice;
+  if(typeof _occ==="function"){
+    window.openCardChoice=function(){
+      var r=_occ.apply(this,arguments);
+      setTimeout(function(){ inject(2); },70);
+      return r;
+    };
+  }
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(){
+      var r=_scd.apply(this,arguments);
+      setTimeout(function(){ inject(3); },80);
+      return r;
+    };
+  }
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){ inject(3); },50);
+      return r;
+    };
+  }
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      setTimeout(function(){ inject(4); },30);
+      return _vf.apply(this,arguments);
+    };
+  }
+  var _run=window.runVisitLoadout;
+  if(typeof _run==="function"){
+    window.runVisitLoadout=function(){
+      setTimeout(function(){ inject(1); },80);
+      return _run.apply(this,arguments);
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   HOUR FEATURES · pouch, math, agenda, combo, breakthrough, contract
+   ========================================================== */
+(function(){
+  function dayKey(){
+    var d=new Date();
+    return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();
+  }
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.hourFx) S.hourFx={pouch:["chamomile","mint","ginger"], used:false};
+    if(!S.contract || S.contract.day!==dayKey()){
+      var goals=["Sleep","Focus","Boundaries","Pain-Stiffness"];
+      S.contract={day:dayKey(), fam:goals[(S.day||1)%goals.length], need:2, got:0};
+    }
+    return S;
+  }
+
+  var POUCH={
+    chamomile:{n:"Chamomile",fx:"energy",v:1,txt:"+1 energy"},
+    mint:{n:"Mint",fx:"care",v:2,txt:"+2 care now"},
+    ginger:{n:"Ginger",fx:"linger",v:0,txt:"clear linger"}
+  };
+
+  window.cardCareMath=function(card, d){
+    d=d||window._duel||{};
+    var base=card.care||0;
+    var match=0, moon=0, rpg=0;
+    if(card.type && d.color && String(card.type).indexOf(d.color)>=0) match=2;
+    if(window.getMoonPhase){
+      var p=window.getMoonPhase();
+      if(p && p.care && p.care!==1) moon=Math.round(base*(p.care-1));
+    }
+    if(window.rpgBonuses) rpg=(window.rpgBonuses().care||0);
+    return {base:base,match:match,moon:moon,rpg:rpg,total:base+match+moon+rpg};
+  };
+
+  window.usePouch=function(id){
+    var d=window._duel; if(!d) return;
+    if(d._pouchUsed){ if(typeof toast==="function") toast("Pouch already used this hour"); return; }
+    var item=POUCH[id]; if(!item) return;
+    d._pouchUsed=true;
+    if(item.fx==="energy") d.energy=Math.min((d.maxEnergy||4)+1,(d.energy||0)+item.v);
+    if(item.fx==="care") d.hp=Math.max(0,(d.hp||0)-item.v);
+    if(item.fx==="linger") d.linger=0;
+    if(d.log) d.log.unshift("POUCH · "+item.n+" · "+item.txt);
+    if(typeof toast==="function") toast(item.n+" · "+item.txt);
+    if(window.renderDuel) window.renderDuel();
+  };
+
+  window.breakThroughChoice=function(){
+    var d=window._duel||{};
+    var html='<div class="section-kicker">BREAKTHROUGH</div>';
+    html+='<p>Affliction hit 0. What does the still-room do?</p>';
+    html+='<button class="btn" style="width:100%;margin:4px 0" onclick="window.finishBT(\'out\')">Discharge · hour closed</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.finishBT(\'book\')">Book revisit</button>';
+    html+='<button class="btn sec" style="width:100%;margin:4px 0" onclick="window.finishBT(\'refer\')">Refer onward</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Breakthrough","END",html);
+  };
+  window.finishBT=function(kind){
+    var d=window._duel;
+    if(d) d._bt=kind;
+    if(kind==="book" && window.S){
+      S.revisit=S.revisit||[];
+      S.revisit.push({name:d&&d.name,day:(S.day||1)+3,note:"booked after breakthrough",fam:d&&d.fam});
+    }
+    if(kind==="refer" && window.noteMeaning) window.noteMeaning("refer","bt");
+    try{ closeOverhaulModal(); }catch(e){}
+    if(window.vfComplete) window.vfComplete();
+  };
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      ensure();
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel;
+        if(!d) return r;
+        var fam=d.fam||(cand&&cand.fam)||"Sleep";
+        var extras=["Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive"];
+        var b=extras[(String(d.name||"").length)%extras.length];
+        if(b===fam) b=extras[(extras.indexOf(b)+1)%extras.length];
+        d.agenda=[fam,b];
+        d._pouchUsed=false;
+        d._combo=[];
+        var t=(window.hardTier&&window.hardTier())||1;
+        if(t>=5){
+          var rules=["No Yellow this hour","Energy max 2 extra cut","Must spend a Refer or stage ticks","Moon ignored"];
+          d.hardRule=rules[t%rules.length];
+          if(d.hardRule.indexOf("Energy")>=0){ d.maxEnergy=Math.max(2,(d.maxEnergy||4)-1); d.energy=d.maxEnergy; }
+          d.log.unshift("RULE · "+d.hardRule);
+        }
+        var mem=window.memoryFor&&window.memoryFor(d.name);
+        if(mem) d.log.unshift("RETURNS · stage "+(mem.stage||"?")+" · "+(mem.notes||mem.problem||"known guest"));
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        var d=window._duel;
+        if(!body||!d) return;
+        if(d.agenda && !body.querySelector("[data-ag]")){
+          var a=document.createElement("p");
+          a.dataset.ag="1"; a.className="muted"; a.style.fontSize=".75rem";
+          a.textContent="Agenda · "+d.agenda[0]+" + "+d.agenda[1]+(d.hardRule?" · "+d.hardRule:"");
+          body.insertBefore(a, body.firstChild);
+        }
+        if(!body.querySelector("[data-pouch]")){
+          var p=document.createElement("div");
+          p.dataset.pouch="1";
+          p.innerHTML='<button class="btn sm" onclick="window.usePouch(\'chamomile\')">Pouch · Chamomile</button> '+
+            '<button class="btn sm" onclick="window.usePouch(\'mint\')">Mint</button> '+
+            '<button class="btn sm" onclick="window.usePouch(\'ginger\')">Ginger</button>';
+          body.appendChild(p);
+        }
+      },90);
+      return r;
+    };
+  }
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      if(card){
+        var math=window.cardCareMath(card,d);
+        if(d) {
+          d.hp=Math.max(0,(d.hp||0)-(math.match+math.moon+math.rpg));
+          d._combo=d._combo||[];
+          d._combo.push(card.mean||card.id||card.name);
+          var c=d._combo;
+          if(c.length>=2 && c[c.length-2]==="trust" && c[c.length-1]==="refer"){
+            d.hp=Math.max(0,d.hp-3);
+            if(d.log) d.log.unshift("COMBO · Listen then Refer · +3");
+            if(typeof toast==="function") toast("Combo · Listen + Refer");
+          }
+        }
+        if(typeof toast==="function") toast("Care "+math.total+" (base "+math.base+" match "+math.match+" moon "+math.moon+" rpg "+math.rpg+")");
+      }
+      var r=_play.apply(this,arguments);
+      try{
+        d=window._duel;
+        if(d && d.hp<=0 && !d._btShown){
+          d._btShown=true;
+          setTimeout(function(){ window.breakThroughChoice(); },200);
+          return r;
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      ensure();
+      var d=window._duel;
+      if(d && S.contract && d.fam===S.contract.fam && d.hp<=0){
+        S.contract.got++;
+        if(S.contract.got>=S.contract.need && window.bumpResources) window.bumpResources({flame:8,rp:5});
+      }
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  function paintContract(){
+    ensure();
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("contractHud");
+    if(!el){
+      el=document.createElement("div");
+      el.id="contractHud";
+      el.className="card";
+      home.insertBefore(el, home.firstChild);
+    }
+    var c=S.contract;
+    el.innerHTML='<div class="section-kicker">DAILY CONTRACT</div>Clear '+c.need+' '+c.fam+' hours · '+c.got+'/'+c.need;
+  }
+  setTimeout(paintContract,700);
+  setTimeout(paintContract,1800);
+
+  var _desk=window.openDeskDrawer;
+  if(typeof _desk==="function"){
+    window.openDeskDrawer=function(){
+      var r=_desk.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("#deskQ")) return;
+        var q=document.createElement("input");
+        q.id="deskQ"; q.placeholder="Search desk...";
+        q.style.cssText="width:100%;margin:6px 0;padding:8px;border-radius:8px;border:1px solid #3a6a58;background:#0d1714;color:#e4efe8";
+        q.oninput=function(){
+          var v=q.value.toLowerCase();
+          body.querySelectorAll("button").forEach(function(b){
+            if(b.id==="deskQ") return;
+            b.style.display=!v || (b.textContent||"").toLowerCase().indexOf(v)>=0 ? "" : "none";
+          });
+        };
+        body.insertBefore(q, body.firstChild);
+      },60);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   MORE HAPPENS IN THE HOUR · beats, reactions, clinic noise
+   ========================================================== */
+(function(){
+  var BEATS=[
+    "The kettle clears its throat.",
+    "A chair scrapes in the waiting room.",
+    "Rain needles the still-room glass.",
+    "The guest looks at the door, then back.",
+    "Your notes smudge. You write smaller.",
+    "A moth tests the lamp and leaves.",
+    "Someone laughs too loud down the hall — then not.",
+    "The guest's shoulders drop half an inch.",
+    "You almost reach for a second card. You don't.",
+    "The clock on the wall is two minutes fast. You let it be."
+  ];
+  var REACT={
+    trust:"They talk a little longer than the question needed.",
+    settle:"The room gets used. That is not nothing.",
+    action:"They nod like a person who might actually walk later.",
+    boundary:"A clean no lands. Nobody applauds. Good.",
+    body:"They notice a joint they had been ignoring.",
+    gut:"They mention breakfast like it is news.",
+    refer:"They write the name down. The hour gets honest.",
+    plan:"Paper takes what the forehead was holding.",
+    device:"The lamp hums. Ritual, not miracle.",
+    sustain:"You drink water. Unprofessional. Correct."
+  };
+
+  function line(){
+    return BEATS[Math.floor(Math.random()*BEATS.length)];
+  }
+
+  window.clinicBeat=function(why){
+    var d=window._duel;
+    if(!d) return;
+    d._beats=(d._beats||0)+1;
+    var msg=why||line();
+    d.log.unshift("· "+msg);
+    if(typeof toast==="function" && d._beats%2===1) toast(msg);
+  };
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      var r=_play.apply(this,arguments);
+      try{
+        d=window._duel;
+        if(!d) return r;
+        var mean=card&&(card.mean||card.id);
+        if(mean && REACT[mean]) d.log.unshift("GUEST · "+REACT[mean]);
+        if(Math.random()<0.55) window.clinicBeat();
+        if(d.linger && d.turn>1 && Math.random()<0.35){
+          d.hp=Math.min((d.maxHp||d.hp)+2, (d.hp||0)+1);
+          d.log.unshift("LINGER · the trouble leans back in");
+        }
+        if(d.agenda && card && d.agenda[1] && String(card.d||card.lesson||card.name).indexOf(d.agenda[1])>=0){
+          d.score=(d.score||0)+1;
+          d.log.unshift("AGENDA B · second thread touched");
+        }
+        if(d.hp>0 && d.hp<=3) d.log.unshift("The affliction is thin. One more honest move.");
+        if(window.renderDuel) setTimeout(window.renderDuel, 40);
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _end=window.endDuelTurn;
+  if(typeof _end==="function"){
+    window.endDuelTurn=function(){
+      var d=window._duel;
+      if(d){
+        window.clinicBeat();
+        if(d.turn===3) window.clinicBeat("Halfway. The still-room is still a room.");
+      }
+      return _end.apply(this,arguments);
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        var d=window._duel;
+        if(!body||!d||!d.log) return;
+        if(body.querySelector("[data-live]")) return;
+        var box=document.createElement("div");
+        box.dataset.live="1";
+        box.className="card";
+        box.style.fontSize=".78rem";
+        box.style.lineHeight="1.4";
+        box.innerHTML="<b>Still-room</b><br>"+d.log.slice(0,5).map(function(x){return x;}).join("<br>");
+        body.appendChild(box);
+      },100);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   SPECIFIC SFX CUES · hour events
+   ========================================================== */
+(function(){
+  var ctx=null;
+  function ac(){
+    try{
+      if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
+      if(ctx.state==="suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function beep(freq, dur, type, gain, when){
+    var c=ac(); if(!c) return;
+    var t=c.currentTime+(when||0);
+    var o=c.createOscillator();
+    var g=c.createGain();
+    o.type=type||"sine";
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain||0.07, t+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+dur+0.02);
+  }
+
+  window.SFX={
+    card: function(){ beep(392,.09,"triangle",.06); beep(523,.1,"sine",.05,.06); },
+    endTurn: function(){ beep(330,.12,"square",.04); },
+    beat: function(){ beep(220,.08,"sine",.03); },
+    guest: function(){ beep(494,.07,"sine",.04); beep(587,.09,"sine",.03,.07); },
+    pouch: function(){ beep(659,.08,"triangle",.05); beep(784,.12,"sine",.05,.08); },
+    combo: function(){ beep(523,.08,"triangle",.06); beep(659,.08,"triangle",.06,.07); beep(784,.16,"sine",.07,.14); },
+    linger: function(){ beep(196,.18,"sawtooth",.03); },
+    low: function(){ beep(277,.1,"sine",.05); beep(277,.1,"sine",.04,.14); },
+    break: function(){ beep(392,.1,"triangle",.07); beep(523,.1,"triangle",.07,.1); beep(659,.12,"triangle",.07,.2); beep(784,.22,"sine",.08,.32); },
+    refer: function(){ beep(349,.14,"sine",.05); },
+    door: function(){ beep(150,.05,"square",.04); beep(120,.08,"square",.03,.06); }
+  };
+
+  document.addEventListener("pointerdown", function once(){ ac(); document.removeEventListener("pointerdown", once); }, {passive:true});
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      try{ window.SFX.card(); }catch(e){}
+      return _play.apply(this,arguments);
+    };
+  }
+  var _end=window.endDuelTurn;
+  if(typeof _end==="function"){
+    window.endDuelTurn=function(){
+      try{ window.SFX.endTurn(); }catch(e){}
+      return _end.apply(this,arguments);
+    };
+  }
+  var _beat=window.clinicBeat;
+  if(typeof _beat==="function"){
+    window.clinicBeat=function(why){
+      try{ window.SFX.beat(); }catch(e){}
+      return _beat.apply(this,arguments);
+    };
+  }
+  var _pouch=window.usePouch;
+  if(typeof _pouch==="function"){
+    window.usePouch=function(id){
+      try{ window.SFX.pouch(); }catch(e){}
+      return _pouch.apply(this,arguments);
+    };
+  }
+  var _bt=window.breakThroughChoice;
+  if(typeof _bt==="function"){
+    window.breakThroughChoice=function(){
+      try{ window.SFX.break(); }catch(e){}
+      return _bt.apply(this,arguments);
+    };
+  }
+  var _run=window.runVisitLoadout;
+  if(typeof _run==="function"){
+    window.runVisitLoadout=function(){
+      try{ window.SFX.door(); }catch(e){}
+      return _run.apply(this,arguments);
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   WIDER QUEUE + RICHER HOUR MOVES
+   ========================================================== */
+(function(){
+  function esc(v){
+    return String(v==null?"":v).split("&").join("&amp;").split("<").join("&lt;");
+  }
+
+  window.buildWideQueue=function(){
+    var out=[];
+    var seen={};
+    var list=window.PATIENT_100||[];
+    var pets=window.NAMED_PETS||[];
+    function add(c){
+      if(!c||!c.name||seen[c.name]) return;
+      seen[c.name]=1;
+      out.push(c);
+    }
+    // at most one story return
+    var mem=(window.S&&S.treatLog)||[];
+    if(mem[0]) add({name:mem[0].name,pid:mem[0].pid,fam:mem[0].fam||"Sleep",color:mem[0].color||"Blue",type:"Return",problems:[mem[0].problem||"return"],pr:{f:mem[0].fam||"Sleep",p:mem[0].problem||"return",color:mem[0].color||"Blue"}});
+    var i,p;
+    for(i=0;i<8 && list.length;i++){
+      p=list[Math.floor(Math.random()*list.length)];
+      add({
+        name:p.name, pid:p.id||p.name, fam:p.f||p.fam||"Sleep",
+        color:p.color||["Blue","Red","Yellow","Green"][i%4],
+        type:"Roster", problems:[p.p||p.primary||(p.f+" weather")],
+        pr:{id:p.id||p.name,f:p.f||"Sleep",p:p.p||p.primary||"",color:p.color||"Blue",att:1,quote:""}
+      });
+    }
+    if(pets.length && Math.random()<0.5){
+      p=pets[Math.floor(Math.random()*pets.length)];
+      add({name:p.name+" the "+p.sp.toLowerCase(),pid:p.id,type:"Vet",fam:"Pain-Stiffness",color:p.sp==="Cat"?"Black":"Orange",problems:[p.trait],pr:{f:"Pain-Stiffness",p:p.care,color:"Orange",quote:p.card}});
+    }
+    return out.slice(0,8);
+  };
+
+  window.openWideWaiting=function(){
+    var q=window.buildWideQueue();
+    window._wideQ=q;
+    var html='<div class="section-kicker">WAITING ROOM · '+q.length+' GUESTS</div>';
+    html+='<p class="muted" style="font-size:.75rem">Full roster, not just the four arc names. Tap a guest to start their hour.</p>';
+    q.forEach(function(c,i){
+      html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.takeWideGuest('+i+')">';
+      html+='<b>'+esc(c.name)+'</b> · '+esc(c.type||"")+'<div class="muted" style="font-size:.72rem">'+esc(c.fam||"")+' · '+esc((c.problems&&c.problems[0])||"")+'</div></button>';
+    });
+    html+='<button class="btn" style="width:100%" onclick="window.openWideWaiting()">Reroll room</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Waiting room","DOOR",html);
+  };
+
+  window.takeWideGuest=function(i){
+    var c=(window._wideQ||[])[i];
+    if(!c) return;
+    try{ closeOverhaulModal(); }catch(e){}
+    if(typeof window.openCardChoice==="function") window.openCardChoice(c);
+    else if(typeof window.startCardDuel==="function") window.startCardDuel(c);
+  };
+
+  // Replace door / visit entry
+  var _run=window.runVisitLoadout;
+  window.runVisitLoadout=function(){
+    window.openWideWaiting();
+  };
+  window.enterWaitingRoom=function(){ window.openWideWaiting(); };
+  window.openWaitingRoom=function(){ window.openWideWaiting(); };
+
+  // Extra hour moves
+  window.hourMove=function(kind){
+    var d=window._duel; if(!d) return;
+    if(d._movesUsed>=3){ if(typeof toast==="function") toast("Three extra moves used"); return; }
+    d._movesUsed=(d._movesUsed||0)+1;
+    if(kind==="look"){
+      d.log.unshift("LOOK · you watch how they sit. The chair tells more than the mouth.");
+      d.score=(d.score||0)+1;
+    } else if(kind==="ask"){
+      d.log.unshift("ASK · one extra question. They almost don't answer. Then they do.");
+      if(d.agenda) d.log.unshift("AGENDA whisper · "+d.agenda[1]);
+      d.energy=Math.max(0,(d.energy||0)-1);
+    } else if(kind==="wait"){
+      d.log.unshift("WAIT · you let the silence work. Not every gap is a problem.");
+      d.hp=Math.max(0,(d.hp||0)-1);
+    } else if(kind==="water"){
+      d.log.unshift("WATER · two cups. The hour becomes a room again.");
+      d.energy=Math.min((d.maxEnergy||4),(d.energy||0)+1);
+    } else if(kind==="note"){
+      d.log.unshift("NOTE · you write one line they can take. Paper is cheaper than advice.");
+      d.score=(d.score||0)+1;
+    }
+    if(window.SFX && window.SFX.guest) window.SFX.guest();
+    if(window.renderDuel) window.renderDuel();
+  };
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-moves]")) return;
+        var d=document.createElement("div");
+        d.dataset.moves="1";
+        d.innerHTML='<div class="section-kicker">HOUR MOVES</div>'+
+          '<button class="btn sm" onclick="window.hourMove(\'look\')">Look</button> '+
+          '<button class="btn sm" onclick="window.hourMove(\'ask\')">Ask</button> '+
+          '<button class="btn sm" onclick="window.hourMove(\'wait\')">Wait</button> '+
+          '<button class="btn sm" onclick="window.hourMove(\'water\')">Water</button> '+
+          '<button class="btn sm" onclick="window.hourMove(\'note\')">Note</button>';
+        body.appendChild(d);
+      },110);
+      return r;
+    };
+  }
+})();
+
+
+
+/* Expanded hour-move descriptions + examples */
+(function(){
+  var MOVES={
+    look:{
+      n:"Look",
+      d:"Watch the body before the plot.",
+      ex:"They say they slept fine. Their thumb worries the same seam of the coat.",
+      log:"LOOK · coat-seam. The chair is doing the talking."
+    },
+    ask:{
+      n:"Ask",
+      d:"One extra question. Costs energy.",
+      ex:"When did this start feeling like a personality instead of a week?",
+      log:"ASK · they almost don't answer. Then they date it."
+    },
+    wait:{
+      n:"Wait",
+      d:"Let the gap work. Soft care.",
+      ex:"You count four breaths. They fill the fifth with the real sentence.",
+      log:"WAIT · four breaths. The fifth sentence shows up."
+    },
+    water:{
+      n:"Water",
+      d:"Two cups. Recover a pip.",
+      ex:"You drink so they can. The hour becomes a room again.",
+      log:"WATER · two cups. Nobody has to perform thirst."
+    },
+    note:{
+      n:"Note",
+      d:"One line they can take. Score.",
+      ex:"If the afternoon spikes, sit before you explain yourself to the sink.",
+      log:"NOTE · one line for the pocket, not a manifesto."
+    }
+  };
+  window.HOUR_MOVES=MOVES;
+
+  window.hourMove=function(kind){
+    var d=window._duel; if(!d) return;
+    var mv=MOVES[kind]; if(!mv) return;
+    if(d._movesUsed>=3){ if(typeof toast==="function") toast("Three extra moves used this hour"); return; }
+    d._movesUsed=(d._movesUsed||0)+1;
+    d.log.unshift(mv.log);
+    d.log.unshift("ex · "+mv.ex);
+    if(kind==="look"||kind==="note") d.score=(d.score||0)+1;
+    if(kind==="ask"){
+      d.energy=Math.max(0,(d.energy||0)-1);
+      if(d.agenda) d.log.unshift("AGENDA whisper · "+d.agenda[1]);
+    }
+    if(kind==="wait") d.hp=Math.max(0,(d.hp||0)-1);
+    if(kind==="water") d.energy=Math.min((d.maxEnergy||4),(d.energy||0)+1);
+    if(typeof toast==="function") toast(mv.n+" · "+mv.ex.slice(0,48));
+    if(window.SFX && window.SFX.guest) window.SFX.guest();
+    if(window.renderDuel) window.renderDuel();
+  };
+
+  window.openMoveGuide=function(){
+    var html='<div class="section-kicker">HOUR MOVES · WITH EXAMPLES</div>';
+    html+='<p class="muted" style="font-size:.75rem">Three uses per visit. Cards still do the main care.</p>';
+    Object.keys(MOVES).forEach(function(k){
+      var m=MOVES[k];
+      html+='<div class="card"><b>'+m.n+'</b><p style="font-size:.82rem;margin:4px 0">'+m.d+'</p>';
+      html+='<p class="muted" style="font-size:.78rem;line-height:1.4">Example: '+m.ex+'</p></div>';
+    });
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Moves","GUIDE",html);
+  };
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        var old=body.querySelector("[data-moves]");
+        var box=old||document.createElement("div");
+        box.dataset.moves="1";
+        var left=Math.max(0,3-((window._duel&&window._duel._movesUsed)||0));
+        var h='<div class="section-kicker">HOUR MOVES · '+left+' left</div>';
+        Object.keys(MOVES).forEach(function(k){
+          var m=MOVES[k];
+          h+='<button class="btn sm" style="margin:3px 3px 3px 0" onclick="window.hourMove(\''+k+'\')">'+m.n+'</button>';
+        });
+        h+='<p class="muted" style="font-size:.72rem;margin-top:6px">Look = watch the coat-seam. Ask = date the weather. Wait = four breaths. Water = two cups. Note = one pocket line.</p>';
+        h+='<button class="btn ghost sm" onclick="window.openMoveGuide()">Examples</button>';
+        box.innerHTML=h;
+        if(!old) body.appendChild(box);
+      },120);
       return r;
     };
   }
