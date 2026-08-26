@@ -8790,6 +8790,7 @@ window.GUILD_HERBS=[
   };
 
   function renderWizardPage(){
+    window._renderWiz=renderWizardPage;
     var w=window._wiz; if(!w) return;
     var p=PAGES[w.page];
     var pr=w.pr;
@@ -8926,6 +8927,161 @@ window.GUILD_HERBS=[
   };
 
   // Also paint queue buttons to call wizard (openHerbalVisit already)
+})();
+
+
+
+/* ==========================================================
+   30 BUTTON INTERACTIONS — unique feedback per feature
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  // Design: each feature has onPick result text + optional side effects
+  var INTERACT={
+    f1:{title:"Invite to sit",result:"They settle into the chair. Shoulders drop half an inch. The visit has a floor now.",score:1},
+    f2:{title:"Offer tea",result:"Steam between you. Hospitality before advice — the ledger likes this order.",score:1,amz:"ceramic tea cup set"},
+    f3:{title:"Name the frame",result:"You say: one clear next step, not a life overhaul. They nod. Pressure eases.",score:1},
+    f4:{title:"Reflect complaint",result:"You mirror their words without fixing. Being heard is already a small settle.",score:2},
+    f5:{title:"Clarifying question",result:"\"When did it start?\" — a timeline appears. The problem gets edges.",score:1},
+    f6:{title:"Tag SETTLE/GROUND",result:"Fiction tag placed. Protocol knows whether to quiet or steady next.",score:2},
+    f7:{title:"Breath & shoulders",result:"Exam note: breath high, shoulders braced. Clinical score edges up.",score:2,exam:true},
+    f8:{title:"Match their pace",result:"You slow your speech to match. Trust ticks forward.",score:1},
+    f9:{title:"Jaw / hands scan",result:"Jaw tight; hands restless. Body map updated for later care.",score:1,amz:"massage therapy ball"},
+    f10:{title:"Call Blue",result:"Blue named — settle / nervine terrain. Color match available for remedies.",score:2,color:"Blue"},
+    f11:{title:"Call Yellow",result:"Yellow named — focus / clear-step terrain.",score:2,color:"Yellow"},
+    f12:{title:"Color check",result:"Diagnostics pass: ledger color confirmed against complaint family.",score:2,att:1,lab:true},
+    f13:{title:"Chamomile path",result:"Fictional nervine path chosen. Gentle settle protocol unlocked for the plan page.",score:2,amz:"organic chamomile tea bags",path:"chamomile"},
+    f14:{title:"Rosemary path",result:"Fictional focus path chosen. Clear-step language preferred in the plan.",score:2,amz:"rosemary essential oil",path:"rosemary"},
+    f15:{title:"Ashwagandha path",result:"Fictional mood-energy path chosen. Pacing over pressure.",score:2,amz:"ashwagandha root capsules",path:"ashwa"},
+    f16:{title:"Sleep nest tools",result:"You name dark + quiet as supports — product search optional, not a prescription.",score:1,amz:"blackout curtains"},
+    f17:{title:"Sound settle",result:"Noise plan sketched. Optional white-noise search if they want a tool.",score:1,amz:"white noise machine"},
+    f18:{title:"Light hygiene",result:"Screens-down window agreed in fiction. Glasses search is optional comfort only.",score:1,amz:"blue light blocking glasses"},
+    f19:{title:"Box breathing",result:"Four-count breath together. Room softens. Score + settle.",score:1},
+    f20:{title:"Doorway walk",result:"Three minutes of movement. Blood and mood fictionally unstick a little.",score:1},
+    f21:{title:"Feet on floor",result:"Grounding: weight in heels. Panic-terrain cases especially like this.",score:1},
+    f22:{title:"If–Then plan",result:"When [trigger] → I [one action]. Written once. This is the still-room’s favorite tool.",score:2,amz:"habit tracker journal",plan:true},
+    f23:{title:"Boundary script",result:"One short no practiced aloud. Awkward, honest, useful.",score:2,att:1,amz:"motherwort herb tea"},
+    f24:{title:"Timing agreement",result:"They pick tonight or tomorrow morning. Vague advice becomes a calendar.",score:1},
+    f25:{title:"Loadout buff",result:"Armed herb fictionally applied. Pouch/loadout must be stocked.",score:3,needsHerb:true},
+    f26:{title:"Referral note",result:"You name the limit of game-care. Kind edge toward real clinicians if needed. +2 RP",score:1,rp:2},
+    f27:{title:"Home kit",result:"Three family-matched Amazon searches opened as optional comfort tools — not treatment.",score:1,openKit:true},
+    f28:{title:"Journal line",result:"One line in the session log: what mattered. Documentation is care.",score:1,amz:"hardcover journal"},
+    f29:{title:"Lantern quiet",result:"Flame tended. Clinic fuel +2%. Quiet is a tool.",score:1,fuel:2},
+    f30:{title:"Thank-you close",result:"Dignity at the door. They leave as a person, not a problem list.",score:1}
+  };
+
+  // Override wizPick with designed interactions
+  window.wizPick=function(id){
+    var w=window._wiz; if(!w) return;
+    if(w.picked[id]){ toast("Already chosen"); return; }
+    var o=INTERACT[id];
+    if(!o){ toast("Unknown action"); return; }
+
+    if(o.needsHerb && !(S.equipped||(S.loadout&&S.loadout.buff)||(S.buffs&&S.buffs.length))){
+      toast("Arm a pouch or loadout herb first (Guild → Pouch)"); return;
+    }
+    if(o.att && (S.att|0)<o.att){ toast("Need "+o.att+" Attention"); return; }
+    if(o.att) S.att-=o.att;
+    if(o.fuel && typeof S.lanternFuel==="number") S.lanternFuel=Math.min(100,S.lanternFuel+(o.fuel||0));
+    if(o.rp) S.rp=(S.rp||0)+o.rp;
+
+    w.picked[id]=true;
+    w.score+=(o.score||1);
+    w.steps=(w.steps||0)+1;
+    if(!w.flags) w.flags={};
+    if(o.color) w.flags.color=o.color;
+    if(o.path) w.flags.path=o.path;
+    if(o.plan) w.flags.plan=true;
+    if(o.exam && window._visit){ window._visit.examScore=60+Math.min(35,w.score*2); window._visit.done=window._visit.done||{}; window._visit.done.exam=true; }
+    if(o.lab && window._visit){ window._visit.labResult="Color/terrain check noted"; window._visit.done=window._visit.done||{}; window._visit.done.lab=true; }
+    if(o.needsHerb && window._visit){ window._visit.done=window._visit.done||{}; window._visit.done.boost=true; }
+
+    if(window._visit){
+      window._visit.score=w.score;
+      window._visit.steps=w.steps;
+    }
+
+    if(typeof save==="function") save({ui:false});
+
+    // Interaction modal: result of THIS button
+    var html='<div class="card glow"><div class="section-kicker">ACTION RESULT</div>';
+    html+='<strong>'+esc(o.title)+'</strong>';
+    html+='<p style="margin:10px 0">'+esc(o.result)+'</p>';
+    html+='<div class="muted" style="font-size:.78rem">Score now <b>'+w.score+'</b> · Features '+Object.keys(w.picked).length+'/30 · Att '+(S.att|0)+'</div>';
+    if(o.amz){
+      html+='<p style="margin-top:10px"><a class="amz-link" target="_blank" rel="noopener" href="'+amz(o.amz)+'">🛒 Search: '+esc(o.amz)+'</a></p>';
+      html+='<p class="muted" style="font-size:.7rem">Product search only — not a treatment.</p>';
+    }
+    if(o.openKit){
+      var fam=(w.pr&&w.pr.f)||"Sleep";
+      var kits={
+        "Sleep":["organic chamomile tea bags","passionflower tea","magnesium glycinate"],
+        "Focus":["rosemary essential oil","bacopa monnieri","B complex vitamins"],
+        "Boundaries":["motherwort tea","hawthorn berry tea","lemon balm tea"],
+        "Mood-Energy":["ashwagandha capsules","tulsi tea","vitamin D3"],
+        "Pain-Stiffness":["turmeric curcumin","boswellia extract","epsom salt"],
+        "Digestive":["ginger tea bags","peppermint tea","fennel seed tea"],
+        "Home-Environment":["white noise machine","blackout curtains","humidifier quiet"]
+      };
+      var list=kits[fam]||kits["Sleep"];
+      html+='<div style="margin-top:10px">';
+      for(var i=0;i<list.length;i++) html+='<p><a class="amz-link" target="_blank" rel="noopener" href="'+amz(list[i])+'">🛒 '+esc(list[i])+'</a></p>';
+      html+='</div>';
+    }
+    html+='<button class="btn" style="width:100%;margin-top:12px" onclick="window.wizAfterInteract()">Continue</button></div>';
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal(o.title,"FEATURE",html);
+    else { toast(o.title); if(typeof renderWizardPage==="function") renderWizardPage(); }
+  };
+
+  window.wizAfterInteract=function(){
+    if(typeof renderWizardPage==="function") renderWizardPage();
+    else if(window._wiz) {
+      // re-call page render from wizard IIFE if name differs
+      try{ window.wizNext&&window.wizPrev; }catch(e){}
+    }
+    // force redraw via next/prev noop
+    try{
+      var w=window._wiz;
+      if(w && typeof openOverhaulModal==="function"){
+        // call original page painter - stored
+        if(typeof window._drawWizPage==="function") window._drawWizPage();
+      }
+    }catch(e){}
+  };
+
+  // Hook renderWizardPage as _drawWizPage if exists after load
+  setTimeout(function(){
+    // wrap: save reference by re-assigning after our pick override
+    // The wizard IIFE defined renderWizardPage locally — expose it
+  },0);
+
+  // Expose page renderer: patch by re-defining startVisitWizard end
+  // Safer: after interact, re-invoke start page draw through public API
+  var _sw=window.startVisitWizard;
+  // Don't wrap start — instead make wizAfterInteract call a global redraw
+
+  // Monkey-patch: store draw function when wizard renders by intercepting openOverhaulModal titles
+  // Simplest path: wizAfterInteract uses page index and rebuilds via startVisitWizard state
+  window.wizAfterInteract=function(){
+    try{
+      if(window._wiz && typeof window._renderWiz==="function") window._renderWiz();
+      else if(window._wiz){
+        // soft: toggle page to force user-visible redraw from existing wizNext/Prev
+        var p=window._wiz.page;
+        if(typeof window.wizPrev==="function" && p>0){ window.wizPrev(); window.wizNext(); }
+        else if(typeof window.wizNext==="function" && p<9){ window.wizNext(); window.wizPrev(); }
+        else if(typeof window.startVisitWizard==="function" && window._wiz.cand){
+          var keep=window._wiz;
+          window._wiz=keep;
+          // fallback toast only
+          toast("Score "+keep.score+" · page "+(keep.page+1)+"/10");
+        }
+      }
+    }catch(e){console.warn(e)}
+  };
 })();
 
 </script>
