@@ -772,6 +772,12 @@ body.visit-only .wrap{padding-bottom:128px!important}
 #visitOnlyShell{display:none!important}
 #mainOrderShell{margin-bottom:10px}
 
+
+/* ===== BLANK STICKY DOCK ===== */
+.clinic-dock,
+#clinicDock{display:none!important;visibility:hidden!important;pointer-events:none!important;height:0!important;overflow:hidden!important;padding:0!important;border:0!important}
+body.has-dock .wrap{padding-bottom:24px!important}
+
 </style>
 </head>
 <body>
@@ -14219,6 +14225,133 @@ window.GUILD_HERBS=[
       var r=_rgh.apply(this,arguments);
       setTimeout(reorder,15);
       setTimeout(reorder,120);
+      return r;
+    };
+  }
+})();
+
+
+
+/* blank sticky dock (Door…Inner) for now */
+(function(){
+  function blank(){
+    var d=document.getElementById("clinicDock");
+    if(d){
+      d.style.display="none";
+      d.style.visibility="hidden";
+      d.innerHTML="";
+    }
+    document.body.classList.remove("has-dock");
+  }
+  setTimeout(blank,100);
+  setTimeout(blank,600);
+  setTimeout(blank,1500);
+  setInterval(blank,2000);
+})();
+
+
+
+/* ==========================================================
+   LOADOUT = VISIT CLINIC · then longer gameplay
+   ========================================================== */
+(function(){
+  function ensure(){
+    if(!window.S) window.S={day:1,rp:50};
+    if(!S.loadoutMode) S.loadoutMode="visit";
+    return S;
+  }
+  ensure();
+
+  // Bigger duels after visit
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel;
+        if(!d) return r;
+        d.maxRound=Math.max(d.maxRound||8, 12);
+        d.maxHp=Math.max(d.maxHp||24, Math.round((d.maxHp||24)*1.35));
+        d.hp=d.maxHp;
+        d.maxEnergy=Math.max(d.maxEnergy||3, 5);
+        d.energy=d.maxEnergy;
+        // extra starter hand
+        var pool=(window.MORE_CARDS||[]).concat(window.FX_CARDS||[]).concat(window.REGEN_CARDS||[]);
+        for(var i=0;i<6 && d.hand.length<12;i++){
+          if(!pool.length) break;
+          d.hand.push(Object.assign({}, pool[Math.floor(Math.random()*pool.length)]));
+        }
+        d.log.unshift("Long visit · 12 rounds · full energy · deep hand");
+        setTimeout(function(){ if(window.renderDuel) window.renderDuel(); },80);
+      }catch(e){}
+      return r;
+    };
+  }
+
+  // Visit clinic is the loadout action
+  window.runVisitLoadout=function(){
+    ensure();
+    if(typeof window.enterWaitingRoom==="function"){
+      window.enterWaitingRoom();
+      return;
+    }
+    if(typeof window.openDoorCore==="function"){
+      window.openDoorCore();
+      return;
+    }
+    if(typeof window.streamStartVisit==="function"){
+      window.streamStartVisit();
+      return;
+    }
+    if(typeof window.startCardDuel==="function"){
+      var pt=(window.PATIENT_100&&PATIENT_100[0])||{name:"Guest",id:"P1",f:"Sleep",color:"Blue",problems:["the visit"]};
+      window.startCardDuel({
+        name:pt.name,pid:pt.id||"P1",type:"Visit",urgency:"Routine",wellness:64,
+        problems:pt.problems||["the visit"],temperament:"Guarded",
+        diff:{id:"mid",label:"Moderate"},
+        pr:{id:pt.id||"P1",f:pt.f||"Sleep",p:(pt.problems&&pt.problems[0])||"the visit",color:pt.color||"Blue",att:1,quote:""}
+      });
+    }
+  };
+
+  function paintLoadout(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var box=document.getElementById("mainOrderShell");
+    if(!box){
+      box=document.createElement("div");
+      box.id="mainOrderShell";
+      box.className="card";
+      home.insertBefore(box, home.firstChild);
+    }
+    box.innerHTML=
+      '<div class="section-kicker">LOADOUT · VISIT CLINIC</div>'+
+      '<button class="btn" style="width:100%;padding:16px;font-size:1.05rem;margin-bottom:8px" onclick="window.runVisitLoadout()">🚪 Visit clinic</button>'+
+      '<p class="muted" style="font-size:.75rem;margin:0 0 8px">Opens the door into longer card visits (12 rounds, bigger hand, full energy).</p>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
+      '<button class="btn sec" onclick="window.openVetWing&&openVetWing()">🐾 Vet</button>'+
+      '<button class="btn sec" onclick="window.openLanternMain&&openLanternMain()">🏮 Lantern</button>'+
+      '<button class="btn sec" onclick="window.openAilmentPicker&&openAilmentPicker()">📄 Sheets</button>'+
+      '<button class="btn sec" onclick="window.openLongWings&&openLongWings()">🗺️ Longer</button>'+
+      '<button class="btn sec" onclick="window.openJungRoad&&openJungRoad()">🔮 Inner</button>'+
+      '<button class="btn sec" onclick="window.openPsySheet&&openPsySheet()">✨ Chart</button>'+
+      '<button class="btn sec" onclick="window.openArcCodex&&openArcCodex()">🧵 Arcs</button>'+
+      '<button class="btn sec" onclick="window.openElementChart&&openElementChart()">🜂 Elements</button>'+
+      '<button class="btn sec" onclick="window.openMoonChart&&openMoonChart()">🌑 Moon</button>'+
+      '<button class="btn sec" onclick="window.openPrenatalWing&&openPrenatalWing()">🌙 Prenatal</button>'+
+      '</div>';
+    home.insertBefore(box, home.firstChild);
+  }
+
+  setTimeout(paintLoadout,350);
+  setTimeout(paintLoadout,1000);
+  setTimeout(paintLoadout,2000);
+
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paintLoadout,20);
       return r;
     };
   }
