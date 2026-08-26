@@ -406,6 +406,55 @@ body{
   .flow-steps{grid-template-columns:repeat(2,1fr)}
 }
 
+
+/* ===== GAMEPLAY PACK: memory, contract, road goal, resources ===== */
+.res-triangle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0}
+.res-tile{padding:8px 6px;border-radius:12px;border:1px solid #29495c;background:#0d1e2b;text-align:center}
+.res-tile .rv{font-size:1.05rem;font-weight:800;color:var(--accent)}
+.res-tile .rl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.res-tile.flame .rv{color:var(--gold)}
+.res-tile.rp .rv{color:var(--gold)}
+.res-tile.att .rv{color:var(--blue)}
+.loadout-strip{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;align-items:center}
+.loadout-chip{padding:4px 10px;border-radius:99px;background:#153142;border:1px solid #2a4a5a;font-size:.72rem}
+.memory-line{font-style:italic;color:#b8d4c4;font-size:.84rem;margin:6px 0;padding:8px;border-radius:10px;background:#102030;border-left:3px solid var(--blue)}
+.contract-card{border:1px solid #3a5a40;background:linear-gradient(145deg,#1a2a18,#102018);border-radius:16px;padding:12px;margin:8px 0}
+.road-goal{border:1px solid #31566d;background:linear-gradient(145deg,#153446,#10212e);border-radius:14px;padding:10px 12px;margin:8px 0}
+.staff-ping{border-left:3px solid var(--gold);background:#2a2410;border-radius:12px;padding:10px;margin:8px 0;font-size:.84rem}
+.soft-fail-bar{display:grid;gap:8px;margin-top:10px}
+
+
+/* ===== HERB POUCH · FOCUS SPEND ===== */
+.pouch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.pouch-item{padding:10px;border-radius:14px;border:1px solid #29495c;background:linear-gradient(145deg,#102635,#0d1d29);cursor:pointer}
+.pouch-item.on{border-color:var(--accent);box-shadow:0 0 0 1px rgba(98,230,173,.2)}
+.pouch-item .pi-n{font-weight:750;font-size:.82rem;margin-top:4px}
+.pouch-item .pi-d{font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.35}
+.focus-bar-wrap{margin:8px 0}
+.focus-meter{height:10px;background:#0a1520;border-radius:8px;overflow:hidden}
+.focus-meter>i{display:block;height:100%;background:linear-gradient(90deg,#69b7ff,#b99cff);border-radius:8px;transition:width .3s}
+.cost-line{font-size:.72rem;color:var(--gold);margin-top:4px}
+
+
+/* ===== LANTERN BOARD EXPANSION ===== */
+.lb-full{max-height:70vh;overflow:auto}
+.lb-section{margin:12px 0}
+.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lb-tile{
+  padding:12px;border-radius:16px;border:1px solid #31566d;
+  background:linear-gradient(145deg,#153446,#0f2230);cursor:pointer;min-height:88px;
+  transition:transform .12s,border-color .12s
+}
+.lb-tile:active{transform:scale(.98)}
+.lb-tile .fi{font-size:1.35rem}
+.lb-tile .ft{font-weight:750;font-size:.82rem;margin-top:4px}
+.lb-tile .fd{font-size:.68rem;color:var(--muted);margin-top:3px;line-height:1.35}
+.lb-notice{padding:10px 12px;border-radius:12px;border-left:3px solid var(--gold);
+  background:#1a2410;margin:6px 0;font-size:.82rem;line-height:1.4}
+.lb-offer{display:flex;gap:8px;align-items:center;padding:10px;border-radius:12px;
+  border:1px solid #29495c;background:#0e202d;margin:6px 0}
+.flame-big{font-size:2.4rem;text-align:center;filter:drop-shadow(0 0 16px rgba(255,209,102,.35))}
+
 </style>
 </head>
 <body>
@@ -5901,6 +5950,1570 @@ window.buyGuildHerb=function(id){
   },700);
 })();
 
+
+/* ==========================================================
+   GAMEPLAY PACK — loadout feedback, memory, road goals,
+   resource triangle, contract, staff tip, combo, soft-fail, diff
+   ========================================================== */
+(function(){
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  function ensureGP(){
+    if(!window.S) return null;
+    if(!S.patientMemory) S.patientMemory={};
+    if(!S.gp) S.gp={
+      contract:null, contractDay:null, contractProg:0, contractClaimed:false,
+      roadGoal:null, roadGoalDay:null, roadProg:0, roadClaimed:false,
+      staffTip:null, staffTipDay:null,
+      comboSeq:[], lastCombo:null,
+      softFailPending:null
+    };
+    return S.gp;
+  }
+
+  const CONTRACTS=[
+    {id:"c_sleep",t:"Nervine morning",d:"Complete 2 Sleep cases with a Sleep-family loadout buff.",need:2,kind:"sleep_loadout",rp:25,herb:"gh_chamomile"},
+    {id:"c_focus",t:"Clear ledger",d:"Complete 2 Focus cases.",need:2,kind:"focus",rp:22,herb:"gh_rosemary"},
+    {id:"c_follow",t:"Mend the slip",d:"Close 1 follow-up visit successfully.",need:1,kind:"follow_clear",rp:20,herb:"gh_oatstraw"},
+    {id:"c_beacon",t:"Bring the flame home",d:"Beacon-retreat from the Old Road once (stability ≥70%).",need:1,kind:"beacon",rp:28,herb:"gh_lantern_oil"},
+    {id:"c_advanced",t:"Guild referral",d:"Finish 1 advanced visit with Improve or better.",need:1,kind:"advanced_good",rp:30,herb:"gh_synergy"},
+    {id:"c_any3",t:"Full still-room day",d:"Complete 3 sessions today.",need:3,kind:"sessions",rp:18,herb:"gh_vit_multi"}
+  ];
+  const ROAD_GOALS=[
+    {id:"rg_depth5",t:"Reach depth 5",kind:"depth",need:5,rp:12},
+    {id:"rg_beacon",t:"Beacon return (≥70%)",kind:"beacon",need:1,rp:16},
+    {id:"rg_find",t:"Find a herb or mineral",kind:"find",need:1,rp:10},
+    {id:"rg_relight",t:"Relight the lantern once",kind:"relight",need:1,rp:12},
+    {id:"rg_depth8",t:"Reach depth 8",kind:"depth",need:8,rp:18}
+  ];
+  const STAFF_TIPS=[
+    {when:"rain",line:"🌧️ Orrin: Rain on the road — turmeric or boswellia in the loadout."},
+    {when:"sleep",line:"🦉 Mira: Night cases stack. Chamomile or magnesium before the door."},
+    {when:"low_fuel",line:"🪔 Jun: Flame is thin. Trim the wick or beacon back bright."},
+    {when:"follow",line:"📋 Pell: A follow-up is waiting. Clear the slip before new work."},
+    {when:"default",line:"🫖 Still-room: One color, one next step. Leave the rest on the shelf."},
+    {when:"focus",line:"🌿 River: Scattered minds like rosemary — or B-complex from the guild."},
+    {when:"road",line:"🗺️ Map: Attention choices steady the lantern; spectacle spends it."}
+  ];
+
+  function todayKey(){
+    try{return (typeof todayKey==="function"&&todayKey!==arguments.callee)?null:null}catch(e){}
+    return new Date().toISOString().slice(0,10);
+  }
+  function dayStamp(){ return (S.day||1)+"_"+((S._calDay)||todayKey()); }
+
+  function ensureDailyContent(){
+    ensureGP();
+    const k=String(S.day||1);
+    if(S.gp.contractDay!==k){
+      const pick=CONTRACTS[Math.abs(hash(k+"c"))%CONTRACTS.length];
+      S.gp.contract=pick; S.gp.contractDay=k; S.gp.contractProg=0; S.gp.contractClaimed=false;
+    }
+    if(S.gp.roadGoalDay!==k){
+      const pick=ROAD_GOALS[Math.abs(hash(k+"r"))%ROAD_GOALS.length];
+      S.gp.roadGoal=pick; S.gp.roadGoalDay=k; S.gp.roadProg=0; S.gp.roadClaimed=false;
+    }
+    if(S.gp.staffTipDay!==k){
+      S.gp.staffTip=pickStaffTip(); S.gp.staffTipDay=k;
+    }
+  }
+  function hash(str){let h=0;for(let i=0;i<str.length;i++)h=((h<<5)-h)+str.charCodeAt(i)|0;return h}
+
+  function pickStaffTip(){
+    const fuel=typeof S.lanternFuel==="number"?S.lanternFuel:70;
+    const follows=(S.followUps||[]).filter(f=>!f.done).length;
+    if(follows) return STAFF_TIPS.find(t=>t.when==="follow");
+    if(fuel<35) return STAFF_TIPS.find(t=>t.when==="low_fuel");
+    if(S.todayEvent&&/rain|storm|pain/i.test(S.todayEvent.id||S.todayEvent.fx||"")) return STAFF_TIPS.find(t=>t.when==="rain");
+    if(S.todayEvent&&/moon|mood/i.test(S.todayEvent.id||"")) return STAFF_TIPS.find(t=>t.when==="default");
+    const pool=STAFF_TIPS.filter(t=>["default","focus","road","sleep"].includes(t.when));
+    return pool[Math.abs(hash(String(S.day||1)))%pool.length];
+  }
+
+  // —— Resource triangle + contract + staff tip on home ——
+  window.renderGameplayHome=function(){
+    try{
+      ensureDailyContent();
+      const home=document.getElementById("sc-home");
+      if(!home) return;
+      let box=document.getElementById("gpHomeBox");
+      if(!box){
+        box=document.createElement("div");
+        box.id="gpHomeBox";
+        const flow=document.getElementById("flowBoard");
+        if(flow&&flow.parentNode) flow.parentNode.insertBefore(box, flow.nextSibling);
+        else home.insertBefore(box, home.firstChild);
+      }
+      const fuel=typeof S.lanternFuel==="number"?Math.round(S.lanternFuel):70;
+      const c=S.gp.contract;
+      const tip=S.gp.staffTip;
+      const rg=S.gp.roadGoal;
+      box.innerHTML=`
+        <div class="res-triangle">
+          <div class="res-tile flame"><div class="rv">${fuel}%</div><div class="rl">Flame</div></div>
+          <div class="res-tile rp"><div class="rv">${Math.floor(S.rp||0)}</div><div class="rl">RP</div></div>
+          <div class="res-tile att"><div class="rv">${S.att||0}</div><div class="rl">Attention</div></div>
+        </div>
+        ${tip?`<div class="staff-ping">${esc(tip.line)}</div>`:""}
+        <div class="contract-card">
+          <div class="section-kicker">GUILD CONTRACT</div>
+          <strong>${esc(c.t)}</strong>
+          <p class="muted" style="margin:4px 0;font-size:.8rem">${esc(c.d)}</p>
+          <div class="mastery-row"><span>Progress</span><span>${S.gp.contractProg}/${c.need}</span></div>
+          <div class="bar-wrap"><div class="bar" style="width:${Math.min(100,S.gp.contractProg/c.need*100)}%"></div></div>
+          ${S.gp.contractClaimed?'<div class="feedback-good" style="margin-top:6px">Claimed today</div>':
+            (S.gp.contractProg>=c.need?`<button class="btn sm" style="margin-top:8px" onclick="claimContract()">Claim ${c.rp} RP + herb</button>`:"")}
+        </div>
+        <div class="road-goal">
+          <div class="section-kicker">ROAD GOAL</div>
+          <strong>🗺️ ${esc(rg.t)}</strong>
+          <div class="muted" style="font-size:.78rem;margin-top:4px">${S.gp.roadProg}/${rg.need} · reward ${rg.rp} RP
+            ${S.gp.roadClaimed?" · done":""}</div>
+        </div>`;
+    }catch(e){console.warn("gp home",e)}
+  };
+
+  window.claimContract=function(){
+    ensureGP();
+    const c=S.gp.contract;
+    if(!c||S.gp.contractClaimed||S.gp.contractProg<c.need) return;
+    S.rp=(S.rp||0)+c.rp;
+    S.gp.contractClaimed=true;
+    if(!S.guild) S.guild={stock:{}};
+    if(!S.guild.stock) S.guild.stock={};
+    if(c.herb){ S.guild.stock[c.herb]=(S.guild.stock[c.herb]||0)+1; }
+    if(!S._cascadeLog) S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Contract complete: "+c.t+" · +"+c.rp+" RP"});
+    if(typeof save==="function") save();
+    if(typeof toast==="function") toast("⚜️ Contract complete · +"+c.rp+" RP");
+    renderGameplayHome();
+  };
+
+  // —— In-session loadout strip + memory line ——
+  function memoryLineFor(name, pr){
+    const mem=S.patientMemory&&S.patientMemory[name];
+    if(!mem||!mem.lastOutcome) return "";
+    const o=mem.lastOutcome;
+    const fam=mem.lastFamily||"";
+    const lines={
+      Breakthrough:"Last time something real shifted. They came back hoping it holds.",
+      Improve:"They tried what you offered. They want the next inch.",
+      Plateau:"Steady before — not dramatic. They're willing to sit again.",
+      Stuck:"Still stuck. They ask to go slower this time.",
+      Setback:"Last visit didn't land. Guard is up; trust is thin."
+    };
+    let t=lines[o]||"You've seen them before.";
+    if(fam && pr && pr.f===fam) t+=" Same family of complaint ("+fam+").";
+    else if(fam) t+=" Before it was "+fam+".";
+    return t;
+  }
+
+  function injectArrivalUI(){
+    try{
+      if(!session||session.practice) return;
+      const card=document.getElementById("patientCard");
+      if(!card) return;
+      // Remove old strips
+      card.querySelectorAll("[data-gp-strip]").forEach(n=>n.remove());
+
+      const items=(typeof ITEMS!=="undefined"?ITEMS:[]);
+      const eq=S.equipped?items.find(i=>i.id===S.equipped):null;
+      const buffs=(session.buffs&&session.buffs.length)?session.buffs:(S.buffs||[]);
+      let strip=document.createElement("div");
+      strip.dataset.gpStrip="1";
+      strip.className="loadout-strip";
+      let html='<span class="muted" style="font-size:.7rem">LOADOUT</span>';
+      if(eq) html+=`<span class="loadout-chip">${eq.ic} ${esc(eq.name)} · ${esc(eq.color)}</span>`;
+      else html+=`<span class="loadout-chip">No remedy equipped</span>`;
+      if(buffs.length) buffs.forEach(b=>html+=`<span class="loadout-chip">✨ ${esc(b)}</span>`);
+      else html+=`<span class="loadout-chip">No guild buff</span>`;
+      strip.innerHTML=html;
+      card.appendChild(strip);
+
+      const mem=memoryLineFor(session.name, session.pr);
+      if(mem){
+        const ml=document.createElement("div");
+        ml.dataset.gpStrip="1";
+        ml.className="memory-line";
+        ml.textContent="“"+mem+"”";
+        card.appendChild(ml);
+        session._memoryShown=true;
+        // Small score nudge if returning after good outcome with matching family
+        const m=S.patientMemory[session.name];
+        if(m&&(m.lastOutcome==="Improve"||m.lastOutcome==="Breakthrough")&&m.lastFamily===session.pr.f){
+          session.score=(session.score||0)+1;
+          session._memoryBonus=true;
+        }
+        if(m&&(m.lastOutcome==="Setback"||m.lastOutcome==="Stuck")){
+          // harder emotional start — no score loss, flag for soft-fail recovery availability
+          session._woundedReturn=true;
+        }
+      }
+    }catch(e){}
+  }
+
+  const _ba=window.beginArrival;
+  if(typeof _ba==="function"){
+    window.beginArrival=function(data){
+      const r=_ba.apply(this,arguments);
+      setTimeout(injectArrivalUI,40);
+      setTimeout(injectArrivalUI,200);
+      return r;
+    };
+  }
+
+  // —— After session: consume remedy on success, combo, contract, soft-fail ——
+  function onSessionResolved(){
+    try{
+      ensureGP();
+      const last=(S.log||[])[0];
+      if(!last||last._gpDone) return;
+      last._gpDone=true;
+
+      const good=last.outcome==="Improve"||last.outcome==="Breakthrough";
+      const ok=good||last.outcome==="Plateau";
+
+      // Consume equipped remedy on success
+      if(good && S.equipped && S.inventory && (S.inventory[S.equipped]||0)>0){
+        S.inventory[S.equipped]--;
+        if(S.inventory[S.equipped]<=0){ delete S.inventory[S.equipped]; }
+        const it=(typeof ITEMS!=="undefined"?ITEMS.find(i=>i.id===S.equipped):null);
+        if(typeof toast==="function") toast("🧪 Remedy used · "+(it?it.name:S.equipped));
+        // keep equipped if still in stock
+        if(!(S.inventory[S.equipped]>0)) S.equipped=null;
+      }
+
+      // Combo sequence by family
+      S.gp.comboSeq=S.gp.comboSeq||[];
+      S.gp.comboSeq.push(last.family||"?");
+      if(S.gp.comboSeq.length>5) S.gp.comboSeq=S.gp.comboSeq.slice(-5);
+      const seq=S.gp.comboSeq.join("→");
+      // Sleep→Focus→Sleep or three same family
+      const joined=S.gp.comboSeq.slice(-3).join(",");
+      if(S.gp.comboSeq.length>=3){
+        const a=S.gp.comboSeq[S.gp.comboSeq.length-3],b=S.gp.comboSeq[S.gp.comboSeq.length-2],c=S.gp.comboSeq[S.gp.comboSeq.length-1];
+        let hit=null;
+        if(a==="Sleep"&&b==="Focus"&&c==="Sleep") hit="Sleep→Focus→Sleep";
+        if(a===b&&b===c) hit="Triple "+a;
+        if(a==="Boundaries"&&b==="Mood-Energy"&&c==="Boundaries") hit="Boundary weave";
+        if(hit && S.gp.lastCombo!==hit+S.day){
+          S.gp.lastCombo=hit+S.day;
+          S.rp=(S.rp||0)+5;
+          if(!S.journal) S.journal=[];
+          S.journal.push({ts:Date.now(),day:S.day||1,text:"Combo noted: "+hit+" · the ledger hums."});
+          if(typeof toast==="function") toast("🔗 Combo · "+hit+" · +5 RP");
+        }
+      }
+
+      // Contract progress
+      const c=S.gp.contract;
+      if(c&&!S.gp.contractClaimed){
+        let add=0;
+        if(c.kind==="sessions") add=1;
+        if(c.kind==="focus"&&last.family==="Focus") add=1;
+        if(c.kind==="sleep_loadout"&&last.family==="Sleep") add=1;
+        if(c.kind==="follow_clear"&&session&&session.followUp&&ok) add=1;
+        if(c.kind==="advanced_good"&&session&&session.advanced&&good) add=1;
+        if(c.kind==="beacon") add=0; // road-only
+        if(add){ S.gp.contractProg=Math.min(c.need,(S.gp.contractProg||0)+add); }
+      }
+
+      // Soft-fail recovery offer
+      if(last.outcome==="Setback"||last.outcome==="Stuck"){
+        S.gp.softFailPending={name:last.name,outcome:last.outcome,day:S.day||1};
+        setTimeout(offerSoftFail,300);
+      }
+
+      if(typeof save==="function") save({ui:false});
+    }catch(e){console.warn("onSessionResolved",e)}
+  }
+
+  function offerSoftFail(){
+    try{
+      const p=S.gp&&S.gp.softFailPending;
+      if(!p) return;
+      const body=document.getElementById("resultExtra")||document.getElementById("resultBox");
+      if(!body||body.querySelector("[data-soft-fail]")) return;
+      const div=document.createElement("div");
+      div.dataset.softFail="1";
+      div.className="card";
+      div.innerHTML=`<strong>📋 After a hard session</strong>
+        <p class="muted" style="margin:6px 0;font-size:.82rem">Write a follow-up plan for <strong>${esc(p.name)}</strong>? Free. Clears a little shame from the flame tomorrow.</p>
+        <div class="soft-fail-bar">
+          <button class="btn sm" onclick="acceptSoftFailPlan()">Write follow-up plan</button>
+          <button class="btn sm sec" onclick="dismissSoftFailPlan()">Leave it</button>
+        </div>`;
+      body.appendChild(div);
+    }catch(e){}
+  }
+  window.acceptSoftFailPlan=function(){
+    ensureGP();
+    if(!S.gp.softFailPending) return;
+    S.gp.softFailPlan=true;
+    S.gp.softFailPending=null;
+    if(!S.journal) S.journal=[];
+    S.journal.push({ts:Date.now(),day:S.day||1,text:"Follow-up plan written. Tomorrow the flame may forgive a little."});
+    if(typeof toast==="function") toast("📋 Plan written · +3% flame next day");
+    // apply small fuel now too
+    if(typeof S.lanternFuel==="number") S.lanternFuel=Math.min(100,S.lanternFuel+3);
+    if(typeof save==="function") save();
+    document.querySelectorAll("[data-soft-fail]").forEach(n=>n.remove());
+  };
+  window.dismissSoftFailPlan=function(){
+    ensureGP();
+    S.gp.softFailPending=null;
+    document.querySelectorAll("[data-soft-fail]").forEach(n=>n.remove());
+  };
+
+  // Hook session end paths
+  ["resolveSession","endSession","finishSession"].forEach(fn=>{
+    const orig=window[fn];
+    if(typeof orig==="function"){
+      window[fn]=function(){
+        const r=orig.apply(this,arguments);
+        try{onSessionResolved()}catch(e){}
+        return r;
+      };
+    }
+  });
+
+  // —— Road goals ——
+  function bumpRoad(kind, val){
+    try{
+      ensureDailyContent();
+      const g=S.gp.roadGoal;
+      if(!g||S.gp.roadClaimed) return;
+      if(g.kind==="depth"&&kind==="depth"){
+        S.gp.roadProg=Math.max(S.gp.roadProg||0, val||0);
+      }
+      if(g.kind===kind&&kind!=="depth"){
+        S.gp.roadProg=Math.min(g.need,(S.gp.roadProg||0)+1);
+      }
+      if(S.gp.roadProg>=g.need && !S.gp.roadClaimed){
+        S.gp.roadClaimed=true;
+        S.rp=(S.rp||0)+g.rp;
+        // contract beacon sync
+        if(S.gp.contract&&S.gp.contract.kind==="beacon"){
+          S.gp.contractProg=Math.min(S.gp.contract.need,(S.gp.contractProg||0)+1);
+        }
+        if(typeof toast==="function") toast("🗺️ Road goal complete · +"+g.rp+" RP");
+        if(typeof save==="function") save({ui:false});
+      }
+    }catch(e){}
+  }
+
+  const _res=window.resolveExpeditionChoice;
+  if(typeof _res==="function"){
+    window.resolveExpeditionChoice=function(idx){
+      const r=_res.apply(this,arguments);
+      try{
+        const ex=S.expedition;
+        if(ex&&ex.active){
+          bumpRoad("depth", ex.depth||0);
+          if(ex.found&&ex.found.length) bumpRoad("find",1);
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+  const _relight=window.relightLantern;
+  if(typeof _relight==="function"){
+    window.relightLantern=function(id){
+      const r=_relight.apply(this,arguments);
+      try{bumpRoad("relight",1)}catch(e){}
+      return r;
+    };
+  }
+  const _retreat=window.retreatExpedition;
+  if(typeof _retreat==="function"){
+    window.retreatExpedition=function(){
+      try{
+        const ex=S.expedition;
+        if(ex&&ex.active&&(ex.stability||0)>=70) bumpRoad("beacon",1);
+      }catch(e){}
+      return _retreat.apply(this,arguments);
+    };
+  }
+
+  // Show road goal on expedition tab
+  const _rexp=window.renderExpeditionTab;
+  if(typeof _rexp==="function"){
+    window.renderExpeditionTab=function(){
+      _rexp.apply(this,arguments);
+      try{
+        ensureDailyContent();
+        const el=document.getElementById("worldContent");
+        if(!el||!S.gp.roadGoal) return;
+        const g=S.gp.roadGoal;
+        const div=document.createElement("div");
+        div.className="road-goal";
+        div.innerHTML=`<div class="section-kicker">TODAY'S ROAD GOAL</div><strong>${esc(g.t)}</strong>
+          <div class="muted" style="font-size:.78rem;margin-top:4px">${S.gp.roadProg||0}/${g.need}${S.gp.roadClaimed?" · complete":" · +"+g.rp+" RP"}</div>`;
+        el.insertBefore(div, el.firstChild);
+      }catch(e){}
+    };
+  }
+
+  // —— Difficulty rule tweaks ——
+  function applyDiffRulesToWait(list){
+    try{
+      const d=(typeof diffCfg==="function"?diffCfg():null)||{id:"story"};
+      if(d.id==="expert"||d.id==="hard"){
+        // boost advanced presence already handled elsewhere; mark list
+        window._diffAdvancedBoost=true;
+      }
+      if(d.id==="story"||d.id==="simple"){
+        window._diffDiagHint=true;
+      }
+    }catch(e){}
+    return list;
+  }
+
+  // Story mode: expand diagnosis clue on arrival
+  const _ba2=window.beginArrival;
+  // already wrapped — add hint via timeout on diagnosis box
+  setInterval(function(){
+    try{
+      if(!session||session.practice) return;
+      const d=(typeof diffCfg==="function"?diffCfg():null);
+      if(!d||(d.id!=="story"&&d.id!=="simple")) return;
+      const box=document.getElementById("diagnosisBox");
+      if(!box||box.querySelector("[data-story-hint]")) return;
+      if(!session.pr) return;
+      const h=document.createElement("div");
+      h.dataset.storyHint="1";
+      h.className="muted";
+      h.style.cssText="font-size:.75rem;margin-bottom:6px;color:var(--gold)";
+      h.textContent="Story hint: ledger color leans "+(session.pr.color||"?")+" · family "+(session.pr.f||"?");
+      box.insertBefore(h, box.firstChild);
+    }catch(e){}
+  },800);
+
+  // Expert: more RP on advanced already via rewardMul — increase wait advanced odds via openDoorCore patch
+  const _door=window.openDoorCore;
+  if(typeof _door==="function"){
+    window.openDoorCore=function(){
+      const r=_door.apply(this,arguments);
+      try{
+        const d=(typeof diffCfg==="function"?diffCfg():null);
+        if(d&&(d.id==="expert"||d.id==="hard")&&window._waitList&&window._waitList.length){
+          // Ensure at least one advanced if none
+          if(!window._waitList.some(c=>c.advanced)&&Math.random()<0.55){
+            const i=window._waitList.length-1;
+            window._waitList[i]=Object.assign({},window._waitList[i],{advanced:true,rpCost:d.id==="expert"?12:8,tag:"ADVANCED",rewardMul:d.id==="expert"?1.6:1.35,note:"Advanced visit"});
+            // re-render if possible
+            const waitEl=document.getElementById("waitList");
+            if(waitEl&&typeof openDoorCore==="function"){ /* list already shown; touch HTML */ }
+          }
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  // Soft-fail plan bonus on new day
+  const _fr=window.finishRecap;
+  if(typeof _fr==="function"){
+    window.finishRecap=function(){
+      try{
+        if(S.gp&&S.gp.softFailPlan){
+          if(typeof S.lanternFuel==="number") S.lanternFuel=Math.min(100,S.lanternFuel+3);
+          S.gp.softFailPlan=false;
+          if(typeof toast==="function") toast("📋 Yesterday's plan · flame eases");
+        }
+      }catch(e){}
+      const r=_fr.apply(this,arguments);
+      setTimeout(renderGameplayHome,100);
+      return r;
+    };
+  }
+
+  // go(home) refresh
+  const _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      const r=_go.apply(this,arguments);
+      if(name==="home") setTimeout(renderGameplayHome,60);
+      if(name==="arrive"||name==="wait") setTimeout(injectArrivalUI,80);
+      return r;
+    };
+  }
+
+  setTimeout(function(){ try{ensureDailyContent();renderGameplayHome()}catch(e){} },500);
+  setTimeout(function(){ try{renderGameplayHome()}catch(e){} },1500);
+})();
+
+
+/* ==========================================================
+   HERB POUCH INVENTORY — lantern stock → menu pouch
+   Spend RP + Focus to move/use; Focus depletes and refills
+   ========================================================== */
+(function(){
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  const FOCUS_MAX=10;
+  // Costs
+  const COST_MOVE_RP=2;      // guild stock → pouch
+  const COST_MOVE_FOCUS=1;
+  const COST_ACTIVATE_RP=3;  // pouch → active loadout buff
+  const COST_ACTIVATE_FOCUS=2;
+  const COST_EQUIP_FOCUS=1;  // equip pouch remedy for session
+
+  // Map guild herb ids to buff + display (subset; unknown ids still movable)
+  const HERB_META={
+    gh_chamomile:{ic:"🌼",name:"Chamomile",buff:"fam_sleep",fam:"Sleep"},
+    gh_skullcap:{ic:"💙",name:"Skullcap",buff:"calm",fam:"Sleep"},
+    gh_passionflower:{ic:"💜",name:"Passionflower",buff:"fam_sleep",fam:"Sleep"},
+    gh_valerian:{ic:"🟤",name:"Valerian",buff:"fam_sleep",fam:"Sleep"},
+    gh_rosemary:{ic:"🌿",name:"Rosemary",buff:"fam_focus",fam:"Focus"},
+    gh_tulsi:{ic:"🍃",name:"Tulsi",buff:"score2",fam:"Focus"},
+    gh_bacopa:{ic:"💚",name:"Bacopa",buff:"fam_focus",fam:"Focus"},
+    gh_motherwort:{ic:"🖤",name:"Motherwort",buff:"fam_bound",fam:"Boundaries"},
+    gh_hawthorn:{ic:"💗",name:"Hawthorn",buff:"fam_bound",fam:"Boundaries"},
+    gh_ashwa:{ic:"🪵",name:"Ashwagandha",buff:"fam_mood",fam:"Mood"},
+    gh_reishi:{ic:"🟣",name:"Reishi",buff:"score2",fam:"Mood"},
+    gh_turmeric:{ic:"🧡",name:"Turmeric",buff:"fam_pain",fam:"Pain"},
+    gh_ginger:{ic:"🫚",name:"Ginger",buff:"fam_digest",fam:"Digestive"},
+    gh_peppermint:{ic:"🍃",name:"Peppermint",buff:"fam_digest",fam:"Digestive"},
+    gh_nettle:{ic:"🌱",name:"Nettle",buff:"regen",fam:"Restore"},
+    gh_lantern_oil:{ic:"🪔",name:"Lantern Oil",buff:"guild_oil",fam:"Guild"},
+    gh_synergy:{ic:"🔗",name:"Synergy Blend",buff:"synergy",fam:"Guild"},
+    gh_vit_c:{ic:"🍊",name:"Vitamin C",buff:"regen",fam:"Vitamins"},
+    gh_vit_d:{ic:"☀️",name:"Vitamin D",buff:"fam_mood",fam:"Vitamins"},
+    gh_vit_b_complex:{ic:"💛",name:"B-Complex",buff:"fam_focus",fam:"Vitamins"},
+    gh_vit_multi:{ic:"🌈",name:"Daily Multi",buff:"score2",fam:"Vitamins"},
+    gh_min_mag:{ic:"⚪",name:"Magnesium",buff:"fam_sleep",fam:"Minerals"},
+    gh_min_zinc:{ic:"🔩",name:"Zinc",buff:"regen",fam:"Minerals"},
+    gh_min_electrolyte:{ic:"💧",name:"Electrolytes",buff:"regen",fam:"Minerals"},
+    gh_min_trace_pack:{ic:"📦",name:"Trace Pack",buff:"synergy",fam:"Minerals"}
+  };
+
+  function ensurePouch(){
+    if(!window.S) return null;
+    if(!S.guild) S.guild={stock:{},bought:{},xp:0,cascade:0,rank:"spark"};
+    if(!S.guild.stock) S.guild.stock={};
+    if(!S.pouch) S.pouch={}; // id -> qty (usable inventory from lantern)
+    if(!S.inventory) S.inventory={};
+    if(typeof S.focus!=="number"||isNaN(S.focus)) S.focus=FOCUS_MAX;
+    S.focus=Math.max(0,Math.min(FOCUS_MAX,S.focus));
+    if(!S.loadout) S.loadout={remedy:null,buff:null,buffLabel:null,pouchHerb:null};
+    return S;
+  }
+
+  function herbInfo(id){
+    if(HERB_META[id]) return Object.assign({id:id}, HERB_META[id]);
+    // Try GUILD_HERBS
+    try{
+      if(typeof GUILD_HERBS!=="undefined"){
+        const g=GUILD_HERBS.find(x=>x.id===id);
+        if(g) return {id:id,ic:g.ic,name:g.name,buff:g.buff,fam:g.cat||g.fam};
+      }
+    }catch(e){}
+    return {id:id,ic:"🌿",name:id.replace(/^gh_/,"").replace(/_/g," "),buff:"score1",fam:"Herb"};
+  }
+
+  function spendFocus(n){
+    ensurePouch();
+    if(S.focus<n) return false;
+    S.focus-=n;
+    return true;
+  }
+  function spendRP(n){
+    ensurePouch();
+    if((S.rp||0)<n) return false;
+    S.rp-=n;
+    return true;
+  }
+  function canAfford(rp,focus){
+    ensurePouch();
+    return (S.rp||0)>=rp && S.focus>=focus;
+  }
+
+  // —— Move from lantern guild stock into pouch (menu inventory) ——
+  window.moveHerbToPouch=function(id){
+    ensurePouch();
+    if((S.guild.stock[id]||0)<1){toast("Not in lantern stock");return}
+    if(!canAfford(COST_MOVE_RP, COST_MOVE_FOCUS)){
+      toast("Need "+COST_MOVE_RP+" RP + "+COST_MOVE_FOCUS+" Focus");
+      return;
+    }
+    if(!spendRP(COST_MOVE_RP)||!spendFocus(COST_MOVE_FOCUS)){toast("Could not pay");return}
+    S.guild.stock[id]--;
+    S.pouch[id]=(S.pouch[id]||0)+1;
+    const h=herbInfo(id);
+    if(!S._cascadeLog)S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Pouch: filed "+h.name+" (−"+COST_MOVE_RP+" RP, −"+COST_MOVE_FOCUS+" Focus)"});
+    if(typeof save==="function") save();
+    toast(h.ic+" "+h.name+" → pouch · −"+COST_MOVE_RP+" RP −"+COST_MOVE_FOCUS+" Focus");
+    openHerbPouch();
+  };
+
+  // —— Activate pouch herb into next-session buff (costs more) ——
+  window.activatePouchHerb=function(id){
+    ensurePouch();
+    if((S.pouch[id]||0)<1){toast("Not in pouch");return}
+    if(!canAfford(COST_ACTIVATE_RP, COST_ACTIVATE_FOCUS)){
+      toast("Need "+COST_ACTIVATE_RP+" RP + "+COST_ACTIVATE_FOCUS+" Focus to activate");
+      return;
+    }
+    if(!spendRP(COST_ACTIVATE_RP)||!spendFocus(COST_ACTIVATE_FOCUS)) return;
+    S.pouch[id]--;
+    if(S.pouch[id]<=0) delete S.pouch[id];
+    const h=herbInfo(id);
+    if(!S.buffs) S.buffs=[];
+    if(h.buff && S.buffs.indexOf(h.buff)<0) S.buffs.push(h.buff);
+    S.loadout.pouchHerb=id;
+    S.loadout.buff=id;
+    S.loadout.buffLabel=h.name+" · "+h.buff;
+    if(!S._cascadeLog)S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Activated "+h.name+" for next session (−"+COST_ACTIVATE_RP+" RP, −"+COST_ACTIVATE_FOCUS+" Focus)"});
+    if(typeof save==="function") save();
+    toast("✨ "+h.name+" armed for next session · Focus "+S.focus+"/"+FOCUS_MAX);
+    openHerbPouch();
+  };
+
+  // —— Focus refill ——
+  window.refillFocus=function(mode){
+    ensurePouch();
+    if(S.focus>=FOCUS_MAX){toast("Focus already full");return}
+    if(mode==="rest"){
+      // free but only +3, once-ish per day tracked
+      if(S._focusRestedDay===S.day){toast("Already rested Focus today — buy tea or wait for a new day");return}
+      S._focusRestedDay=S.day;
+      S.focus=Math.min(FOCUS_MAX,S.focus+3);
+      if(typeof save==="function") save();
+      toast("🧘 Focus rest · "+S.focus+"/"+FOCUS_MAX);
+      openHerbPouch();
+      return;
+    }
+    if(mode==="tea"){
+      const cost=5;
+      if((S.rp||0)<cost){toast("Need "+cost+" RP for focus tea");return}
+      S.rp-=cost;
+      S.focus=Math.min(FOCUS_MAX,S.focus+4);
+      if(typeof save==="function") save();
+      toast("🍵 Focus tea · "+S.focus+"/"+FOCUS_MAX+" · −"+cost+" RP");
+      openHerbPouch();
+      return;
+    }
+    if(mode==="full"){
+      const need=FOCUS_MAX-S.focus;
+      const cost=need*2;
+      if((S.rp||0)<cost){toast("Need "+cost+" RP to fill Focus");return}
+      S.rp-=cost;
+      S.focus=FOCUS_MAX;
+      if(typeof save==="function") save();
+      toast("Focus full · −"+cost+" RP");
+      openHerbPouch();
+    }
+  };
+
+  // —— Main pouch UI (game menu) ——
+  window.openHerbPouch=function(){
+    ensurePouch();
+    const stock=Object.entries(S.guild.stock||{}).filter(([,n])=>n>0);
+    const pouch=Object.entries(S.pouch||{}).filter(([,n])=>n>0);
+    const focusPct=Math.round((S.focus/FOCUS_MAX)*100);
+
+    let html=`<div class="card glow">
+      <div class="section-kicker">HERB POUCH · STILL-ROOM MENU</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <strong>Focus ${S.focus}/${FOCUS_MAX}</strong>
+        <span class="pill">${Math.floor(S.rp||0)} RP</span>
+      </div>
+      <div class="focus-bar-wrap"><div class="focus-meter"><i style="width:${focusPct}%"></i></div></div>
+      <p class="muted" style="font-size:.78rem;margin-top:6px">Lantern stock is storage. Move herbs into the <strong>pouch</strong> (costs RP + Focus), then <strong>activate</strong> for the next session (costs more).</p>
+    </div>`;
+
+    html+=`<div class="card"><strong>Refill Focus</strong>
+      <div style="display:grid;gap:6px;margin-top:8px">
+        <button class="btn sm sec" onclick="refillFocus('rest')">🧘 Rest · +3 Focus (1×/day, free)</button>
+        <button class="btn sm sec" onclick="refillFocus('tea')">🍵 Focus tea · +4 Focus (5 RP)</button>
+        <button class="btn sm" onclick="refillFocus('full')">Fill Focus (2 RP per point)</button>
+      </div></div>`;
+
+    html+=`<h3>Lantern stock (guild)</h3>
+      <p class="muted" style="font-size:.75rem">Move into pouch: <strong>${COST_MOVE_RP} RP + ${COST_MOVE_FOCUS} Focus</strong> each</p>`;
+    if(!stock.length) html+=`<div class="empty">Lantern shelves empty — buy at Guild Shop or find on the road.</div>`;
+    else {
+      html+=`<div class="pouch-grid">`+stock.map(([id,n])=>{
+        const h=herbInfo(id);
+        return `<div class="pouch-item" onclick="moveHerbToPouch('${id}')">
+          <div style="font-size:1.3rem">${h.ic}</div>
+          <div class="pi-n">${esc(h.name)} ×${n}</div>
+          <div class="pi-d">${esc(h.fam||"")} · ${esc(h.buff||"")}</div>
+          <div class="cost-line">→ Pouch · ${COST_MOVE_RP} RP + ${COST_MOVE_FOCUS} Focus</div>
+        </div>`;
+      }).join("")+`</div>`;
+    }
+
+    html+=`<h3>Your pouch (ready to use)</h3>
+      <p class="muted" style="font-size:.75rem">Activate for next session: <strong>${COST_ACTIVATE_RP} RP + ${COST_ACTIVATE_FOCUS} Focus</strong></p>`;
+    if(!pouch.length) html+=`<div class="empty">Pouch empty — move herbs from lantern stock above.</div>`;
+    else {
+      html+=`<div class="pouch-grid">`+pouch.map(([id,n])=>{
+        const h=herbInfo(id);
+        const on=S.loadout&&S.loadout.pouchHerb===id?" on":"";
+        return `<div class="pouch-item${on}" onclick="activatePouchHerb('${id}')">
+          <div style="font-size:1.3rem">${h.ic}</div>
+          <div class="pi-n">${esc(h.name)} ×${n}</div>
+          <div class="pi-d">Buff: ${esc(h.buff||"—")}</div>
+          <div class="cost-line">Activate · ${COST_ACTIVATE_RP} RP + ${COST_ACTIVATE_FOCUS} Focus</div>
+        </div>`;
+      }).join("")+`</div>`;
+    }
+
+    if(S.loadout&&S.loadout.buffLabel){
+      html+=`<div class="card glow" style="margin-top:8px"><div class="muted" style="font-size:.72rem">ARMED FOR NEXT SESSION</div>
+        <strong>${esc(S.loadout.buffLabel)}</strong>
+        <p class="muted" style="font-size:.75rem;margin-top:4px">Applies when you begin a real patient visit.</p></div>`;
+    }
+
+    html+=`<p class="flow-hint">Flow: Guild/Road → Lantern stock → (RP+Focus) Pouch → (RP+Focus) Activate → Open door</p>
+      <button class="btn sec" style="margin-top:8px" onclick="closeOverhaulModal();openLanternGuild()">⚜️ Guild Shop</button>
+      <button class="btn" style="margin-top:8px" onclick="closeOverhaulModal();enterWaitingRoom&&enterWaitingRoom()">▶ Open the door</button>`;
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Herb Pouch","INVENTORY",html);
+    else toast("Pouch UI unavailable");
+  };
+
+  // Patch loadout to prefer pouch-activated buffs; still require focus if pulling live from pouch
+  const _ol=window.openLoadout;
+  if(typeof _ol==="function"){
+    window.openLoadout=function(){
+      _ol.apply(this,arguments);
+      try{
+        const body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-pouch-link]")) return;
+        const a=document.createElement("button");
+        a.className="btn sm";
+        a.style.marginTop="8px";
+        a.dataset.pouchLink="1";
+        a.textContent="🎒 Open Herb Pouch (RP + Focus)";
+        a.onclick=function(){openHerbPouch()};
+        body.appendChild(a);
+      }catch(e){}
+    };
+  }
+
+  // Apply armed pouch buff at session start (buff already in S.buffs from activate)
+  // Deplete focus slightly when starting a session if a buff is active
+  const _ba=window.beginArrival;
+  if(typeof _ba==="function"){
+    window.beginArrival=function(data){
+      try{
+        ensurePouch();
+        if(data&&!data.practice&&S.buffs&&S.buffs.length){
+          // Small focus tax for carrying active herbal focus into the room
+          if(S.focus>=1){ S.focus-=1; }
+          else if(typeof toast==="function") toast("Low Focus — herb edge may feel thin");
+        }
+      }catch(e){}
+      return _ba.apply(this,arguments);
+    };
+  }
+
+  // Focus regen on day recap / rest
+  const _fr=window.finishRecap;
+  if(typeof _fr==="function"){
+    window.finishRecap=function(){
+      try{
+        ensurePouch();
+        S.focus=Math.min(FOCUS_MAX, S.focus+4);
+        S._focusRestedDay=null;
+      }catch(e){}
+      return _fr.apply(this,arguments);
+    };
+  }
+  const _fullRest=window.fullRest;
+  if(typeof _fullRest==="function"){
+    window.fullRest=function(){
+      const r=_fullRest.apply(this,arguments);
+      try{ensurePouch();S.focus=Math.min(FOCUS_MAX,S.focus+2);if(typeof toast==="function")toast("Focus +2 from rest")}catch(e){}
+      return r;
+    };
+  }
+
+  // UI entry points: Codex shelf, Features, home, flow
+  function injectPouchButtons(){
+    try{
+      // Codex inventory tab enhancement
+      const inv=document.getElementById("codexInv");
+      if(inv&&!document.getElementById("pouchBtnCodex")){
+        // will show when renderInventory runs — patch renderInventory
+      }
+      const home=document.getElementById("sc-home");
+      if(home&&!document.getElementById("btnPouch")){
+        const b=document.createElement("button");
+        b.id="btnPouch";
+        b.className="btn sec";
+        b.style.marginTop="8px";
+        b.textContent="🎒 Herb Pouch · RP + Focus";
+        b.onclick=function(){openHerbPouch()};
+        const flow=document.getElementById("flowBoard");
+        if(flow&&flow.parentNode) flow.parentNode.insertBefore(b, flow.nextSibling);
+        else home.appendChild(b);
+      }
+      const more=document.getElementById("sc-more");
+      if(more&&!document.getElementById("pouchMoreCard")){
+        const c=document.createElement("div");
+        c.className="card";
+        c.id="pouchMoreCard";
+        c.innerHTML='<p style="font-weight:650">Herb inventory</p><p class="muted" style="margin:4px 0 8px">Move lantern stock into your pouch. Activating costs RP and Focus.</p><button class="btn sm" onclick="openHerbPouch()">Open Herb Pouch</button>';
+        more.insertBefore(c, more.firstChild);
+      }
+      // Features grid tile
+      const fg=document.querySelector("#sc-features .feature-grid");
+      if(fg&&!document.getElementById("pouchFeatureTile")){
+        const t=document.createElement("div");
+        t.className="feature-tile";
+        t.id="pouchFeatureTile";
+        t.onclick=function(){openHerbPouch()};
+        t.innerHTML='<div class="fi">🎒</div><div class="ft">Herb Pouch</div><div class="fd">RP + Focus to use herbs</div>';
+        fg.appendChild(t);
+      }
+      // Lantern hub extra action if exists
+      const hub=document.getElementById("lanternHub");
+      if(hub&&!hub.querySelector("[data-pouch-hub]")){
+        const actions=hub.querySelector(".lantern-actions");
+        if(actions){
+          const b=document.createElement("button");
+          b.className="btn sm sec";
+          b.dataset.pouchHub="1";
+          b.textContent="🎒 Pouch";
+          b.onclick=function(){openHerbPouch()};
+          actions.appendChild(b);
+        }
+      }
+    }catch(e){}
+  }
+
+  // Patch renderInventory to include pouch summary + button
+  const _ri=window.renderInventory;
+  if(typeof _ri==="function"){
+    window.renderInventory=function(){
+      _ri.apply(this,arguments);
+      try{
+        ensurePouch();
+        const el=document.getElementById("codexInv");
+        if(!el) return;
+        const pouchN=Object.values(S.pouch||{}).reduce((a,b)=>a+(b||0),0);
+        const stockN=Object.values(S.guild.stock||{}).reduce((a,b)=>a+(b||0),0);
+        const bar=document.createElement("div");
+        bar.className="card glow";
+        bar.innerHTML=`<div class="section-kicker">POUCH + FOCUS</div>
+          <div class="mastery-row"><span>Focus</span><span>${S.focus}/${FOCUS_MAX}</span></div>
+          <div class="focus-meter" style="margin:6px 0"><i style="width:${(S.focus/FOCUS_MAX)*100}%"></i></div>
+          <div class="mastery-row"><span>Pouch herbs</span><span>${pouchN}</span></div>
+          <div class="mastery-row"><span>Lantern stock</span><span>${stockN}</span></div>
+          <button class="btn sm" style="margin-top:8px;width:100%" onclick="openHerbPouch()">Manage Herb Pouch</button>
+          <p class="muted" style="font-size:.72rem;margin-top:6px">Move ${COST_MOVE_RP}RP/${COST_MOVE_FOCUS}Focus · Activate ${COST_ACTIVATE_RP}RP/${COST_ACTIVATE_FOCUS}Focus</p>`;
+        el.insertBefore(bar, el.firstChild);
+      }catch(e){}
+    };
+  }
+
+  // Show focus on resource triangle if present
+  const _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      _rgh.apply(this,arguments);
+      try{
+        ensurePouch();
+        const box=document.getElementById("gpHomeBox");
+        if(!box) return;
+        const tri=box.querySelector(".res-triangle");
+        if(tri&&!tri.querySelector(".focus-tile")){
+          // expand to 4
+          tri.style.gridTemplateColumns="repeat(4,1fr)";
+          const t=document.createElement("div");
+          t.className="res-tile focus-tile";
+          t.innerHTML=`<div class="rv" style="color:var(--violet,#b99cff)">${S.focus}</div><div class="rl">Focus</div>`;
+          tri.appendChild(t);
+        } else if(tri&&tri.querySelector(".focus-tile")){
+          tri.querySelector(".focus-tile .rv").textContent=S.focus;
+        }
+      }catch(e){}
+    };
+  }
+
+  setTimeout(injectPouchButtons,600);
+  setTimeout(injectPouchButtons,1600);
+  setTimeout(function(){try{ensurePouch()}catch(e){}},200);
+
+  // Keyboard
+  document.addEventListener("keydown",function(e){
+    if(e.target&&/input|textarea|select/i.test(e.target.tagName))return;
+    if(e.key&&e.key.toLowerCase()==="p") openHerbPouch();
+  });
+})();
+
+
+/* ==========================================================
+   LANTERN BOARD — expanded hub (guild-depth activities)
+   ========================================================== */
+(function(){
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  function ensureLB(){
+    if(!window.S) return null;
+    if(!S.lanternBoard) S.lanternBoard={
+      offerings:0, noticesRead:[], wickTrimmedDay:null,
+      pinStaff:null, dispatchDone:false, oilRacks:0
+    };
+    if(typeof S.lanternFuel!=="number") S.lanternFuel=70;
+    return S.lanternBoard;
+  }
+
+  const NOTICES=[
+    {id:"n1",ic:"📜",t:"Guild circular",b:"Adept hands may buy Moon-aisle herbs when rank allows. Keep the flame honest."},
+    {id:"n2",ic:"🌫️",t:"Grey watch",b:"If the road dims below 40%, relight before spectacle choices. The Grey is patient."},
+    {id:"n3",ic:"🧺",t:"Market note",b:"Nettle and oatstraw are plentiful this week. File them into the pouch before they dry."},
+    {id:"n4",ic:"🔔",t:"Door roster",b:"Follow-up slips sit first in the waiting room. Clear debts before new ledgers."},
+    {id:"n5",ic:"🌙",t:"Moon post",b:"Beacon retreats (stability ≥70%) mark the chronicle. Bring the light home."},
+    {id:"n6",ic:"🧪",t:"Still-room rule",b:"Activate pouch herbs with Focus. Empty Focus means the plants stay in the jar."}
+  ];
+
+  const OFFERINGS=[
+    {id:"off_oil",ic:"🪔",name:"Oil drop",cost:4,fuel:8,d:"Feed the clinic flame."},
+    {id:"off_herb",ic:"🌿",name:"Herb pinch",cost:6,fuel:6,focus:1,d:"Flame + Focus from green stock."},
+    {id:"off_coin",ic:"🪙",name:"Token polish",cost:0,token:1,fuel:12,d:"Spend 1 Road Token for a bright flare."},
+    {id:"off_rp",ic:"✨",name:"Ledger thanks",cost:10,fuel:15,d:"A larger gift to the lantern."}
+  ];
+
+  window.openLanternBoard=function(){
+    ensureLB();
+    const fuel=Math.round(S.lanternFuel||0);
+    const focus=typeof S.focus==="number"?S.focus:10;
+    const rank=(S.guild&&S.guild.rank)||"spark";
+    const follows=(S.followUps||[]).filter(f=>!f.done).length;
+    const stockN=Object.values((S.guild&&S.guild.stock)||{}).reduce((a,b)=>a+(b||0),0);
+    const pouchN=Object.values(S.pouch||{}).reduce((a,b)=>a+(b||0),0);
+
+    let html=`<div class="lb-full">
+      <div class="flame-big">🏮</div>
+      <div style="text-align:center;font-weight:800">LANTERN BOARD</div>
+      <p class="muted" style="text-align:center;font-size:.78rem;margin:4px 0 10px">Flame ${fuel}% · Focus ${focus} · Rank ${esc(rank)} · Stock ${stockN} · Pouch ${pouchN}</p>
+      <div class="lb-grid">
+        <div class="lb-tile" onclick="openLBNotices()"><div class="fi">📌</div><div class="ft">Notice board</div><div class="fd">Guild posts & road warnings</div></div>
+        <div class="lb-tile" onclick="openLBShrine()"><div class="fi">🕯️</div><div class="ft">Wick shrine</div><div class="fd">Offerings · feed the flame</div></div>
+        <div class="lb-tile" onclick="openLBDispatch()"><div class="fi">🗺️</div><div class="ft">Dispatch desk</div><div class="fd">Road goals · walk the path</div></div>
+        <div class="lb-tile" onclick="openHerbPouch&&openHerbPouch()"><div class="fi">🎒</div><div class="ft">Herb pouch</div><div class="fd">Move & activate with Focus</div></div>
+        <div class="lb-tile" onclick="openLanternGuild&&openLanternGuild()"><div class="fi">⚜️</div><div class="ft">Guild hall</div><div class="fd">Buy herbs · rank · contracts</div></div>
+        <div class="lb-tile" onclick="openLBStaff()"><div class="fi">👥</div><div class="ft">Staff pins</div><div class="fd">Advice pinned to the board</div></div>
+        <div class="lb-tile" onclick="openWorkshop&&openWorkshop()"><div class="fi">🛠️</div><div class="ft">Workshop</div><div class="fd">Permanent clinic upgrades</div></div>
+        <div class="lb-tile" onclick="openFieldNotes&&openFieldNotes()"><div class="fi">📓</div><div class="ft">Field notes</div><div class="fd">Run stats & mastery</div></div>
+        <div class="lb-tile" onclick="openCascadeLog&&openCascadeLog()"><div class="fi">🔗</div><div class="ft">Cascade log</div><div class="fd">Chains of consequence</div></div>
+        <div class="lb-tile" onclick="go('codex');closeOverhaulModal&&closeOverhaulModal()"><div class="fi">📖</div><div class="ft">Codex</div><div class="fd">Lore, cases, shelf</div></div>
+        <div class="lb-tile" onclick="enterWaitingRoom&&enterWaitingRoom();closeOverhaulModal&&closeOverhaulModal()"><div class="fi">🚪</div><div class="ft">Open the door</div><div class="fd">Patients waiting</div></div>
+        <div class="lb-tile" onclick="go('world');closeOverhaulModal&&closeOverhaulModal()"><div class="fi">🌲</div><div class="ft">Old Road</div><div class="fd">Carry the clinic flame</div></div>
+      </div>
+      ${follows?`<div class="feedback-warn" style="margin-top:10px">📋 ${follows} follow-up slip(s) on the door roster</div>`:""}
+      <p class="flow-hint">The board is the still-room nerve center — same depth as the guild hall, focused on flame, posts, and dispatch.</p>
+    </div>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Lantern Board","HUB",html);
+  };
+
+  window.openLBNotices=function(){
+    ensureLB();
+    const day=S.day||1;
+    // Pick 3 notices seeded by day
+    let n=0; const k="n"+day;
+    for(let i=0;i<k.length;i++) n=(n*31+k.charCodeAt(i))>>>0;
+    const picks=[];
+    for(let i=0;i<3;i++) picks.push(NOTICES[(n+i*3)%NOTICES.length]);
+    let html=`<p class="muted" style="font-size:.8rem">Pinned for Day ${day}. Reading marks them seen.</p>`;
+    html+=picks.map(p=>{
+      const read=(S.lanternBoard.noticesRead||[]).includes(p.id+day);
+      return `<div class="lb-notice" onclick="readLBNotice('${p.id}')">${p.ic} <strong>${esc(p.t)}</strong>
+        <div style="margin-top:4px">${esc(p.b)}</div>
+        ${read?'<div class="feedback-good" style="margin-top:4px">Read</div>':'<div class="muted" style="font-size:.7rem;margin-top:4px">Tap to mark read · +1 RP</div>'}</div>`;
+    }).join("");
+    // Contract / road goal summary
+    try{
+      if(S.gp&&S.gp.contract){
+        html+=`<div class="contract-card" style="margin-top:10px"><div class="section-kicker">FROM GUILD HALL</div>
+          <strong>${esc(S.gp.contract.t)}</strong>
+          <div class="muted" style="font-size:.78rem">${S.gp.contractProg||0}/${S.gp.contract.need}</div></div>`;
+      }
+      if(S.gp&&S.gp.roadGoal){
+        html+=`<div class="road-goal"><div class="section-kicker">DISPATCH</div>
+          <strong>${esc(S.gp.roadGoal.t)}</strong>
+          <div class="muted" style="font-size:.78rem">${S.gp.roadProg||0}/${S.gp.roadGoal.need}</div></div>`;
+      }
+    }catch(e){}
+    html+=`<button class="btn sec" style="margin-top:8px" onclick="openLanternBoard()">Back to board</button>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Notice board","PINS",html);
+  };
+  window.readLBNotice=function(id){
+    ensureLB();
+    const key=id+(S.day||1);
+    if((S.lanternBoard.noticesRead||[]).includes(key)){toast("Already read");return}
+    S.lanternBoard.noticesRead=S.lanternBoard.noticesRead||[];
+    S.lanternBoard.noticesRead.push(key);
+    S.rp=(S.rp||0)+1;
+    if(typeof save==="function") save({ui:false});
+    toast("📌 Notice read · +1 RP");
+    openLBNotices();
+  };
+
+  window.openLBShrine=function(){
+    ensureLB();
+    const fuel=Math.round(S.lanternFuel||0);
+    let html=`<div class="flame-big" style="filter:grayscale(${Math.max(0,(100-fuel)/100)})">🕯️</div>
+      <p style="text-align:center">Clinic flame <strong>${fuel}%</strong></p>
+      <p class="muted" style="text-align:center;font-size:.78rem;margin-bottom:10px">Offerings spend RP or tokens to feed the lantern you carry onto the road.</p>`;
+    html+=OFFERINGS.map(o=>{
+      let costLabel=o.cost?o.cost+" RP":"";
+      if(o.token) costLabel=(costLabel?costLabel+" or ":"")+o.token+" token";
+      return `<div class="lb-offer">
+        <div style="font-size:1.4rem">${o.ic}</div>
+        <div style="flex:1"><strong>${esc(o.name)}</strong>
+          <div class="muted" style="font-size:.72rem">${esc(o.d)} · +${o.fuel||0}% flame${o.focus?" · +"+o.focus+" Focus":""}</div>
+        </div>
+        <button class="btn sm" onclick="makeLBOffering('${o.id}')">${costLabel||"Offer"}</button>
+      </div>`;
+    }).join("");
+    html+=`<button class="btn sm sec" style="width:100%;margin-top:8px" onclick="trimWickAtShrine()">Trim wick · 6 RP · +18% flame</button>`;
+    html+=`<button class="btn sec" style="margin-top:8px" onclick="openLanternBoard()">Back to board</button>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Wick shrine","FLAME",html);
+  };
+  window.makeLBOffering=function(id){
+    ensureLB();
+    const o=OFFERINGS.find(x=>x.id===id); if(!o) return;
+    if(o.token){
+      if((S.tokens||0)<o.token){toast("Need a Road Token");return}
+      S.tokens-=o.token;
+    } else {
+      if((S.rp||0)<(o.cost||0)){toast("Need "+o.cost+" RP");return}
+      S.rp-=(o.cost||0);
+    }
+    S.lanternFuel=Math.min(100,(S.lanternFuel||0)+(o.fuel||0));
+    if(o.focus){ S.focus=Math.min(10,(S.focus||0)+o.focus); }
+    S.lanternBoard.offerings=(S.lanternBoard.offerings||0)+1;
+    if(!S._cascadeLog)S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Shrine offering: "+o.name+" · flame "+Math.round(S.lanternFuel)+"%"});
+    if(typeof save==="function") save();
+    toast(o.ic+" Flame fed · "+Math.round(S.lanternFuel)+"%");
+    openLBShrine();
+  };
+  window.trimWickAtShrine=function(){
+    if(typeof trimClinicWick==="function"){ trimClinicWick(); openLBShrine(); return; }
+    if((S.rp||0)<6){toast("Need 6 RP");return}
+    S.rp-=6;
+    S.lanternFuel=Math.min(100,(S.lanternFuel||0)+18);
+    if(typeof save==="function") save();
+    toast("🕯️ Wick trimmed");
+    openLBShrine();
+  };
+
+  window.openLBDispatch=function(){
+    ensureLB();
+    let html=`<p class="muted">Send yourself onto the Old Road from the board. Goals and flame travel with you.</p>`;
+    try{
+      if(S.gp&&S.gp.roadGoal){
+        const g=S.gp.roadGoal;
+        html+=`<div class="road-goal"><strong>🗺️ ${esc(g.t)}</strong>
+          <div class="muted" style="font-size:.78rem;margin-top:4px">${S.gp.roadProg||0}/${g.need} · ${g.rp} RP
+          ${S.gp.roadClaimed?" · complete":""}</div></div>`;
+      }
+    }catch(e){}
+    html+=`<div class="card"><div class="muted" style="font-size:.72rem">CLINIC FLAME TO CARRY</div>
+      <div style="font-size:1.2rem;font-weight:800;margin-top:4px">${Math.round(S.lanternFuel||0)}%</div>
+      <p class="muted" style="font-size:.75rem;margin-top:4px">Road stability starts from this value.</p></div>`;
+    html+=`<button class="btn" onclick="closeOverhaulModal();go('world')">🗺️ Open Old Road</button>`;
+    html+=`<button class="btn sec" style="margin-top:8px" onclick="openLanternBoard()">Back to board</button>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Dispatch desk","ROAD",html);
+  };
+
+  window.openLBStaff=function(){
+    ensureLB();
+    const tips=[
+      "Jun: First session of the day likes a steady kettle.",
+      "Mira: Correct diagnosis is a kindness — and a score.",
+      "Pell: Follow-ups heal the ledger when you close them well.",
+      "Orrin: Rain means joints. Warm the loadout.",
+      "River Mentor: Attention on the road keeps the lantern honest."
+    ];
+    const day=S.day||1;
+    const tip=tips[day%tips.length];
+    S.lanternBoard.pinStaff=tip;
+    let html=`<div class="staff-ping">📌 ${esc(tip)}</div>
+      <p class="muted" style="font-size:.8rem">Staff rotate pins each day. Permanent advice lives under Mentor in Features.</p>
+      <button class="btn sm" onclick="go('staff');closeOverhaulModal&&closeOverhaulModal()">Open staff screen</button>
+      <button class="btn sec" style="margin-top:8px" onclick="openLanternBoard()">Back to board</button>`;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Staff pins","STILL-ROOM",html);
+  };
+
+  // Expand the home "Lantern board" panel tiles
+  function expandHomeBoard(){
+    try{
+      const panel=document.getElementById("overhaulPanel");
+      if(!panel) return;
+      let grid=panel.querySelector(".feature-grid");
+      if(!grid) return;
+      // Add open full board tile once
+      if(!document.getElementById("lbOpenFull")){
+        const t=document.createElement("div");
+        t.className="feature-tile";
+        t.id="lbOpenFull";
+        t.onclick=function(){openLanternBoard()};
+        t.innerHTML='<div class="fi">🏮</div><div class="ft">Full Board</div><div class="fd">Notices · shrine · dispatch</div>';
+        grid.insertBefore(t, grid.firstChild);
+      }
+      if(!document.getElementById("lbShrineTile")){
+        const t=document.createElement("div");
+        t.className="feature-tile";
+        t.id="lbShrineTile";
+        t.onclick=function(){openLBShrine()};
+        t.innerHTML='<div class="fi">🕯️</div><div class="ft">Wick shrine</div><div class="fd">Feed the clinic flame</div>';
+        grid.appendChild(t);
+      }
+      if(!document.getElementById("lbNoticeTile")){
+        const t=document.createElement("div");
+        t.className="feature-tile";
+        t.id="lbNoticeTile";
+        t.onclick=function(){openLBNotices()};
+        t.innerHTML='<div class="fi">📌</div><div class="ft">Notices</div><div class="fd">Guild posts · +1 RP when read</div>';
+        grid.appendChild(t);
+      }
+      if(!document.getElementById("lbDispatchTile")){
+        const t=document.createElement("div");
+        t.className="feature-tile";
+        t.id="lbDispatchTile";
+        t.onclick=function(){openLBDispatch()};
+        t.innerHTML='<div class="fi">🗺️</div><div class="ft">Dispatch</div><div class="fd">Road goal · walk prepared</div>';
+        grid.appendChild(t);
+      }
+      // Header click opens full board
+      const kick=panel.querySelector(".section-kicker");
+      if(kick&&!kick.dataset.lbBound){
+        kick.dataset.lbBound="1";
+        kick.style.cursor="pointer";
+        kick.title="Open full Lantern Board";
+        kick.onclick=function(){openLanternBoard()};
+      }
+    }catch(e){}
+  }
+
+  // Lantern hub button
+  setTimeout(function(){
+    try{
+      const hub=document.getElementById("lanternHub");
+      if(hub&&!hub.querySelector("[data-lb-full]")){
+        const actions=hub.querySelector(".lantern-actions");
+        if(actions){
+          const b=document.createElement("button");
+          b.className="btn sm";
+          b.dataset.lbFull="1";
+          b.textContent="🏮 Board";
+          b.onclick=function(){openLanternBoard()};
+          actions.insertBefore(b, actions.firstChild);
+        }
+      }
+      expandHomeBoard();
+    }catch(e){}
+  },800);
+  setTimeout(expandHomeBoard,1800);
+
+  document.addEventListener("keydown",function(e){
+    if(e.target&&/input|textarea|select/i.test(e.target.tagName))return;
+    if(e.key&&e.key.toLowerCase()==="b") openLanternBoard();
+  });
+})();
+
+
+/* ==========================================================
+   UNIFIED INVENTORY FIX — guild stock + pouch + shelf
+   Clickable items cascade into loadout / sessions
+   ========================================================== */
+(function(){
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+  function ensureInv(){
+    if(!window.S) return null;
+    if(!S.inventory) S.inventory={};
+    if(!S.guild) S.guild={stock:{},bought:{},xp:0,cascade:0,rank:"spark"};
+    if(!S.guild.stock) S.guild.stock={};
+    if(!S.pouch) S.pouch={};
+    if(typeof S.focus!=="number") S.focus=10;
+    if(!S.loadout) S.loadout={remedy:null,buff:null,buffLabel:null,pouchHerb:null};
+    if(!S.buffs) S.buffs=[];
+    return S;
+  }
+
+  function guildHerbInfo(id){
+    try{
+      if(typeof GUILD_HERBS!=="undefined"){
+        const g=GUILD_HERBS.find(x=>x.id===id);
+        if(g) return {id:id,ic:g.ic||"🌿",name:g.name,buff:g.buff,fam:g.cat||g.fam||"",d:g.d||"",drop:g.drop||null};
+      }
+    }catch(e){}
+    const fallback={
+      gh_chamomile:{ic:"🌼",name:"Chamomile",buff:"fam_sleep"},
+      gh_rosemary:{ic:"🌿",name:"Rosemary",buff:"fam_focus"},
+      gh_lantern_oil:{ic:"🪔",name:"Lantern Oil",buff:"guild_oil"},
+      gh_turmeric:{ic:"🧡",name:"Turmeric",buff:"fam_pain"},
+      gh_vit_c:{ic:"🍊",name:"Vitamin C",buff:"regen"},
+      gh_min_mag:{ic:"⚪",name:"Magnesium",buff:"fam_sleep"}
+    };
+    if(fallback[id]) return Object.assign({id:id,fam:"",d:""}, fallback[id]);
+    return {id:id,ic:"🌿",name:String(id).replace(/^gh_/,"").replace(/_/g," "),buff:"score1",fam:"Herb",d:""};
+  }
+
+  function itemInfo(id){
+    try{
+      if(typeof ITEMS!=="undefined"){
+        const it=ITEMS.find(x=>x.id===id);
+        if(it) return it;
+      }
+    }catch(e){}
+    return null;
+  }
+
+  window.renderInventory=function(){
+    try{
+      ensureInv();
+      const el=document.getElementById("codexInv");
+      if(!el) return;
+
+      const focusMax=10;
+      const focus=Math.max(0,Math.min(focusMax,S.focus|0));
+      const stockEntries=Object.entries(S.guild.stock||{}).filter(([,n])=>n>0);
+      const pouchEntries=Object.entries(S.pouch||{}).filter(([,n])=>n>0);
+      const shelfEntries=Object.entries(S.inventory||{}).filter(([,n])=>n>0);
+      const eq=S.equipped?itemInfo(S.equipped):null;
+      const armed=S.loadout&&S.loadout.buffLabel;
+
+      let html="";
+
+      // Focus + armed strip
+      html+=`<div class="card glow">
+        <div class="section-kicker">STILL-ROOM INVENTORY</div>
+        <div class="mastery-row"><span>Focus</span><span>${focus}/${focusMax}</span></div>
+        <div class="focus-meter" style="margin:6px 0"><i style="width:${(focus/focusMax)*100}%"></i></div>
+        <div class="mastery-row"><span>RP</span><span>${Math.floor(S.rp||0)}</span></div>
+        <div class="muted" style="font-size:.75rem;margin-top:6px">Guild herbs appear under <strong>Lantern stock</strong>. Move into pouch, then activate for the next session.</div>
+        ${armed?`<div class="feedback-good" style="margin-top:8px">Armed: ${esc(armed)}</div>`:`<div class="muted" style="margin-top:8px;font-size:.75rem">No herb buff armed</div>`}
+      </div>`;
+
+      // Equipped color remedy
+      html+=`<div class="card">
+        <p class="muted" style="font-size:.75rem">EQUIPPED REMEDY (color shelf)</p>
+        <p style="font-weight:700;margin-top:4px">${eq?eq.ic+" "+esc(eq.name):"None equipped"}</p>
+        <p class="muted" style="font-size:.78rem;margin-top:2px">${eq?"Matches "+esc(eq.color)+" cases in protocol.":"Equip a shelf remedy below for a color edge."}</p>
+        ${eq?`<button class="btn sm sec" style="margin-top:8px" onclick="invUnequip()">Unequip</button>`:""}
+      </div>`;
+
+      // Lantern / Guild stock — THE FIX: always visible when stock exists
+      html+=`<h3>🏮 Lantern stock (Guild)</h3>`;
+      if(!stockEntries.length){
+        html+=`<div class="empty">No guild herbs in stock.<br><button class="btn sm" style="margin-top:8px" onclick="openLanternGuild&&openLanternGuild()">Open Guild Shop</button></div>`;
+      } else {
+        html+=`<p class="muted" style="font-size:.75rem;margin-bottom:6px">Tap an item to move it into your pouch (2 RP + 1 Focus).</p>`;
+        html+=`<div class="badge-grid">`+stockEntries.map(([id,n])=>{
+          const h=guildHerbInfo(id);
+          return `<div class="badge on" style="cursor:pointer;opacity:1" onclick="invClickGuild('${id}')">
+            <div class="ic">${h.ic}</div>
+            <div class="n">${esc(h.name)}</div>
+            <div class="d">×${n} · ${esc(h.fam||h.buff||"herb")}</div>
+          </div>`;
+        }).join("")+`</div>`;
+      }
+
+      // Pouch
+      html+=`<h3>🎒 Pouch (ready to activate)</h3>`;
+      if(!pouchEntries.length){
+        html+=`<div class="empty">Pouch empty — tap lantern stock above to file herbs in.</div>`;
+      } else {
+        html+=`<p class="muted" style="font-size:.75rem;margin-bottom:6px">Tap to activate for next session (3 RP + 2 Focus).</p>`;
+        html+=`<div class="badge-grid">`+pouchEntries.map(([id,n])=>{
+          const h=guildHerbInfo(id);
+          const on=S.loadout&&S.loadout.pouchHerb===id;
+          return `<div class="badge on" style="cursor:pointer;opacity:1${on?';border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)':''}" onclick="invClickPouch('${id}')">
+            <div class="ic">${h.ic}</div>
+            <div class="n">${esc(h.name)}${on?" ✓":""}</div>
+            <div class="d">×${n} · ${esc(h.buff||"")}</div>
+          </div>`;
+        }).join("")+`</div>`;
+      }
+
+      // Color shelf remedies
+      html+=`<h3>🧵 Color shelf remedies</h3>`;
+      if(!shelfEntries.length){
+        html+=`<div class="empty">Shelf bare — good outcomes sometimes leave a remedy. Guild drops can stock it too.</div>`;
+      } else {
+        html+=`<div class="badge-grid">`+shelfEntries.map(([id,n])=>{
+          const it=itemInfo(id);
+          if(!it) return `<div class="badge on"><div class="n">${esc(id)}</div><div class="d">×${n}</div></div>`;
+          const isEq=S.equipped===id;
+          return `<div class="badge on" style="cursor:pointer;opacity:1${isEq?';border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)':''}" onclick="invClickShelf('${id}')">
+            <div class="ic">${it.ic}</div>
+            <div class="n">${esc(it.name)}${isEq?" ✓":""}</div>
+            <div class="d">×${n} · ${esc(it.color)}</div>
+          </div>`;
+        }).join("")+`</div>`;
+      }
+
+      html+=`<div style="display:grid;gap:8px;margin-top:12px">
+        <button class="btn sm" onclick="openHerbPouch&&openHerbPouch()">Open full Herb Pouch</button>
+        <button class="btn sm sec" onclick="openLanternGuild&&openLanternGuild()">⚜️ Guild Shop</button>
+        <button class="btn sm sec" onclick="refillFocus&&refillFocus('rest')">🧘 Rest Focus +3</button>
+      </div>`;
+
+      el.innerHTML=html;
+    }catch(err){
+      console.error("renderInventory",err);
+      try{
+        const el=document.getElementById("codexInv");
+        if(el) el.innerHTML='<div class="card"><p>Inventory error — try Guild Shop, then return.</p><button class="btn sm" onclick="openLanternGuild&&openLanternGuild()">Guild</button></div>';
+      }catch(e){}
+    }
+  };
+
+  window.invUnequip=function(){
+    ensureInv();
+    S.equipped=null;
+    if(typeof save==="function") save();
+    renderInventory();
+    if(typeof toast==="function") toast("Unequipped");
+  };
+
+  window.invClickGuild=function(id){
+    ensureInv();
+    // Prefer pouch move function if present
+    if(typeof moveHerbToPouch==="function"){
+      moveHerbToPouch(id);
+      // moveHerbToPouch opens pouch modal — also refresh inv when closed
+      setTimeout(function(){ try{renderInventory()}catch(e){} },300);
+      return;
+    }
+    // Inline fallback
+    if((S.guild.stock[id]||0)<1){toast("Empty");return}
+    if((S.rp||0)<2||S.focus<1){toast("Need 2 RP + 1 Focus");return}
+    S.rp-=2; S.focus-=1; S.guild.stock[id]--;
+    S.pouch[id]=(S.pouch[id]||0)+1;
+    if(!S._cascadeLog)S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Inventory: filed "+id+" into pouch"});
+    if(typeof save==="function") save();
+    toast("→ Pouch");
+    renderInventory();
+  };
+
+  window.invClickPouch=function(id){
+    ensureInv();
+    if(typeof activatePouchHerb==="function"){
+      activatePouchHerb(id);
+      setTimeout(function(){ try{renderInventory()}catch(e){} },300);
+      return;
+    }
+    if((S.pouch[id]||0)<1){toast("Empty");return}
+    if((S.rp||0)<3||S.focus<2){toast("Need 3 RP + 2 Focus");return}
+    S.rp-=3; S.focus-=2; S.pouch[id]--;
+    if(S.pouch[id]<=0) delete S.pouch[id];
+    const h=guildHerbInfo(id);
+    if(h.buff&&S.buffs.indexOf(h.buff)<0) S.buffs.push(h.buff);
+    S.loadout.pouchHerb=id;
+    S.loadout.buff=id;
+    S.loadout.buffLabel=(h.name||id)+" · "+(h.buff||"");
+    // Optional shelf drop
+    if(h.drop){ S.inventory[h.drop]=(S.inventory[h.drop]||0)+1; }
+    if(!S._cascadeLog)S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Inventory: activated "+(h.name||id)+" for next session"});
+    if(typeof save==="function") save();
+    toast("✨ Armed · "+(h.name||id));
+    renderInventory();
+  };
+
+  window.invClickShelf=function(id){
+    ensureInv();
+    if(typeof equipItem==="function"){
+      equipItem(id);
+      // equipItem calls renderInventory — but our override is window.renderInventory
+      renderInventory();
+      return;
+    }
+    S.equipped=S.equipped===id?null:id;
+    if(typeof save==="function") save();
+    toast(S.equipped?"🎒 Equipped":"Unequipped");
+    renderInventory();
+  };
+
+  // When buying from guild, refresh inventory if codex inv visible
+  const _buy=window.buyGuildHerb;
+  if(typeof _buy==="function"){
+    window.buyGuildHerb=function(id){
+      const r=_buy.apply(this,arguments);
+      try{
+        const inv=document.getElementById("codexInv");
+        if(inv&&inv.style.display!=="none"&&S.codexTab==="inv") renderInventory();
+        // Always cascade log already in buy; ensure stock visible
+        if(!S._cascadeLog)S._cascadeLog=[];
+      }catch(e){}
+      return r;
+    };
+  }
+
+  // switchCodexTab inv must call our renderer
+  const _sw=window.switchCodexTab;
+  if(typeof _sw==="function"){
+    window.switchCodexTab=function(tab){
+      const r=_sw.apply(this,arguments);
+      if(tab==="inv") setTimeout(function(){ try{renderInventory()}catch(e){} },20);
+      return r;
+    };
+  }
+
+  // go codex inv
+  const _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      const r=_go.apply(this,arguments);
+      if(name==="codex"&&S&&S.codexTab==="inv") setTimeout(function(){try{renderInventory()}catch(e){}},40);
+      return r;
+    };
+  }
+
+  // Begin session: apply armed buff visibly + cascade
+  const _ba=window.beginArrival;
+  if(typeof _ba==="function"){
+    window.beginArrival=function(data){
+      try{
+        ensureInv();
+        if(data&&!data.practice&&S.loadout&&S.loadout.buffLabel&&S.buffs&&S.buffs.length){
+          if(typeof toast==="function") toast("🎒 Inventory loadout · "+S.loadout.buffLabel);
+        }
+      }catch(e){}
+      return _ba.apply(this,arguments);
+    };
+  }
+
+  // After move/activate from pouch modal, keep inv in sync
+  const _move=window.moveHerbToPouch;
+  if(typeof _move==="function"){
+    window.moveHerbToPouch=function(id){
+      const r=_move.apply(this,arguments);
+      setTimeout(function(){try{renderInventory()}catch(e){}},200);
+      return r;
+    };
+  }
+  const _act=window.activatePouchHerb;
+  if(typeof _act==="function"){
+    window.activatePouchHerb=function(id){
+      const r=_act.apply(this,arguments);
+      setTimeout(function(){try{renderInventory()}catch(e){}},200);
+      return r;
+    };
+  }
+})();
+
+
+/* ==========================================================
+   LANTERN RELIABILITY LAYER
+   One click system for Guild + Board + Shrine + Dispatch + Shelf
+   ========================================================== */
+(function(){
+  'use strict';
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  function ensureGuild(){
+    if(!window.S) window.S={rp:0,log:[],day:1};
+    S.guild=S.guild||{xp:0,bought:{},stock:{},rank:"spark",cascade:0,shopCat:"All"};
+    S.guild.stock=S.guild.stock||{}; S.guild.bought=S.guild.bought||{};
+    S.inventory=S.inventory||{}; S.buffs=S.buffs||[]; S.pouch=S.pouch||{};
+    if(typeof S.rp!=="number")S.rp=0;
+    return S.guild;
+  }
+  function guildRanks(){return [
+    {id:"spark",ic:"🕯️",name:"Spark",need:0},
+    {id:"wick",ic:"🪔",name:"Wick-Keeper",need:5},
+    {id:"lantern",ic:"🏮",name:"Lantern Hand",need:15},
+    {id:"guild",ic:"⚜️",name:"Guild Adept",need:30},
+    {id:"master",ic:"🌟",name:"Still-Room Master",need:50}
+  ];}
+  function guildRank(){ensureGuild();let r=guildRanks()[0], n=(S.log||[]).length;guildRanks().forEach(x=>{if(n>=x.need)r=x});S.guild.rank=r.id;return r}
+  function discount(){const id=guildRank().id;return id==='master'?.75:id==='guild'?.85:id==='lantern'?.9:1}
+  function modal(title,kicker,html){
+    const m=document.getElementById('overhaulModal'),b=document.getElementById('overhaulModalBody');
+    if(!m||!b){console.error('Lantern modal missing'); if(typeof toast==='function')toast('Lantern panel unavailable'); return false;}
+    document.getElementById('overhaulModalKicker').textContent=kicker||'LANTERN';
+    document.getElementById('overhaulModalTitle').textContent=title;
+    b.innerHTML=html;
+    m.style.display='block';m.style.zIndex='300';m.style.pointerEvents='auto';
+    document.body.classList.add('lantern-modal-open');
+    return true;
+  }
+  function close(){if(typeof closeOverhaulModal==='function')closeOverhaulModal();else{const m=document.getElementById('overhaulModal');if(m)m.style.display='none';}document.body.classList.remove('lantern-modal-open')}
+  function save(){try{if(typeof window.save==='function')window.save({ui:false});}catch(e){console.warn(e)}}
+  function buy(id){
+    ensureGuild(); const h=(window.GUILD_HERBS||[]).find(x=>x.id===id); if(!h){toast&&toast('Guild item missing');return}
+    const price=Math.max(1,Math.round((h.cost||10)*discount()));
+    if((S.rp||0)<price){toast&&toast('Need '+price+' RP (have '+Math.floor(S.rp||0)+')');return}
+    S.rp-=price; S.guild.stock[id]=(S.guild.stock[id]||0)+1; S.guild.bought[id]=(S.guild.bought[id]||0)+1;
+    S.guild.xp=(S.guild.xp||0)+1; S.guild.cascade=(S.guild.cascade||0)+1;
+    if(h.drop)S.inventory[h.drop]=(S.inventory[h.drop]||0)+1;
+    if(h.drop2)S.inventory[h.drop2]=(S.inventory[h.drop2]||0)+1;
+    if(h.buff&&!S.buffs.includes(h.buff))S.buffs.push(h.buff);
+    S._cascadeLog=S._cascadeLog||[];S._cascadeLog.push({day:S.day||1,t:'Guild buy: '+h.name+' · stock ×'+S.guild.stock[id]+' · −'+price+' RP'});
+    save();toast&&toast((h.ic||'🌿')+' '+h.name+' · in lantern stock');window.openLanternGuild();
+  }
+  window.buyGuildHerb=buy;
+  window.setGuildCat=function(cat){ensureGuild();S.guild.shopCat=cat||'All';window.openLanternGuild()};
+  window.openLanternGuild=function(){
+    ensureGuild();const catalog=window.GUILD_HERBS||[];if(!catalog.length){toast&&toast('Guild catalog missing');return}
+    const rank=guildRank(),disc=discount(),cases=(S.log||[]).length,cat=S.guild.shopCat||'All';
+    const cats=['All','Sleep','Focus','Boundaries','Mood','Pain','Digestive','Restore','Sense','Vitamins','Minerals','Guild'];
+    const list=catalog.filter(h=>cat==='All'||h.cat===cat);
+    let html=`<div class="guild-banner"><div class="section-kicker">LANTERN GUILD · HERB MARKET</div><div class="guild-rank">${rank.ic} ${esc(rank.name)}</div><div class="muted" style="margin-top:4px;font-size:.78rem">Sessions: ${cases} · RP: <strong>${Math.floor(S.rp||0)}</strong> · Guild stock: ${Object.values(S.guild.stock).reduce((a,b)=>a+(b||0),0)}</div><div class="guild-meter"><i style="width:${Math.min(100,Math.round(cases/Math.max(1,(guildRanks().find(r=>r.need>cases)||{need:50}).need)*100))}%"></i></div>${disc<1?`<div class="feedback-good" style="margin-top:6px">Rank discount: ${Math.round((1-disc)*100)}% off</div>`:''}</div>`;
+    html+=`<div class="pr-fam-bar">${cats.map(c=>`<button type="button" class="pr-fam${cat===c?' on':''}" data-lantern="guild-cat" data-value="${c}">${c}</button>`).join('')}</div>`;
+    html+=`<p class="muted" style="font-size:.78rem;margin:4px 0 8px">Buy a game herb → it enters lantern stock and arms its game buff. Use Shelf/Pouch to activate it for a session.</p>`;
+    html+=list.length?list.map(h=>{const price=Math.max(1,Math.round((h.cost||10)*disc)),owned=S.guild.stock[h.id]||0;return `<div class="guild-herb"><div class="gic">${h.ic||'🌿'}</div><div class="ginfo"><strong>${esc(h.name)}</strong><div class="muted" style="font-size:.72rem;margin-top:2px">${esc(h.d||'')}</div><div style="margin-top:4px"><span class="pill">${esc(h.cat||h.fam||'')}</span>${owned?`<span class="pill">×${owned}</span>`:''}</div></div><button type="button" class="btn sm" data-lantern="buy" data-id="${h.id}">${price} RP</button></div>`}).join(''):`<div class="empty">No herbs in this aisle.</div>`;
+    html+=`<div class="card" style="margin-top:10px"><strong>Guild flow</strong><p class="muted" style="font-size:.8rem;margin:4px 0 8px">Guild → Shelf → Pouch → Activate → Patient session.</p><button type="button" class="btn sm sec" data-lantern="shelf">🎒 Open Shelf</button><button type="button" class="btn sm" style="margin-top:6px" data-lantern="door">▶ Open the door</button><button type="button" class="btn sm sec" style="margin-top:6px" data-lantern="board">🏮 Back to Lantern Board</button></div>`;
+    modal('Lantern Guild','HERB MARKET · '+list.length+' shown',html);
+  };
+  function shelf(){close();if(typeof go==='function')go('codex');setTimeout(()=>{try{if(typeof switchCodexTab==='function')switchCodexTab('inv');if(typeof renderInventory==='function')renderInventory()}catch(e){}},60)}
+  function door(){close();if(typeof enterWaitingRoom==='function')enterWaitingRoom();else if(typeof openWaitingRoom==='function')openWaitingRoom()}
+  function board(){if(typeof openLanternBoard==='function')openLanternBoard();}
+  // Single delegated listener: survives every modal redraw and works on touch + mouse.
+  if(!window.__lanternReliabilityBound){
+    window.__lanternReliabilityBound=true;
+    document.addEventListener('click',function(ev){
+      const el=ev.target&&ev.target.closest?ev.target.closest('[data-lantern]'):null;if(!el)return;
+      const a=el.getAttribute('data-lantern');
+      try{
+        if(a==='buy')buy(el.getAttribute('data-id'));
+        else if(a==='guild-cat')window.setGuildCat(el.getAttribute('data-value'));
+        else if(a==='shelf')shelf();
+        else if(a==='door')door();
+        else if(a==='board')board();
+        else if(a==='guild')window.openLanternGuild();
+        else if(a==='notices'&&typeof openLBNotices==='function')openLBNotices();
+        else if(a==='shrine'&&typeof openLBShrine==='function')openLBShrine();
+        else if(a==='dispatch'&&typeof openLBDispatch==='function')openLBDispatch();
+        else if(a==='pouch'&&typeof openHerbPouch==='function')openHerbPouch();
+        else if(a==='staff'&&typeof openLBStaff==='function')openLBStaff();
+        else if(a==='workshop'&&typeof openWorkshop==='function')openWorkshop();
+        else if(a==='notes'&&typeof openFieldNotes==='function')openFieldNotes();
+        else if(a==='cascade'&&typeof openCascadeLog==='function')openCascadeLog();
+        else if(a==='codex'){close();if(typeof go==='function')go('codex');}
+        else if(a==='world'){close();if(typeof go==='function')go('world');}
+      }catch(e){console.error('Lantern action',a,e);if(typeof toast==='function')toast('Lantern action failed — '+(e.message||'error'))}
+    },true);
+  }
+  // Make the board itself use the same reliable data actions.
+  const oldBoard=window.openLanternBoard;
+  if(typeof oldBoard==='function'){
+    window.openLanternBoard=function(){
+      oldBoard.apply(this,arguments);
+      const body=document.getElementById('overhaulModalBody');if(!body)return;
+      body.querySelectorAll('.lb-tile').forEach(tile=>{
+        const text=(tile.innerText||'').toLowerCase();
+        const map=text.includes('notice')?'notices':text.includes('wick shrine')?'shrine':text.includes('dispatch')?'dispatch':text.includes('herb pouch')?'pouch':text.includes('guild hall')?'guild':text.includes('staff pins')?'staff':text.includes('workshop')?'workshop':text.includes('field notes')?'notes':text.includes('cascade')?'cascade':text.includes('codex')?'codex':text.includes('open the door')?'door':text.includes('old road')?'world':null;
+        if(map){tile.removeAttribute('onclick');tile.setAttribute('data-lantern',map)}
+      });
+    };
+  }
+  // Harden existing modal layer against nav/action-bar interception.
+  const m=document.getElementById('overhaulModal');if(m){m.style.zIndex='300';m.style.pointerEvents='auto'}
+  ensureGuild();
+})();
 </script>
 </body>
 </html>
