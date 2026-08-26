@@ -514,6 +514,138 @@ body{
 .wiz-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .wiz-amz{display:inline-block;margin-top:6px;font-size:.7rem;color:#9dcea8}
 
+
+/* ===== LANTERN STICKY HUB · 100 PATIENTS · FINAL REVIEW ===== */
+.lantern-fab{
+  position:fixed;right:12px;bottom:76px;z-index:180;
+  width:56px;height:56px;border-radius:18px;border:1px solid #d4a84b;
+  background:radial-gradient(circle at 30% 25%,#ffe7a3,#c47a18 55%,#3a2208);
+  color:#2a1604;font-size:1.4rem;font-weight:800;cursor:pointer;
+  box-shadow:0 10px 28px rgba(0,0,0,.35),0 0 18px rgba(255,209,102,.35);
+}
+.lantern-dock{
+  position:fixed;left:0;right:0;bottom:58px;z-index:170;
+  background:linear-gradient(180deg,rgba(10,24,34,.96),rgba(8,18,26,.98));
+  border-top:1px solid #31566d;padding:8px 10px 10px;
+  display:none;max-height:46vh;overflow:auto;
+}
+.lantern-dock.on{display:block}
+.ld-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ld-tile{padding:8px 6px;border-radius:12px;border:1px solid #29495c;background:#102634;
+  text-align:center;font-size:.62rem;color:#c8d7e2;cursor:pointer;line-height:1.25}
+.ld-tile .ic{display:block;font-size:1.05rem;margin-bottom:2px}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.review-chip{padding:8px;border-radius:10px;background:#102634;border:1px solid #29495c;font-size:.72rem}
+.prob-row{padding:8px 0;border-bottom:1px solid #1e3544;font-size:.8rem}
+.diff-easy{color:#62e6ad}.diff-mid{color:#ffd166}.diff-hard{color:#ff9f6b}.diff-crit{color:#ff7474}
+.area-stick{position:sticky;top:0;z-index:8;background:rgba(13,27,39,.92);padding:6px 0;margin-bottom:6px;
+  border-bottom:1px solid #29495c;font-size:.72rem;letter-spacing:.06em;color:#9db7c7}
+@media(max-width:420px){.ld-grid{grid-template-columns:repeat(3,1fr)}}
+
+
+/* ===== KIT USE VISUAL FEEDBACK ===== */
+@keyframes kitPulse{
+  0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,209,102,.55)}
+  40%{transform:scale(1.12);box-shadow:0 0 0 12px rgba(255,209,102,0)}
+  100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,209,102,0)}
+}
+@keyframes kitBannerIn{
+  0%{opacity:0;transform:translate(-50%,12px)}
+  15%{opacity:1;transform:translate(-50%,0)}
+  80%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-8px)}
+}
+.lantern-fab.kit-used{animation:kitPulse .9s ease-out 2}
+.kit-banner{
+  position:fixed;left:50%;bottom:140px;transform:translateX(-50%);
+  z-index:200;min-width:240px;max-width:90%;
+  background:linear-gradient(145deg,#2a4a20,#143018);
+  border:1px solid #62e6ad;color:#e8fff0;
+  padding:12px 16px;border-radius:16px;
+  box-shadow:0 12px 32px rgba(0,0,0,.4);
+  font-size:.84rem;font-weight:650;text-align:center;
+  animation:kitBannerIn 2.8s ease-out forwards;
+  pointer-events:none;
+}
+.kit-banner .kb-ic{font-size:1.4rem;display:block;margin-bottom:4px}
+.kit-banner .kb-sub{font-size:.72rem;font-weight:500;opacity:.85;margin-top:4px}
+.kit-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 8px;border-radius:99px;margin:2px;
+  background:#1a3a28;border:1px solid #3a6a48;color:#9dcea8;font-size:.7rem
+}
+.kit-flash{outline:2px solid #62e6ad;outline-offset:2px;transition:outline .3s}
+
+
+/* ===== DEEP PATIENT Q&A ===== */
+.qa-block{margin:8px 0;padding:10px;border-radius:14px;border:1px solid #31566d;background:#0e202d}
+.qa-q{font-weight:700;font-size:.86rem;margin-bottom:6px}
+.qa-a{font-size:.82rem;color:#c8d7e2;line-height:1.45;font-style:italic}
+.qa-chip{display:inline-block;margin:3px 4px 0 0;padding:5px 9px;border-radius:99px;border:1px solid #29495c;
+  background:#123040;color:#d7e6ef;font-size:.7rem;cursor:pointer}
+.qa-chip.on{border-color:#62e6ad;color:#62e6ad;background:#143028}
+
+
+/* ===== MECHANICS TOGGLES + FUN STREAMLINE ===== */
+.mech-panel{margin:10px 0;padding:12px;border-radius:16px;border:1px solid #31566d;background:linear-gradient(165deg,#102634,#0b1c26)}
+.mech-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1e3544;font-size:.8rem}
+.mech-row:last-child{border-bottom:0}
+.toggle{
+  width:44px;height:24px;border-radius:99px;border:1px solid #31566d;background:#1a303c;
+  position:relative;cursor:pointer;flex-shrink:0
+}
+.toggle.on{background:#1a4a32;border-color:#62e6ad}
+.toggle i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#9db7c7;transition:left .15s}
+.toggle.on i{left:22px;background:#62e6ad}
+.fun-pop{
+  position:fixed;left:50%;top:28%;transform:translate(-50%,-50%);
+  z-index:210;font-size:1.15rem;font-weight:800;color:#ffe7a3;
+  text-shadow:0 4px 18px rgba(0,0,0,.6);pointer-events:none;
+  animation:funPop .9s ease-out forwards
+}
+@keyframes funPop{0%{opacity:0;transform:translate(-50%,-40%) scale(.8)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}100%{opacity:0;transform:translate(-50%,-70%) scale(.9)}}
+
+
+/* ===== VFX + FLOW FEEDBACK ===== */
+@keyframes screenFlash{0%{opacity:.55}100%{opacity:0}}
+@keyframes rimPulse{0%,100%{box-shadow:0 0 0 0 rgba(98,230,173,0)}50%{box-shadow:0 0 0 4px rgba(98,230,173,.35)}}
+.fx-flash{
+  position:fixed;inset:0;z-index:220;pointer-events:none;
+  background:radial-gradient(circle at 50% 40%,rgba(255,231,163,.45),rgba(98,230,173,.15) 40%,transparent 70%);
+  animation:screenFlash .45s ease-out forwards
+}
+.fx-flash.bad{background:radial-gradient(circle at 50% 40%,rgba(255,100,100,.35),transparent 65%)}
+.fx-flash.gold{background:radial-gradient(circle at 50% 40%,rgba(255,209,102,.5),transparent 65%)}
+.flow-bar{
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:190;
+  background:linear-gradient(90deg,#62e6ad,var(--accent,#4db6e8),#ffd166);
+  transform-origin:left;transform:scaleX(0);transition:transform .35s ease
+}
+.btn.fx-tap, .wiz-opt.fx-tap, .care20-btn.fx-tap, .ld-tile.fx-tap{
+  animation:rimPulse .4s ease
+}
+#toast.fx-boost{transform:translateX(-50%) scale(1.05);box-shadow:0 8px 28px rgba(98,230,173,.35)}
+
+
+/* ===== CARD DUEL GAMEPLAY (modern deck-builder loop) ===== */
+.duel-wrap{max-width:100%}
+.duel-hp{height:12px;border-radius:99px;background:#1a1010;border:1px solid #5a3030;overflow:hidden;margin:6px 0}
+.duel-hp>i{display:block;height:100%;background:linear-gradient(90deg,#ff6b6b,#ffd166);transition:width .3s}
+.duel-hand{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.duel-card{
+  padding:10px;border-radius:14px;border:1px solid #31566d;
+  background:linear-gradient(160deg,#153446,#0d1e2b);cursor:pointer;text-align:left;
+  font:inherit;color:var(--text);min-height:88px
+}
+.duel-card:disabled{opacity:.4;cursor:not-allowed}
+.duel-card .dc-cost{font-size:.65rem;color:#ffd166}
+.duel-card .dc-name{font-weight:800;font-size:.84rem;margin:2px 0}
+.duel-card .dc-fx{font-size:.72rem;color:#9db7c7}
+.duel-card.match{border-color:#62e6ad;box-shadow:0 0 0 1px rgba(98,230,173,.3)}
+.duel-log{font-size:.72rem;color:#9db7c7;max-height:90px;overflow:auto;margin-top:8px}
+.duel-energy span{display:inline-block;width:10px;height:10px;border-radius:50%;background:#31566d;margin-right:3px}
+.duel-energy span.on{background:#ffd166}
+
 </style>
 </head>
 <body>
@@ -9082,6 +9214,1372 @@ window.GUILD_HERBS=[
       }
     }catch(e){console.warn(e)}
   };
+})();
+
+
+
+/* ==========================================================
+   LANTERN HUB · 20 FEATURES · 100 PATIENTS · FINAL REVIEW
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+  function toast2(t){ if(typeof toast==="function") toast(t); }
+
+  function ensureAll(){
+    if(!window.S) window.S={rp:50,att:10,day:1,log:[],focus:10};
+    if(typeof S.rp!=="number") S.rp=50;
+    if(typeof S.att!=="number") S.att=10;
+    if(typeof S.focus!=="number") S.focus=10;
+    if(typeof S.lanternFuel!=="number") S.lanternFuel=70;
+    if(!S.guild) S.guild={stock:{},bought:{},xp:0,cascade:0,rank:"spark",shopCat:"All"};
+    if(!S.guild.stock) S.guild.stock={};
+    if(!S.pouch) S.pouch={};
+    if(!S.inventory) S.inventory={};
+    if(!S.buffs) S.buffs=[];
+    if(!S.careKits) S.careKits={tea:0,nest:0,joint:0,focus:0,calm:0,digest:0,oil:0,journal:0};
+    if(!S.patientRoster) S.patientRoster={};
+    if(!S.returnQueue) S.returnQueue=[];
+    if(!S._cascadeLog) S._cascadeLog=[];
+    if(!S.patientMemory) S.patientMemory={};
+    return S;
+  }
+
+  /* ---------- 20 lantern features / purchasable care kits ---------- */
+  var LANTERN_FEATURES=[
+    {id:"lf_tea",ic:"🫖",name:"Tea service",d:"Stock 1 still-room tea kit",rp:8,kit:"tea",cascade:"Tea kit ready for Sleep/Digestive visits"},
+    {id:"lf_nest",ic:"🛏️",name:"Sleep nest crate",d:"Curtains/sound tools on shelf",rp:10,kit:"nest",cascade:"Nest crate arms Sleep cases"},
+    {id:"lf_joint",ic:"🧡",name:"Joint warmth tin",d:"Turmeric/boswellia fiction kit",rp:12,kit:"joint",cascade:"Joint tin ready for Pain visits"},
+    {id:"lf_focus",ic:"🎯",name:"Focus ledger kit",d:"Rosemary / B-complex crate",rp:11,kit:"focus",cascade:"Focus kit ready"},
+    {id:"lf_calm",ic:"💙",name:"Calm vial rack",d:"Nervine fiction stock",rp:11,kit:"calm",cascade:"Calm rack ready for panic/sleep"},
+    {id:"lf_digest",ic:"🫚",name:"Digestive tray",d:"Ginger/mint tray",rp:9,kit:"digest",cascade:"Digestive tray stocked"},
+    {id:"lf_oil",ic:"🪔",name:"Lantern oil",d:"+18% clinic flame",rp:6,fuel:18,cascade:"Flame fed from lantern oil"},
+    {id:"lf_journal",ic:"📓",name:"Session journals",d:"Document care packs",rp:7,kit:"journal",cascade:"Journals on the desk"},
+    {id:"lf_wick",ic:"🕯️",name:"Trim wick",d:"+12% flame, 4 RP",rp:4,fuel:12,cascade:"Wick trimmed"},
+    {id:"lf_notice",ic:"📌",name:"Read notices",d:"+1 RP + cascade",rp:0,grant:1,cascade:"Notices read"},
+    {id:"lf_staff",ic:"👥",name:"Pin staff tip",d:"Today's still-room advice",rp:0,cascade:"Staff pin posted"},
+    {id:"lf_dispatch",ic:"🗺️",name:"Road dispatch",d:"Open Old Road with flame",rp:0,go:"world",cascade:"Dispatched to Old Road"},
+    {id:"lf_guild",ic:"⚜️",name:"Guild counter",d:"Buy herbs into stock",rp:0,fn:"openLanternGuild",cascade:"Guild counter opened"},
+    {id:"lf_pouch",ic:"🎒",name:"Herb pouch",d:"Move stock → usable pouch",rp:0,fn:"openHerbPouch",cascade:"Pouch opened"},
+    {id:"lf_shelf",ic:"📦",name:"Shelf inventory",d:"See kits + herbs",rp:0,fn:"guildGoShelf",cascade:"Shelf opened"},
+    {id:"lf_log",ic:"📋",name:"Treatment log",d:"Recovery + Amazon",rp:0,fn:"openTreatmentLog",cascade:"Log opened"},
+    {id:"lf_board",ic:"🏮",name:"Full board",d:"Notices shrine dispatch",rp:0,fn:"openLanternBoard",cascade:"Board opened"},
+    {id:"lf_loadout",ic:"🎒",name:"Session loadout",d:"Arm herb before door",rp:0,fn:"openLoadout",cascade:"Loadout opened"},
+    {id:"lf_door",ic:"🚪",name:"Open clinic door",d:"Today's  queue",rp:0,fn:"enterWaitingRoom",cascade:"Door opened from lantern"},
+    {id:"lf_focusrest",ic:"🧘",name:"Focus rest",d:"+3 Focus once/day",rp:0,focus:3,cascade:"Focus rested at lantern"}
+  ];
+
+  window.buyLanternFeature=function(id){
+    ensureAll();
+    var f=null; for(var i=0;i<LANTERN_FEATURES.length;i++) if(LANTERN_FEATURES[i].id===id) f=LANTERN_FEATURES[i];
+    if(!f) return;
+    if((f.rp||0)>0 && (S.rp||0)<f.rp){ toast2("Need "+f.rp+" RP"); return; }
+    if(f.rp) S.rp-=f.rp;
+    if(f.kit) S.careKits[f.kit]=(S.careKits[f.kit]||0)+1;
+    if(f.fuel) S.lanternFuel=Math.min(100,(S.lanternFuel||0)+f.fuel);
+    if(f.grant) S.rp=(S.rp||0)+f.grant;
+    if(f.focus){
+      if(S._lfRestDay===S.day){ toast2("Already rested Focus at the lantern today"); if(f.rp) S.rp+=f.rp; return; }
+      S._lfRestDay=S.day;
+      S.focus=Math.min(10,(S.focus||0)+f.focus);
+    }
+    S._cascadeLog.push({day:S.day||1,t:"Lantern: "+f.name+" — "+(f.cascade||"")});
+    if(typeof save==="function") save();
+    toast2((f.ic||"🏮")+" "+f.name+(f.kit?" · kit ×"+S.careKits[f.kit]:""));
+    if(f.go && typeof go==="function"){ closeLanternDock(); go(f.go); }
+    else if(f.fn && typeof window[f.fn]==="function"){ closeLanternDock(); window[f.fn](); }
+    else renderLanternDock();
+  };
+
+  window.renderLanternDock=function(){
+    ensureAll();
+    var dock=document.getElementById("lanternDock");
+    if(!dock) return;
+    var kits=S.careKits||{};
+    var html='<div class="area-stick">LANTERN AREA · flame '+Math.round(S.lanternFuel||0)+'% · RP '+Math.floor(S.rp||0)+' · Focus '+(S.focus|0)+'</div>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">';
+    html+='<strong>Care kits</strong><span class="muted" style="font-size:.72rem">tea '+ (kits.tea||0)+' · nest '+(kits.nest||0)+' · joint '+(kits.joint||0)+' · focus '+(kits.focus||0)+' · calm '+(kits.calm||0)+' · digest '+(kits.digest||0)+'</span></div>';
+    html+='<div class="ld-grid">';
+    for(var i=0;i<LANTERN_FEATURES.length;i++){
+      var f=LANTERN_FEATURES[i];
+      var price=f.rp? (f.rp+" RP"):"Open";
+      html+='<div class="ld-tile" onclick="window.buyLanternFeature(\''+f.id+'\')"><span class="ic">'+f.ic+'</span>'+esc(f.name)+'<div style="opacity:.7;margin-top:2px">'+price+'</div></div>';
+    }
+    html+='</div>';
+    html+='<p class="muted" style="font-size:.68rem;margin:8px 0 0">Buy kits here → they cascade into visits (auto-score when family matches). Dock stays while you move areas.</p>';
+    dock.innerHTML=html;
+  };
+
+  window.toggleLanternDock=function(){
+    var dock=document.getElementById("lanternDock");
+    if(!dock) return;
+    dock.classList.toggle("on");
+    if(dock.classList.contains("on")) renderLanternDock();
+  };
+  window.closeLanternDock=function(){
+    var dock=document.getElementById("lanternDock");
+    if(dock) dock.classList.remove("on");
+  };
+  window.openLanternMain=function(){
+    var dock=document.getElementById("lanternDock");
+    if(dock){ dock.classList.add("on"); renderLanternDock(); }
+    if(typeof openLanternBoard==="function") openLanternBoard();
+  };
+
+  function mountLanternChrome(){
+    if(document.getElementById("lanternFab")) return;
+    var fab=document.createElement("button");
+    fab.id="lanternFab"; fab.className="lantern-fab"; fab.title="Lantern area";
+    fab.textContent="🏮"; fab.onclick=function(){ toggleLanternDock(); };
+    document.body.appendChild(fab);
+    var dock=document.createElement("div");
+    dock.id="lanternDock"; dock.className="lantern-dock";
+    document.body.appendChild(dock);
+  }
+
+  /* ---------- 100 patients ---------- */
+  var FIRST=["Maya","Rowan","Sable","Ivy","Quill","Ash","Moss","Cedar","Wren","Lumen","Pike","Vale","Orrin","Bramble","Nova","Atlas","Miso","Ellis","Kai","Rae","Juniper","Pell","Mira","River","Thorn","Briar","Nim","Sol","Echo","Hale"];
+  var LAST=["Vale","Ash","Brook","Reed","Moss","Pike","Hart","Quinn","Dale","Frost","Wynn","Loch","Grey","Bell","Shaw"];
+  var FAMILIES=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+  var COLORS={Sleep:"Blue",Focus:"Yellow",Boundaries:"Black","Mood-Energy":"Green","Pain-Stiffness":"Red",Digestive:"Orange","Home-Environment":"White"};
+  var COMPLAINTS={
+    Sleep:["Can't fall asleep when exhausted","Wakes at 3am, mind bright","Phone in bed every night","Wakes tired most mornings","Can't wind down after work"],
+    Focus:["Puts off simple tasks","Afternoon crash","Fog after meetings","Freezes on decisions","Starts books, rarely finishes"],
+    Boundaries:["Says yes when they mean no","Calendar full of regrets","Feels responsible for every mood","Can't leave work at work","Apologizes for existing"],
+    "Mood-Energy":["Sunday-evening dread","One social event empties the battery","Scrolling leaves them flat","Can't start moving","Quiet ache about meaning"],
+    "Pain-Stiffness":["Morning stiffness until warm","Shoulders lock at the desk","Wakes with tight jaw","Damp weather aches","Long reading strains eyes"],
+    Digestive:["Snacks when not hungry","Stomach flips before events","Fog after meals","Heavy meals sit wrong","Travel guts the routine"],
+    "Home-Environment":["Cold feet in the office","Dry air scratchy throat","Noise wrecks sleep","Screens burn the eyes","One messy surface ruins the day"]
+  };
+  var DIFFS=[
+    {id:"easy",label:"Easy",att:1,mul:1,cls:"diff-easy"},
+    {id:"mid",label:"Moderate",att:1,mul:1.15,cls:"diff-mid"},
+    {id:"hard",label:"Hard",att:2,mul:1.35,cls:"diff-hard"},
+    {id:"crit",label:"Critical",att:3,mul:1.6,cls:"diff-crit"}
+  ];
+
+  function buildPatient(i){
+    var fam=FAMILIES[i%FAMILIES.length];
+    var diff=DIFFS[i%4===0?3:i%7===0?2:i%3===0?1:0];
+    if(i%11===0) diff=DIFFS[3];
+    var name=FIRST[i%FIRST.length]+" "+LAST[(i*3)%LAST.length];
+    var comps=COMPLAINTS[fam];
+    var p1=comps[i%comps.length];
+    var p2=comps[(i+2)%comps.length];
+    var p3=comps[(i+4)%comps.length];
+    return {
+      id:"PT-"+String(i+1).padStart(3,"0"),
+      name:name, f:fam, color:COLORS[fam]||"Blue",
+      problems:[p1,p2,p3],
+      primary:p1,
+      diff:diff,
+      att:diff.att,
+      wellness:55+((i*17)%40),
+      temperament:["Calm","Guarded","Tired","Hopeful","Brisk","Soft"][i%6],
+      notes:"Fictional still-room guest. Loyalty key "+name+".",
+      visits:0
+    };
+  }
+
+  window.PATIENT_100=(function(){
+    var arr=[]; for(var i=0;i<100;i++) arr.push(buildPatient(i));
+    return arr;
+  })();
+
+  /* Override appointment builder to use 100-patient roster + returns */
+  var _build=window.buildHerbalAppointments;
+  window.buildHerbalAppointments=function(){
+    ensureAll();
+    var day=S.day||1;
+    var list=[];
+    // returning patients first
+    var returns=(S.returnQueue||[]).filter(function(r){return !r.done;}).slice(0,2);
+    for(var r=0;r<returns.length;r++){
+      var pt=window.PATIENT_100.filter(function(p){return p.id===returns[r].pid;})[0];
+      if(!pt) continue;
+      list.push(makeAppt(pt, "Follow-up", "Urgent", "Follow-up", true, returns[r]));
+    }
+    // fill with rotating roster
+    var guard=0, idx=(day*7)%100;
+    while(list.length<6 && guard++<120){
+      var p=window.PATIENT_100[idx%100];
+      idx++;
+      var already=false;
+      for(var k=0;k<list.length;k++) if(list[k].pid===p.id) already=true;
+      if(already) continue;
+      var type=p.diff.id==="easy"?"Wellness Visit":"Illness Visit";
+      var urg=p.diff.id==="crit"?"Critical":p.diff.id==="hard"?"Urgent":"Routine";
+      list.push(makeAppt(p, type, urg, ["09:00","10:15","11:30","13:30","15:00","16:10"][list.length%6], false, null));
+    }
+    window._waitList=list;
+    return list;
+  };
+
+  function makeAppt(pt, type, urg, time, returning, ret){
+    var pr={id:pt.id,f:pt.f,p:pt.primary,color:pt.color,att:pt.att,quote:pt.primary};
+    try{
+      if(typeof P!=="undefined"&&P.length){
+        var matches=P.filter(function(x){return x.f===pt.f;});
+        if(matches.length) pr=Object.assign({},matches[0],{id:pt.id,p:pt.primary,color:pt.color,att:pt.att,quote:pt.primary,f:pt.f});
+      }
+    }catch(e){}
+    return {
+      pid:pt.id, name:pt.name, pr:pr, quote:pt.primary, time:time, type:type, urgency:urg,
+      caseData:{complaint:pt.primary,signs:pt.problems.join(" · "),examHint:pt.temperament+" arrival.",labHint:pt.color+" ledger.",treatHint:"Match family kit if stocked."},
+      returning:returning||((S.patientMemory[pt.name]||{}).visits>0),
+      followUp:!!returning, followId:ret&&ret.id, status:"Waiting",
+      wellness:pt.wellness, diff:pt.diff, problems:pt.problems.slice(),
+      temperament:pt.temperament, roster:pt
+    };
+  }
+
+  /* Kit cascade into visits */
+  var KIT_META={
+    tea:{ic:"🫖",label:"Tea service"},
+    nest:{ic:"🛏️",label:"Sleep nest crate"},
+    joint:{ic:"🧡",label:"Joint warmth tin"},
+    focus:{ic:"🎯",label:"Focus ledger kit"},
+    calm:{ic:"💙",label:"Calm vial rack"},
+    digest:{ic:"🫚",label:"Digestive tray"},
+    journal:{ic:"📓",label:"Session journal"},
+    oil:{ic:"🪔",label:"Lantern oil"}
+  };
+
+  window.showKitFeedback=function(used, bonus){
+    try{
+      // Pulse lantern FAB
+      var fab=document.getElementById("lanternFab");
+      if(fab){
+        fab.classList.remove("kit-used");
+        void fab.offsetWidth;
+        fab.classList.add("kit-used");
+        setTimeout(function(){ fab.classList.remove("kit-used"); },2000);
+      }
+      // Floating banner
+      var oldB=document.getElementById("kitBanner");
+      if(oldB) oldB.remove();
+      var b=document.createElement("div");
+      b.id="kitBanner";
+      b.className="kit-banner";
+      var labels=[];
+      for(var i=0;i<used.length;i++){
+        var m=KIT_META[used[i]]||{ic:"🏮",label:used[i]};
+        labels.push(m.ic+" "+m.label);
+      }
+      b.innerHTML='<span class="kb-ic">🏮</span><div>Lantern kits applied</div><div class="kb-sub">'+labels.join(" · ")+' · <b>+'+bonus+' score</b></div>';
+      document.body.appendChild(b);
+      setTimeout(function(){ if(b.parentNode) b.remove(); },2900);
+      // Chips into open modal body if present
+      var body=document.getElementById("overhaulModalBody");
+      if(body){
+        var bar=document.createElement("div");
+        bar.style.cssText="margin:8px 0;padding:8px;border-radius:12px;background:#143028;border:1px solid #2a5a40";
+        bar.innerHTML='<div class="muted" style="font-size:.7rem;margin-bottom:4px">KITS USED THIS VISIT</div>';
+        for(var j=0;j<used.length;j++){
+          var mm=KIT_META[used[j]]||{ic:"🏮",label:used[j]};
+          bar.innerHTML+='<span class="kit-chip">'+mm.ic+' '+mm.label+'</span>';
+        }
+        bar.innerHTML+='<span class="kit-chip">+'+bonus+' score</span>';
+        body.insertBefore(bar, body.firstChild);
+      }
+      // Refresh dock counts if open
+      if(typeof renderLanternDock==="function"){
+        var dock=document.getElementById("lanternDock");
+        if(dock&&dock.classList.contains("on")) renderLanternDock();
+      }
+    }catch(e){ console.warn("kit feedback",e); }
+  };
+
+  function applyKitCascade(v){
+    ensureAll();
+    if(!v||!v.pr) return 0;
+    var fam=v.pr.f, bonus=0, used=[];
+    var map={Sleep:"calm",Focus:"focus",Boundaries:"calm","Mood-Energy":"calm","Pain-Stiffness":"joint",Digestive:"digest","Home-Environment":"nest"};
+    var kit=map[fam];
+    if(kit && (S.careKits[kit]||0)>0){ S.careKits[kit]--; bonus+=2; used.push(kit); }
+    if((S.careKits.tea||0)>0 && (fam==="Sleep"||fam==="Digestive")){ S.careKits.tea--; bonus+=1; used.push("tea"); }
+    if((S.careKits.journal||0)>0){ S.careKits.journal--; bonus+=1; used.push("journal"); }
+    if(used.length){
+      S._cascadeLog.push({day:S.day||1,t:"Visit kits used: "+used.join(", ")+" · +"+bonus+" score"});
+      toast2("🏮 Kits: "+used.join(", ")+" · +"+bonus+" score");
+      window.showKitFeedback(used, bonus);
+      if(v){ v.kitsUsed=used.slice(); v.kitBonus=bonus; }
+    }
+    return bonus;
+  }
+
+  /* Final review — 30 fictional data points + Amazon + healing list + return */
+  var REVIEW_FIELDS=[
+    "Arrival affect","Breath pattern","Shoulder set","Jaw tone","Eye brightness",
+    "Speech pace","Sleep story","Focus story","Boundary load","Mood weather",
+    "Pain map","Digestive weather","Home noise","Screen hours","Caffeine late",
+    "Movement today","Social drain","Meaning ache","Trust in room","Color named",
+    "Herb path","If–Then written","Timing agreed","Kit used","Flame during visit",
+    "Attention spent","RP generated","Follow-up needed","Loyalty stage","Safety note"
+  ];
+
+  window.showFinalReview=function(entry, visitObj){
+    ensureAll();
+    var name=entry.name||"Guest";
+    var fam=entry.family||"";
+    var problems=(visitObj&&visitObj.problems)||(visitObj&&visitObj.cand&&visitObj.cand.problems)||[entry.problem||"Still-room concern"];
+    var outcome=entry.outcome||"Plateau";
+    var healed=[], ongoing=[];
+    for(var i=0;i<problems.length;i++){
+      if(outcome==="Breakthrough"||(outcome==="Improve"&&i===0)) healed.push(problems[i]);
+      else ongoing.push(problems[i]);
+    }
+    var visits=((S.patientMemory[name]||{}).visits)||1;
+    var loyalty=visits>=4?"Advocate":visits>=3?"Loyalty Mark":visits>=2?"Returning":"First meeting";
+    var fields="";
+    for(var f=0;f<REVIEW_FIELDS.length;f++){
+      var val=["soft","high","braced","tight","dim","slow","fragmented","scattered","full","flat","stiff","uneasy","loud","late","yes","little","high","quiet","thin",fam||"Blue","chamomile",entry.notes?"yes":"no","tonight",(S.careKits?"maybe":"—"),Math.round(S.lanternFuel||0)+"%","—",entry.rp||0,ongoing.length?"yes":"no",loyalty,"fiction only"][f];
+      fields+='<div class="review-chip"><div class="muted" style="font-size:.62rem">'+esc(REVIEW_FIELDS[f])+'</div>'+esc(String(val))+'</div>';
+    }
+    var amzList={
+      Sleep:["organic chamomile tea bags","passionflower tea","magnesium glycinate","blackout curtains"],
+      Focus:["rosemary essential oil","bacopa monnieri","B complex vitamins"],
+      Boundaries:["motherwort tea","hawthorn berry tea","lemon balm tea"],
+      "Mood-Energy":["ashwagandha capsules","tulsi tea","vitamin D3"],
+      "Pain-Stiffness":["turmeric curcumin","boswellia extract","epsom salt"],
+      Digestive:["ginger tea bags","peppermint tea","fennel seed tea"],
+      "Home-Environment":["white noise machine","humidifier quiet","nettle leaf tea"]
+    }[fam]||["organic herbal tea sampler"];
+
+    var html='<div class="section-kicker">FINAL CLINIC REVIEW</div>';
+    html+='<h3 style="margin:4px 0">'+esc(name)+'</h3>';
+    html+='<p class="muted" style="font-size:.8rem">'+esc(outcome)+' · '+esc(fam)+' · visits '+visits+' · '+esc(loyalty)+'</p>';
+    html+='<div class="card"><div class="muted" style="font-size:.7rem">PROBLEMS BROUGHT</div>';
+    for(var p=0;p<problems.length;p++) html+='<div class="prob-row">• '+esc(problems[p])+'</div>';
+    html+='</div>';
+    html+='<div class="card"><div class="muted" style="font-size:.7rem">HOW THE STILL-ROOM MARKED HEALING (FICTION)</div>';
+    if(healed.length){ html+='<p class="feedback-good">Easing / improved:</p>'; for(var h=0;h<healed.length;h++) html+='<div class="prob-row">✓ '+esc(healed[h])+'</div>'; }
+    if(ongoing.length){ html+='<p class="muted">Still in care / return:</p>'; for(var o=0;o<ongoing.length;o++) html+='<div class="prob-row">↻ '+esc(ongoing[o])+'</div>'; }
+    html+='<p class="muted" style="font-size:.75rem;margin-top:8px">Not medical advice. Persistent symptoms → real clinicians.</p></div>';
+    html+='<div class="muted" style="font-size:.7rem;margin:8px 0 4px">THIRTY FICTIONAL CHART NOTES</div>';
+    html+='<div class="review-grid">'+fields+'</div>';
+    html+='<div class="card"><div class="section-kicker">AMAZON · PRODUCT SEARCH ONLY</div>';
+    for(var a=0;a<amzList.length;a++) html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(amzList[a])+'">🛒 '+esc(amzList[a])+'</a> ';
+    html+='</div>';
+    html+='<button class="btn" style="width:100%;margin-top:8px" onclick="window.scheduleReturnCare()">↻ Book return care</button>';
+    html+='<button class="btn sec" style="width:100%;margin-top:6px" onclick="closeOverhaulModal();go(\'home\')">Back to clinic</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="openTreatmentLog&&openTreatmentLog()">Treatment log</button>';
+
+    // remember last review for return booking
+    window._lastReview={entry:entry,visit:visitObj,ongoing:ongoing,name:name,pid:(visitObj&&visitObj.pid)||(visitObj&&visitObj.cand&&visitObj.cand.pid)||entry.pr};
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Clinic review","DIAGNOSIS + CARE",html);
+  };
+
+  window.scheduleReturnCare=function(){
+    ensureAll();
+    var last=window._lastReview;
+    if(!last){ toast2("No review to book from"); return; }
+    S.returnQueue.push({
+      id:"ret_"+Date.now(),
+      pid:last.pid,
+      name:last.name,
+      problems:last.ongoing||[],
+      dayMade:S.day||1,
+      done:false
+    });
+    S._cascadeLog.push({day:S.day||1,t:"Return care booked for "+last.name});
+    if(typeof save==="function") save();
+    toast2("↻ "+last.name+" booked for further care");
+    try{closeOverhaulModal();}catch(e){}
+    if(typeof go==="function") go("home");
+  };
+
+  /* Hook visit complete → kit bonus already in score; then final review */
+  var _vf=window.vfComplete;
+  window.vfComplete=function(){
+    var v=window._visit;
+    try{
+      if(v){
+        var bonus=applyKitCascade(v);
+        v.score=(v.score||0)+bonus;
+      }
+    }catch(e){}
+    var snap=v;
+    if(typeof _vf==="function") _vf.apply(this,arguments);
+    setTimeout(function(){
+      try{
+        var last=(S.log&&S.log[0])||null;
+        if(last) showFinalReview(last, snap);
+      }catch(e){console.warn(e)}
+    },280);
+  };
+
+  var _wizF=window.wizFinish;
+  if(typeof _wizF==="function"){
+    window.wizFinish=function(){
+      try{
+        if(window._visit) window._visit.score=(window._visit.score||0)+applyKitCascade(window._visit);
+      }catch(e){}
+      return _wizF.apply(this,arguments);
+    };
+  }
+
+  /* Area stick labels when changing screens */
+  var AREA_NAME={home:"CLINIC FLOOR",wait:"WAITING ROOM",arrive:"VISIT ROOM",codex:"CODEX",world:"OLD ROAD",more:"MORE",features:"FEATURES",staff:"STAFF",recap:"DAY RECAP"};
+  var _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      var r=_go.apply(this,arguments);
+      try{
+        var scr=document.getElementById("sc-"+name);
+        if(scr && !scr.querySelector(".area-stick-live")){
+          var st=document.createElement("div");
+          st.className="area-stick area-stick-live";
+          st.textContent=(AREA_NAME[name]||String(name).toUpperCase())+" · lantern "+Math.round((window.S&&S.lanternFuel)||70)+"%";
+          scr.insertBefore(st, scr.firstChild);
+        } else if(scr){
+          var live=scr.querySelector(".area-stick-live");
+          if(live) live.textContent=(AREA_NAME[name]||String(name).toUpperCase())+" · lantern "+Math.round((window.S&&S.lanternFuel)||70)+"%";
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  /* Main gameplay extra buttons on home */
+  function paintHomeExtras(){
+    try{
+      var home=document.getElementById("sc-home");
+      if(!home||document.getElementById("lanternMainRow")) return;
+      var row=document.createElement("div");
+      row.id="lanternMainRow";
+      row.style.cssText="display:grid;gap:8px;margin:8px 0";
+      row.innerHTML='<button class="btn" onclick="window.openLanternMain()">🏮 Lantern area · kits & board</button>'+
+        '<button class="btn sec" onclick="window.enterWaitingRoom&&enterWaitingRoom()||openDoorCore&&openDoorCore()">▶ Open clinic door</button>'+
+        '<button class="btn sec" onclick="window.openTreatmentLog&&openTreatmentLog()">📋 Treatment log</button>'+
+        '<button class="btn ghost" onclick="window.openLanternGuild&&openLanternGuild()">⚜️ Guild shop</button>';
+      var hello=document.getElementById("vetClinicHello")||document.getElementById("flowBoard");
+      if(hello&&hello.parentNode) hello.parentNode.insertBefore(row, hello.nextSibling);
+      else home.insertBefore(row, home.firstChild);
+    }catch(e){}
+  }
+
+  setTimeout(function(){ mountLanternChrome(); paintHomeExtras(); ensureAll(); },400);
+  setTimeout(function(){ mountLanternChrome(); paintHomeExtras(); },1400);
+})();
+
+
+
+/* ==========================================================
+   DEEP PATIENT Q&A — case-accurate questions + answers
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var BANK={
+    Sleep:[
+      {q:"When lights go out, what actually happens in the first twenty minutes?",
+       a:"\"My body is tired but my mind starts a list. I replay the day, then invent tomorrow. Twenty minutes becomes two hours.\""},
+      {q:"Do you wake in the night, and what is the mind doing then?",
+       a:"\"Around three I surface. Heart a little fast. I check the clock, which makes it worse. Getting back under is the hard part.\""},
+      {q:"What is beside the bed — phone, lamp, tea, noise?",
+       a:"\"Phone face-up. Sometimes a glass of water. I tell myself I won't scroll. I scroll.\""},
+      {q:"Is caffeine or late light part of the pattern?",
+       a:"\"Tea or coffee late if the afternoon dragged. Screens until I drop. I know that's the loop. Knowing hasn't stopped it.\""},
+      {q:"If one small change landed this week, what would 'better' look like?",
+       a:"\"Falling asleep without bargaining. Not a miracle eight hours — just not fighting the pillow.\""}
+    ],
+    Focus:[
+      {q:"When a simple task sits there, what happens in the body first?",
+       a:"\"A tightness, then I open something else. The original thing waits and gets heavier. By evening I call it laziness. It doesn't feel like laziness in the moment.\""},
+      {q:"Where does the afternoon crash hit — eyes, mood, or will?",
+       a:"\"Eyes first, then words get slippery. I can still sit at the desk. I can't aim.\""},
+      {q:"After meetings or messages, how long until thinking feels like yours again?",
+       a:"\"Twenty minutes if I'm lucky. Sometimes I just start the next thing still wearing their voice.\""},
+      {q:"What do you reach for when deciding feels like freeze?",
+       a:"\"I delay. Or I ask someone else so I don't have to own it. Then I resent the delay.\""},
+      {q:"What would a finished-enough day look like?",
+       a:"\"One real thing closed. Not twelve tabs managed. One closed thing I could point to.\""}
+    ],
+    Boundaries:[
+      {q:"When you said yes this week and meant no, what were you protecting?",
+       a:"\"Their mood. The peace. The story that I'm easy. It costs me the evening.\""},
+      {q:"Who is on the calendar that you would not put there again?",
+       a:"\"A favor that became a shift. I didn't name the limit in time, so the limit named me — tired, sharp, then sorry.\""},
+      {q:"What happens in the body when a request lands?",
+       a:"\"Stomach drops, smile goes on. The no is there. It doesn't make it to my mouth.\""},
+      {q:"Do you leave work at work, or does it follow you home in your chest?",
+       a:"\"It follows. I rehearse replies in the kitchen. Sleep gets the leftover argument.\""},
+      {q:"What would a clean no sound like in one sentence?",
+       a:"\"I can't take that on this week. I can do Thursday, or not this.\""}
+    ],
+    "Mood-Energy":[
+      {q:"Sunday evening — what is the dread attached to?",
+       a:"\"The week as a wall. Not one task. The whole shape of being 'on' again.\""},
+      {q:"After people, how empty is the battery, and how do you refill?",
+       a:"\"One gathering can take the rest of the day. I refill by disappearing. Sometimes that turns into scrolling, which doesn't refill.\""},
+      {q:"When the feed leaves you flat, what did you compare?",
+       a:"\"Pace. Faces. How finished their lives look from here. I know it's a set. The body still slumps.\""},
+      {q:"Movement — what stops the first step?",
+       a:"\"The story that it has to be a whole workout. So I do none. Shoes by the door feel like a lecture.\""},
+      {q:"Is there a quiet ache about meaning, or is it mostly fuel?",
+       a:"\"Both. Low fuel makes meaning feel thin. Thin meaning makes fuel feel pointless. I need a small why that fits a Tuesday.\""}
+    ],
+    "Pain-Stiffness":[
+      {q:"Where does the morning stiffness live, and how long until it talks less?",
+       a:"\"Hands and knees first. Forty minutes if I move. Longer if I sit down too soon with coffee and a screen.\""},
+      {q:"Desk or damp weather — which writes louder on the joints?",
+       a:"\"Damp writes first. Desk writes second, in the shoulders, and stays after I stand.\""},
+      {q:"Jaw at night — clenched, or just tired in the morning?",
+       a:"\"I wake with it locked. Partner says I grind. I notice it when I chew breakfast.\""},
+      {q:"What have you already tried that helped a little?",
+       a:"\"Warmth. A walk. Not sitting through the first hour. Heat on the shoulders while I read.\""},
+      {q:"What would 'easier' mean this week without promising a cure?",
+       a:"\"Getting out of the chair without bargaining. A morning that doesn't start as a negotiation with my hands.\""}
+    ],
+    Digestive:[
+      {q:"When you snack without hunger, what started five minutes before?",
+       a:"\"A pause I didn't like. A message. Boredom with an edge. Hands went to the cupboard before I named it.\""},
+      {q:"Before events, where does the stomach flip — high or low?",
+       a:"\"High, under the ribs. I eat less, then too fast later. The event is fine. The approach is the weather.\""},
+      {q:"After meals, is it fog, pressure, or both?",
+       a:"\"Pressure first, then fog if the meal was heavy or fast. I want a nap I can't take.\""},
+      {q:"What does 'slow' look like at a table for you?",
+       a:"\"Putting the fork down. Not finishing first. Not planning the next plate while I chew this one.\""},
+      {q:"Travel or routine breaks — how fast does the gut notice?",
+       a:"\"Same day. New coffee, new hours, skipped lunch. It files a complaint by evening.\""}
+    ],
+    "Home-Environment":[
+      {q:"Which part of the room argues with rest — light, noise, or clutter?",
+       a:"\"All three take turns. Tonight it's the pile I can see from the pillow. It isn't large. It is loud.\""},
+      {q:"Cold feet, dry air, screens — which one do you actually feel at 10pm?",
+       a:"\"Screens in the face, then dry throat. Feet I notice when I finally lie down and they won't warm.\""},
+      {q:"What would one zone reset be — not the whole house?",
+       a:"\"The nightstand. Phone face-down, one lamp, the pile gone. That's a room I could sleep in.\""},
+      {q:"Does noise have a name — traffic, people, the fridge, your own thoughts?",
+       a:"\"The street, then my thoughts using the street as a drum. White noise helps until I resent needing it.\""},
+      {q:"What tool would support the room without pretending it's medicine?",
+       a:"\"Something that makes the dark actually dark, or the air less scratchy. A comfort tool. Not a cure.\""}
+    ]
+  };
+
+  function patientFromVisit(){
+    var w=window._wiz||window._visit||{};
+    var cand=w.cand||w||{};
+    var pr=w.pr||cand.pr||{};
+    var name=w.name||cand.name||"the guest";
+    var fam=pr.f||cand.f||"Sleep";
+    var problems=cand.problems||(w.problems)||[pr.p||pr.quote||"the thing they brought"];
+    var temp=cand.temperament||(cand.roster&&cand.roster.temperament)||"Tired";
+    var diff=(cand.diff&&cand.diff.label)||cand.urgency||"Routine";
+    return {name:name,fam:fam,problems:problems,temp:temp,diff:diff,color:pr.color||"",pr:pr,cand:cand};
+  }
+
+  function qaSet(p){
+    var base=(BANK[p.fam]||BANK.Sleep).slice();
+    // personalize first lines
+    var extra=[
+      {q:"I want to be accurate — which of these is the loudest this week: "+esc(p.problems[0]||"the main complaint")+"?",
+       a:"\""+(p.problems[0]||"This one")+". The others sit behind it. If we only get to one thing, start here.\""},
+      {q:"You arrive "+String(p.temp).toLowerCase()+". Should we go slower or keep a clear edge?",
+       a:p.temp==="Brisk"?"\"Keep the edge. I'll spiral if we wander. Name the step and I'll try it.\"":
+         p.temp==="Guarded"?"\"Slower. I almost didn't come. Don't pile homework on the first visit.\"":
+         p.temp==="Hopeful"?"\"A clear edge is fine. I want something I can actually do tonight.\"":
+         "\"A little slower. I'm tired of being efficient with my own pain.\""},
+      {q:"Difficulty marked "+p.diff+". What would make this visit feel like enough?",
+       a:p.diff==="Critical"?"\"Leave with one thing that makes the next hour survivable. Not a life plan.\"":
+         p.diff==="Hard"?"\"A plan that doesn't collapse when the week gets loud.\"":
+         "\"Leave knowing what to try and what not to chase.\""}
+    ];
+    return extra.concat(base);
+  }
+
+  window.getPatientQA=qaSet;
+
+  function paintQAPanel(){
+    try{
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||!(window._wiz||window._visit)) return;
+      if(body.querySelector("[data-deep-qa]")) return;
+      var p=patientFromVisit();
+      var set=qaSet(p);
+      var box=document.createElement("div");
+      box.dataset.deepQa="1";
+      box.className="qa-block";
+      var html='<div class="section-kicker">CASE Q&A · '+esc(p.name)+' · '+esc(p.fam)+'</div>';
+      html+='<p class="muted" style="font-size:.72rem;margin:4px 0 8px">Questions fitted to this guest. Tap one — they answer in their voice.</p>';
+      html+='<div>';
+      for(var i=0;i<set.length;i++){
+        html+='<span class="qa-chip" onclick="window.askPatientQ('+i+')">Q'+(i+1)+'</span>';
+      }
+      html+='</div>';
+      html+='<div id="qaLive" style="margin-top:8px"></div>';
+      box.innerHTML=html;
+      // insert near top after first card if any
+      var first=body.querySelector("h3, .wiz-wrap");
+      if(first&&first.parentNode) first.parentNode.insertBefore(box, first.nextSibling);
+      else body.appendChild(box);
+    }catch(e){console.warn("qa panel",e)}
+  }
+
+  window.askPatientQ=function(i){
+    var p=patientFromVisit();
+    var set=qaSet(p);
+    var item=set[i];
+    if(!item) return;
+    if(window._wiz){
+      window._wiz.score=(window._wiz.score||0)+1;
+      window._wiz.steps=(window._wiz.steps||0)+1;
+      if(!window._wiz.qaAsked) window._wiz.qaAsked={};
+      window._wiz.qaAsked[i]=true;
+    }
+    if(window._visit){
+      window._visit.score=(window._visit.score||0)+1;
+      window._visit.qa=window._visit.qa||[];
+      window._visit.qa.push({q:item.q,a:item.a});
+    }
+    var live=document.getElementById("qaLive");
+    if(live){
+      live.innerHTML='<div class="qa-q">'+esc(item.q)+'</div><div class="qa-a">'+esc(item.a)+'</div>';
+    }
+    // chips on
+    try{
+      var chips=document.querySelectorAll(".qa-chip");
+      if(chips[i]) chips[i].classList.add("on");
+    }catch(e){}
+    if(typeof toast==="function") toast("Q"+(i+1)+" · "+p.name+" answered");
+    if(typeof save==="function") save({ui:false});
+  };
+
+  // Deepen generic f4/f5/f7 results with this patient's words
+  var _pick=window.wizPick;
+  window.wizPick=function(id){
+    var p=patientFromVisit();
+    var set=qaSet(p);
+    var override=null;
+    if(id==="f4"){
+      override={title:"Reflect complaint",result:"You say back: \""+(p.problems[0]||"what they brought")+".\" "+p.name+" exhales. \"Yes. That's the one.\" Being accurate is already care.",score:2};
+    }
+    if(id==="f5"){
+      var item=set[3]||set[0];
+      override={title:"Clarifying question",result:"You ask: "+item.q+" They answer: "+item.a,score:1};
+    }
+    if(id==="f7"){
+      var bodyNote=p.fam==="Pain-Stiffness"?"Guarded gait; warms while talking; hands mention the weather.":
+        p.fam==="Sleep"?"Breath high; eyes tired; posture folded toward the chair.":
+        p.fam==="Focus"?"Eyes jump; forward-collapse at the desk-story.":
+        p.fam==="Boundaries"?"Apologizes for taking time; smile ahead of the sentence.":
+        p.fam==="Digestive"?"Hand finds the belly when dinner is named.":
+        p.fam==="Home-Environment"?"Looks at the door as if the room at home is still talking.":
+        "Affect "+String(p.temp).toLowerCase()+"; energy matches a "+String(p.diff).toLowerCase()+" case.";
+      override={title:"Breath & shoulders",result:"Exam note on "+p.name+": "+bodyNote+" Clinical map updated for this body, not a generic one.",score:2,exam:true};
+    }
+    if(id==="f10"||id==="f11"||id==="f12"){
+      var want=p.color||(p.fam==="Sleep"?"Blue":p.fam==="Focus"?"Yellow":p.fam==="Pain-Stiffness"?"Red":p.fam==="Digestive"?"Orange":p.fam==="Boundaries"?"Black":p.fam==="Mood-Energy"?"Green":"White");
+      var called=id==="f10"?"Blue":id==="f11"?"Yellow":want;
+      var match=String(called).toLowerCase()===String(want).toLowerCase();
+      override={title:id==="f12"?"Color check":("Call "+called),
+        result:match
+          ?("Ledger agrees. "+p.name+"'s terrain reads "+want+" for "+p.fam+". Color match will help the herb path.")
+          :("You named "+called+". This case's catalog color is "+want+" ("+p.fam+"). Hold both — don't force a mismatch."),
+        score:match?3:1,color:called,lab:id==="f12"};
+    }
+
+    if(override){
+      // run original scoring path by temporarily swapping INTERACT-like behavior
+      if(typeof _pick==="function"){
+        // let original run first if it exists, but then replace modal with override
+        try{ _pick.apply(this,arguments); }catch(e){}
+      }
+      var html='<div class="card glow"><div class="section-kicker">'+esc(p.name).toUpperCase()+' · ANSWER</div>';
+      html+='<strong>'+esc(override.title)+'</strong>';
+      html+='<p style="margin:10px 0;line-height:1.45">'+esc(override.result)+'</p>';
+      html+='<p class="muted" style="font-size:.75rem">Family '+esc(p.fam)+' · '+esc(p.diff)+' · '+esc(p.temp)+'</p>';
+      html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window.wizAfterInteract&&wizAfterInteract()">Continue</button></div>';
+      if(typeof openOverhaulModal==="function") openOverhaulModal(p.name,"Q&A",html);
+      setTimeout(paintQAPanel,80);
+      return;
+    }
+    if(typeof _pick==="function") _pick.apply(this,arguments);
+    setTimeout(paintQAPanel,120);
+  };
+
+  var _rr=window._renderWiz;
+  window._renderWiz=function(){
+    if(typeof _rr==="function") _rr.apply(this,arguments);
+    setTimeout(paintQAPanel,80);
+  };
+  var _sw=window.startVisitWizard;
+  if(typeof _sw==="function"){
+    window.startVisitWizard=function(){
+      var r=_sw.apply(this,arguments);
+      setTimeout(paintQAPanel,150);
+      setTimeout(paintQAPanel,400);
+      return r;
+    };
+  }
+  var _oh=window.openHerbalVisit;
+  if(typeof _oh==="function"){
+    window.openHerbalVisit=function(){
+      var r=_oh.apply(this,arguments);
+      setTimeout(paintQAPanel,150);
+      return r;
+    };
+  }
+
+  // Include asked Q&A on final review
+  var _rev=window.showFinalReview;
+  if(typeof _rev==="function"){
+    window.showFinalReview=function(entry, visitObj){
+      _rev.apply(this,arguments);
+      setTimeout(function(){
+        try{
+          var body=document.getElementById("overhaulModalBody");
+          var qa=(visitObj&&visitObj.qa)||[];
+          if(!body||!qa.length) return;
+          if(body.querySelector("[data-review-qa]")) return;
+          var div=document.createElement("div");
+          div.dataset.reviewQa="1";
+          div.className="card";
+          var h='<div class="section-kicker">WHAT THEY SAID IN SESSION</div>';
+          for(var i=0;i<qa.length;i++){
+            h+='<div class="qa-q" style="margin-top:8px">'+esc(qa[i].q)+'</div><div class="qa-a">'+esc(qa[i].a)+'</div>';
+          }
+          div.innerHTML=h;
+          body.appendChild(div);
+        }catch(e){}
+      },200);
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   MAIN-SCREEN MECHANICS TOGGLES + STREAMLINED FUN
+   ========================================================== */
+(function(){
+  function ensureT(){
+    if(!window.S) window.S={};
+    if(!S.funToggles){
+      S.funToggles={
+        shortVisit:true,
+        qa:true,
+        amazon:true,
+        lanternFab:true,
+        kitFX:true,
+        autoKits:true,
+        scorePop:true,
+        skipEmpty:true
+      };
+    }
+    return S.funToggles;
+  }
+
+  var LABELS=[
+    {k:"shortVisit",name:"Short visit (5 key pages)",d:"Skip filler pages — still score the case"},
+    {k:"qa",name:"Deep patient Q&A",d:"Case questions in their voice"},
+    {k:"amazon",name:"Amazon product links",d:"Optional searches — not treatment"},
+    {k:"lanternFab",name:"Lantern button",d:"Floating 🏮 dock"},
+    {k:"kitFX",name:"Kit visual feedback",d:"Banner + pulse when kits apply"},
+    {k:"autoKits",name:"Auto-apply lantern kits",d:"Matching kits spend on complete"},
+    {k:"scorePop",name:"Score pops",d:"Little bursts when you pick well"},
+    {k:"skipEmpty",name:"Skip already-picked pages faster",d:"Next jumps if page is done"}
+  ];
+
+  window.toggleFun=function(k){
+    var t=ensureT();
+    t[k]=!t[k];
+    applyFunToggles();
+    if(typeof save==="function") save({ui:false});
+    paintMechPanel();
+    if(typeof toast==="function") toast((t[k]?"On":"Off")+" · "+k);
+  };
+
+  window.applyFunToggles=function(){
+    var t=ensureT();
+    var fab=document.getElementById("lanternFab");
+    if(fab) fab.style.display=t.lanternFab?"":"none";
+    var dock=document.getElementById("lanternDock");
+    if(dock && !t.lanternFab) dock.classList.remove("on");
+    document.body.classList.toggle("hide-amz", !t.amazon);
+    document.body.classList.toggle("hide-qa", !t.qa);
+  };
+
+  function paintMechPanel(){
+    var t=ensureT();
+    var host=document.getElementById("mechPanel");
+    if(!host) return;
+    var html='<div class="section-kicker">GAME MECHANICS</div>';
+    html+='<p class="muted" style="font-size:.75rem;margin:4px 0 8px">Toggle systems on the clinic floor. Saved with your game.</p>';
+    for(var i=0;i<LABELS.length;i++){
+      var L=LABELS[i], on=!!t[L.k];
+      html+='<div class="mech-row"><div><div>'+L.name+'</div><div class="muted" style="font-size:.68rem">'+L.d+'</div></div>';
+      html+='<div class="toggle'+(on?" on":"")+'" onclick="window.toggleFun(\''+L.k+'\')"><i></i></div></div>';
+    }
+    host.innerHTML=html;
+  }
+
+  window.funPop=function(txt){
+    var t=ensureT();
+    if(!t.scorePop) return;
+    var el=document.createElement("div");
+    el.className="fun-pop";
+    el.textContent=txt;
+    document.body.appendChild(el);
+    setTimeout(function(){ if(el.parentNode) el.remove(); },950);
+  };
+
+  function mountPanel(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    if(!document.getElementById("mechPanel")){
+      var box=document.createElement("div");
+      box.id="mechPanel";
+      box.className="mech-panel";
+      var row=document.getElementById("lanternMainRow");
+      if(row&&row.parentNode) row.parentNode.insertBefore(box, row.nextSibling);
+      else home.appendChild(box);
+    }
+    paintMechPanel();
+    applyFunToggles();
+  }
+
+  /* Streamline wizard: short visit uses pages 1,2,4,8,10 (indexes 0,1,3,7,9) */
+  var SHORT=[0,1,3,7,9];
+  var _next=window.wizNext;
+  window.wizNext=function(){
+    var t=ensureT();
+    var w=window._wiz;
+    if(w && t.shortVisit){
+      var cur=SHORT.indexOf(w.page);
+      if(cur<0){
+        // jump to next short page after current
+        var n=SHORT.find(function(p){return p>w.page;});
+        w.page=n==null?9:n;
+      } else if(cur<SHORT.length-1){
+        w.page=SHORT[cur+1];
+      } else {
+        w.page=9;
+      }
+      if(typeof window._renderWiz==="function") window._renderWiz();
+      else if(typeof window.wizPrev==="function"){
+        // force redraw via existing renderer
+        try{ window.startVisitWizard; }catch(e){}
+        if(window._wiz && typeof openOverhaulModal==="function"){
+          // fall through to original if we can
+        }
+      }
+      // call original next then snap? better: call original render
+      if(typeof window._renderWiz==="function") return;
+    }
+    if(t.skipEmpty && w){
+      // if all opts on this page already picked, original next is fine
+    }
+    if(typeof _next==="function") return _next.apply(this,arguments);
+  };
+
+  var _prev=window.wizPrev;
+  window.wizPrev=function(){
+    var t=ensureT();
+    var w=window._wiz;
+    if(w && t.shortVisit){
+      var cur=SHORT.indexOf(w.page);
+      if(cur>0) w.page=SHORT[cur-1];
+      else if(w.page>0){
+        var prev=0;
+        for(var i=0;i<SHORT.length;i++) if(SHORT[i]<w.page) prev=SHORT[i];
+        w.page=prev;
+      }
+      if(typeof window._renderWiz==="function"){ window._renderWiz(); return; }
+    }
+    if(typeof _prev==="function") return _prev.apply(this,arguments);
+  };
+
+  /* Hide Amazon / QA via CSS when toggled off */
+  var hideCss=document.getElementById("funToggleCss");
+  if(!hideCss){
+    hideCss=document.createElement("style");
+    hideCss.id="funToggleCss";
+    hideCss.textContent=".hide-amz .amz-link,.hide-amz .wiz-amz,.hide-amz .c20-amz{display:none!important}.hide-qa [data-deep-qa]{display:none!important}";
+    document.head.appendChild(hideCss);
+  }
+
+  /* Kit FX + auto kits respect toggles */
+  var _sk=window.showKitFeedback;
+  if(typeof _sk==="function"){
+    window.showKitFeedback=function(){
+      if(!ensureT().kitFX) return;
+      return _sk.apply(this,arguments);
+    };
+  }
+
+  /* Score pops on pick */
+  var _wp=window.wizPick;
+  if(typeof _wp==="function"){
+    window.wizPick=function(id){
+      var r=_wp.apply(this,arguments);
+      try{
+        var w=window._wiz;
+        if(w) window.funPop("+"+(w.score||1)+"  ✦");
+      }catch(e){}
+      return r;
+    };
+  }
+
+  /* Don't auto-apply kits if toggle off — wrap applyKitCascade if exposed */
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      if(!ensureT().autoKits && window._visit){
+        window._visit._skipKits=true;
+      }
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mountPanel,40);
+      return r;
+    };
+  }
+
+  setTimeout(mountPanel,500);
+  setTimeout(mountPanel,1400);
+  setTimeout(applyFunToggles,600);
+})();
+
+
+
+/* ==========================================================
+   AUDIO + VISUAL FEEDBACK · SMOOTHER FLOW
+   ========================================================== */
+(function(){
+  function ensureT(){
+    if(!window.S) window.S={};
+    if(!S.funToggles) S.funToggles={scorePop:true,kitFX:true,shortVisit:true,qa:true,amazon:true,lanternFab:true,autoKits:true,skipEmpty:true};
+    if(typeof S.funToggles.sfx==="undefined") S.funToggles.sfx=true;
+    if(typeof S.funToggles.vfx==="undefined") S.funToggles.vfx=true;
+    return S.funToggles;
+  }
+
+  // Web Audio beeps — no external files
+  var _ac=null;
+  function ac(){
+    try{
+      if(!_ac) _ac=new (window.AudioContext||window.webkitAudioContext)();
+      if(_ac.state==="suspended") _ac.resume();
+      return _ac;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, vol, delay){
+    var t=ensureT();
+    if(!t.sfx) return;
+    var ctx=ac(); if(!ctx) return;
+    var t0=ctx.currentTime+(delay||0);
+    var o=ctx.createOscillator();
+    var g=ctx.createGain();
+    o.type=type||"sine";
+    o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.08, t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+(dur||0.12));
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t0); o.stop(t0+(dur||0.12)+0.02);
+  }
+  window.sfx={
+    tap:function(){ tone(520,.07,"triangle",.05); },
+    ok:function(){ tone(660,.09,"sine",.06); tone(880,.1,"sine",.04,.07); },
+    buy:function(){ tone(392,.1,"square",.04); tone(523,.12,"sine",.05,.08); tone(659,.14,"sine",.04,.16); },
+    kit:function(){ tone(440,.12,"sine",.06); tone(554,.12,"sine",.05,.1); tone(659,.18,"triangle",.05,.2); },
+    page:function(){ tone(480,.06,"triangle",.04); },
+    win:function(){ tone(523,.1,"sine",.06); tone(659,.1,"sine",.05,.1); tone(784,.18,"sine",.06,.2); tone(1046,.22,"triangle",.04,.32); },
+    soft:function(){ tone(300,.15,"sine",.035); },
+    warn:function(){ tone(220,.12,"sawtooth",.03); },
+    door:function(){ tone(180,.08,"triangle",.04); tone(240,.1,"sine",.04,.06); tone(360,.12,"sine",.03,.14); }
+  };
+
+  window.vfx={
+    flash:function(kind){
+      if(!ensureT().vfx) return;
+      var el=document.createElement("div");
+      el.className="fx-flash"+(kind==="bad"?" bad":kind==="gold"?" gold":"");
+      document.body.appendChild(el);
+      setTimeout(function(){ if(el.parentNode) el.remove(); },480);
+    },
+    tapEl:function(el){
+      if(!el||!ensureT().vfx) return;
+      el.classList.add("fx-tap");
+      setTimeout(function(){ el.classList.remove("fx-tap"); },400);
+    },
+    flow:function(pct){
+      var bar=document.getElementById("flowBar");
+      if(!bar){
+        bar=document.createElement("div");
+        bar.id="flowBar"; bar.className="flow-bar";
+        document.body.appendChild(bar);
+      }
+      bar.style.transform="scaleX("+Math.max(0,Math.min(1,pct||0))+")";
+    }
+  };
+
+  // Unlock audio on first user gesture
+  function unlock(){ ac(); document.removeEventListener("pointerdown", unlock, true); }
+  document.addEventListener("pointerdown", unlock, true);
+
+  // Global click sparkle for buttons
+  document.addEventListener("click", function(ev){
+    var t=ev.target.closest("button, .wiz-opt, .care20-btn, .ld-tile, .qa-chip, .toggle, .vet-action");
+    if(!t) return;
+    window.sfx.tap();
+    window.vfx.tapEl(t);
+  }, true);
+
+  // Hook major actions
+  var hooks=[
+    ["buyGuildHerb","buy"],
+    ["buyLanternFeature","buy"],
+    ["wizNext","page"],
+    ["wizPrev","page"],
+    ["wizFinish","win"],
+    ["vfComplete","win"],
+    ["finishHerbalVisit","win"],
+    ["showKitFeedback","kit"],
+    ["openDoorCore","door"],
+    ["enterWaitingRoom","door"],
+    ["openLanternMain","soft"],
+    ["toggleFun","soft"],
+    ["askPatientQ","ok"]
+  ];
+  hooks.forEach(function(pair){
+    var name=pair[0], sound=pair[1];
+    var orig=window[name];
+    if(typeof orig!=="function") return;
+    window[name]=function(){
+      try{ window.sfx[sound]&&window.sfx[sound](); }catch(e){}
+      if(sound==="win") window.vfx.flash("gold");
+      if(sound==="kit") window.vfx.flash();
+      if(sound==="buy") window.vfx.flash();
+      if(sound==="door") window.vfx.flash();
+      return orig.apply(this,arguments);
+    };
+  });
+
+  // Wizard flow bar
+  var _rw=window._renderWiz;
+  window._renderWiz=function(){
+    var r=typeof _rw==="function"?_rw.apply(this,arguments):undefined;
+    try{
+      var w=window._wiz;
+      if(w) window.vfx.flow(((w.page||0)+1)/10);
+    }catch(e){}
+    return r;
+  };
+  var _sw=window.startVisitWizard;
+  if(typeof _sw==="function"){
+    window.startVisitWizard=function(){
+      window.sfx.door();
+      window.vfx.flow(0.1);
+      return _sw.apply(this,arguments);
+    };
+  }
+
+  // Score pop + soft
+  var _fp=window.funPop;
+  window.funPop=function(txt){
+    window.sfx.ok();
+    if(typeof _fp==="function") return _fp.apply(this,arguments);
+  };
+
+  // Add SFX/VFX toggles into mechanics panel labels by patching paint
+  var _tf=window.toggleFun;
+  window.toggleFun=function(k){
+    var r=typeof _tf==="function"?_tf.apply(this,arguments):undefined;
+    window.sfx.soft();
+    return r;
+  };
+
+  // Inject extra toggle rows into mech panel
+  function enhanceMechPanel(){
+    var host=document.getElementById("mechPanel");
+    if(!host||host.querySelector("[data-sfx-row]")) return;
+    var t=ensureT();
+    var extra=document.createElement("div");
+    extra.dataset.sfxRow="1";
+    extra.innerHTML=
+      '<div class="mech-row"><div><div>Sound effects</div><div class="muted" style="font-size:.68rem">Soft beeps on actions</div></div>'+
+      '<div class="toggle'+(t.sfx?" on":"")+'" onclick="window.toggleFun(\'sfx\')"><i></i></div></div>'+
+      '<div class="mech-row"><div><div>Visual flashes</div><div class="muted" style="font-size:.68rem">Screen pulse on buys, kits, wins</div></div>'+
+      '<div class="toggle'+(t.vfx?" on":"")+'" onclick="window.toggleFun(\'vfx\')"><i></i></div></div>';
+    host.appendChild(extra);
+  }
+
+  // Smoother flow: after complete, nudge home render; after door, scroll wait list into view
+  var _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      var r=_go.apply(this,arguments);
+      window.sfx.page();
+      if(name==="home") window.vfx.flow(0);
+      if(name==="wait") window.vfx.flow(0.15);
+      setTimeout(function(){
+        try{
+          var sc=document.getElementById("sc-"+name);
+          if(sc) sc.scrollTop=0;
+        }catch(e){}
+      },30);
+      return r;
+    };
+  }
+
+  setTimeout(enhanceMechPanel,700);
+  setTimeout(enhanceMechPanel,1600);
+  // Re-enhance when home re-renders
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(enhanceMechPanel,50);
+      return r;
+    };
+  }
+
+  // Toast boost styling briefly
+  var _toast=window.toast;
+  if(typeof _toast==="function"){
+    window.toast=function(msg){
+      var r=_toast.apply(this,arguments);
+      try{
+        var el=document.getElementById("toast");
+        if(el){ el.classList.add("fx-boost"); setTimeout(function(){ el.classList.remove("fx-boost"); },400); }
+      }catch(e){}
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   STILL-ROOM CARD DUEL — known modern loop (deck-builder)
+   Affliction HP · energy · type-match cards · 3 rounds
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function ensureT(){
+    if(!window.S) window.S={};
+    if(!S.funToggles) S.funToggles={};
+    if(typeof S.funToggles.cardDuel==="undefined") S.funToggles.cardDuel=true;
+    return S.funToggles;
+  }
+
+  var TYPE={
+    Sleep:"Blue",Focus:"Yellow",Boundaries:"Black","Mood-Energy":"Green",
+    "Pain-Stiffness":"Red",Digestive:"Orange","Home-Environment":"White"
+  };
+  var BASE_CARDS=[
+    {id:"listen",ic:"👂",name:"Deep listen",cost:1,care:4,type:"Any",d:"Always safe"},
+    {id:"reflect",ic:"🪞",name:"Reflect",cost:1,care:5,type:"Any",d:"Mirror their words"},
+    {id:"breath",ic:"🌬️",name:"Box breath",cost:0,care:3,type:"Blue",d:"Settle"},
+    {id:"focus",ic:"🎯",name:"One next step",cost:1,care:5,type:"Yellow",d:"Clear aim"},
+    {id:"bound",ic:"🛡️",name:"Boundary script",cost:2,care:7,type:"Black",d:"One clean no"},
+    {id:"warmth",ic:"🧡",name:"Warmth care",cost:1,care:6,type:"Red",d:"Joints & ease"},
+    {id:"tea",ic:"🫖",name:"Still-room tea",cost:1,care:5,type:"Orange",d:"Digestive settle"},
+    {id:"nest",ic:"🛏️",name:"Room cue",cost:1,care:5,type:"White",d:"Home terrain"},
+    {id:"green",ic:"🌿",name:"Pacing plan",cost:1,care:6,type:"Green",d:"Mood-energy"},
+    {id:"color",ic:"🧪",name:"Ledger match",cost:2,care:9,type:"Match",d:"Big hit if color true"},
+    {id:"kit",ic:"🏮",name:"Lantern kit",cost:0,care:4,type:"Kit",d:"Uses a stocked kit"},
+    {id:"rest",ic:"🕯️",name:"Lantern quiet",cost:0,care:2,type:"Any",d:"+energy next",energy:1}
+  ];
+
+  window.startCardDuel=function(cand){
+    ensureT();
+    if(!cand||!cand.pr){ if(typeof toast==="function") toast("Empty chair"); return; }
+    var fam=cand.pr.f||"Sleep";
+    var color=cand.pr.color||TYPE[fam]||"Blue";
+    var diff=(cand.diff&&cand.diff.id)||"mid";
+    var hp=diff==="crit"?34:diff==="hard"?28:diff==="easy"?18:24;
+    window._duel={
+      cand:cand,name:cand.name,pr:cand.pr,fam:fam,color:color,
+      hp:hp,maxHp:hp,energy:3,maxEnergy:3,round:1,maxRound:5,
+      log:[],hand:[],spent:{},score:0
+    };
+    // also set _visit for complete pipeline
+    window._visit={
+      cand:cand,name:cand.name,pr:cand.pr,caseData:cand.caseData,
+      type:cand.type||"Visit",urgency:cand.urgency||"Routine",
+      wellness:cand.wellness||70,score:0,done:{},steps:0,
+      problems:cand.problems,pid:cand.pid,diff:cand.diff
+    };
+    drawHand();
+    renderDuel();
+    if(window.sfx&&window.sfx.door) window.sfx.door();
+  };
+
+  function drawHand(){
+    var d=window._duel; if(!d) return;
+    var pool=BASE_CARDS.slice();
+    // bias: include match-type cards
+    d.hand=[];
+    for(var i=0;i<5;i++){
+      var c=pool[Math.floor(Math.random()*pool.length)];
+      d.hand.push(Object.assign({},c));
+    }
+  }
+
+  function careFor(card){
+    var d=window._duel;
+    var base=card.care||3;
+    if(card.type==="Match" && d.color){ base+=4; }
+    if(card.type!=="Any" && card.type!=="Match" && card.type!=="Kit" && card.type===d.color){ base=Math.round(base*1.5); }
+    if(card.type==="Kit"){
+      var map={Sleep:"calm",Focus:"focus",Boundaries:"calm","Mood-Energy":"calm","Pain-Stiffness":"joint",Digestive:"digest","Home-Environment":"nest"};
+      var k=map[d.fam];
+      if(k && S.careKits && (S.careKits[k]||0)>0){ S.careKits[k]--; base+=5; d.log.unshift("Kit "+k+" spent"); }
+      else base=2;
+    }
+    return base;
+  }
+
+  window.playDuelCard=function(idx){
+    var d=window._duel; if(!d) return;
+    var card=d.hand[idx]; if(!card) return;
+    if(d.energy<(card.cost||0)){ if(typeof toast==="function") toast("Need energy"); if(window.sfx) window.sfx.warn(); return; }
+    d.energy-=(card.cost||0);
+    var dmg=careFor(card);
+    d.hp=Math.max(0,d.hp-dmg);
+    d.score+=Math.ceil(dmg/3);
+    d.log.unshift(card.ic+" "+card.name+" · −"+dmg+" affliction");
+    if(card.energy) d.energy=Math.min(d.maxEnergy, d.energy+card.energy);
+    d.hand.splice(idx,1);
+    if(window.sfx) window.sfx.ok();
+    if(window.funPop) window.funPop("−"+dmg);
+    if(d.hp<=0){ renderDuel(); setTimeout(endDuelWin,400); return; }
+    // enemy tick if hand empty or energy 0
+    if(d.hand.length===0 || d.energy===0){
+      enemyTurn();
+    }
+    renderDuel();
+  };
+
+  function enemyTurn(){
+    var d=window._duel; if(!d) return;
+    d.round++;
+    var tick=2+Math.floor(Math.random()*3);
+    d.log.unshift("Affliction pushes back · pressure +"+tick+" (flavor)");
+    d.energy=Math.min(d.maxEnergy, d.energy+2);
+    drawHand();
+    if(d.round>d.maxRound && d.hp>0){
+      // time out — partial
+      endDuelPartial();
+    }
+  }
+
+  window.duelEndTurn=function(){
+    var d=window._duel; if(!d) return;
+    if(window.sfx) window.sfx.page();
+    enemyTurn();
+    renderDuel();
+  };
+
+  function endDuelWin(){
+    var d=window._duel; if(!d) return;
+    if(window._visit){ window._visit.score=Math.max(8, d.score+4); window._visit.treated=true; window._visit.examScore=88; }
+    if(window.sfx) window.sfx.win();
+    if(window.vfx) window.vfx.flash("gold");
+    finishThroughPipeline("Breakthrough");
+  }
+  function endDuelPartial(){
+    var d=window._duel; if(!d) return;
+    var pct=1-d.hp/d.maxHp;
+    var score=Math.max(2, Math.round(d.score*pct+3));
+    if(window._visit){ window._visit.score=score; window._visit.treated=pct>0.45; window._visit.examScore=55+Math.round(pct*40); }
+    finishThroughPipeline(pct>0.6?"Improve":pct>0.3?"Plateau":"Stuck");
+  }
+
+  function finishThroughPipeline(hint){
+    // Prefer existing complete handlers
+    if(typeof window.vfComplete==="function"){
+      window.vfComplete();
+    } else if(typeof window.wizFinish==="function"){
+      window.wizFinish();
+    } else {
+      if(typeof toast==="function") toast(hint||"Visit closed");
+    }
+    window._duel=null;
+  }
+
+  function renderDuel(){
+    var d=window._duel; if(!d) return;
+    var pct=Math.round(100*d.hp/d.maxHp);
+    var html='<div class="duel-wrap">';
+    html+='<div class="section-kicker">STILL-ROOM DUEL · ROUND '+d.round+'/'+d.maxRound+'</div>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center"><strong>'+esc(d.name)+'</strong><span class="pill">'+esc(d.fam)+' · '+esc(d.color)+'</span></div>';
+    html+='<div class="muted" style="font-size:.78rem;margin-top:4px">Affliction HP — play cards to ease the case (deck-builder loop)</div>';
+    html+='<div class="duel-hp"><i style="width:'+pct+'%"></i></div>';
+    html+='<div style="display:flex;justify-content:space-between;font-size:.78rem"><span>HP '+d.hp+'/'+d.maxHp+'</span><span class="duel-energy">Energy ';
+    for(var e=0;e<d.maxEnergy;e++) html+='<span class="'+(e<d.energy?"on":"")+'"></span>';
+    html+='</span></div>';
+    html+='<div class="duel-hand">';
+    for(var i=0;i<d.hand.length;i++){
+      var c=d.hand[i];
+      var match=(c.type===d.color||c.type==="Match");
+      html+='<button type="button" class="duel-card'+(match?" match":"")+'" onclick="window.playDuelCard('+i+')">';
+      html+='<div class="dc-cost">'+c.ic+' · cost '+(c.cost||0)+'</div>';
+      html+='<div class="dc-name">'+esc(c.name)+'</div>';
+      html+='<div class="dc-fx">'+esc(c.d)+' · care '+c.care+(match?" · TYPE+":"")+'</div>';
+      html+='</button>';
+    }
+    html+='</div>';
+    html+='<button type="button" class="btn sec" style="width:100%" onclick="window.duelEndTurn()">End turn · redraw</button>';
+    html+='<button type="button" class="btn ghost" style="width:100%;margin-top:6px" onclick="window.duelFlee()">Leave visit</button>';
+    html+='<div class="duel-log">'+(d.log.slice(0,6).map(function(l){return "· "+esc(l);}).join("<br>")||"Play a card.")+'</div>';
+    html+='<p class="muted" style="font-size:.68rem;margin-top:8px">Inspired by modern deck-builders: energy, hand, type match, affliction HP. Fiction only.</p>';
+    html+='</div>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(d.name,"CARD VISIT",html);
+  }
+
+  window.duelFlee=function(){
+    window._duel=null; window._visit=null;
+    try{closeOverhaulModal();}catch(e){}
+    if(window.sfx) window.sfx.soft();
+  };
+
+  // Start Visit uses duel when toggle on
+  var _oh=window.openHerbalVisit;
+  window.openHerbalVisit=function(cand){
+    if(ensureT().cardDuel) return window.startCardDuel(cand);
+    if(typeof _oh==="function") return _oh.apply(this,arguments);
+    return window.startCardDuel(cand);
+  };
+  window.startVisitWizard=function(cand){
+    if(ensureT().cardDuel) return window.startCardDuel(cand);
+    // fall through if classic still bound earlier — try original via _oh
+    if(typeof _oh==="function") return _oh.apply(this,arguments);
+    return window.startCardDuel(cand);
+  };
+
+  // Toggle row
+  function addDuelToggle(){
+    var host=document.getElementById("mechPanel");
+    if(!host||host.querySelector("[data-duel-tog]")) return;
+    var t=ensureT();
+    var row=document.createElement("div");
+    row.dataset.duelTog="1";
+    row.className="mech-row";
+    row.innerHTML='<div><div>Card duel visits</div><div class="muted" style="font-size:.68rem">Deck-builder loop (default on)</div></div>'+
+      '<div class="toggle'+(t.cardDuel?" on":"")+'" onclick="window.toggleFun(\'cardDuel\')"><i></i></div>';
+    host.insertBefore(row, host.firstChild.nextSibling);
+  }
+  setTimeout(addDuelToggle,800);
+  setTimeout(addDuelToggle,1800);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(addDuelToggle,40);
+      return r;
+    };
+  }
 })();
 
 </script>
