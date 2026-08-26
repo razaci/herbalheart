@@ -797,6 +797,15 @@ body.has-dock .wrap{padding-bottom:24px!important}
   animation:synPop .9s ease-out forwards}
 @keyframes synPop{0%{opacity:0;transform:translate(-50%,-40%) scale(.9)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
 
+
+/* ===== INTERACTION HEATMAP ===== */
+.heat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:8px 0}
+.heat-cell{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:#e8f0f4;border:1px solid #1e3544;text-align:center;padding:2px;line-height:1.1}
+.heat-bar-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.75rem}
+.heat-bar-row>span.label{width:72px;flex-shrink:0}
+.heat-bar{flex:1;height:10px;border-radius:99px;background:#1a303c;overflow:hidden}
+.heat-bar>i{display:block;height:100%;border-radius:99px}
+
 </style>
 </head>
 <body>
@@ -15052,6 +15061,174 @@ window.GUILD_HERBS=[
     }catch(e){}
     if(typeof _toast==="function") return _toast.apply(this,arguments);
   };
+})();
+
+
+
+/* ==========================================================
+   INTERACTION HEATMAPS
+   Tracks card types, paths, synergies, elements, UI
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.heat){
+      S.heat={
+        types:{}, paths:{}, syn:{}, el:{}, ui:{},
+        grid:new Array(25).fill(0),
+        total:0
+      };
+    }
+    if(!S.heat.grid || S.heat.grid.length!==25) S.heat.grid=new Array(25).fill(0);
+    return S.heat;
+  }
+
+  function heatColor(v, max){
+    var t=max<=0?0:Math.min(1, v/max);
+    // cool → hot
+    var r=Math.round(20+t*220);
+    var g=Math.round(40+t*80);
+    var b=Math.round(80-t*50);
+    return "rgb("+r+","+g+","+b+")";
+  }
+
+  window.heatTouch=function(kind, key, gridIdx){
+    var h=ensure();
+    h.total++;
+    if(kind && key){
+      if(!h[kind]) h[kind]={};
+      h[kind][key]=(h[kind][key]||0)+1;
+    }
+    if(typeof gridIdx==="number"){
+      var i=((gridIdx%25)+25)%25;
+      h.grid[i]=(h.grid[i]||0)+1;
+    } else {
+      // scatter into grid from hash
+      var n=0, s=String(kind||"")+":"+String(key||"");
+      for(var k=0;k<s.length;k++) n+=s.charCodeAt(k);
+      h.grid[n%25]=(h.grid[n%25]||0)+1;
+    }
+    if(typeof save==="function") save({ui:false});
+  };
+
+  function bars(obj){
+    var keys=Object.keys(obj||{});
+    if(!keys.length) return '<p class="muted" style="font-size:.75rem">No data yet — play cards.</p>';
+    var max=1;
+    keys.forEach(function(k){ if(obj[k]>max) max=obj[k]; });
+    keys.sort(function(a,b){ return obj[b]-obj[a]; });
+    var html="";
+    keys.slice(0,12).forEach(function(k){
+      var pct=Math.round(100*obj[k]/max);
+      html+='<div class="heat-bar-row"><span class="label">'+esc(k)+'</span><div class="heat-bar"><i style="width:'+pct+'%;background:'+heatColor(obj[k],max)+'"></i></div><span>'+obj[k]+'</span></div>';
+    });
+    return html;
+  }
+
+  window.openHeatmaps=function(){
+    var h=ensure();
+    var gmax=1;
+    h.grid.forEach(function(v){ if(v>gmax) gmax=v; });
+    var html='<div class="section-kicker">INTERACTION HEATMAPS</div>';
+    html+='<p class="muted" style="font-size:.75rem">'+h.total+' touches recorded this save.</p>';
+    html+='<div class="card"><b>Play field (25-cell)</b><div class="heat-grid">';
+    for(var i=0;i<25;i++){
+      html+='<div class="heat-cell" style="background:'+heatColor(h.grid[i]||0,gmax)+'">'+(h.grid[i]||"")+'</div>';
+    }
+    html+='</div></div>';
+    html+='<div class="card"><b>Card types</b>'+bars(h.types)+'</div>';
+    html+='<div class="card"><b>Path marks</b>'+bars(h.paths)+'</div>';
+    html+='<div class="card"><b>Synergies</b>'+bars(h.syn)+'</div>';
+    html+='<div class="card"><b>Elements</b>'+bars(h.el)+'</div>';
+    html+='<div class="card"><b>Floor / UI</b>'+bars(h.ui)+'</div>';
+    html+='<button class="btn sec" style="width:100%" onclick="window.resetHeat()">Reset heat</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Heatmaps","DATA",html);
+  };
+
+  window.resetHeat=function(){
+    if(!window.S) window.S={};
+    S.heat={types:{},paths:{},syn:{},el:{},ui:{},grid:new Array(25).fill(0),total:0};
+    if(typeof save==="function") save();
+    window.openHeatmaps();
+  };
+
+  // Hook plays
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      try{
+        var d=window._duel;
+        var c=d&&d.hand&&d.hand[idx];
+        if(c){
+          window.heatTouch("types", c.type||"Any", (c.cost||0)*5+(idx%5));
+          if(c.mean) window.heatTouch("paths", c.mean);
+          var TYPE_EL={Red:"Fire",Yellow:"Air",Blue:"Water",White:"Earth",Orange:"Earth",Green:"Water",Black:"Air"};
+          window.heatTouch("el", TYPE_EL[c.type]||c.type||"Any");
+        }
+      }catch(e){}
+      return _play.apply(this,arguments);
+    };
+  }
+
+  var _nm=window.noteMeaning;
+  if(typeof _nm==="function"){
+    window.noteMeaning=function(key,label){
+      if(key) window.heatTouch("paths", key);
+      return _nm.apply(this,arguments);
+    };
+  }
+
+  var _toast=window.toast;
+  window.toast=function(msg){
+    try{
+      var m=String(msg||"");
+      if(m.indexOf("✨ ")===0 || m.indexOf("SYNERGY")>=0){
+        window.heatTouch("syn", m.replace(/^✨\s*/,"").slice(0,28));
+      }
+    }catch(e){}
+    if(typeof _toast==="function") return _toast.apply(this,arguments);
+  };
+
+  var _flash=window.flashSynergy;
+  if(typeof _flash==="function"){
+    window.flashSynergy=function(name,bonus){
+      window.heatTouch("syn", name||"combo");
+      return _flash.apply(this,arguments);
+    };
+  }
+
+  // UI clicks on home buttons
+  document.addEventListener("click", function(e){
+    try{
+      var t=e.target.closest("button");
+      if(!t) return;
+      var label=(t.textContent||"").trim().slice(0,24);
+      if(label) window.heatTouch("ui", label, Math.abs(label.length*3)%25);
+    }catch(err){}
+  }, true);
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnHeat")) return;
+    var b=document.createElement("button");
+    b.id="btnHeat"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="🌡️ Heatmaps";
+    b.onclick=function(){ window.openHeatmaps(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,30);
+      return r;
+    };
+  }
 })();
 
 </script>
