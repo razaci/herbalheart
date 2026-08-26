@@ -778,6 +778,15 @@ body.visit-only .wrap{padding-bottom:128px!important}
 #clinicDock{display:none!important;visibility:hidden!important;pointer-events:none!important;height:0!important;overflow:hidden!important;padding:0!important;border:0!important}
 body.has-dock .wrap{padding-bottom:24px!important}
 
+
+/* ===== DIFFICULTY + RED LIGHT ===== */
+.diff-chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.68rem;margin-left:4px}
+.diff-1{background:#1a3a28;color:#9fd4b0}
+.diff-2{background:#3a3a18;color:#e8d070}
+.diff-3{background:#3a2810;color:#f0a050}
+.diff-4{background:#3a1018;color:#ff8a9a}
+.redlight-btn{width:100%;padding:10px;margin:6px 0;border-radius:12px;border:1px solid #8a3040;background:#2a1018;color:#ffc8d0;font:inherit;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -14352,6 +14361,489 @@ window.GUILD_HERBS=[
     window.renderGameplayHome=function(){
       var r=_rgh.apply(this,arguments);
       setTimeout(paintLoadout,20);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   HARDER LEVELS · WORSENING PROBLEMS · RED-LIGHT AMAZON KITS
+   Fiction + product searches. Not medical treatment.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var LEVELS=[
+    {id:1,name:"Quiet desk",hp:1.0,rounds:10,energy:5,label:"Easy"},
+    {id:2,name:"Busy week",hp:1.25,rounds:11,energy:4,label:"Moderate"},
+    {id:3,name:"Relapse weather",hp:1.55,rounds:12,energy:4,label:"Hard"},
+    {id:4,name:"Red-light case",hp:1.9,rounds:13,energy:3,label:"Severe"}
+  ];
+
+  var WORSE={
+    Sleep:[
+      "Can't wind down after screens",
+      "2–3am wake and stay up",
+      "Night after night; next-day crash",
+      "RED: gasping, chest pain, or falling asleep driving → clinician / ER, not a lamp"
+    ],
+    Focus:[
+      "Starts three tabs, finishes none",
+      "Whole afternoon is residue",
+      "Can't hold a sentence in the room",
+      "RED: sudden confusion, one-sided weakness, worst headache → ER"
+    ],
+    Boundaries:[
+      "Yes in the room, resent by Friday",
+      "Calendar owns the body",
+      "Almost no hour that is theirs",
+      "RED: coercion / safety at home or work → real help, not a device"
+    ],
+    "Mood-Energy":[
+      "Sunday dread is a wall",
+      "Nothing refills after gatherings",
+      "Meaning thin; fuel gone",
+      "RED: hopeless or unsafe → 988 / clinician, not red light"
+    ],
+    "Pain-Stiffness":[
+      "Shoulders lock by lunch",
+      "Mornings bargain with joints",
+      "Damp weather plus the chair owns the day",
+      "RED: hot swollen joint, trauma, chest pain with arm pain → urgent care"
+    ],
+    Digestive:[
+      "Hands find the cupboard first",
+      "Stomach flips before events",
+      "Meals sit like a stone all week",
+      "RED: blood, black stool, severe pain, persistent vomit → urgent care"
+    ],
+    "Home-Environment":[
+      "Pile from the pillow is loud",
+      "Screens + dry air + cold feet rotate",
+      "The room argues every night",
+      "RED: smoke, carbon monoxide suspicion, can't breathe → leave + emergency"
+    ]
+  };
+
+  var RED_KITS=[
+    {id:"rl_panel",name:"Red light panel (search)",q:"red light therapy panel",care:7,cost:2,note:"Consumer device search. Not a cure. Eye protection. Follow manufacturer."},
+    {id:"rl_mask",name:"Face / small panel",q:"red light therapy face mask",care:5,cost:1,note:"Cosmetic / comfort lore in-game only."},
+    {id:"rl_belt",name:"Wrap / belt",q:"red light therapy belt wrap",care:6,cost:2,note:"Joint-comfort story. Stop if heat/pain rises."},
+    {id:"rl_bulb",name:"Bulb / lamp",q:"red light therapy bulb",care:4,cost:1,note:"Room terrain. Distance + time matter; don't stare."},
+    {id:"rl_goggles",name:"Eye shields",q:"red light therapy goggles",care:3,cost:0,note:"Required companion search if using a lamp."},
+    {id:"rl_timer",name:"Session timer",q:"kitchen timer analog",care:3,cost:0,note:"Don't leave a lamp on 'forever'."}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={day:1,rp:50};
+    if(typeof S.diffLevel!=="number") S.diffLevel=1;
+    if(!S.problemStage) S.problemStage={};
+    if(!S.redStock) S.redStock={};
+    return S;
+  }
+
+  function famOf(cand){
+    return (cand&&((cand.pr&&cand.pr.f)||cand.fam||cand.family))||"Sleep";
+  }
+  function pidOf(cand){
+    return (cand&&(cand.pid||cand.id||cand.name))||"guest";
+  }
+  function stageOf(pid){
+    ensure();
+    return Math.min(3, S.problemStage[pid]||0);
+  }
+
+  window.clinicLevel=function(){
+    ensure();
+    return LEVELS[Math.min(3, Math.max(0,(S.diffLevel||1)-1))];
+  };
+
+  window.setClinicLevel=function(n){
+    ensure();
+    S.diffLevel=Math.max(1,Math.min(4,n|0));
+    if(typeof save==="function") save({ui:false});
+    if(typeof toast==="function") toast("Difficulty · "+window.clinicLevel().name);
+    if(window.paintDiffBar) window.paintDiffBar();
+  };
+
+  window.worsenProblem=function(pid, fam){
+    ensure();
+    var st=stageOf(pid);
+    if(st<3) S.problemStage[pid]=st+1;
+    if(typeof save==="function") save({ui:false});
+    return S.problemStage[pid];
+  };
+
+  function applyWorse(cand){
+    if(!cand) return cand;
+    var fam=famOf(cand);
+    var pid=pidOf(cand);
+    var st=stageOf(pid);
+    var chain=WORSE[fam]||WORSE.Sleep;
+    cand.problemStage=st;
+    cand.problemNow=chain[st];
+    cand.problemChain=chain;
+    cand.redAlert=st>=3;
+    if(!cand.problems) cand.problems=[];
+    cand.problems.unshift("Stage "+(st+1)+"/4 · "+chain[st]);
+    if(st>=3) cand.urgency="Urgent";
+    cand.diff={id:st>=3?"hard":st>=2?"mid":"easy", label:LEVELS[Math.min(3,st)].label};
+    return cand;
+  }
+
+  // Scale duel by clinic level + problem stage
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    applyWorse(cand);
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      var lv=window.clinicLevel();
+      var st=(cand&&cand.problemStage)||0;
+      if(d){
+        d.maxHp=Math.max(8, Math.round((d.maxHp||24)*lv.hp*(1+st*0.12)));
+        d.hp=d.maxHp;
+        d.maxRound=Math.max(d.maxRound||8, lv.rounds);
+        d.maxEnergy=lv.energy;
+        d.energy=lv.energy;
+        d.level=lv;
+        d.problemNow=cand&&cand.problemNow;
+        d.redAlert=cand&&cand.redAlert;
+        d.pid=pidOf(cand);
+        d.fam=famOf(cand);
+        // deal red-light cards on hard+
+        if(lv.id>=3 || st>=2){
+          var kit=RED_KITS[Math.min(st, RED_KITS.length-1)];
+          d.hand.push({id:kit.id,ic:"🔴",name:kit.name,cost:kit.cost,care:kit.care,type:"Red",d:kit.note,_red:kit});
+        }
+        d.log.unshift((lv.label)+" · stage "+(st+1)+"/4 · "+(cand&&cand.problemNow||""));
+      }
+      setTimeout(paintVisitDepth,90);
+    }catch(e){}
+    return r;
+  };
+
+  function paintVisitDepth(){
+    var body=document.getElementById("overhaulModalBody");
+    var d=window._duel;
+    if(!body||!d||body.querySelector("[data-worse]")) return;
+    var st=d.problemNow||"";
+    var chain=WORSE[d.fam]||WORSE.Sleep;
+    var div=document.createElement("div");
+    div.dataset.worse="1";
+    div.className="card";
+    var h='<div class="section-kicker">PROBLEM DEPTH · '+(d.level&&d.level.name||"")+'</div>';
+    h+='<p><span class="diff-chip diff-'+((d.level&&d.level.id)||1)+'">'+(d.level&&d.level.label||"")+'</span></p>';
+    h+='<ol style="margin:6px 0 8px 18px;font-size:.8rem;padding:0">';
+    for(var i=0;i<chain.length;i++){
+      var on=(chain[i]===st)||(i===(d.problemStage||0));
+      h+='<li style="'+(on?"font-weight:700;color:#ffd0d8":"opacity:.75")+'">'+esc(chain[i])+'</li>';
+    }
+    h+='</ol>';
+    if(d.redAlert){
+      h+='<p style="color:#ff8a9a;font-size:.82rem"><b>Red alert:</b> this stage is not a still-room fix. Device searches are flavor only.</p>';
+    }
+    h+='<button class="redlight-btn" type="button" onclick="window.openRedLightDesk()">🔴 Red-light Amazon desk</button>';
+    div.innerHTML=h;
+    body.insertBefore(div, body.firstChild);
+  }
+
+  window.openRedLightDesk=function(){
+    var html='<div class="section-kicker">RED-LIGHT DESK</div>';
+    html+='<p class="muted" style="font-size:.78rem">Consumer <em>product searches</em>. Not a treatment for disease. Don\'t stare into LEDs. Photosensitive conditions / meds → clinician first.</p>';
+    for(var i=0;i<RED_KITS.length;i++){
+      var k=RED_KITS[i];
+      var n=(ensure().redStock[k.id]||0);
+      html+='<div class="card"><b>🔴 '+esc(k.name)+'</b><div class="muted" style="font-size:.78rem">'+esc(k.note)+' · stock '+n+'</div>';
+      html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(k.q)+'">🛒 '+esc(k.q)+'</a><br>';
+      html+='<button class="btn sm" onclick="window.buyRedKit(\''+k.id+'\')">Buy for clinic · 6 RP</button> ';
+      html+='<button class="btn sm sec" onclick="window.useRedKit(\''+k.id+'\')">Use in visit</button></div>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close desk</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Red light","KIT",html);
+  };
+
+  window.buyRedKit=function(id){
+    ensure();
+    if((S.rp||0)<6){ if(typeof toast==="function") toast("Need 6 RP"); return; }
+    S.rp-=6;
+    S.redStock[id]=(S.redStock[id]||0)+1;
+    if(typeof save==="function") save();
+    if(typeof toast==="function") toast("🔴 Kit on the shelf");
+    window.openRedLightDesk();
+  };
+
+  window.useRedKit=function(id){
+    ensure();
+    var k=null;
+    for(var i=0;i<RED_KITS.length;i++) if(RED_KITS[i].id===id) k=RED_KITS[i];
+    if(!k) return;
+    var d=window._duel;
+    if(!d){ if(typeof toast==="function") toast("Open a visit first"); return; }
+    if((S.redStock[id]||0)<1){
+      if(typeof toast==="function") toast("No stock — buy or search");
+      return;
+    }
+    S.redStock[id]--;
+    var care=k.care;
+    if(d.redAlert) care=Math.round(care*0.4); // devices don't clear red-alert stages
+    d.hp=Math.max(0, d.hp-care);
+    d.score=(d.score||0)+2;
+    d.log.unshift("🔴 "+k.name+" · −"+care+(d.redAlert?" (alert: weak)":""));
+    if(typeof toast==="function") toast("🔴 "+k.name);
+    if(typeof save==="function") save({ui:false});
+    if(d.hp<=0 && typeof window.vfComplete==="function"){
+      if(window._visit) window._visit.score=Math.max(8,d.score);
+      setTimeout(function(){ window.vfComplete(); },200);
+      return;
+    }
+    if(window.renderDuel) window.renderDuel();
+  };
+
+  // Escalate stage if visit score is weak
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var v=window._visit||window._duel||{};
+        var pid=v.pid||(v.cand&&v.cand.pid)||v.name;
+        var sc=v.score||0;
+        if(pid && sc<7){
+          var st=window.worsenProblem(pid);
+          if(typeof toast==="function") toast("Problem worsened · stage "+(st+1)+"/4");
+        } else if(pid && sc>=10){
+          ensure();
+          if((S.problemStage[pid]||0)>0) S.problemStage[pid]--;
+        }
+      }catch(e){}
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  window.paintDiffBar=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("diffBar");
+    if(!el){
+      el=document.createElement("div");
+      el.id="diffBar";
+      el.className="card";
+      home.insertBefore(el, home.firstChild);
+    }
+    var lv=window.clinicLevel();
+    el.innerHTML='<div class="section-kicker">DIFFICULTY</div>'+
+      '<p><b>'+esc(lv.name)+'</b> <span class="diff-chip diff-'+lv.id+'">'+esc(lv.label)+'</span></p>'+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">'+
+      '<button class="btn sm" onclick="window.setClinicLevel(1)">1 Quiet</button>'+
+      '<button class="btn sm" onclick="window.setClinicLevel(2)">2 Busy</button>'+
+      '<button class="btn sm" onclick="window.setClinicLevel(3)">3 Relapse</button>'+
+      '<button class="btn sm" onclick="window.setClinicLevel(4)">4 Red-light</button></div>'+
+      '<button class="redlight-btn" onclick="window.openRedLightDesk()">🔴 Red-light Amazon desk</button>'+
+      '<p class="muted" style="font-size:.72rem;margin:6px 0 0">Weak visits push the same guest to a worse stage. Stage 4 is a red-alert — refer, don\'t "lamp" it.</p>';
+  };
+
+  setTimeout(window.paintDiffBar,500);
+  setTimeout(window.paintDiffBar,1400);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(window.paintDiffBar,25);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   MEANINGFUL OPTIONS + CHOOSE CARDS TO HELP PATIENT
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var OFFER=[
+    {id:"listen",ic:"👂",name:"Listen twice",cost:0,care:4,type:"Any",d:"Always legal · builds trust",mean:"trust"},
+    {id:"nest",ic:"🛏️",name:"Nest the room",cost:1,care:5,type:"Blue",d:"Settle terrain",mean:"settle"},
+    {id:"step",ic:"➡️",name:"One next step",cost:1,care:6,type:"Yellow",d:"Start ugly",mean:"action"},
+    {id:"no",ic:"🚫",name:"Clean no script",cost:2,care:7,type:"Black",d:"Boundary",mean:"boundary"},
+    {id:"body",ic:"🧡",name:"Warm the joints",cost:1,care:6,type:"Red",d:"Pain terrain",mean:"body"},
+    {id:"gut",ic:"🫖",name:"Simple table",cost:1,care:5,type:"Orange",d:"Meal weather",mean:"gut"},
+    {id:"refer",ic:"🏥",name:"Name a clinician",cost:0,care:8,type:"Match",d:"Best card when red",mean:"refer"},
+    {id:"red",ic:"🔴",name:"Red-light session",cost:2,care:7,type:"Red",d:"Device story",mean:"device"},
+    {id:"write",ic:"📝",name:"If–Then on paper",cost:1,care:6,type:"Any",d:"Plan sticks",mean:"plan"},
+    {id:"phone",ic:"📱",name:"Phone face-down",cost:1,care:5,type:"Blue",d:"Night",mean:"settle"},
+    {id:"walk",ic:"🚶",name:"Five-minute walk",cost:1,care:5,type:"Green",d:"Mood fuel",mean:"action"},
+    {id:"flame",ic:"🪔",name:"Feed the flame",cost:0,care:3,type:"Any",d:"+resources",mean:"sustain"}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.mean) S.mean={trust:0,settle:0,action:0,boundary:0,body:0,gut:0,refer:0,device:0,plan:0,sustain:0,history:[]};
+    return S.mean;
+  }
+
+  window.noteMeaning=function(key, label){
+    var m=ensure();
+    if(key) m[key]=(m[key]||0)+1;
+    m.history.push({day:S.day||1,t:label||key});
+    if(m.history.length>40) m.history.shift();
+    // cascading unlocks
+    if(m.trust>=3 && !S._unlockListen){ S._unlockListen=true; if(typeof toast==="function") toast("Unlocked: deeper listen bonus"); }
+    if(m.refer>=2 && !S._unlockRefer){ S._unlockRefer=true; if(typeof toast==="function") toast("Unlocked: refer always deals"); }
+    if(m.boundary>=3 && !S._unlockNo){ S._unlockNo=true; if(typeof toast==="function") toast("Unlocked: boundary cards cost −1"); }
+    if(m.settle>=4 && window.bumpResources) window.bumpResources({focus:1});
+    if(typeof save==="function") save({ui:false});
+  };
+
+  function bonusFor(card){
+    var m=ensure();
+    var b=0;
+    if(card.mean==="trust" && m.trust>=3) b+=2;
+    if(card.mean==="boundary" && S._unlockNo) card.cost=Math.max(0,(card.cost||1)-1);
+    if(card.mean==="refer" && S._unlockRefer) b+=2;
+    if(card.mean==="settle" && m.settle>=3) b+=1;
+    if(card.mean==="action" && m.action>=3) b+=1;
+    return b;
+  }
+
+  // Choose 3 of 6 cards before duel fully starts
+  window.openCardChoice=function(cand){
+    window._pendingCand=cand;
+    var pool=OFFER.slice();
+    // bias by family
+    var fam=(cand&&cand.pr&&cand.pr.f)||cand.fam||"";
+    var prefer={Sleep:"settle",Focus:"action","Boundaries":"boundary","Mood-Energy":"action","Pain-Stiffness":"body",Digestive:"gut","Home-Environment":"settle"};
+    var want=prefer[fam];
+    pool.sort(function(a,b){
+      return (b.mean===want?1:0)-(a.mean===want?1:0);
+    });
+    // shuffle mild
+    for(var i=pool.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var t=pool[i]; pool[i]=pool[j]; pool[j]=t;
+    }
+    var offer=pool.slice(0,6);
+    window._cardOffer=offer;
+    window._cardPicked=[];
+    renderChoice();
+  };
+
+  function renderChoice(){
+    var cand=window._pendingCand;
+    var offer=window._cardOffer||[];
+    var picked=window._cardPicked||[];
+    var html='<div class="section-kicker">CHOOSE CARDS TO HELP</div>';
+    html+='<p><b>'+esc(cand&&cand.name||"Guest")+'</b></p>';
+    html+='<p class="muted" style="font-size:.78rem">Pick <b>3</b> cards. Your history makes some stronger.</p>';
+    html+='<p style="font-size:.8rem">Picked: '+picked.length+'/3</p>';
+    for(var i=0;i<offer.length;i++){
+      var c=offer[i];
+      var on=picked.indexOf(i)>=0;
+      var b=bonusFor(Object.assign({},c));
+      html+='<button type="button" class="btn'+(on?"":" sec")+'" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.togglePickCard('+i+')">';
+      html+=(c.ic||"🃏")+' <b>'+esc(c.name)+'</b> · cost '+(c.cost||0)+' · care '+(c.care||0)+(b?" (+"+b+" from path)":"");
+      html+='<div class="muted" style="font-size:.72rem">'+esc(c.d)+' · marks “'+esc(c.mean)+'”</div></button>';
+    }
+    html+='<button class="btn" style="width:100%" '+(picked.length<3?"disabled":"")+' onclick="window.confirmCardChoice()">Start visit with these 3</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window.confirmCardChoice(true)">Skip — random hand</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Help kit","CHOOSE",html);
+  }
+
+  window.togglePickCard=function(i){
+    var p=window._cardPicked||[];
+    var x=p.indexOf(i);
+    if(x>=0) p.splice(x,1);
+    else if(p.length<3) p.push(i);
+    window._cardPicked=p;
+    renderChoice();
+  };
+
+  window.confirmCardChoice=function(skip){
+    var cand=window._pendingCand;
+    var picks=[];
+    if(!skip){
+      (window._cardPicked||[]).forEach(function(i){
+        var c=Object.assign({}, (window._cardOffer||[])[i]);
+        var b=bonusFor(c);
+        c.care=(c.care||0)+b;
+        picks.push(c);
+        window.noteMeaning(c.mean, c.name);
+      });
+    }
+    window._chosenHelp=picks;
+    try{ closeOverhaulModal(); }catch(e){}
+    if(typeof window._startDuelAfterChoice==="function") window._startDuelAfterChoice(cand);
+    else if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+  };
+
+  // Intercept start: choice first
+  var _scd=window.startCardDuel;
+  window._startDuelAfterChoice=function(cand){
+    var r=typeof _scd==="function"?_scd.call(window,cand):undefined;
+    try{
+      var d=window._duel;
+      if(d && window._chosenHelp && window._chosenHelp.length){
+        // put chosen cards at front of hand
+        d.hand=window._chosenHelp.concat(d.hand||[]).slice(0,12);
+        d.log.unshift("You chose: "+window._chosenHelp.map(function(c){return c.name;}).join(", "));
+        window._chosenHelp=null;
+        if(window.renderDuel) setTimeout(window.renderDuel,50);
+      }
+    }catch(e){}
+    return r;
+  };
+  window.startCardDuel=function(cand){
+    // if already chosen this frame, go
+    if(window._chosenHelp && window._chosenHelp.length){
+      return window._startDuelAfterChoice(cand);
+    }
+    window.openCardChoice(cand);
+  };
+
+  // playDuelCard marks meaning
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      try{
+        var d=window._duel;
+        var c=d&&d.hand&&d.hand[idx];
+        if(c&&c.mean) window.noteMeaning(c.mean, c.name);
+        if(c&&c.mean==="sustain" && window.bumpResources) window.bumpResources({flame:8,focus:1});
+        if(c&&c.mean==="refer" && d) d.log.unshift("Refer path noted — not a still-room miracle");
+      }catch(e){}
+      return _play.apply(this,arguments);
+    };
+  }
+
+  // show path meaning on home
+  function paintMean(){
+    var m=ensure();
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("meanBar");
+    if(!el){
+      el=document.createElement("div");
+      el.id="meanBar";
+      el.className="card";
+      home.appendChild(el);
+    }
+    el.innerHTML='<div class="section-kicker">YOUR PATH (choices add up)</div>'+
+      '<p style="font-size:.78rem">Trust '+m.trust+' · Settle '+m.settle+' · Action '+m.action+
+      ' · Boundary '+m.boundary+' · Body '+m.body+' · Gut '+m.gut+
+      ' · Refer '+m.refer+' · Device '+m.device+' · Plan '+m.plan+'</p>'+
+      '<p class="muted" style="font-size:.72rem">3 trust → listen bonus · 3 boundary → cheaper no · 2 refer → stronger refer</p>';
+  }
+  setTimeout(paintMean,800);
+  setTimeout(paintMean,1800);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paintMean,30);
       return r;
     };
   }
