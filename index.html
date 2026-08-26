@@ -495,6 +495,25 @@ body{
 .visit-tab{padding:6px 10px;border-radius:99px;border:1px solid #29495c;background:#0d1e2b;color:var(--muted);font-size:.72rem;cursor:pointer}
 .visit-tab.on{border-color:var(--accent);color:var(--accent);background:#143d28}
 
+
+/* ===== 10-PAGE VISIT WIZARD ===== */
+.wiz-wrap{max-height:78vh;overflow:auto}
+.wiz-progress{display:flex;gap:3px;margin:8px 0 12px}
+.wiz-progress i{flex:1;height:5px;border-radius:4px;background:#1a303c}
+.wiz-progress i.on{background:var(--accent)}
+.wiz-progress i.done{background:#2a5a40}
+.wiz-page h3{margin:0 0 8px;font-size:1rem}
+.wiz-opts{display:grid;gap:8px}
+.wiz-opt{
+  padding:12px;border-radius:14px;border:1px solid #29495c;
+  background:linear-gradient(145deg,#123040,#0d1e2b);cursor:pointer;
+  text-align:left;font:inherit;color:var(--text);font-weight:650
+}
+.wiz-opt.picked{border-color:var(--accent);box-shadow:0 0 0 1px rgba(98,230,173,.25);background:#143d28}
+.wiz-opt .wo-d{font-size:.72rem;color:var(--muted);font-weight:500;margin-top:4px}
+.wiz-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.wiz-amz{display:inline-block;margin-top:6px;font-size:.7rem;color:#9dcea8}
+
 </style>
 </head>
 <body>
@@ -8641,6 +8660,272 @@ window.GUILD_HERBS=[
       return _vc.apply(this,arguments);
     };
   }
+})();
+
+
+
+/* ==========================================================
+   10-PAGE TREATMENT WIZARD · 30 FEATURES
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  // 30 features distributed across 10 pages
+  var PAGES=[
+    {id:1,title:"Welcome & consent",kicker:"PAGE 1 / 10",
+      blurb:"Still-room open. Confirm the guest and the tone of care.",
+      opts:[
+        {id:"f1",ic:"🚪",name:"Invite them to sit",d:"Begin with warmth",score:1},
+        {id:"f2",ic:"🫖",name:"Offer water or tea",d:"Hospitality first",score:1,amz:"ceramic tea cup set"},
+        {id:"f3",ic:"🤝",name:"Name the frame",d:"One hour · one next step",score:1}
+      ]},
+    {id:2,title:"Chief complaint",kicker:"PAGE 2 / 10",
+      blurb:"Hear the problem in their words. Pick how you listen.",
+      opts:[
+        {id:"f4",ic:"👂",name:"Reflect the complaint",d:"Say back what you heard",score:2},
+        {id:"f5",ic:"❓",name:"One clarifying question",d:"When did it start?",score:1},
+        {id:"f6",ic:"📋",name:"Tag SETTLE or GROUND",d:"Fiction protocol tag",score:2}
+      ]},
+    {id:3,title:"Signs & body",kicker:"PAGE 3 / 10",
+      blurb:"Notice breath, posture, and energy — still-room exam.",
+      opts:[
+        {id:"f7",ic:"🩺",name:"Breath and shoulders",d:"Exam score +",score:2},
+        {id:"f8",ic:"👁️",name:"Eye contact & pace",d:"Match their speed",score:1},
+        {id:"f9",ic:"🦴",name:"Jaw / hands scan",d:"Tension map",score:1,amz:"massage therapy ball"}
+      ]},
+    {id:4,title:"Ledger color",kicker:"PAGE 4 / 10",
+      blurb:"Name the color family for this case (game fiction).",
+      opts:[
+        {id:"f10",ic:"💙",name:"Call Blue (settle)",d:"Sleep / nervine terrain",score:2},
+        {id:"f11",ic:"💛",name:"Call Yellow (focus)",d:"Attention terrain",score:2},
+        {id:"f12",ic:"🧪",name:"Run color check",d:"Diagnostics step",score:2,att:1}
+      ]},
+    {id:5,title:"Herb path",kicker:"PAGE 5 / 10",
+      blurb:"Choose a fictional herb direction. Links are product search only.",
+      opts:[
+        {id:"f13",ic:"🌼",name:"Chamomile path",d:"Gentle settle",score:2,amz:"organic chamomile tea bags"},
+        {id:"f14",ic:"🌿",name:"Rosemary path",d:"Clear focus",score:2,amz:"rosemary essential oil"},
+        {id:"f15",ic:"🪵",name:"Ashwagandha path",d:"Mood-energy lore",score:2,amz:"ashwagandha root capsules"}
+      ]},
+    {id:6,title:"Support tools",kicker:"PAGE 6 / 10",
+      blurb:"Comfort tools — optional Amazon searches, not prescriptions.",
+      opts:[
+        {id:"f16",ic:"🛏️",name:"Sleep nest tools",d:"Dark / quiet",score:1,amz:"blackout curtains"},
+        {id:"f17",ic:"🔊",name:"Sound settle",d:"Noise plan",score:1,amz:"white noise machine"},
+        {id:"f18",ic:"🌙",name:"Light hygiene",d:"Screens down",score:1,amz:"blue light blocking glasses"}
+      ]},
+    {id:7,title:"Body & breath care",kicker:"PAGE 7 / 10",
+      blurb:"Simple practices you can do in the chair.",
+      opts:[
+        {id:"f19",ic:"🌬️",name:"Box breathing",d:"2 minutes",score:1},
+        {id:"f20",ic:"🚶",name:"Doorway walk",d:"3 minutes",score:1},
+        {id:"f21",ic:"🧘",name:"Feet on floor settle",d:"Ground",score:1}
+      ]},
+    {id:8,title:"Plan & boundaries",kicker:"PAGE 8 / 10",
+      blurb:"One clear next step beats ten vague tips.",
+      opts:[
+        {id:"f22",ic:"📝",name:"Write If–Then plan",d:"When X → I do Y",score:2,amz:"habit tracker journal"},
+        {id:"f23",ic:"🛡️",name:"Boundary script",d:"One short no",score:2,att:1,amz:"motherwort herb tea"},
+        {id:"f24",ic:"⏰",name:"Timing agreement",d:"When they will try it",score:1}
+      ]},
+    {id:9,title:"Deepen or refer",kicker:"PAGE 9 / 10",
+      blurb:"Optional extra care or a kind edge to real help.",
+      opts:[
+        {id:"f25",ic:"✨",name:"Apply loadout buff",d:"If pouch armed",score:3,needsHerb:true},
+        {id:"f26",ic:"📤",name:"Referral note",d:"Fiction has limits",score:1,rp:2},
+        {id:"f27",ic:"🛒",name:"Send home kit (3 links)",d:"Open family Amazon kit",score:1,openKit:true}
+      ]},
+    {id:10,title:"Close the visit",kicker:"PAGE 10 / 10",
+      blurb:"Review what you chose. Then complete for outcome & recovery log.",
+      opts:[
+        {id:"f28",ic:"📓",name:"Log one journal line",d:"Document",score:1,amz:"hardcover journal"},
+        {id:"f29",ic:"🪔",name:"Lantern quiet",d:"+2% flame",score:1,fuel:2},
+        {id:"f30",ic:"🙏",name:"Thank-you close",d:"End with dignity",score:1}
+      ]}
+  ];
+
+  function famAmz(fam){
+    var m={
+      "Sleep":["organic chamomile tea bags","passionflower tea","magnesium glycinate"],
+      "Focus":["rosemary essential oil","bacopa monnieri","B complex"],
+      "Boundaries":["motherwort tea","hawthorn berry tea","lemon balm tea"],
+      "Mood-Energy":["ashwagandha capsules","tulsi tea","vitamin D3"],
+      "Pain-Stiffness":["turmeric curcumin","boswellia","epsom salt"],
+      "Digestive":["ginger tea","peppermint tea","fennel tea"],
+      "Home-Environment":["white noise machine","blackout curtains","humidifier"]
+    };
+    return m[fam]||m["Sleep"];
+  }
+
+  window.startVisitWizard=function(cand){
+    try{
+      if(!cand||!cand.pr){ toast("Empty chair"); return; }
+      if(typeof S.att==="number" && S.att<(cand.pr.att||1)){
+        toast("Need Attention "+(cand.pr.att||1)); return;
+      }
+      // small start cost
+      if(typeof S.att==="number") S.att=Math.max(0,S.att-1);
+
+      window._wiz={
+        cand:cand,
+        name:cand.name,
+        pr:cand.pr,
+        caseData:cand.caseData||null,
+        page:0,
+        picked:{},
+        score:0,
+        steps:0,
+        wellness:cand.wellness||70
+      };
+      // also set _visit for compatibility with complete handlers
+      window._visit={
+        cand:cand,name:cand.name,pr:cand.pr,caseData:cand.caseData,
+        type:cand.type||"Visit",urgency:cand.urgency||"Routine",
+        time:cand.time||"",wellness:cand.wellness||70,
+        score:0,done:{},steps:0,care20:{},extra:{}
+      };
+      renderWizardPage();
+    }catch(e){ console.error(e); toast("Visit failed to open"); }
+  };
+
+  function renderWizardPage(){
+    var w=window._wiz; if(!w) return;
+    var p=PAGES[w.page];
+    var pr=w.pr;
+    var html='<div class="wiz-wrap">';
+    html+='<div class="muted" style="font-size:.7rem">'+esc(p.kicker)+'</div>';
+    html+='<div class="wiz-progress">';
+    for(var i=0;i<10;i++){
+      var cls=i<w.page?"done":(i===w.page?"on":"");
+      html+='<i class="'+cls+'"></i>';
+    }
+    html+='</div>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">';
+    html+='<strong>'+esc(w.name)+'</strong><span class="pill">Score '+w.score+'</span></div>';
+    html+='<div class="muted" style="font-size:.75rem;margin:4px 0 8px">'+esc(pr.f||"")+' · '+esc(pr.p||"")+' · Att '+(S.att|0)+'</div>';
+    html+='<h3>'+esc(p.title)+'</h3>';
+    html+='<p class="muted" style="font-size:.82rem;margin:0 0 10px">'+esc(p.blurb)+'</p>';
+    html+='<div class="wiz-opts">';
+    for(var j=0;j<p.opts.length;j++){
+      var o=p.opts[j];
+      var picked=!!w.picked[o.id];
+      html+='<button type="button" class="wiz-opt'+(picked?" picked":"")+'" onclick="window.wizPick(\''+o.id+'\')">';
+      html+='<div>'+o.ic+' '+esc(o.name)+(picked?" ✓":"")+'</div>';
+      html+='<div class="wo-d">'+esc(o.d)+(o.att?" · "+o.att+" Att":"")+'</div>';
+      if(o.amz){
+        html+='<a class="wiz-amz" href="'+amz(o.amz)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">🛒 '+esc(o.amz)+'</a>';
+      }
+      html+='</button>';
+    }
+    html+='</div>';
+
+    // page 10 summary
+    if(w.page===9){
+      var n=Object.keys(w.picked).length;
+      html+='<div class="card" style="margin-top:10px"><div class="muted" style="font-size:.72rem">SESSION SUMMARY</div>';
+      html+='<div>Features used: <strong>'+n+'/30</strong> · Score <strong>'+w.score+'</strong></div>';
+      html+='<p class="muted" style="font-size:.75rem;margin-top:6px">Complete to roll outcome, recovery fiction, and treatment log.</p></div>';
+    }
+
+    html+='<div class="wiz-nav">';
+    if(w.page>0) html+='<button type="button" class="btn sec" onclick="window.wizPrev()">← Back</button>';
+    else html+='<button type="button" class="btn sec" onclick="window.wizCancel()">Cancel</button>';
+    if(w.page<9) html+='<button type="button" class="btn" onclick="window.wizNext()">Next →</button>';
+    else html+='<button type="button" class="btn" onclick="window.wizFinish()">✓ Complete visit</button>';
+    html+='</div></div>';
+
+    if(typeof openOverhaulModal==="function"){
+      openOverhaulModal(w.name, p.kicker, html);
+    } else if(typeof showGuildPanel==="function"){
+      showGuildPanel(html, p.title);
+    }
+  }
+
+  window.wizPick=function(id){
+    var w=window._wiz; if(!w) return;
+    if(w.picked[id]) return;
+    var o=null;
+    for(var i=0;i<PAGES.length;i++){
+      for(var j=0;j<PAGES[i].opts.length;j++){
+        if(PAGES[i].opts[j].id===id) o=PAGES[i].opts[j];
+      }
+    }
+    if(!o) return;
+    if(o.needsHerb && !(S.equipped||(S.loadout&&S.loadout.buff)||(S.buffs&&S.buffs.length))){
+      toast("Arm pouch/loadout herb first"); return;
+    }
+    if(o.att && (S.att|0)<o.att){ toast("Need Attention"); return; }
+    if(o.att) S.att-=o.att;
+    if(o.fuel && typeof S.lanternFuel==="number") S.lanternFuel=Math.min(100,S.lanternFuel+o.fuel);
+    if(o.rp) S.rp=(S.rp||0)+o.rp;
+    w.picked[id]=true;
+    w.score+=(o.score||1);
+    w.steps++;
+    if(window._visit){
+      window._visit.score=w.score;
+      window._visit.steps=w.steps;
+      if(!window._visit.done) window._visit.done={};
+      window._visit.done[id]=true;
+    }
+    if(o.openKit){
+      var list=famAmz(w.pr.f);
+      var h='<p class="muted">Product search only — not treatment.</p>';
+      for(var k=0;k<list.length;k++) h+='<p><a class="amz-link" target="_blank" rel="noopener" href="'+amz(list[k])+'">🛒 '+esc(list[k])+'</a></p>';
+      h+='<button class="btn" style="width:100%;margin-top:8px" onclick="window.renderWizardPage&&renderWizardPage();window.wizStay()">Back</button>';
+      // stay on page after
+      if(typeof openOverhaulModal==="function") openOverhaulModal("Home kit","🛒",h);
+      setTimeout(function(){ renderWizardPage(); },1800);
+    }
+    if(typeof save==="function") save({ui:false});
+    toast(o.ic+" "+o.name);
+    renderWizardPage();
+  };
+  window.wizStay=function(){ renderWizardPage(); };
+
+  window.wizNext=function(){
+    var w=window._wiz; if(!w) return;
+    if(w.page<9){ w.page++; renderWizardPage(); }
+  };
+  window.wizPrev=function(){
+    var w=window._wiz; if(!w) return;
+    if(w.page>0){ w.page--; renderWizardPage(); }
+  };
+  window.wizCancel=function(){
+    window._wiz=null; window._visit=null;
+    try{closeOverhaulModal();}catch(e){}
+  };
+
+  window.wizFinish=function(){
+    var w=window._wiz; if(!w) return;
+    // Sync to _visit and use existing complete pipeline
+    if(!window._visit){
+      window._visit={cand:w.cand,name:w.name,pr:w.pr,caseData:w.caseData,type:w.cand.type||"Visit",urgency:w.cand.urgency||"Routine",wellness:w.wellness,score:w.score,done:w.picked,steps:w.steps,examScore:55+Math.min(40,w.score*3),treated:w.score>=5};
+    } else {
+      window._visit.score=w.score;
+      window._visit.steps=w.steps;
+      window._visit.done=w.picked;
+      window._visit.examScore=55+Math.min(40,w.score*3);
+      window._visit.treated=w.score>=5;
+    }
+    // Bonus for depth
+    var n=Object.keys(w.picked).length;
+    if(n>=10) window._visit.score+=2;
+    if(n>=20) window._visit.score+=3;
+    if(n>=28) window._visit.score+=3;
+
+    window._wiz=null;
+    if(typeof window.vfComplete==="function") window.vfComplete();
+    else if(typeof window.finishHerbalVisit==="function") window.finishHerbalVisit();
+    else toast("Visit scored "+window._visit.score);
+  };
+
+  // Start Visit buttons use wizard
+  window.openHerbalVisit=function(cand){
+    window.startVisitWizard(cand);
+  };
+
+  // Also paint queue buttons to call wizard (openHerbalVisit already)
 })();
 
 </script>
