@@ -480,6 +480,21 @@ body{
 .log-patient{border-left:3px solid var(--accent);padding:10px;margin:8px 0;background:#0e202d;border-radius:0 12px 12px 0}
 .recovery-box{padding:12px;border-radius:14px;background:linear-gradient(145deg,#143028,#0e202d);border:1px solid #2a5a40;margin:8px 0}
 
+
+/* ===== 20 CARE OPTIONS + AMAZON IN VISIT ===== */
+.care20{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0;max-height:42vh;overflow:auto}
+.care20-btn{
+  padding:9px 10px;border-radius:12px;border:1px solid #29495c;
+  background:linear-gradient(145deg,#123040,#0d1e2b);color:var(--text);
+  cursor:pointer;text-align:left;font:inherit;font-size:.72rem;font-weight:650;line-height:1.25
+}
+.care20-btn:disabled,.care20-btn.done{opacity:.5;border-color:#2a5a40}
+.care20-btn .c20-ic{font-size:.95rem}
+.care20-btn .c20-amz{display:block;margin-top:4px;font-size:.65rem;color:#9dcea8;text-decoration:underline}
+.visit-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.visit-tab{padding:6px 10px;border-radius:99px;border:1px solid #29495c;background:#0d1e2b;color:var(--muted);font-size:.72rem;cursor:pointer}
+.visit-tab.on{border-color:var(--accent);color:var(--accent);background:#143d28}
+
 </style>
 </head>
 <body>
@@ -8444,6 +8459,186 @@ window.GUILD_HERBS=[
         }
       }catch(e){}
       return list;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   20 CARE OPTIONS IN VISIT + AMAZON LINKS
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  // 20 features / care options during patient work
+  var CARE20=[
+    {id:"c1",ic:"🩺",name:"Full intake listen",d:"+score · free",score:1,att:0,amz:null},
+    {id:"c2",ic:"🧪",name:"Color ledger read",d:"Match Blue/Yellow/…",score:2,att:0,amz:null},
+    {id:"c3",ic:"🫖",name:"Brew primary tea",d:"1 Att · family tea",score:2,att:1,amz:"organic chamomile tea bags"},
+    {id:"c4",ic:"🌿",name:"Apply pouch herb",d:"Needs loadout",score:3,att:1,needsHerb:true,amz:"herbal tincture set"},
+    {id:"c5",ic:"📋",name:"Write If–Then plan",d:"One next step",score:2,att:0,amz:"habit tracker journal"},
+    {id:"c6",ic:"🌬️",name:"Box breathing 2 min",d:"Settle breath",score:1,att:0,amz:null},
+    {id:"c7",ic:"🦴",name:"Jaw & shoulder release",d:"Body scan",score:1,att:0,amz:"massage therapy ball"},
+    {id:"c8",ic:"🌙",name:"Light-down plan",d:"Screens & dimming",score:1,att:0,amz:"blue light blocking glasses"},
+    {id:"c9",ic:"🛏️",name:"Sleep nest check",d:"Room cues",score:1,att:0,amz:"blackout curtains"},
+    {id:"c10",ic:"🔊",name:"Sound settle",d:"Noise plan",score:1,att:0,amz:"white noise machine"},
+    {id:"c11",ic:"🍵",name:"Nervine second cup",d:"Skullcap/passion lore",score:1,att:0,amz:"passionflower tea bags"},
+    {id:"c12",ic:"🧲",name:"Magnesium talk",d:"Mineral fiction",score:1,att:0,amz:"magnesium glycinate supplement"},
+    {id:"c13",ic:"🧡",name:"Warmth for joints",d:"Damp-weather care",score:2,att:1,amz:"turmeric curcumin capsules"},
+    {id:"c14",ic:"🫚",name:"Ginger settle",d:"Digestive ease",score:1,att:0,amz:"ginger tea bags"},
+    {id:"c15",ic:"🛡️",name:"Boundary script drill",d:"One short no",score:2,att:1,amz:"motherwort herb tea"},
+    {id:"c16",ic:"📓",name:"Session journal line",d:"Document care",score:1,att:0,amz:"hardcover journal"},
+    {id:"c17",ic:"🚶",name:"Three-minute walk",d:"Move the ledger",score:1,att:0,amz:null},
+    {id:"c18",ic:"🪔",name:"Lantern quiet",d:"+2% flame",score:1,att:0,fuel:2,amz:"soy candle unscented"},
+    {id:"c19",ic:"📤",name:"Referral note",d:"When fiction ends",score:1,att:0,rp:2,amz:null},
+    {id:"c20",ic:"🛒",name:"Send home kit list",d:"Open 3 Amazon picks",score:1,att:0,openKit:true,amz:"herbal tea sampler variety pack"}
+  ];
+
+  var FAM_AMZ={
+    "Sleep":["organic chamomile tea bags","passionflower herbal tea","magnesium glycinate"],
+    "Focus":["rosemary essential oil","bacopa monnieri","B complex vitamins"],
+    "Boundaries":["motherwort herb tea","hawthorn berry tea","lemon balm tea"],
+    "Mood-Energy":["ashwagandha capsules","tulsi holy basil tea","vitamin D3"],
+    "Pain-Stiffness":["turmeric curcumin","boswellia extract","epsom salt"],
+    "Digestive":["ginger tea bags","peppermint leaf tea","fennel seed tea"],
+    "Home-Environment":["white noise machine","blackout curtains","nettle leaf tea"]
+  };
+
+  function ensureVisitExtras(){
+    if(!window._visit) return null;
+    if(!window._visit.care20) window._visit.care20={};
+    return window._visit;
+  }
+
+  window.runCare20=function(id){
+    var v=ensureVisitExtras(); if(!v) return;
+    if(v.care20[id]) return;
+    var a=null;
+    for(var i=0;i<CARE20.length;i++) if(CARE20[i].id===id) a=CARE20[i];
+    if(!a) return;
+    if(a.needsHerb && !(S.equipped||(S.loadout&&S.loadout.buff)||(S.buffs&&S.buffs.length))){
+      toast("Arm a pouch/loadout herb first"); return;
+    }
+    if(a.att && (S.att|0)<a.att){ toast("Need "+a.att+" Attention"); return; }
+    if(a.att) S.att-=a.att;
+    if(a.fuel && typeof S.lanternFuel==="number") S.lanternFuel=Math.min(100,S.lanternFuel+a.fuel);
+    if(a.rp) S.rp=(S.rp||0)+a.rp;
+    v.score=(v.score||0)+(a.score||1);
+    v.steps=(v.steps||0)+1;
+    v.care20[id]=true;
+    if(a.openKit) window.openVisitAmazonKit();
+    if(typeof save==="function") save({ui:false});
+    toast(a.ic+" "+a.name+(a.amz?" · shop link ready":""));
+    paintCare20Panel();
+  };
+
+  window.openCareAmazon=function(q, id){
+    if(q) window.open(amz(q), "_blank", "noopener");
+    // still counts as engaging the option lightly
+    if(id) {
+      var v=ensureVisitExtras();
+      if(v && !v.care20[id]){
+        v.score=(v.score||0)+1;
+        v.care20[id+"_amz"]=true;
+        toast("🛒 Opened product search (not a treatment)");
+      }
+    }
+  };
+
+  window.openVisitAmazonKit=function(){
+    var v=window._visit;
+    var fam=(v&&v.pr&&v.pr.f)||"Sleep";
+    var list=FAM_AMZ[fam]||FAM_AMZ["Sleep"];
+    var html='<div class="section-kicker">HOME KIT · PRODUCT SEARCH</div>';
+    html+='<p class="muted" style="font-size:.78rem">Fictional still-room suggestions as <strong>Amazon searches only</strong>. Not medical advice or prescribed treatment.</p>';
+    for(var i=0;i<list.length;i++){
+      html+='<p style="margin:8px 0"><a class="amz-link" target="_blank" rel="noopener" href="'+amz(list[i])+'">🛒 '+esc(list[i])+'</a></p>';
+    }
+    html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window._rerenderVF&&window._rerenderVF();setTimeout(window.paintCare20Panel,80)">Back to visit</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Home kit","🛒",html);
+  };
+
+  window.paintCare20Panel=function(){
+    try{
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||!window._visit) return;
+      var old=body.querySelector("[data-care20]");
+      if(old) old.remove();
+      var v=window._visit;
+      var wrap=document.createElement("div");
+      wrap.dataset.care20="1";
+      var doneCount=Object.keys(v.care20||{}).length;
+      wrap.innerHTML='<div class="section-kicker" style="margin-top:10px">CARE BOARD · '+doneCount+'/20</div>'+
+        '<p class="muted" style="font-size:.72rem;margin:0 0 6px">Tap an action to add score. Green links open Amazon product search (optional).</p>'+
+        '<div class="care20"></div>';
+      var grid=wrap.querySelector(".care20");
+      for(var i=0;i<CARE20.length;i++){
+        var a=CARE20[i];
+        var done=!!(v.care20&&v.care20[a.id]);
+        var btn=document.createElement("div");
+        btn.className="care20-btn"+(done?" done":"");
+        var inner='<span class="c20-ic">'+a.ic+'</span> <strong>'+esc(a.name)+'</strong>';
+        inner+='<div class="muted" style="font-size:.65rem;margin-top:2px">'+esc(a.d)+'</div>';
+        if(a.amz){
+          inner+='<a class="c20-amz" href="'+amz(a.amz)+'" target="_blank" rel="noopener" onclick="event.stopPropagation();window.openCareAmazon(\''+a.amz.replace(/'/g,"")+'\',\''+a.id+'\')">🛒 '+esc(a.amz)+'</a>';
+        }
+        btn.innerHTML=inner;
+        if(!done){
+          (function(id){ btn.onclick=function(ev){ if(ev.target.tagName==="A") return; window.runCare20(id); }; })(a.id);
+        }
+        grid.appendChild(btn);
+      }
+      // place before last major button
+      var buttons=body.querySelectorAll("button.btn");
+      var anchor=null;
+      for(var j=0;j<buttons.length;j++){
+        if(/Complete visit/i.test(buttons[j].textContent||"")){ anchor=buttons[j]; break; }
+      }
+      if(anchor&&anchor.parentNode) anchor.parentNode.insertBefore(wrap, anchor);
+      else body.appendChild(wrap);
+    }catch(e){console.warn("care20",e)}
+  };
+
+  // Auto-paint whenever visit UI shows
+  var _ohv=window.openHerbalVisit;
+  if(typeof _ohv==="function"){
+    window.openHerbalVisit=function(){
+      var r=_ohv.apply(this,arguments);
+      setTimeout(window.paintCare20Panel,120);
+      setTimeout(window.paintCare20Panel,350);
+      return r;
+    };
+  }
+  var _rr=window._rerenderVF;
+  if(typeof _rr==="function"){
+    window._rerenderVF=function(){
+      _rr.apply(this,arguments);
+      setTimeout(window.paintCare20Panel,100);
+    };
+  }
+
+  // Tab strip: Clinical | Care board | Amazon kit
+  window.visitShowTab=function(tab){
+    if(tab==="kit") return window.openVisitAmazonKit();
+    if(tab==="care") return window.paintCare20Panel();
+    if(tab==="clinical" && window._rerenderVF){ window._rerenderVF(); setTimeout(window.paintCare20Panel,100); }
+  };
+
+  // Boost score visibility on complete if many care options used
+  var _vc=window.vfComplete;
+  if(typeof _vc==="function"){
+    window.vfComplete=function(){
+      try{
+        var v=window._visit;
+        if(v&&v.care20){
+          var n=Object.keys(v.care20).length;
+          if(n>=8) v.score=(v.score||0)+2;
+          if(n>=15) v.score=(v.score||0)+2;
+        }
+      }catch(e){}
+      return _vc.apply(this,arguments);
     };
   }
 })();
