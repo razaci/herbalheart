@@ -7406,114 +7406,359 @@ window.buyGuildHerb=function(id){
 })();
 
 
+
+
+
+window.GUILD_HERBS=[
+{id:"gh_chamomile",ic:"🌼",name:"Chamomile Bundles",cost:12,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep score next session.",drop:"it_blue"},
+{id:"gh_skullcap",ic:"💙",name:"Skullcap Tincture",cost:14,cat:"Sleep",fam:"Sleep",buff:"calm",d:"Calm start · softer twists.",drop:"it_blue"},
+{id:"gh_passionflower",ic:"💜",name:"Passionflower Vine",cost:13,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · quiets racing thoughts.",drop:"it_blue"},
+{id:"gh_valerian",ic:"🟤",name:"Valerian Root",cost:16,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · night settle.",drop:"it_blue"},
+{id:"gh_lavender",ic:"💜",name:"Lavender Buds",cost:11,cat:"Sleep",fam:"Sleep",buff:"calm",d:"Calm · wind-down edge.",drop:"it_blue"},
+{id:"gh_lemonbalm_sleep",ic:"💛",name:"Lemon Balm Night",cost:12,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · gentle nervine.",drop:"it_blue"},
+{id:"gh_hops",ic:"🌿",name:"Hops Flowers",cost:11,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · pairs with chamomile.",drop:"it_blue"},
+{id:"gh_california",ic:"🧡",name:"California Poppy",cost:15,cat:"Sleep",fam:"Sleep",buff:"calm",d:"Calm · softer Sleep twists.",drop:"it_blue"},
+{id:"gh_rosemary",ic:"🌿",name:"Rosemary Crowns",cost:12,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus next session.",drop:"it_yellow"},
+{id:"gh_tulsi",ic:"🍃",name:"Tulsi Leaf Pouch",cost:13,cat:"Focus",fam:"Focus",buff:"score2",d:"+2 opening score.",drop:"it_yellow"},
+{id:"gh_bacopa",ic:"💚",name:"Bacopa Leaf",cost:16,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus · deep work.",drop:"it_yellow"},
+{id:"gh_ginkgo",ic:"🍂",name:"Ginkgo Fans",cost:15,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus · clearer intake.",drop:"it_yellow"},
+{id:"gh_gotu",ic:"🟢",name:"Gotu Kola",cost:14,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus · steady step 2.",drop:"it_yellow"},
+{id:"gh_peppermint_f",ic:"🌱",name:"Peppermint Focus",cost:10,cat:"Focus",fam:"Focus",buff:"score1",d:"+1 opening score.",drop:"it_yellow"},
+{id:"gh_rhodiola",ic:"🌹",name:"Rhodiola Root",cost:18,cat:"Focus",fam:"Focus",buff:"score2",d:"+2 start · adaptogen.",drop:"it_yellow"},
+{id:"gh_lionmane",ic:"🦁",name:"Lion's Mane",cost:20,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus · rare shelf stock.",drop:"it_yellow"},
+{id:"gh_motherwort",ic:"🖤",name:"Motherwort Cord",cost:15,cat:"Boundaries",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries.",drop:"it_black"},
+{id:"gh_hawthorn",ic:"💗",name:"Hawthorn Berry",cost:14,cat:"Boundaries",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries · soft heart.",drop:"it_black"},
+{id:"gh_rose",ic:"🌹",name:"Rose Petals",cost:12,cat:"Boundaries",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries · emotional.",drop:"it_black"},
+{id:"gh_magnolia",ic:"🌸",name:"Magnolia Bark",cost:17,cat:"Boundaries",fam:"Boundaries",buff:"calm",d:"Calm on hard boundary talks.",drop:"it_black"},
+{id:"gh_linden",ic:"🌳",name:"Linden Flower",cost:13,cat:"Boundaries",fam:"Boundaries",buff:"calm",d:"Calm · gentler no.",drop:"it_black"},
+{id:"gh_mimosa",ic:"🌺",name:"Mimosa Bark",cost:16,cat:"Boundaries",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · grief softening.",drop:"it_black"},
+{id:"gh_ashwa",ic:"🪵",name:"Ashwagandha Root",cost:18,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood-Energy.",drop:"it_green"},
+{id:"gh_reishi",ic:"🟣",name:"Reishi Slices",cost:20,cat:"Mood",fam:"Mood-Energy",buff:"score2",d:"+2 start · recovery cascade.",drop:"it_violet"},
+{id:"gh_oatstraw",ic:"🌾",name:"Oatstraw Bundles",cost:12,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · nutritive.",drop:"it_green"},
+{id:"gh_holybasil_m",ic:"🍃",name:"Holy Basil Reserve",cost:14,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · stress terrain.",drop:"it_green"},
+{id:"gh_schisandra",ic:"🔴",name:"Schisandra Berries",cost:17,cat:"Mood",fam:"Mood-Energy",buff:"score2",d:"+2 start · adaptogen.",drop:"it_green"},
+{id:"gh_cordyceps",ic:"🟠",name:"Cordyceps",cost:22,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · stamina.",drop:"it_green"},
+{id:"gh_turmeric",ic:"🧡",name:"Turmeric Paste",cost:14,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain/Stiffness.",drop:"it_red"},
+{id:"gh_boswellia",ic:"💛",name:"Boswellia Resin",cost:16,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · damp weather.",drop:"it_red"},
+{id:"gh_ginger_p",ic:"🫚",name:"Ginger Warming",cost:11,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · warming.",drop:"it_orange"},
+{id:"gh_willow",ic:"🌿",name:"Willow Bark",cost:13,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · classic ache tea.",drop:"it_red"},
+{id:"gh_arnica",ic:"🌼",name:"Arnica Flowers",cost:14,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · topical lore.",drop:"it_red"},
+{id:"gh_crampbark",ic:"🔴",name:"Cramp Bark",cost:15,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · tension release.",drop:"it_red"},
+{id:"gh_ginger",ic:"🫚",name:"Ginger Coins",cost:11,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive.",drop:"it_orange"},
+{id:"gh_peppermint",ic:"🍃",name:"Peppermint Leaf",cost:10,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · settle.",drop:"it_orange"},
+{id:"gh_fennel",ic:"🌱",name:"Fennel Seed",cost:10,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · after meals.",drop:"it_orange"},
+{id:"gh_chamomile_d",ic:"🌼",name:"Chamomile Belly",cost:11,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · soft settle.",drop:"it_orange"},
+{id:"gh_meadowsweet",ic:"🤍",name:"Meadowsweet",cost:13,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · cool ledger.",drop:"it_orange"},
+{id:"gh_slippery",ic:"🟤",name:"Slippery Elm",cost:14,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · soothing.",drop:"it_orange"},
+{id:"gh_nettle",ic:"🌱",name:"Nettle Bundle",cost:10,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Attention ease after session.",drop:"it_green"},
+{id:"gh_elderberry",ic:"🫐",name:"Elderberry Syrup",cost:14,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Attention ease · immune lore.",drop:"it_green"},
+{id:"gh_echinacea",ic:"🌸",name:"Echinacea Root",cost:13,cat:"Restore",fam:"Home-Environment",buff:"score1",d:"+1 opening score.",drop:"it_green"},
+{id:"gh_astragalus",ic:"🟡",name:"Astragalus Root",cost:16,cat:"Restore",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · long recovery.",drop:"it_green"},
+{id:"gh_dandelion",ic:"🌼",name:"Dandelion Root",cost:9,cat:"Restore",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive · bitter tonic.",drop:"it_orange"},
+{id:"gh_burdock",ic:"🟤",name:"Burdock Root",cost:11,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Attention ease.",drop:"it_white"},
+{id:"gh_cleavers",ic:"🌿",name:"Cleavers Herb",cost:10,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Attention ease · lymphatic.",drop:"it_green"},
+{id:"gh_hibiscus",ic:"🌺",name:"Hibiscus Petals",cost:11,cat:"Restore",fam:"Sleep",buff:"score1",d:"+1 start · cooling.",drop:"it_blue"},
+{id:"gh_eyebright",ic:"👁",name:"Eyebright",cost:13,cat:"Sense",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 strain cases.",drop:"it_indigo"},
+{id:"gh_bilberry",ic:"🫐",name:"Bilberry",cost:14,cat:"Sense",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 strain · screen eyes.",drop:"it_indigo"},
+{id:"gh_chrysanthemum",ic:"🌼",name:"Chrysanthemum",cost:12,cat:"Sense",fam:"Pain-Stiffness",buff:"calm",d:"Calm · cools noticing-mind.",drop:"it_indigo"},
+{id:"gh_vit_c",ic:"🍊",name:"Vitamin C Crystals",cost:12,cat:"Vitamins",fam:"Restore",buff:"regen",d:"Attention ease · immune lore.",drop:"it_green"},
+{id:"gh_vit_d",ic:"☀️",name:"Vitamin D Drops",cost:14,cat:"Vitamins",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood · light ledger.",drop:"it_green"},
+{id:"gh_vit_b_complex",ic:"💛",name:"B-Complex Pack",cost:15,cat:"Vitamins",fam:"Focus",buff:"fam_focus",d:"+1 Focus · nerve fuel.",drop:"it_yellow"},
+{id:"gh_vit_b12",ic:"🔴",name:"B12 Lozenges",cost:13,cat:"Vitamins",fam:"Mood-Energy",buff:"score1",d:"+1 opening score.",drop:"it_green"},
+{id:"gh_vit_a",ic:"🥕",name:"Vitamin A",cost:12,cat:"Vitamins",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 strain cases.",drop:"it_indigo"},
+{id:"gh_vit_e",ic:"🫒",name:"Vitamin E Oil",cost:13,cat:"Vitamins",fam:"Home-Environment",buff:"regen",d:"Attention ease.",drop:"it_white"},
+{id:"gh_vit_k",ic:"🥬",name:"Vitamin K Greens",cost:11,cat:"Vitamins",fam:"Home-Environment",buff:"score1",d:"+1 start.",drop:"it_green"},
+{id:"gh_vit_multi",ic:"🌈",name:"Daily Multi Blend",cost:18,cat:"Vitamins",fam:"Any",buff:"score2",d:"+2 opening score.",drop:"it_green"},
+{id:"gh_min_mag",ic:"⚪",name:"Magnesium Glycinate",cost:14,cat:"Minerals",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · settle.",drop:"it_blue"},
+{id:"gh_min_zinc",ic:"🔩",name:"Zinc Tablets",cost:12,cat:"Minerals",fam:"Home-Environment",buff:"regen",d:"Attention ease.",drop:"it_green"},
+{id:"gh_min_iron",ic:"🟤",name:"Iron + C Pair",cost:15,cat:"Minerals",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood.",drop:"it_green"},
+{id:"gh_min_calcium",ic:"🦴",name:"Calcium Citrate",cost:13,cat:"Minerals",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain.",drop:"it_red"},
+{id:"gh_min_potassium",ic:"🍌",name:"Potassium",cost:11,cat:"Minerals",fam:"Mood-Energy",buff:"score1",d:"+1 start.",drop:"it_green"},
+{id:"gh_min_selenium",ic:"✨",name:"Selenium Yeast",cost:14,cat:"Minerals",fam:"Home-Environment",buff:"regen",d:"Attention ease.",drop:"it_green"},
+{id:"gh_min_copper",ic:"🟠",name:"Copper Trace",cost:12,cat:"Minerals",fam:"Focus",buff:"fam_focus",d:"+1 Focus.",drop:"it_yellow"},
+{id:"gh_min_chromium",ic:"⚙️",name:"Chromium",cost:13,cat:"Minerals",fam:"Focus",buff:"fam_focus",d:"+1 Focus.",drop:"it_yellow"},
+{id:"gh_min_iodine",ic:"🌊",name:"Iodine Kelp",cost:12,cat:"Minerals",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood.",drop:"it_green"},
+{id:"gh_min_electrolyte",ic:"💧",name:"Electrolyte Salts",cost:16,cat:"Minerals",fam:"Any",buff:"regen",d:"+1 Att after session.",drop:"it_green"},
+{id:"gh_min_trace_pack",ic:"📦",name:"Trace Mineral Pack",cost:20,cat:"Minerals",fam:"Any",buff:"synergy",d:"Synergy buff.",drop:null},
+{id:"gh_lantern_oil",ic:"🪔",name:"Guild Lantern Oil",cost:25,cat:"Guild",fam:"Any",buff:"guild_oil",d:"+1 score & +1 RP on success.",drop:null},
+{id:"gh_synergy",ic:"🔗",name:"Synergy Blend",cost:22,cat:"Guild",fam:"Any",buff:"synergy",d:"Herb-pair protocol bonus.",drop:null},
+{id:"gh_ledger_ink",ic:"🖋️",name:"Living Ledger Ink",cost:28,cat:"Guild",fam:"Any",buff:"score2",d:"+2 start.",drop:"it_ledger"},
+{id:"gh_still_steam",ic:"🫖",name:"Still-Room Steam",cost:19,cat:"Guild",fam:"Any",buff:"regen",d:"+1 Att after session.",drop:"it_kettle"},
+{id:"gh_moon_tea",ic:"🌙",name:"Moon Road Tea",cost:24,cat:"Guild",fam:"Any",buff:"guild_oil",d:"Lantern oil effect.",drop:null},
+{id:"gh_grey_ward",ic:"🌫️",name:"Grey-Ward Sachet",cost:30,cat:"Guild",fam:"Any",buff:"calm",d:"Calm · fewer harsh twists.",drop:"it_violet"},
+{id:"gh_triple_nervine",ic:"💙",name:"Triple Nervine",cost:26,cat:"Guild",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep · triple nervine.",drop:"it_blue"},
+{id:"gh_joint_pair",ic:"🧡",name:"Joint Pair Tin",cost:21,cat:"Guild",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain · turmeric pair.",drop:"it_red"},
+{id:"gh_focus_pair",ic:"💛",name:"Focus Pair Tin",cost:21,cat:"Guild",fam:"Focus",buff:"fam_focus",d:"+1 Focus · rosemary pair.",drop:"it_yellow"},
+{id:"gh_boundary_pair",ic:"🖤",name:"Boundary Pair Tin",cost:21,cat:"Guild",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries.",drop:"it_black"},
+{id:"gh_starter_kit",ic:"🧺",name:"Apprentice Herb Kit",cost:35,cat:"Guild",fam:"Any",buff:"score2",d:"+2 start · stocks Blue+Yellow.",drop:"it_blue",drop2:"it_yellow"}
+];
+
+
+
+
+
 /* ==========================================================
-   LANTERN RELIABILITY LAYER
-   One click system for Guild + Board + Shrine + Dispatch + Shelf
+   GUILD BUTTONS + GAME INTEGRATION
+   Inline handlers (reliable) + stock → pouch → session cascade
    ========================================================== */
 (function(){
-  'use strict';
   function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-  function ensureGuild(){
-    if(!window.S) window.S={rp:0,log:[],day:1};
-    S.guild=S.guild||{xp:0,bought:{},stock:{},rank:"spark",cascade:0,shopCat:"All"};
-    S.guild.stock=S.guild.stock||{}; S.guild.bought=S.guild.bought||{};
-    S.inventory=S.inventory||{}; S.buffs=S.buffs||[]; S.pouch=S.pouch||{};
-    if(typeof S.rp!=="number")S.rp=0;
-    return S.guild;
+
+  // Ensure catalog exists
+  if(!window.GUILD_HERBS || !window.GUILD_HERBS.length){
+    window.GUILD_HERBS=[
+      {id:"gh_chamomile",ic:"🌼",name:"Chamomile Bundles",cost:12,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep score",drop:"it_blue"},
+      {id:"gh_skullcap",ic:"💙",name:"Skullcap Tincture",cost:14,cat:"Sleep",fam:"Sleep",buff:"calm",d:"Calm start",drop:"it_blue"},
+      {id:"gh_passionflower",ic:"💜",name:"Passionflower",cost:13,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep",drop:"it_blue"},
+      {id:"gh_valerian",ic:"🟤",name:"Valerian Root",cost:16,cat:"Sleep",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep",drop:"it_blue"},
+      {id:"gh_lavender",ic:"💜",name:"Lavender Buds",cost:11,cat:"Sleep",fam:"Sleep",buff:"calm",d:"Calm",drop:"it_blue"},
+      {id:"gh_rosemary",ic:"🌿",name:"Rosemary Crowns",cost:12,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus",drop:"it_yellow"},
+      {id:"gh_tulsi",ic:"🍃",name:"Tulsi Leaf",cost:13,cat:"Focus",fam:"Focus",buff:"score2",d:"+2 start",drop:"it_yellow"},
+      {id:"gh_bacopa",ic:"💚",name:"Bacopa",cost:16,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus",drop:"it_yellow"},
+      {id:"gh_ginkgo",ic:"🍂",name:"Ginkgo",cost:15,cat:"Focus",fam:"Focus",buff:"fam_focus",d:"+1 Focus",drop:"it_yellow"},
+      {id:"gh_motherwort",ic:"🖤",name:"Motherwort",cost:15,cat:"Boundaries",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries",drop:"it_black"},
+      {id:"gh_hawthorn",ic:"💗",name:"Hawthorn",cost:14,cat:"Boundaries",fam:"Boundaries",buff:"fam_bound",d:"+1 Boundaries",drop:"it_black"},
+      {id:"gh_ashwa",ic:"🪵",name:"Ashwagandha",cost:18,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood",drop:"it_green"},
+      {id:"gh_reishi",ic:"🟣",name:"Reishi",cost:20,cat:"Mood",fam:"Mood-Energy",buff:"score2",d:"+2 start",drop:"it_violet"},
+      {id:"gh_oatstraw",ic:"🌾",name:"Oatstraw",cost:12,cat:"Mood",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood",drop:"it_green"},
+      {id:"gh_turmeric",ic:"🧡",name:"Turmeric",cost:14,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain",drop:"it_red"},
+      {id:"gh_boswellia",ic:"💛",name:"Boswellia",cost:16,cat:"Pain",fam:"Pain-Stiffness",buff:"fam_pain",d:"+1 Pain",drop:"it_red"},
+      {id:"gh_ginger",ic:"🫚",name:"Ginger",cost:11,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive",drop:"it_orange"},
+      {id:"gh_peppermint",ic:"🍃",name:"Peppermint",cost:10,cat:"Digestive",fam:"Digestive",buff:"fam_digest",d:"+1 Digestive",drop:"it_orange"},
+      {id:"gh_nettle",ic:"🌱",name:"Nettle",cost:10,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Att ease",drop:"it_green"},
+      {id:"gh_elderberry",ic:"🫐",name:"Elderberry",cost:14,cat:"Restore",fam:"Home-Environment",buff:"regen",d:"Att ease",drop:"it_green"},
+      {id:"gh_vit_c",ic:"🍊",name:"Vitamin C",cost:12,cat:"Vitamins",fam:"Restore",buff:"regen",d:"Att ease",drop:"it_green"},
+      {id:"gh_vit_d",ic:"☀️",name:"Vitamin D",cost:14,cat:"Vitamins",fam:"Mood-Energy",buff:"fam_mood",d:"+1 Mood",drop:"it_green"},
+      {id:"gh_vit_b_complex",ic:"💛",name:"B-Complex",cost:15,cat:"Vitamins",fam:"Focus",buff:"fam_focus",d:"+1 Focus",drop:"it_yellow"},
+      {id:"gh_vit_multi",ic:"🌈",name:"Daily Multi",cost:18,cat:"Vitamins",fam:"Any",buff:"score2",d:"+2 start",drop:"it_green"},
+      {id:"gh_min_mag",ic:"⚪",name:"Magnesium",cost:14,cat:"Minerals",fam:"Sleep",buff:"fam_sleep",d:"+1 Sleep",drop:"it_blue"},
+      {id:"gh_min_zinc",ic:"🔩",name:"Zinc",cost:12,cat:"Minerals",fam:"Home-Environment",buff:"regen",d:"Att ease",drop:"it_green"},
+      {id:"gh_min_electrolyte",ic:"💧",name:"Electrolytes",cost:16,cat:"Minerals",fam:"Any",buff:"regen",d:"Att ease",drop:"it_green"},
+      {id:"gh_lantern_oil",ic:"🪔",name:"Lantern Oil",cost:25,cat:"Guild",fam:"Any",buff:"guild_oil",d:"Success RP boost",drop:null},
+      {id:"gh_synergy",ic:"🔗",name:"Synergy Blend",cost:22,cat:"Guild",fam:"Any",buff:"synergy",d:"Pair bonus",drop:null},
+      {id:"gh_grey_ward",ic:"🌫️",name:"Grey-Ward",cost:30,cat:"Guild",fam:"Any",buff:"calm",d:"Softer twists",drop:"it_violet"}
+    ];
   }
-  function guildRanks(){return [
-    {id:"spark",ic:"🕯️",name:"Spark",need:0},
-    {id:"wick",ic:"🪔",name:"Wick-Keeper",need:5},
-    {id:"lantern",ic:"🏮",name:"Lantern Hand",need:15},
-    {id:"guild",ic:"⚜️",name:"Guild Adept",need:30},
-    {id:"master",ic:"🌟",name:"Still-Room Master",need:50}
-  ];}
-  function guildRank(){ensureGuild();let r=guildRanks()[0], n=(S.log||[]).length;guildRanks().forEach(x=>{if(n>=x.need)r=x});S.guild.rank=r.id;return r}
-  function discount(){const id=guildRank().id;return id==='master'?.75:id==='guild'?.85:id==='lantern'?.9:1}
-  function modal(title,kicker,html){
-    const m=document.getElementById('overhaulModal'),b=document.getElementById('overhaulModalBody');
-    if(!m||!b){console.error('Lantern modal missing'); if(typeof toast==='function')toast('Lantern panel unavailable'); return false;}
-    document.getElementById('overhaulModalKicker').textContent=kicker||'LANTERN';
-    document.getElementById('overhaulModalTitle').textContent=title;
-    b.innerHTML=html;
-    m.style.display='block';m.style.zIndex='300';m.style.pointerEvents='auto';
-    document.body.classList.add('lantern-modal-open');
-    return true;
+
+  function ensure(){
+    if(!window.S) window.S={rp:50,day:1,log:[],att:10};
+    if(typeof S.rp!=="number"||isNaN(S.rp)) S.rp=50;
+    if(!S.guild) S.guild={stock:{},bought:{},xp:0,cascade:0,rank:"spark",shopCat:"All"};
+    if(!S.guild.stock) S.guild.stock={};
+    if(!S.guild.bought) S.guild.bought={};
+    if(!S.inventory) S.inventory={};
+    if(!S.buffs) S.buffs=[];
+    if(!S.pouch) S.pouch={};
+    if(typeof S.focus!=="number") S.focus=10;
+    if(!S.loadout) S.loadout={remedy:null,buff:null,buffLabel:null,pouchHerb:null};
+    return S;
   }
-  function close(){if(typeof closeOverhaulModal==='function')closeOverhaulModal();else{const m=document.getElementById('overhaulModal');if(m)m.style.display='none';}document.body.classList.remove('lantern-modal-open')}
-  function save(){try{if(typeof window.save==='function')window.save({ui:false});}catch(e){console.warn(e)}}
-  function buy(id){
-    ensureGuild(); const h=(window.GUILD_HERBS||[]).find(x=>x.id===id); if(!h){toast&&toast('Guild item missing');return}
-    const price=Math.max(1,Math.round((h.cost||10)*discount()));
-    if((S.rp||0)<price){toast&&toast('Need '+price+' RP (have '+Math.floor(S.rp||0)+')');return}
-    S.rp-=price; S.guild.stock[id]=(S.guild.stock[id]||0)+1; S.guild.bought[id]=(S.guild.bought[id]||0)+1;
-    S.guild.xp=(S.guild.xp||0)+1; S.guild.cascade=(S.guild.cascade||0)+1;
-    if(h.drop)S.inventory[h.drop]=(S.inventory[h.drop]||0)+1;
-    if(h.drop2)S.inventory[h.drop2]=(S.inventory[h.drop2]||0)+1;
-    if(h.buff&&!S.buffs.includes(h.buff))S.buffs.push(h.buff);
-    S._cascadeLog=S._cascadeLog||[];S._cascadeLog.push({day:S.day||1,t:'Guild buy: '+h.name+' · stock ×'+S.guild.stock[id]+' · −'+price+' RP'});
-    save();toast&&toast((h.ic||'🌿')+' '+h.name+' · in lantern stock');window.openLanternGuild();
+  function rankObj(){
+    const cases=(S.log||[]).length;
+    const R=[{id:"spark",ic:"🕯️",name:"Spark",need:0},{id:"wick",ic:"🪔",name:"Wick-Keeper",need:5},{id:"lantern",ic:"🏮",name:"Lantern Hand",need:15},{id:"guild",ic:"⚜️",name:"Guild Adept",need:30},{id:"master",ic:"🌟",name:"Still-Room Master",need:50}];
+    let r=R[0]; R.forEach(x=>{if(cases>=x.need)r=x}); S.guild.rank=r.id; return r;
   }
-  window.buyGuildHerb=buy;
-  window.setGuildCat=function(cat){ensureGuild();S.guild.shopCat=cat||'All';window.openLanternGuild()};
-  window.openLanternGuild=function(){
-    ensureGuild();const catalog=window.GUILD_HERBS||[];if(!catalog.length){toast&&toast('Guild catalog missing');return}
-    const rank=guildRank(),disc=discount(),cases=(S.log||[]).length,cat=S.guild.shopCat||'All';
-    const cats=['All','Sleep','Focus','Boundaries','Mood','Pain','Digestive','Restore','Sense','Vitamins','Minerals','Guild'];
-    const list=catalog.filter(h=>cat==='All'||h.cat===cat);
-    let html=`<div class="guild-banner"><div class="section-kicker">LANTERN GUILD · HERB MARKET</div><div class="guild-rank">${rank.ic} ${esc(rank.name)}</div><div class="muted" style="margin-top:4px;font-size:.78rem">Sessions: ${cases} · RP: <strong>${Math.floor(S.rp||0)}</strong> · Guild stock: ${Object.values(S.guild.stock).reduce((a,b)=>a+(b||0),0)}</div><div class="guild-meter"><i style="width:${Math.min(100,Math.round(cases/Math.max(1,(guildRanks().find(r=>r.need>cases)||{need:50}).need)*100))}%"></i></div>${disc<1?`<div class="feedback-good" style="margin-top:6px">Rank discount: ${Math.round((1-disc)*100)}% off</div>`:''}</div>`;
-    html+=`<div class="pr-fam-bar">${cats.map(c=>`<button type="button" class="pr-fam${cat===c?' on':''}" data-lantern="guild-cat" data-value="${c}">${c}</button>`).join('')}</div>`;
-    html+=`<p class="muted" style="font-size:.78rem;margin:4px 0 8px">Buy a game herb → it enters lantern stock and arms its game buff. Use Shelf/Pouch to activate it for a session.</p>`;
-    html+=list.length?list.map(h=>{const price=Math.max(1,Math.round((h.cost||10)*disc)),owned=S.guild.stock[h.id]||0;return `<div class="guild-herb"><div class="gic">${h.ic||'🌿'}</div><div class="ginfo"><strong>${esc(h.name)}</strong><div class="muted" style="font-size:.72rem;margin-top:2px">${esc(h.d||'')}</div><div style="margin-top:4px"><span class="pill">${esc(h.cat||h.fam||'')}</span>${owned?`<span class="pill">×${owned}</span>`:''}</div></div><button type="button" class="btn sm" data-lantern="buy" data-id="${h.id}">${price} RP</button></div>`}).join(''):`<div class="empty">No herbs in this aisle.</div>`;
-    html+=`<div class="card" style="margin-top:10px"><strong>Guild flow</strong><p class="muted" style="font-size:.8rem;margin:4px 0 8px">Guild → Shelf → Pouch → Activate → Patient session.</p><button type="button" class="btn sm sec" data-lantern="shelf">🎒 Open Shelf</button><button type="button" class="btn sm" style="margin-top:6px" data-lantern="door">▶ Open the door</button><button type="button" class="btn sm sec" style="margin-top:6px" data-lantern="board">🏮 Back to Lantern Board</button></div>`;
-    modal('Lantern Guild','HERB MARKET · '+list.length+' shown',html);
+  function disc(){
+    const id=rankObj().id;
+    return id==="master"?0.75:id==="guild"?0.85:id==="lantern"?0.9:1;
+  }
+  function herbById(id){
+    return (window.GUILD_HERBS||[]).find(h=>h.id===id)||null;
+  }
+
+  // —— BUY (global, used by inline onclick) ——
+  window.buyGuildHerb=function(id){
+    try{
+      ensure();
+      const h=herbById(id);
+      if(!h){ if(typeof toast==="function") toast("Herb not in catalog"); return false; }
+      const price=Math.max(1,Math.round((h.cost||10)*disc()));
+      if((S.rp||0)<price){
+        if(typeof toast==="function") toast("Need "+price+" RP (have "+Math.floor(S.rp||0)+")");
+        return false;
+      }
+      S.rp-=price;
+      S.guild.stock[h.id]=(S.guild.stock[h.id]||0)+1;
+      S.guild.bought[h.id]=(S.guild.bought[h.id]||0)+1;
+      S.guild.xp=(S.guild.xp||0)+1;
+      S.guild.cascade=(S.guild.cascade||0)+1;
+      if(h.drop) S.inventory[h.drop]=(S.inventory[h.drop]||0)+1;
+      if(h.drop2) S.inventory[h.drop2]=(S.inventory[h.drop2]||0)+1;
+      // Queue buff for next session (gameplay cascade)
+      if(h.buff){
+        if(!S.buffs) S.buffs=[];
+        if(S.buffs.indexOf(h.buff)<0) S.buffs.push(h.buff);
+      }
+      if(!S._cascadeLog) S._cascadeLog=[];
+      S._cascadeLog.push({day:S.day||1,t:"Guild: bought "+h.name+" (−"+price+" RP) · stock ×"+S.guild.stock[h.id]+(h.buff?" · buff "+h.buff:"")});
+      if(typeof save==="function") save();
+      if(typeof toast==="function") toast((h.ic||"🌿")+" "+h.name+" in stock · −"+price+" RP");
+      // Refresh shop UI in place
+      window.openLanternGuild();
+      try{ if(typeof renderInventory==="function") renderInventory(); }catch(e){}
+      try{ if(typeof renderGameplayHome==="function") renderGameplayHome(); }catch(e){}
+      return true;
+    }catch(e){
+      console.error("buyGuildHerb",e);
+      if(typeof toast==="function") toast("Buy failed");
+      return false;
+    }
   };
-  function shelf(){close();if(typeof go==='function')go('codex');setTimeout(()=>{try{if(typeof switchCodexTab==='function')switchCodexTab('inv');if(typeof renderInventory==='function')renderInventory()}catch(e){}},60)}
-  function door(){close();if(typeof enterWaitingRoom==='function')enterWaitingRoom();else if(typeof openWaitingRoom==='function')openWaitingRoom()}
-  function board(){if(typeof openLanternBoard==='function')openLanternBoard();}
-  // Single delegated listener: survives every modal redraw and works on touch + mouse.
-  if(!window.__lanternReliabilityBound){
-    window.__lanternReliabilityBound=true;
-    document.addEventListener('click',function(ev){
-      const el=ev.target&&ev.target.closest?ev.target.closest('[data-lantern]'):null;if(!el)return;
-      const a=el.getAttribute('data-lantern');
+
+  window.setGuildCat=function(c){
+    ensure();
+    S.guild.shopCat=c||"All";
+    window.openLanternGuild();
+  };
+
+  window.guildGoShelf=function(){
+    try{ if(typeof closeOverhaulModal==="function") closeOverhaulModal(); }catch(e){}
+    if(typeof go==="function") go("codex");
+    setTimeout(function(){
+      try{ if(typeof switchCodexTab==="function") switchCodexTab("inv"); }catch(e){}
+      try{ if(typeof renderInventory==="function") renderInventory(); }catch(e){}
+    },60);
+  };
+
+  window.guildGoDoor=function(){
+    try{ if(typeof closeOverhaulModal==="function") closeOverhaulModal(); }catch(e){}
+    if(typeof enterWaitingRoom==="function") enterWaitingRoom();
+    else if(typeof openDoorCore==="function") openDoorCore();
+    else if(typeof openWaitingRoom==="function") openWaitingRoom();
+  };
+
+  window.guildGoPouch=function(){
+    try{ if(typeof closeOverhaulModal==="function") closeOverhaulModal(); }catch(e){}
+    if(typeof openHerbPouch==="function") openHerbPouch();
+    else window.guildGoShelf();
+  };
+
+  // —— OPEN SHOP with INLINE onclick (most reliable) ——
+  window.openLanternGuild=function(){
+    try{
+      ensure();
+      const list=window.GUILD_HERBS||[];
+      const rank=rankObj();
+      const d=disc();
+      const filter=S.guild.shopCat||"All";
+      const cats=["All","Sleep","Focus","Boundaries","Mood","Pain","Digestive","Restore","Sense","Vitamins","Minerals","Guild"];
+      const shown=list.filter(h=>filter==="All"||h.cat===filter);
+      const stockLines=Object.keys(S.guild.stock).filter(k=>S.guild.stock[k]>0).length;
+
+      let html="";
+      html+='<div class="guild-banner">';
+      html+='<div class="section-kicker">LANTERN GUILD · HERB MARKET</div>';
+      html+='<div class="guild-rank">'+rank.ic+' '+esc(rank.name)+'</div>';
+      html+='<div class="muted" style="margin-top:6px;font-size:.8rem">RP <strong>'+Math.floor(S.rp||0)+'</strong> · Focus <strong>'+(S.focus|0)+'</strong> · Stock lines <strong>'+stockLines+'</strong> · Catalog '+list.length+'</div>';
+      if(d<1) html+='<div class="feedback-good" style="margin-top:6px">Rank discount '+Math.round((1-d)*100)+'% off</div>';
+      html+='</div>';
+
+      // Categories — inline onclick
+      html+='<div class="pr-fam-bar" style="margin:10px 0;flex-wrap:wrap">';
+      for(let i=0;i<cats.length;i++){
+        const c=cats[i];
+        const on=filter===c?" on":"";
+        html+='<button type="button" class="pr-fam'+on+'" style="cursor:pointer;pointer-events:auto" onclick="window.setGuildCat(\''+c+'\')">'+c+'</button>';
+      }
+      html+='</div>';
+
+      html+='<p class="muted" style="font-size:.78rem;margin:0 0 8px">Buy adds to <strong>lantern stock</strong> and queues a session buff. Then Shelf / Pouch to use, or open the door.</p>';
+
+      if(!shown.length){
+        html+='<div class="empty">No herbs in this aisle.</div>';
+      }
+
+      for(let i=0;i<shown.length;i++){
+        const h=shown[i];
+        const price=Math.max(1,Math.round((h.cost||10)*d));
+        const owned=S.guild.stock[h.id]||0;
+        const safeId=String(h.id).replace(/'/g,"");
+        html+='<div class="guild-herb" style="pointer-events:auto">';
+        html+='<div class="gic">'+(h.ic||"🌿")+'</div>';
+        html+='<div class="ginfo">';
+        html+='<strong>'+esc(h.name)+'</strong>';
+        html+='<div class="muted" style="font-size:.72rem;margin-top:2px">'+esc(h.d||"")+'</div>';
+        html+='<div style="margin-top:4px"><span class="pill">'+esc(h.cat||"")+'</span>';
+        if(h.buff) html+='<span class="pill">'+esc(h.buff)+'</span>';
+        if(owned) html+='<span class="pill">stock ×'+owned+'</span>';
+        html+='</div></div>';
+        html+='<button type="button" class="btn sm" style="pointer-events:auto;cursor:pointer;min-width:4.5rem" onclick="window.buyGuildHerb(\''+safeId+'\')">'+price+' RP</button>';
+        html+='</div>';
+      }
+
+      // Integration actions
+      html+='<div class="card" style="margin-top:12px">';
+      html+='<div class="section-kicker">USE IN GAME</div>';
+      html+='<p class="muted" style="font-size:.78rem;margin:4px 0 8px">Stock is live in inventory. Activate via pouch for Focus cost, or rely on auto-buff from purchase for the next session.</p>';
+      html+='<button type="button" class="btn" style="width:100%;margin-bottom:6px" onclick="window.guildGoShelf()">📦 Open Shelf inventory</button>';
+      html+='<button type="button" class="btn sec" style="width:100%;margin-bottom:6px" onclick="window.guildGoPouch()">🎒 Herb Pouch</button>';
+      html+='<button type="button" class="btn" style="width:100%;margin-bottom:6px" onclick="window.guildGoDoor()">▶ Open the door</button>';
+      html+='<button type="button" class="btn ghost" style="width:100%" onclick="window.closeOverhaulModal&&window.closeOverhaulModal()">Close guild</button>';
+      html+='</div>';
+
+      // Mount modal
+      if(typeof openOverhaulModal==="function"){
+        openOverhaulModal("Lantern Guild","HERB MARKET",html);
+      } else {
+        // emergency mount
+        let p=document.getElementById("guildEmergency");
+        if(!p){
+          p=document.createElement("div");
+          p.id="guildEmergency";
+          p.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(2,8,13,.9);overflow:auto;padding:16px;pointer-events:auto";
+          document.body.appendChild(p);
+        }
+        p.style.display="block";
+        p.innerHTML='<div style="max-width:480px;margin:12px auto;background:#0d1b27;border:1px solid #31566d;border-radius:18px;padding:14px;pointer-events:auto">'+html+'</div>';
+      }
+
+      // Ensure modal is clickable above everything
+      setTimeout(function(){
+        try{
+          const modal=document.getElementById("overhaulModal");
+          if(modal){
+            modal.style.zIndex="99999";
+            modal.style.pointerEvents="auto";
+            modal.style.display="block";
+          }
+          const body=document.getElementById("overhaulModalBody");
+          if(body){
+            body.style.pointerEvents="auto";
+            // Force all buttons inside to receive clicks
+            body.querySelectorAll("button").forEach(function(btn){
+              btn.style.pointerEvents="auto";
+              btn.style.cursor="pointer";
+              btn.disabled=false;
+            });
+          }
+        }catch(e){}
+      },30);
+
+    }catch(err){
+      console.error("openLanternGuild",err);
+      if(typeof toast==="function") toast("Guild open error");
+      else alert("Guild error: "+err.message);
+    }
+  };
+
+  window.openGuildShop=window.openLanternGuild;
+
+  // beginArrival already applies S.buffs — ensure guild buys stay until used once in session
+  const _ba=window.beginArrival;
+  if(typeof _ba==="function"){
+    window.beginArrival=function(data){
       try{
-        if(a==='buy')buy(el.getAttribute('data-id'));
-        else if(a==='guild-cat')window.setGuildCat(el.getAttribute('data-value'));
-        else if(a==='shelf')shelf();
-        else if(a==='door')door();
-        else if(a==='board')board();
-        else if(a==='guild')window.openLanternGuild();
-        else if(a==='notices'&&typeof openLBNotices==='function')openLBNotices();
-        else if(a==='shrine'&&typeof openLBShrine==='function')openLBShrine();
-        else if(a==='dispatch'&&typeof openLBDispatch==='function')openLBDispatch();
-        else if(a==='pouch'&&typeof openHerbPouch==='function')openHerbPouch();
-        else if(a==='staff'&&typeof openLBStaff==='function')openLBStaff();
-        else if(a==='workshop'&&typeof openWorkshop==='function')openWorkshop();
-        else if(a==='notes'&&typeof openFieldNotes==='function')openFieldNotes();
-        else if(a==='cascade'&&typeof openCascadeLog==='function')openCascadeLog();
-        else if(a==='codex'){close();if(typeof go==='function')go('codex');}
-        else if(a==='world'){close();if(typeof go==='function')go('world');}
-      }catch(e){console.error('Lantern action',a,e);if(typeof toast==='function')toast('Lantern action failed — '+(e.message||'error'))}
-    },true);
-  }
-  // Make the board itself use the same reliable data actions.
-  const oldBoard=window.openLanternBoard;
-  if(typeof oldBoard==='function'){
-    window.openLanternBoard=function(){
-      oldBoard.apply(this,arguments);
-      const body=document.getElementById('overhaulModalBody');if(!body)return;
-      body.querySelectorAll('.lb-tile').forEach(tile=>{
-        const text=(tile.innerText||'').toLowerCase();
-        const map=text.includes('notice')?'notices':text.includes('wick shrine')?'shrine':text.includes('dispatch')?'dispatch':text.includes('herb pouch')?'pouch':text.includes('guild hall')?'guild':text.includes('staff pins')?'staff':text.includes('workshop')?'workshop':text.includes('field notes')?'notes':text.includes('cascade')?'cascade':text.includes('codex')?'codex':text.includes('open the door')?'door':text.includes('old road')?'world':null;
-        if(map){tile.removeAttribute('onclick');tile.setAttribute('data-lantern',map)}
-      });
+        ensure();
+        if(data&&!data.practice&&S.buffs&&S.buffs.length){
+          // mark that guild cascade is live this session
+          if(typeof session!=="undefined"&&session){ session.guildBuffs=(S.buffs||[]).slice(); }
+        }
+      }catch(e){}
+      return _ba.apply(this,arguments);
     };
   }
-  // Harden existing modal layer against nav/action-bar interception.
-  const m=document.getElementById('overhaulModal');if(m){m.style.zIndex='300';m.style.pointerEvents='auto'}
-  ensureGuild();
 })();
+
 </script>
 </body>
 </html>
