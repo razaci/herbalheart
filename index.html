@@ -18524,6 +18524,113 @@ window.GUILD_HERBS=[
     };
   }
 })();
+
+
+/* ==========================================================
+   ESCALATING HARDNESS · rises with clears
+   ========================================================== */
+(function(){
+  function ensure(){
+    if(!window.S) window.S={day:1};
+    if(S.hard==null) S.hard={clears:0,fails:0,tier:1};
+    return S.hard;
+  }
+
+  window.hardTier=function(){
+    var h=ensure();
+    var visits=((S.treatLog||[]).length);
+    var lv=(S.rpg&&S.rpg.level)||1;
+    var raw=1 + Math.floor(h.clears/3) + Math.floor(visits/8) + Math.floor((lv-1)/4);
+    raw=Math.min(8, Math.max(1, raw));
+    h.tier=raw;
+    return raw;
+  };
+
+  window.hardMods=function(){
+    var t=window.hardTier();
+    return {
+      tier:t,
+      hpMul:1 + (t-1)*0.18,
+      energyCut:Math.min(2, Math.floor((t-1)/3)),
+      turns:Math.max(3, 5 - Math.floor((t-1)/3)),
+      linger:(t>=4),
+      stageBump:(t>=6)?1:0,
+      label:["Quiet","Warming","Busy","Hard week","Relapse air","Red weather","Long night","Still-room storm"][t-1]
+    };
+  };
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var mods=window.hardMods();
+      if(typeof window.setClinicLevel==="function"){
+        window.setClinicLevel(Math.min(4, 1+Math.floor((mods.tier-1)/2)));
+      }
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel;
+        if(d){
+          d.hp=Math.round((d.hp||16)*mods.hpMul);
+          d.maxHp=d.hp;
+          d.maxEnergy=Math.max(2,(d.maxEnergy||4)-mods.energyCut);
+          d.energy=d.maxEnergy;
+          d.maxTurns=mods.turns;
+          d.turn=d.turn||1;
+          if(mods.stageBump) d.problemStage=Math.min(4,(d.problemStage||1)+mods.stageBump);
+          d.log.unshift("HARDNESS · "+mods.label+" · HP "+d.hp+" · En "+d.maxEnergy+" · "+d.maxTurns+" turns");
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      var h=ensure();
+      var d=window._duel;
+      if(d && d.hp<=0) h.clears++;
+      else h.fails++;
+      if(typeof save==="function") save({ui:false});
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  var _ht=window.hourTimeout;
+  if(typeof _ht==="function"){
+    window.hourTimeout=function(){
+      ensure().fails++;
+      return _ht.apply(this,arguments);
+    };
+  }
+
+  function paint(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("hardHud");
+    if(!el){
+      el=document.createElement("div");
+      el.id="hardHud";
+      el.className="card";
+      home.insertBefore(el, home.firstChild);
+    }
+    var m=window.hardMods();
+    var h=ensure();
+    el.innerHTML='<div class="section-kicker">HARDNESS</div><b>'+m.label+'</b> · tier '+m.tier+'/8'+
+      '<p class="muted" style="font-size:.75rem">Clears '+h.clears+' · fails '+h.fails+' · HP x'+m.hpMul.toFixed(2)+' · '+m.turns+' turns</p>';
+  }
+  setTimeout(paint,600);
+  setTimeout(paint,1600);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paint,30);
+      return r;
+    };
+  }
+})();
+
 </script>
 </body>
 </html>
