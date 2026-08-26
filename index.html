@@ -646,6 +646,41 @@ body{
 .duel-energy span{display:inline-block;width:10px;height:10px;border-radius:50%;background:#31566d;margin-right:3px}
 .duel-energy span.on{background:#ffd166}
 
+
+/* ===== PRENATAL WING + FOLKLORE CHART + VIT/MIN ===== */
+.pre-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pre-card{padding:10px;border-radius:14px;border:1px solid #31566d;background:#102634}
+.vm-chip{display:inline-block;margin:3px 4px 0 0;padding:5px 8px;border-radius:99px;border:1px solid #3a5a40;background:#143028;font-size:.7rem;color:#9dcea8}
+
+
+/* ===== LONGER DUEL + HOROSCOPE ===== */
+.horo-banner{padding:8px 10px;border-radius:12px;border:1px solid #4a3a6a;background:linear-gradient(145deg,#1c1630,#12101c);margin:6px 0;font-size:.78rem}
+.horo-match{border-color:#c4a0ff!important;box-shadow:0 0 0 1px rgba(196,160,255,.35)}
+
+
+/* ===== OLD ROAD STORY CARDS ===== */
+.road-story .rs-card{
+  width:100%;text-align:left;padding:12px;margin:0 0 8px;border-radius:14px;
+  border:1px solid #3a4a2a;background:linear-gradient(160deg,#1a2a18,#0e1810);
+  color:var(--text);font:inherit;cursor:pointer
+}
+.road-story .rs-card strong{display:block;margin-bottom:4px}
+
+
+/* ===== 100-CHAR ARCS ===== */
+.arc-banner{padding:8px 10px;border-radius:12px;border:1px solid #3a5a6a;background:#102028;margin:6px 0;font-size:.78rem}
+.arc-stage{display:inline-block;padding:2px 8px;border-radius:99px;background:#1a3a48;font-size:.68rem;margin-left:6px}
+
+
+/* ===== VET WING ===== */
+.vet-pet{padding:10px;border-radius:14px;border:1px solid #3a5a4a;background:#102820;margin-bottom:8px;text-align:left;width:100%;font:inherit;color:var(--text);cursor:pointer}
+.vet-pet strong{display:block}
+
+
+/* ===== AILMENT SHEETS ===== */
+.ail-btn{width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border-radius:12px;border:1px solid #31566d;background:#102634;color:var(--text);font:inherit;cursor:pointer}
+.sheet-herb{padding:8px 0;border-bottom:1px solid #1e3544;font-size:.82rem}
+
 </style>
 </head>
 <body>
@@ -10580,6 +10615,1777 @@ window.GUILD_HERBS=[
       return r;
     };
   }
+})();
+
+
+
+/* ==========================================================
+   PRENATAL WING · FOLKLORE LUNAR CHART · VITAMINS/MINERALS
+   Folklore only. Not medical advice. Chart ≈ coin-flip accuracy.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  // Compact folklore grid ages 18-35, months 1-12 (B/G) — cultural game toy
+  // Source pattern widely published; studies ~50% accuracy. Not science.
+  var LUNAR={
+    18:"GBGBBBBBBBBG",19:"BGBBGGGGGBBB",20:"GBGBBBBBBGGG",21:"BGGGGGGGGGGG",
+    22:"GBBGBGGBGGGG",23:"BBGBBGBGBBGB",24:"BGBBGBBGGGGG",25:"GBBGGBGBBBBB",
+    26:"BGBGBGBGBGGG",27:"GGBBGBGGGBBB",28:"BGGGBGBGBGBG",29:"GBGBGBGBGBGB",
+    30:"BGBGBGBGBGBG",31:"GBBGGGBBBGBG",32:"BGGBGBGGBBGG",33:"GBGBBGBGGBBB",
+    34:"BGBGGBGBGBGG",35:"GBBGBGBGBBGB"
+  };
+
+  var PRENATAL_CASES=[
+    {id:"PN01",name:"Lila Hart",week:8,p:"Tired, queasy mornings",want:"no preference",mo:3},
+    {id:"PN02",name:"Eden Moss",week:16,p:"Wants folklore calendar read as play",want:"curious only",mo:7},
+    {id:"PN03",name:"Sora Vale",week:22,p:"Low energy, skipped meals",want:"healthy guest",mo:1},
+    {id:"PN04",name:"Nim Brook",week:12,p:"Asks about folate fiction + rest",want:"no preference",mo:5},
+    {id:"PN05",name:"Pell Quinn",week:28,p:"Aches, sleep broken",want:"curious only",mo:10}
+  ];
+
+  var VITMIN=[
+    {id:"vm_folate",ic:"🥬",name:"Folate / B9",fam:"Prenatal",d:"Game: neural-story support token",amz:"prenatal folate supplement",care:3},
+    {id:"vm_iron",ic:"🔩",name:"Iron",fam:"Prenatal",d:"Game: energy terrain token",amz:"gentle iron supplement",care:3},
+    {id:"vm_d",ic:"☀️",name:"Vitamin D",fam:"Mood-Energy",d:"Game: light/mood token",amz:"vitamin D3 drops",care:2},
+    {id:"vm_ca",ic:"🦴",name:"Calcium",fam:"Pain-Stiffness",d:"Game: bone/comfort token",amz:"calcium citrate",care:2},
+    {id:"vm_mag",ic:"⚪",name:"Magnesium",fam:"Sleep",d:"Game: settle token",amz:"magnesium glycinate",care:2},
+    {id:"vm_c",ic:"🍊",name:"Vitamin C",fam:"Restore",d:"Game: restore token",amz:"vitamin C capsules",care:2},
+    {id:"vm_b",ic:"💛",name:"B-complex",fam:"Focus",d:"Game: focus token",amz:"B complex vitamins",care:2},
+    {id:"vm_zinc",ic:"🪙",name:"Zinc",fam:"Home-Environment",d:"Game: terrain token",amz:"zinc supplement",care:2},
+    {id:"vm_omega",ic:"🐟",name:"Omega-3",fam:"Prenatal",d:"Game: nourishing token",amz:"prenatal omega 3 dha",care:3},
+    {id:"vm_choline",ic:"🥚",name:"Choline",fam:"Prenatal",d:"Game: still-room lore token",amz:"choline supplement",care:2},
+    {id:"vm_iodine",ic:"🧂",name:"Iodine",fam:"Prenatal",d:"Game: lore token only",amz:"prenatal iodine",care:1},
+    {id:"vm_multi",ic:"🌈",name:"Prenatal multi (fiction)",fam:"Prenatal",d:"Bundle token — not a prescription",amz:"prenatal vitamin",care:4}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={rp:50,att:10,day:1};
+    if(!S.careKits) S.careKits={};
+    if(!S.vitStock) S.vitStock={};
+    if(!S.prenatal) S.prenatal={age:28,month:1,want:"no preference",notes:""};
+    return S;
+  }
+
+  window.lunarLookup=function(age, month){
+    age=Math.max(18,Math.min(35,parseInt(age,10)||28));
+    month=Math.max(1,Math.min(12,parseInt(month,10)||1));
+    var row=LUNAR[age]||LUNAR[28];
+    var cell=row.charAt(month-1);
+    return {age:age,month:month,mark:cell==="B"?"boy (folklore)":"girl (folklore)",folk:true};
+  };
+
+  window.openPrenatalWing=function(){
+    ensure();
+    var p=S.prenatal;
+    var html='<div class="section-kicker">PRENATAL WING · FICTION + FOLKLORE</div>';
+    html+='<p class="muted" style="font-size:.78rem">Still-room stories and comfort tokens only. <strong>Not prenatal care, not a sex test, not medical advice.</strong> Real pregnancy → licensed clinician. Lunar chart accuracy in studies is about a coin flip.</p>';
+
+    html+='<div class="card"><div class="muted" style="font-size:.7rem">FOLKLORE CALENDAR (清宫图-style toy)</div>';
+    html+='<p style="font-size:.8rem;margin:6px 0">Mother\'s lunar age (18–35) × lunar month of conception (1–12). Optional "desired" note is flavor — the chart does not change a baby and must not be used to choose sex.</p>';
+    html+='<div class="pre-grid">';
+    html+='<label class="muted" style="font-size:.72rem">Lunar age<br><input id="pnAge" type="number" min="18" max="35" value="'+(p.age||28)+'" style="width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid #31566d;background:#0d1e2b;color:#fff"></label>';
+    html+='<label class="muted" style="font-size:.72rem">Lunar month<br><input id="pnMo" type="number" min="1" max="12" value="'+(p.month||1)+'" style="width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid #31566d;background:#0d1e2b;color:#fff"></label>';
+    html+='</div>';
+    html+='<label class="muted" style="font-size:.72rem;display:block;margin-top:8px">Desired note (flavor only)<br>';
+    html+='<select id="pnWant" style="width:100%;margin-top:4px;padding:8px;border-radius:8px;border:1px solid #31566d;background:#0d1e2b;color:#fff">';
+    ["no preference","curious only","healthy guest"].forEach(function(w){
+      html+='<option'+(p.want===w?" selected":"")+'>'+w+'</option>';
+    });
+    html+='</select></label>';
+    html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window.runLunarRead()">Read folklore cell</button>';
+    html+='<p style="margin-top:8px"><a class="amz-link" target="_blank" rel="noopener" href="https://chinesegendercalendar.org/guides/how-the-chinese-gender-calendar-works">📗 How the folklore calendar works (external)</a></p>';
+    html+='<p><a class="amz-link" target="_blank" rel="noopener" href="https://www.mdsaude.com/en/pregnancy/chinese-gender-predictor-chart/">📗 Chart history + why it is not science</a></p>';
+    html+='<div id="pnResult" style="margin-top:8px"></div></div>';
+
+    html+='<div class="card"><div class="section-kicker">VITAMINS & MINERALS · GAME TOKENS</div>';
+    html+='<p class="muted" style="font-size:.75rem">Buy tokens with RP. They boost prenatal / matching family visits. Product links are searches only.</p>';
+    for(var i=0;i<VITMIN.length;i++){
+      var v=VITMIN[i];
+      var n=S.vitStock[v.id]||0;
+      html+='<div class="pre-card" style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;gap:8px">';
+      html+='<div>'+v.ic+' <strong>'+esc(v.name)+'</strong><div class="muted" style="font-size:.72rem">'+esc(v.d)+' · stock ×'+n+'</div>';
+      html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(v.amz)+'">🛒 '+esc(v.amz)+'</a></div>';
+      html+='<button class="btn sm" onclick="window.buyVitMin(\''+v.id+'\')">8 RP</button></div></div>';
+    }
+    html+='</div>';
+
+    html+='<div class="card"><div class="section-kicker">PRENATAL QUEUE</div>';
+    for(var j=0;j<PRENATAL_CASES.length;j++){
+      var c=PRENATAL_CASES[j];
+      html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.startPrenatalVisit('+j+')">'+esc(c.name)+' · wk '+c.week+' · '+esc(c.p)+'</button>';
+    }
+    html+='</div>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Prenatal wing","FOLKLORE + TOKENS",html);
+  };
+
+  window.runLunarRead=function(){
+    ensure();
+    var age=document.getElementById("pnAge")?document.getElementById("pnAge").value:28;
+    var mo=document.getElementById("pnMo")?document.getElementById("pnMo").value:1;
+    var want=document.getElementById("pnWant")?document.getElementById("pnWant").value:"no preference";
+    S.prenatal={age:+age,month:+mo,want:want};
+    var r=window.lunarLookup(age,mo);
+    var el=document.getElementById("pnResult");
+    if(el){
+      el.innerHTML='<div class="pre-card"><strong>Folklore cell:</strong> '+esc(r.mark)+
+        '<p class="muted" style="margin:6px 0 0;font-size:.75rem">Age '+r.age+' · month '+r.month+
+        '. Desired note: '+esc(want)+'. This does not predict or choose a baby. Coin-flip folklore for play.</p></div>';
+    }
+    if(!S._cascadeLog) S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Folklore calendar read · "+r.mark+" · note "+want});
+    if(typeof save==="function") save({ui:false});
+    if(typeof toast==="function") toast("Folklore cell only — not a test");
+    if(window.sfx) window.sfx.soft();
+  };
+
+  window.buyVitMin=function(id){
+    ensure();
+    var v=null; for(var i=0;i<VITMIN.length;i++) if(VITMIN[i].id===id) v=VITMIN[i];
+    if(!v) return;
+    if((S.rp||0)<8){ if(typeof toast==="function") toast("Need 8 RP"); return; }
+    S.rp-=8;
+    S.vitStock[id]=(S.vitStock[id]||0)+1;
+    if(!S._cascadeLog) S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Vit/min token: "+v.name});
+    if(typeof save==="function") save();
+    if(typeof toast==="function") toast(v.ic+" "+v.name+" ×"+(S.vitStock[id]));
+    if(window.sfx) window.sfx.buy();
+    window.openPrenatalWing();
+  };
+
+  window.startPrenatalVisit=function(idx){
+    var c=PRENATAL_CASES[idx]; if(!c) return;
+    var cand={
+      name:c.name,pid:c.id,type:"Prenatal visit",urgency:"Routine",
+      wellness:68,problems:[c.p,"Rest and food terrain","Folklore calendar is optional play"],
+      temperament:"Hopeful",diff:{id:"mid",label:"Moderate"},
+      pr:{id:c.id,f:"Mood-Energy",p:c.p,color:"Green",att:1,quote:c.p},
+      prenatal:true,week:c.week,want:c.want,mo:c.mo
+    };
+    try{ closeOverhaulModal(); }catch(e){}
+    if(typeof startCardDuel==="function") startCardDuel(cand);
+    else if(typeof openHerbalVisit==="function") openHerbalVisit(cand);
+    else if(typeof toast==="function") toast("Start visit from the door");
+  };
+
+  // Vit/min cascade into visits
+  var _ak=null;
+  if(typeof window.applyKitCascade==="function"){
+    /* may be inner; wrap vfComplete instead */
+  }
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        ensure();
+        var v=window._visit;
+        if(v){
+          var bonus=0, used=[];
+          var prenatal=!!(v.cand&&v.cand.prenatal);
+          for(var i=0;i<VITMIN.length;i++){
+            var vm=VITMIN[i];
+            if((S.vitStock[vm.id]||0)<=0) continue;
+            var match=prenatal?vm.fam==="Prenatal":(vm.fam===((v.pr&&v.pr.f)||""));
+            if(match){
+              S.vitStock[vm.id]--;
+              bonus+=vm.care||2;
+              used.push(vm.name);
+              if(used.length>=2) break;
+            }
+          }
+          if(used.length){
+            v.score=(v.score||0)+bonus;
+            v.vitUsed=used;
+            if(typeof toast==="function") toast("🧪 "+used.join(", ")+" · +"+bonus);
+            if(window.showKitFeedback) window.showKitFeedback(["journal"], bonus);
+          }
+        }
+      }catch(e){}
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  // Extra prenatal cards in duel if available
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var r=_scd.apply(this,arguments);
+      try{
+        if(window._duel && cand && cand.prenatal){
+          window._duel.hand.push({id:"folate",ic:"🥬",name:"Folate token",cost:1,care:6,type:"Green",d:"Prenatal fiction"});
+          window._duel.hand.push({id:"iron",ic:"🔩",name:"Iron token",cost:1,care:5,type:"Green",d:"Energy terrain"});
+          window._duel.log.unshift("Prenatal wing: extra vit/min cards dealt (fiction)");
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  function mountBtn(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnPrenatal")) return;
+    var b=document.createElement("button");
+    b.id="btnPrenatal"; b.className="btn sec"; b.style.marginTop="8px";
+    b.textContent="🌙 Prenatal wing · folklore chart + vit/min";
+    b.onclick=function(){ window.openPrenatalWing(); };
+    var mech=document.getElementById("mechPanel");
+    if(mech&&mech.parentNode) mech.parentNode.insertBefore(b, mech);
+    else home.appendChild(b);
+    var dock=document.getElementById("lanternDock");
+    // also add to lantern features dynamically if dock renderer exists — skip
+  }
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mountBtn,40);
+      return r;
+    };
+  }
+  setTimeout(mountBtn,700);
+  setTimeout(mountBtn,1600);
+})();
+
+
+
+/* ==========================================================
+   LONGER CARD PLAY + HOROSCOPES IN THE DUEL
+   Easy tap cards · more rounds · zodiac patients
+   ========================================================== */
+(function(){
+  var SIGNS=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  var SIGN_IC={"Aries":"♈","Taurus":"♉","Gemini":"♊","Cancer":"♋","Leo":"♌","Virgo":"♍","Libra":"♎","Scorpio":"♏","Sagittarius":"♐","Capricorn":"♑","Aquarius":"♒","Pisces":"♓"};
+  var ELEMENT={"Aries":"Fire","Leo":"Fire","Sagittarius":"Fire","Taurus":"Earth","Virgo":"Earth","Capricorn":"Earth","Gemini":"Air","Libra":"Air","Aquarius":"Air","Cancer":"Water","Scorpio":"Water","Pisces":"Water"};
+  var HORO_LINE={
+    Aries:"Start is the medicine they already know — name one first step.",
+    Taurus:"Slow is not stuck. Keep the plan chewable.",
+    Gemini:"Two thoughts at once. Pick the one that can finish.",
+    Cancer:"The room needs to feel like a nest before advice lands.",
+    Leo:"Dignity first. They will try what honors them.",
+    Virgo:"One tidy If–Then beats a perfect system.",
+    Libra:"They weigh every no. Make the no beautiful and small.",
+    Scorpio:"Don't pry. Offer a door they can close.",
+    Sagittarius:"Give them a horizon, not a lecture.",
+    Capricorn:"Duty is heavy. Permission to rest is the card.",
+    Aquarius:"Weird is welcome. Odd tools count.",
+    Pisces:"Soft boundaries, or they dissolve into everyone else's weather."
+  };
+
+  var HORO_CARDS=[
+    {id:"h_sun",ic:"☀️",name:"Sun hour",cost:1,care:5,type:"Any",d:"Fire signs shine",horo:"Fire"},
+    {id:"h_moon",ic:"🌙",name:"Moon hour",cost:1,care:5,type:"Blue",d:"Water signs settle",horo:"Water"},
+    {id:"h_merc",ic:"☿",name:"Mercury hour",cost:1,care:5,type:"Yellow",d:"Air signs think clearer",horo:"Air"},
+    {id:"h_venus",ic:"♀",name:"Venus hour",cost:1,care:5,type:"Green",d:"Earth signs soften",horo:"Earth"},
+    {id:"h_mars",ic:"♂",name:"Mars hour",cost:2,care:8,type:"Red",d:"Fire push",horo:"Fire"},
+    {id:"h_jup",ic:"♃",name:"Jupiter hour",cost:2,care:7,type:"Any",d:"Hope card",horo:"Any"},
+    {id:"h_sat",ic:"♄",name:"Saturn hour",cost:2,care:6,type:"Black",d:"Boundary + structure",horo:"Earth"},
+    {id:"h_asc",ic:"✨",name:"Rising read",cost:0,care:3,type:"Any",d:"Free flavor + energy",energy:1,horo:"Any"},
+    {id:"h_house",ic:"🏠",name:"4th house nest",cost:1,care:6,type:"White",d:"Home terrain",horo:"Water"},
+    {id:"h_6th",ic:"🩺",name:"6th house care",cost:1,care:6,type:"Any",d:"Daily ritual",horo:"Earth"},
+    {id:"h_opp",ic:"⚖️",name:"Opposition ease",cost:1,care:4,type:"Any",d:"Name the tension",horo:"Air"},
+    {id:"h_trine",ic:"🔺",name:"Trine flow",cost:0,care:4,type:"Match",d:"Easy aspect",horo:"Any"}
+  ];
+
+  function signFor(name, pid){
+    var n=0, s=String(pid||name||"x");
+    for(var i=0;i<s.length;i++) n+=s.charCodeAt(i);
+    return SIGNS[n%12];
+  }
+
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(!d) return r;
+      var sign=signFor(d.name, cand&&cand.pid);
+      d.sign=sign;
+      d.element=ELEMENT[sign];
+      d.horo=HORO_LINE[sign];
+      // longer fight
+      d.maxRound=8;
+      d.maxEnergy=4;
+      d.energy=4;
+      d.maxHp=Math.round((d.maxHp||24)*1.35);
+      d.hp=d.maxHp;
+      // deal extra horoscope cards — easy tap
+      for(var i=0;i<3;i++){
+        var hc=HORO_CARDS[Math.floor(Math.random()*HORO_CARDS.length)];
+        d.hand.push(Object.assign({},hc));
+      }
+      // keep hand from exploding: cap 8
+      if(d.hand.length>8) d.hand=d.hand.slice(0,8);
+      d.log.unshift(SIGN_IC[sign]+" "+sign+" · "+d.element+" · "+d.horo);
+      if(typeof renderDuelPatch==="function") {}
+    }catch(e){console.warn(e)}
+    // re-render with horoscope banner
+    setTimeout(window.decorateDuelHoro,60);
+    setTimeout(window.decorateDuelHoro,200);
+    return r;
+  };
+
+  var _care=null;
+  // wrap play to add horoscope bonus
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    if(d && d.hand && d.hand[idx]){
+      var c=d.hand[idx];
+      if(c.horo && (c.horo==="Any" || c.horo===d.element)){
+        d._horoBoost=3;
+      } else {
+        d._horoBoost=0;
+      }
+    }
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    setTimeout(window.decorateDuelHoro,40);
+    return r;
+  };
+
+  // Patch care via wrapping after play already computed — add boost to hp if flag
+  var _play2=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    var boost=0;
+    if(d && d.hand && d.hand[idx]){
+      var c=d.hand[idx];
+      if(c.horo && (c.horo==="Any" || c.horo===d.element)) boost=3;
+    }
+    var hpBefore=d?d.hp:0;
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    // _play already used; if we double-wrapped, only apply extra once
+    d=window._duel;
+    if(d && boost && d.hp===hpBefore-0){
+      // original already reduced hp; add extra
+    }
+    if(d && boost && typeof d.hp==="number"){
+      d.hp=Math.max(0,d.hp-boost);
+      d.score=(d.score||0)+1;
+      d.log.unshift("Horoscope aspect +"+boost+" care");
+      if(d.hp<=0 && typeof window.playDuelCard==="function"){
+        /* win handled if original saw 0; if not, kick */
+      }
+    }
+    setTimeout(window.decorateDuelHoro,50);
+    return r;
+  };
+
+  window.decorateDuelHoro=function(){
+    try{
+      var d=window._duel;
+      var body=document.getElementById("overhaulModalBody");
+      if(!d||!body) return;
+      if(body.querySelector("[data-horo]")) {
+        // update text
+        var b=body.querySelector("[data-horo]");
+        b.innerHTML='<strong>'+(SIGN_IC[d.sign]||"✨")+' '+d.sign+'</strong> · '+d.element+' · round '+d.round+'/'+d.maxRound+
+          '<div class="muted" style="margin-top:4px">'+d.horo+'</div>';
+        return;
+      }
+      var bar=document.createElement("div");
+      bar.className="horo-banner";
+      bar.dataset.horo="1";
+      bar.innerHTML='<strong>'+(SIGN_IC[d.sign]||"✨")+' '+d.sign+'</strong> · '+d.element+' · round '+d.round+'/'+(d.maxRound||8)+
+        '<div class="muted" style="margin-top:4px">'+(d.horo||"")+'</div>';
+      body.insertBefore(bar, body.firstChild);
+      body.querySelectorAll(".duel-card").forEach(function(el){
+        if(/hour|house|Rising|Trine|Opposition/i.test(el.textContent||"")) el.classList.add("horo-match");
+      });
+    }catch(e){}
+  };
+
+  var _end=window.duelEndTurn;
+  window.duelEndTurn=function(){
+    var r=typeof _end==="function"?_end.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(d){
+        // extra horoscope card each new turn
+        var hc=HORO_CARDS[Math.floor(Math.random()*HORO_CARDS.length)];
+        if(d.hand.length<8) d.hand.push(Object.assign({},hc));
+        d.maxEnergy=4;
+        if(d.energy<4) d.energy=Math.min(4,d.energy+1);
+      }
+    }catch(e){}
+    setTimeout(window.decorateDuelHoro,40);
+    return r;
+  };
+
+  // Home hint
+  setTimeout(function(){
+    try{
+      var home=document.getElementById("sc-home");
+      if(!home||document.getElementById("horoHint")) return;
+      var p=document.createElement("p");
+      p.id="horoHint"; p.className="muted"; p.style.fontSize=".78rem";
+      p.textContent="Card visits now run 8 rounds with zodiac reads. Matching element cards hit harder. Still tap-to-play.";
+      var mech=document.getElementById("mechPanel");
+      if(mech&&mech.parentNode) mech.parentNode.insertBefore(p, mech.nextSibling);
+    }catch(e){}
+  },900);
+})();
+
+
+
+/* ==========================================================
+   OLD ROAD — STORY CARD WALK + AMAZON FINDS
+   Tap cards to walk chapters. Flame spends. Finds link to shop searches.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var CHAPTERS=[
+    {id:0,title:"The gate",narr:"Willow Bend's last lamp. The Old Road is a dark ribbon. The lantern ticks like a small animal.",
+      cards:[
+        {id:"g1",ic:"🚪",name:"Unlatch the clinic gate",t:"You step out. Gravel. River smell. Flame −4%.",flame:-4,score:1},
+        {id:"g2",ic:"🪔",name:"Trim the wick first",t:"A cleaner flame. You buy a minute of courage.",flame:6,score:1,amz:"lantern wick replacement"},
+        {id:"g3",ic:"📓",name:"Write the intention",t:"\"Walk until the story asks me to turn.\" Ink on the gate-post.",score:1,amz:"pocket notebook"}
+      ]},
+    {id:1,title:"Alder bend",narr:"Alders lean over the path. Someone has tied a scrap of blue cloth — Sleep country.",
+      cards:[
+        {id:"a1",ic:"💙",name:"Touch the blue cloth",t:"A child's ribbon. You think of Maya's first night. The road remembers the clinic.",score:2,story:"maya"},
+        {id:"a2",ic:"🌼",name:"Pick chamomile at the verge",t:"Fictional glean. Not a dose — a token for the shelf.",score:2,find:"tea",amz:"organic chamomile tea bags"},
+        {id:"a3",ic:"🚶",name:"Keep walking",t:"The river gets louder. Flame −6%.",flame:-6,score:1}
+      ]},
+    {id:2,title:"The ford",narr:"Shallow water. Stones like vertebrae. A figure on the far bank does not wave.",
+      cards:[
+        {id:"f1",ic:"🪨",name:"Cross stone by stone",t:"Cold through the boot. You do not slip. The figure is gone.",flame:-5,score:2},
+        {id:"f2",ic:"🫖",name:"Leave a tea tin on the post",t:"Hospitality for whoever walks behind you.",score:2,amz:"travel tea tin"},
+        {id:"f3",ic:"🔦",name:"Call across",t:"\"Clinic's open at dawn.\" Echo only. Still, you meant it.",score:2,story:"call"}
+      ]},
+    {id:3,title:"Ashthorn rumor",narr:"Paint on a milestone: ASHTHORN SEES YOU. Rival heat. No one is here.",
+      cards:[
+        {id:"r1",ic:"🧹",name:"Wipe the paint",t:"Not theater. Clean referral energy. The road feels less poisoned.",score:3,story:"ashthorn"},
+        {id:"r2",ic:"📜",name:"Leave a clean note",t:"\"We can share a bank. We need not share a rumor.\"",score:2,amz:"waterproof notepad"},
+        {id:"r3",ic:"🚶",name:"Walk past without a show",t:"Dignity. Flame −3%.",flame:-3,score:1}
+      ]},
+    {id:4,title:"Harvester stand",narr:"A tarp, a scale, a handwritten winter list. Wild Harvesters leave what the bank can spare.",
+      cards:[
+        {id:"h1",ic:"🌱",name:"Take only nettle",t:"You leave the stand better. Token for Restore kits.",score:3,find:"nest",amz:"nettle leaf tea"},
+        {id:"h2",ic:"🪙",name:"Leave RP in the tin",t:"−6 RP. The list gains your initials.",rp:-6,score:2,story:"harvesters"},
+        {id:"h3",ic:" Magnolia",name:"Read the winter list",t:"Elder, rose hip, bark — all lore. You copy three names.",score:1,amz:"dried rose hips"}
+      ]},
+    {id:5,title:"Grey mile",narr:"Fog. The lantern is a coin. Depth is a feeling, not a map.",
+      cards:[
+        {id:"y1",ic:"🌫️",name:"Stand still until the path returns",t:"Patience. Flame −8%. You are not lost — you are waiting.",flame:-8,score:2},
+        {id:"y2",ic:"🧂",name:"Electrolyte / oil story",t:"You feed the flame from a pocket vial.",flame:12,score:2,amz:"lantern oil lamp fuel"},
+        {id:"y3",ic:"🔮",name:"Ask the fog a question",t:"It answers with your own breath. Horoscope weather: keep one true thing.",score:2}
+      ]},
+    {id:6,title:"River mentor stone",narr:"Carved: SHOW HOW YOU THINK. River Mentors mark the thinking, not the bottle.",
+      cards:[
+        {id:"m1",ic:"🧠",name:"Say the protocol out loud",t:"Settle, then one step. The stone does not applaud. You needed to hear it.",score:3,story:"mentors"},
+        {id:"m2",ic:"📗",name:"Leave a page",t:"Documentation is care you can hand to the next walker.",score:2,amz:"field journal hardcover"},
+        {id:"m3",ic:"🙏",name:"Sit without fixing",t:"The river does the talking. Flame holds.",score:2}
+      ]},
+    {id:7,title:"Beacon rise",narr:"Hill. First light on the clinic roof far behind. You can turn or take one more ridge.",
+      cards:[
+        {id:"b1",ic:"🏠",name:"Turn back with what you found",t:"The road lets you go. That is a kind of win.",score:3,end:"return"},
+        {id:"b2",ic:"⛰️",name:"One more ridge",t:"Pride. Flame −10%. A story waits if the wick holds.",flame:-10,score:2},
+        {id:"b3",ic:"🛒",name:"Pack a home kit for the walk back",t:"Comfort tools for whoever sits in the chair tomorrow.",score:2,amz:"herbal tea sampler variety pack",end:"kit"}
+      ]},
+    {id:8,title:"The ridge story",narr:"On the ridge: a bench, a cup ring, a name scratched small — ELLIS. An old thread.",
+      cards:[
+        {id:"x1",ic:"🧵",name:"Sit with Ellis's mark",t:"You remember a plateau visit. Loyalty is a bench, not a trophy.",score:4,story:"ellis"},
+        {id:"x2",ic:"🕯️",name:"Leave a stub of wax",t:"Next walker gets a start. Flame −4%.",flame:-4,score:2,amz:"beeswax tealight candles"},
+        {id:"x3",ic:"🚪",name:"Descend toward home",t:"Gravel again. The gate will know your step.",score:3,end:"return"}
+      ]}
+  ];
+
+  function ensureRoadStory(){
+    if(!window.S) window.S={rp:50,day:1};
+    if(typeof S.lanternFuel!=="number") S.lanternFuel=70;
+    if(!S.roadStory) S.roadStory={ch:0,picked:{},log:[],score:0,found:[]};
+    if(!S.careKits) S.careKits={};
+    if(!S._cascadeLog) S._cascadeLog=[];
+    return S.roadStory;
+  }
+
+  window.openRoadStory=function(){
+    ensureRoadStory();
+    if(S.lanternFuel<8){
+      if(typeof toast==="function") toast("Flame too low — trim wick at the lantern first");
+      return;
+    }
+    renderRoadStory();
+    if(window.sfx&&window.sfx.door) window.sfx.door();
+  };
+
+  function renderRoadStory(){
+    var st=ensureRoadStory();
+    var ch=CHAPTERS[Math.min(st.ch, CHAPTERS.length-1)];
+    var html='<div class="road-story">';
+    html+='<div class="section-kicker">OLD ROAD · CHAPTER '+(st.ch+1)+'/'+CHAPTERS.length+'</div>';
+    html+='<div style="display:flex;justify-content:space-between;font-size:.78rem"><span>Flame <b>'+Math.round(S.lanternFuel)+'%</b></span><span>Walk score <b>'+st.score+'</b></span></div>';
+    html+='<h3 style="margin:8px 0 6px">'+esc(ch.title)+'</h3>';
+    html+='<p style="font-size:.86rem;line-height:1.45">'+esc(ch.narr)+'</p>';
+    html+='<p class="muted" style="font-size:.72rem">Tap one card. Easy press play — the road answers.</p>';
+    for(var i=0;i<ch.cards.length;i++){
+      var c=ch.cards[i];
+      html+='<button type="button" class="rs-card" onclick="window.playRoadCard(\''+c.id+'\')">';
+      html+='<strong>'+c.ic+' '+esc(c.name)+'</strong>';
+      html+='<span class="muted" style="font-size:.75rem">'+(c.amz?"🛒 find linked":"Story beat")+(c.flame?(" · flame "+c.flame+"%"):"")+'</span>';
+      html+='</button>';
+    }
+    html+='<button class="btn sec" style="width:100%;margin-top:8px" onclick="window.abandonRoad()">Turn back to clinic</button></div>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("The Old Road","STORY WALK",html);
+  }
+
+  window.playRoadCard=function(id){
+    var st=ensureRoadStory();
+    var ch=CHAPTERS[Math.min(st.ch, CHAPTERS.length-1)];
+    var c=null;
+    for(var i=0;i<ch.cards.length;i++) if(ch.cards[i].id===id) c=ch.cards[i];
+    if(!c) return;
+    if(c.flame) S.lanternFuel=Math.max(0,Math.min(100,S.lanternFuel+c.flame));
+    if(c.rp) S.rp=(S.rp||0)+c.rp;
+    st.score+=(c.score||1);
+    st.picked[c.id]=true;
+    st.log.push(ch.title+": "+c.name);
+    if(c.find) S.careKits[c.find]=(S.careKits[c.find]||0)+1;
+    if(c.story){
+      if(!S.arcs) S.arcs={};
+      if(c.story==="maya") S.arcs.Maya=(S.arcs.Maya||0)+1;
+      if(c.story==="ellis") S.arcs.Ellis=(S.arcs.Ellis||0)+1;
+    }
+    S._cascadeLog.push({day:S.day||1,t:"Road · "+ch.title+" · "+c.name});
+    if(typeof save==="function") save({ui:false});
+    if(window.sfx) window.sfx.ok();
+    if(window.funPop) window.funPop(c.ic);
+
+    var html='<div class="card glow"><div class="section-kicker">'+esc(ch.title).toUpperCase()+'</div>';
+    html+='<strong>'+c.ic+' '+esc(c.name)+'</strong>';
+    html+='<p style="margin:10px 0;line-height:1.45">'+esc(c.t)+'</p>';
+    if(c.amz){
+      html+='<p><a class="amz-link" target="_blank" rel="noopener" href="'+amz(c.amz)+'">🛒 Search find: '+esc(c.amz)+'</a></p>';
+      html+='<p class="muted" style="font-size:.7rem">Product search only — story prop, not a treatment.</p>';
+    }
+    html+='<p class="muted" style="font-size:.75rem">Flame '+Math.round(S.lanternFuel)+'% · walk score '+st.score+'</p>';
+
+    var gutter=S.lanternFuel<8;
+    var last=st.ch>=CHAPTERS.length-1 || c.end==="return" || gutter;
+    if(gutter) html+='<p class="feedback-warn">The lantern gutters. The road sends you home.</p>';
+    if(c.end==="kit") html+='<p class="feedback-good">Home kit idea packed for tomorrow\'s chair.</p>';
+
+    if(last){
+      html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window.finishRoadStory()">Close the walk</button>';
+    } else {
+      html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window.advanceRoad()">Continue the road →</button>';
+    }
+    if(typeof openOverhaulModal==="function") openOverhaulModal(c.name,"BEAT",html);
+  };
+
+  window.advanceRoad=function(){
+    var st=ensureRoadStory();
+    st.ch=Math.min(CHAPTERS.length-1, st.ch+1);
+    renderRoadStory();
+    if(window.sfx) window.sfx.page();
+    if(window.vfx) window.vfx.flow((st.ch+1)/CHAPTERS.length);
+  };
+
+  window.finishRoadStory=function(){
+    var st=ensureRoadStory();
+    var rp=4+Math.min(18,st.score);
+    S.rp=(S.rp||0)+rp;
+    S._cascadeLog.push({day:S.day||1,t:"Road walk complete · score "+st.score+" · +"+rp+" RP"});
+    if(typeof save==="function") save();
+    var html='<div class="outcome-flash good"><div class="big">Walk closed</div>';
+    html+='<p>Score '+st.score+' · +'+rp+' RP · flame '+Math.round(S.lanternFuel)+'%</p>';
+    html+='<p class="muted" style="margin-top:8px">'+st.log.slice(-4).map(esc).join(" · ")+'</p>';
+    html+='<button class="btn" style="width:100%;margin-top:10px" onclick="closeOverhaulModal();go(\'home\')">Back to clinic</button></div>';
+    st.ch=0; st.picked={}; st.log=[]; st.score=0;
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Beacon return","ROAD",html);
+    if(window.sfx) window.sfx.win();
+    if(window.vfx) window.vfx.flash("gold");
+  };
+
+  window.abandonRoad=function(){
+    if(typeof toast==="function") toast("You turn back while the wick still holds");
+    try{closeOverhaulModal();}catch(e){}
+    if(typeof go==="function") go("home");
+  };
+
+  function mountRoadBtn(){
+    try{
+      var world=document.getElementById("sc-world");
+      if(world && !document.getElementById("btnRoadStory")){
+        var b=document.createElement("button");
+        b.id="btnRoadStory"; b.className="btn"; b.style.cssText="width:100%;margin:8px 0";
+        b.textContent="📖 Walk the story road (card chapters)";
+        b.onclick=function(){ window.openRoadStory(); };
+        var wc=document.getElementById("worldContent");
+        if(wc&&wc.parentNode) wc.parentNode.insertBefore(b, wc);
+        else world.insertBefore(b, world.firstChild.nextSibling);
+      }
+      var home=document.getElementById("sc-home");
+      if(home && !document.getElementById("btnRoadHome")){
+        var h=document.createElement("button");
+        h.id="btnRoadHome"; h.className="btn sec"; h.style.marginTop="8px";
+        h.textContent="🛤️ Walk the Old Road · story cards";
+        h.onclick=function(){ if(typeof go==="function") go("world"); setTimeout(window.openRoadStory,80); };
+        var pn=document.getElementById("btnPrenatal");
+        if(pn&&pn.parentNode) pn.parentNode.insertBefore(h, pn.nextSibling);
+        else home.appendChild(h);
+      }
+    }catch(e){}
+  }
+  setTimeout(mountRoadBtn,600);
+  setTimeout(mountRoadBtn,1600);
+  var _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(name){
+      var r=_go.apply(this,arguments);
+      if(name==="world") setTimeout(mountRoadBtn,50);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   100 CHARACTER ARCS · 4 STAGE VISITS EACH
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var STAGE_NAME=["First meeting","Returning thread","Loyalty edge","Arc close / advocate"];
+  var FAM_BEATS={
+    Sleep:[
+      ["The lectures about sleep already happened. They want a room that isn't another syllabus.","Eyes tired. Guard up."],
+      ["Something worked once. Then the week got louder and the phone won.","Screens vs wind-down."],
+      ["They booked before they could cancel. Night thoughts still have a key to the house.","Showing up is the work."],
+      ["They told someone about the still-room. Trust is leaving the building in a good way.","Advocate beat."]
+    ],
+    Focus:[
+      ["Three tabs, zero finishes. Soft-spoken about it, sharp with themselves.","Start-stop loop."],
+      ["Calls stacked. By afternoon they are residue, not a person.","Context switch."],
+      ["Sleep debt is feeding the fog. They want one closed thing.","Fog day."],
+      ["One book, one project, one ending before the year does.","Deep-work close."]
+    ],
+    Boundaries:[
+      ["Yes in the room, resent by Friday. Calendar already full.","First no they didn't say."],
+      ["The script worked once. Then a boss asked again.","Pressure from above."],
+      ["Left on time twice. Almost apologized for having an edge.","Workday border."],
+      ["Rest still feels like failing someone. That's the climax.","Permission to stop."]
+    ],
+    "Mood-Energy":[
+      ["Sunday dread is a wall, not a task. Battery already talking.","Arrival weather."],
+      ["One gathering emptied them. The refill became scrolling.","Social drain."],
+      ["Meaning feels thin when fuel is low. They want a Tuesday-sized why.","Quiet ache."],
+      ["They named a small why out loud. That's loyalty.","Advocate of pacing."]
+    ],
+    "Pain-Stiffness":[
+      ["Shoulders lock by lunch. They used to notice. Now they notice late.","Desk story."],
+      ["Mornings bargain with hands and knees.","Warm-up visit."],
+      ["Damp weather and the chair arrived together.","Season + desk."],
+      ["They moved first, then talked. Body is in the plot now.","Arc close."]
+    ],
+    Digestive:[
+      ["Hands found the cupboard before hunger had a name.","Snack weather."],
+      ["Stomach flips before events; fog after heavy meals.","Approach + after."],
+      ["Travel wrecked the routine in one day.","Guts notice first."],
+      ["They put the fork down on purpose. That's the close.","Slow table."]
+    ],
+    "Home-Environment":[
+      ["The pile from the pillow is not large. It is loud.","Room argues."],
+      ["Screens, dry air, cold feet taking turns.","Terrain visit."],
+      ["One zone reset worked. The rest of the house is still talking.","Partial nest."],
+      ["They made the nightstand kind. They told a roommate.","Advocate of rooms."]
+    ]
+  };
+
+  var QUOTE_OPEN=[
+    "I just need something that isn't another lecture.",
+    "I don't need fancy. I need clear.",
+    "I almost cancelled.",
+    "The street said you listen.",
+    "I booked this before I talked myself out of it.",
+    "Can we keep this small?",
+    "I'm tired of being efficient with this.",
+    "If we only get to one thing, start here."
+  ];
+  var QUOTE_RET=[
+    "It helped once. Then the week got louder.",
+    "I tried. Then I didn't.",
+    "You remembered last time. That matters.",
+    "I came back because the first visit didn't lecture.",
+    "The old pattern found a new door.",
+    "I used the step twice. Then I dropped it."
+  ];
+  var QUOTE_LOY=[
+    "I almost didn't come. I'm glad I did.",
+    "I told someone I was coming here.",
+    "This is starting to feel like a thread, not a trick.",
+    "I still want to cancel. I didn't.",
+    "If this is loyalty, it's quiet."
+  ];
+  var QUOTE_END=[
+    "I told a friend about the still-room. Is that weird?",
+    "I don't need you to finish my life. I needed a room.",
+    "Leave the flower. Or don't. I already copied the step.",
+    "Same chair. Different week. That's the point.",
+    "I'm sending someone. Don't make it a lecture."
+  ];
+
+  function buildArcFor(pt, i){
+    var beats=FAM_BEATS[pt.f]||FAM_BEATS.Sleep;
+    var probs=pt.problems||[pt.primary||"the thing they brought"];
+    var stages=[];
+    var quotes=[QUOTE_OPEN[i%QUOTE_OPEN.length], QUOTE_RET[i%QUOTE_RET.length], QUOTE_LOY[i%QUOTE_LOY.length], QUOTE_END[i%QUOTE_END.length]];
+    for(var s=0;s<4;s++){
+      var b=beats[s];
+      var prob=probs[s%probs.length];
+      stages.push({
+        stage:s,
+        title:STAGE_NAME[s],
+        quote:quotes[s],
+        problem:prob,
+        note:pt.name+": "+b[1],
+        depth:b[0],
+        need:s===0?["Improve","Plateau","Breakthrough"]:s===3?["Improve","Breakthrough","Plateau"]:["Improve","Breakthrough"]
+      });
+    }
+    return {id:pt.id,name:pt.name,f:pt.f,color:pt.color,diff:pt.diff,stages:stages,
+      completeMsg:pt.name+"'s arc settles. A small token finds the shelf — "+(pt.color||"Blue")+" thread."};
+  }
+
+  function roster(){
+    return window.PATIENT_100||[];
+  }
+
+  window.ARCS_100=(function(){
+    var map={};
+    var list=roster();
+    for(var i=0;i<list.length;i++){
+      map[list[i].id]=buildArcFor(list[i], i);
+      map[list[i].name]=map[list[i].id];
+    }
+    // named cores stay aligned
+    return map;
+  })();
+
+  function ensureArcs(){
+    if(!window.S) window.S={};
+    if(!S.charArc) S.charArc={};
+    if(!S.arcs) S.arcs={Maya:0,Ellis:0,Kai:0,Rae:0};
+    return S.charArc;
+  }
+
+  window.getCharArc=function(idOrName){
+    var a=window.ARCS_100[idOrName];
+    if(a) return a;
+    var list=roster();
+    for(var i=0;i<list.length;i++) if(list[i].name===idOrName||list[i].id===idOrName) return window.ARCS_100[list[i].id];
+    return null;
+  };
+
+  window.getCharStage=function(idOrName){
+    ensureArcs();
+    var arc=window.getCharArc(idOrName);
+    if(!arc) return 0;
+    var key=arc.id;
+    return Math.min(3, S.charArc[key]||0);
+  };
+
+  window.advanceCharArc=function(idOrName, outcome){
+    ensureArcs();
+    var arc=window.getCharArc(idOrName);
+    if(!arc) return;
+    var st=window.getCharStage(arc.id);
+    var stage=arc.stages[st];
+    var ok=!stage||!stage.need||stage.need.indexOf(outcome)>=0 || !outcome;
+    if(!ok && outcome==="Stuck") {
+      // no advance on stuck
+      return st;
+    }
+    if(st<3 && (ok || outcome==="Improve" || outcome==="Breakthrough" || outcome==="Plateau")){
+      S.charArc[arc.id]=st+1;
+      if(["Maya","Ellis","Kai","Rae"].indexOf(arc.name)>=0) S.arcs[arc.name]=S.charArc[arc.id];
+      if(S.charArc[arc.id]>=4) S.charArc[arc.id]=3; // stay on close after complete
+      if(st===2) S.charArc[arc.id]=3;
+      if(typeof toast==="function") toast("🧵 "+arc.name+" · "+STAGE_NAME[Math.min(3,S.charArc[arc.id])]);
+    }
+    if(!S._cascadeLog) S._cascadeLog=[];
+    S._cascadeLog.push({day:S.day||1,t:"Arc "+arc.name+" stage "+(S.charArc[arc.id]||0)});
+    if(typeof save==="function") save({ui:false});
+    return S.charArc[arc.id]||0;
+  };
+
+  window.applyArcToCandidate=function(cand){
+    if(!cand) return cand;
+    var key=cand.pid||cand.name;
+    var arc=window.getCharArc(key)||window.getCharArc(cand.name);
+    if(!arc) return cand;
+    var st=window.getCharStage(arc.id);
+    var stage=arc.stages[st]||arc.stages[0];
+    cand.arcId=arc.id;
+    cand.arcStage=st;
+    cand.arcTitle=stage.title;
+    cand.quote=stage.quote;
+    cand.arcNote=stage.note;
+    cand.arcDepth=stage.depth;
+    cand.problems=cand.problems||[];
+    if(stage.problem && cand.problems.indexOf(stage.problem)<0) cand.problems.unshift(stage.problem);
+    if(cand.pr){ cand.pr.quote=stage.quote; cand.pr.p=stage.problem||cand.pr.p; }
+    cand.returning=st>0;
+    cand.followUp=st>0;
+    return cand;
+  };
+
+  function paintArcBanner(){
+    try{
+      var v=window._visit||window._duel||window._wiz;
+      if(!v) return;
+      var name=v.name||(v.cand&&v.cand.name);
+      var arc=window.getCharArc((v.cand&&v.cand.pid)||name);
+      if(!arc) return;
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-arc-ban]")) return;
+      var st=window.getCharStage(arc.id);
+      var stage=arc.stages[st];
+      var bar=document.createElement("div");
+      bar.className="arc-banner"; bar.dataset.arcBan="1";
+      bar.innerHTML='<strong>🧵 '+esc(arc.name)+'</strong><span class="arc-stage">Stage '+(st+1)+'/4 · '+esc(stage.title)+'</span>'+
+        '<div style="margin-top:6px;font-style:italic">“'+esc(stage.quote)+'”</div>'+
+        '<div class="muted" style="margin-top:4px">'+esc(stage.depth)+'</div>';
+      body.insertBefore(bar, body.firstChild);
+    }catch(e){}
+  }
+
+  // Hook appointments so queue uses current stage
+  var _bha=window.buildHerbalAppointments;
+  if(typeof _bha==="function"){
+    window.buildHerbalAppointments=function(){
+      var list=_bha.apply(this,arguments)||window._waitList||[];
+      for(var i=0;i<list.length;i++) window.applyArcToCandidate(list[i]);
+      window._waitList=list;
+      return list;
+    };
+  }
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      window.applyArcToCandidate(cand);
+      var r=_scd.apply(this,arguments);
+      setTimeout(paintArcBanner,80);
+      setTimeout(paintArcBanner,220);
+      return r;
+    };
+  }
+  var _oh=window.openHerbalVisit;
+  if(typeof _oh==="function"){
+    window.openHerbalVisit=function(cand){
+      window.applyArcToCandidate(cand);
+      var r=_oh.apply(this,arguments);
+      setTimeout(paintArcBanner,80);
+      return r;
+    };
+  }
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var v=window._visit;
+        var lastOut=null;
+        var name=v&&(v.name||(v.cand&&v.cand.name));
+        var id=v&&(v.pid||(v.cand&&v.cand.pid)||name);
+        // outcome guessed from score
+        var sc=v&&v.score||0;
+        lastOut=sc>=10?"Breakthrough":sc>=6?"Improve":sc>=3?"Plateau":"Stuck";
+        if(id) window.advanceCharArc(id, lastOut);
+      }catch(e){}
+      var r=_vf.apply(this,arguments);
+      return r;
+    };
+  }
+
+  window.openArcCodex=function(){
+    ensureArcs();
+    var list=roster();
+    var html='<div class="section-kicker">100 CHARACTER ARCS</div>';
+    html+='<p class="muted" style="font-size:.78rem">Each guest has 4 staged visits. Progress saves.</p>';
+    for(var i=0;i<list.length;i++){
+      var pt=list[i];
+      var st=window.getCharStage(pt.id);
+      var arc=window.ARCS_100[pt.id];
+      var stage=arc.stages[st];
+      html+='<div class="card" style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;gap:8px">';
+      html+='<div><strong>'+esc(pt.name)+'</strong> <span class="pill">'+esc(pt.f)+'</span>';
+      html+='<div class="muted" style="font-size:.72rem">'+esc(stage.title)+' · “'+esc(stage.quote)+'”</div></div>';
+      html+='<span class="arc-stage">'+(st+1)+'/4</span></div></div>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Character arcs","CODEX",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnArcs100")) return;
+    var b=document.createElement("button");
+    b.id="btnArcs100"; b.className="btn ghost"; b.style.marginTop="8px";
+    b.textContent="🧵 100 character arcs";
+    b.onclick=function(){ window.openArcCodex(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   VET WING — pets in the still-room (FICTION ONLY)
+   Same card-visit loop. Not veterinary advice.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var PETS=[
+    {id:"PET-01",name:"Miso",species:"Cat",ic:"🐱",prob:"Hairballs after fast grooming",family:"Digestive",color:"Orange",
+      signs:"Gags on the rug · eats grass then looks betrayed",sol:"Slow meals · fiber fiction token · brush routine",
+      amz:["cat hairball gel","cat grooming brush","elevated cat food bowl"]},
+    {id:"PET-02",name:"Bramble",species:"Dog",ic:"🐶",prob:"Storm anxiety · hides under the table",family:"Sleep",color:"Blue",
+      signs:"Pacing before thunder · won't take treats",sol:"Safe den · white noise · calm routine (fiction)",
+      amz:["dog anxiety wrap","white noise machine","dog calming bed"]},
+    {id:"PET-03",name:"Nettle",species:"Dog",ic:"🐕",prob:"Stiff after the morning walk",family:"Pain-Stiffness",color:"Red",
+      signs:"Slow to rise · weather days worse",sol:"Warm rest · short walks · joint comfort token",
+      amz:["dog joint supplement glucosamine","orthopedic dog bed","dog ramp for couch"]},
+    {id:"PET-04",name:"Pip",species:"Cat",ic:"🐈",prob:"Midnight zoomies · won't settle",family:"Sleep",color:"Blue",
+      signs:"3am races · then demands breakfast",sol:"Play before dusk · puzzle feed · dark quiet room",
+      amz:["cat puzzle feeder","interactive cat wand toy","cat night light soft"]},
+    {id:"PET-05",name:"Cobalt",species:"Dog",ic:"🦮",prob:"Itchy paws · licks until raw (mild)",family:"Home-Environment",color:"White",
+      signs:"Chews feet after walks · seasonal",sol:"Wipe paws · air check · vet if open skin",
+      amz:["dog paw balm","dog booties for walks","pet air purifier"]},
+    {id:"PET-06",name:"Lumen",species:"Rabbit",ic:"🐰",prob:"Selective with hay · soft stool story",family:"Digestive",color:"Orange",
+      signs:"Leaves timothy · prefers treats",sol:"Hay first always · fresh water · urgent real vet if no poop",
+      amz:["timothy hay for rabbits","rabbit water bottle","rabbit hideout"]},
+    {id:"PET-07",name:"Quill",species:"Parrot",ic:"🦜",prob:"Plucks when the house is loud",family:"Mood-Energy",color:"Green",
+      signs:"Bare patch · screams at blender",sol:"Quiet hours · forage toys · not alone all day",
+      amz:["bird foraging toy","parrot stand","bird cage cover"]},
+    {id:"PET-08",name:"Moss",species:"Cat",ic:"🐱",prob:"Stress pees outside the box",family:"Boundaries",color:"Black",
+      signs:"Clean box still refused · new guest in house",sol:"Extra box · quiet zone · rule out medical with vet",
+      amz:["covered cat litter box","cat pheromone diffuser","cat hiding cave"]},
+    {id:"PET-09",name:"Ash",species:"Dog",ic:"🐶",prob:"Won't finish meals · picks at kibble",family:"Focus",color:"Yellow",
+      signs:"Walks away mid-bowl · begs later",sol:"Scheduled meals · puzzle bowl · no free-feed chaos",
+      amz:["slow feeder dog bowl","dog puzzle toy","measuring cup pet food"]},
+    {id:"PET-10",name:"Wren",species:"Guinea pig",ic:"🐹",prob:"Hide-all-day after a move",family:"Mood-Energy",color:"Green",
+      signs:"Frozen when lifted · soft chatter gone",sol:"Hide tunnels · pair bonding lore · quiet room",
+      amz:["guinea pig hideout","guinea pig tunnel","timothy hay guinea pig"]},
+    {id:"PET-11",name:"Sable",species:"Dog",ic:"🐕",prob:"Senior night restlessness",family:"Sleep",color:"Blue",
+      signs:"Paces the hall at 2am · daytime naps hard",sol:"Daylight walk · night routine · comfort bed",
+      amz:["orthopedic dog bed large","dog night light","senior dog soft treats"]},
+    {id:"PET-12",name:"Ivy",species:"Cat",ic:"🐈",prob:"Bored indoor hunter · attacks ankles",family:"Focus",color:"Yellow",
+      signs:"Ambush hallways · then sweet",sol:"Hunt-play-eat-sleep cycle · window perch",
+      amz:["cat window perch","feather wand toy","automatic cat laser toy"]}
+  ];
+
+  var PET_CARDS=[
+    {id:"p_observe",ic:"👁️",name:"Watch first",cost:0,care:3,type:"Any",d:"Behavior before advice"},
+    {id:"p_den",ic:"🛏️",name:"Safe den",cost:1,care:5,type:"Blue",d:"Calm terrain"},
+    {id:"p_pace",ic:"🐢",name:"Slow the day",cost:1,care:5,type:"Any",d:"Less chaos"},
+    {id:"p_wipe",ic:"🧼",name:"Paw / coat wipe",cost:1,care:4,type:"White",d:"Terrain reset"},
+    {id:"p_play",ic:"🎾",name:"Hunt-play bout",cost:1,care:6,type:"Yellow",d:"Focus outlet"},
+    {id:"p_fiber",ic:"🌾",name:"Fiber / hay story",cost:1,care:5,type:"Orange",d:"Digestive fiction"},
+    {id:"p_warm",ic:"🧡",name:"Warm rest",cost:1,care:6,type:"Red",d:"Stiff seniors"},
+    {id:"p_vet",ic:"🏥",name:"Refer real vet",cost:0,care:8,type:"Match",d:"Always valid — big care"},
+    {id:"p_owner",ic:"👤",name:"Coach the human",cost:1,care:5,type:"Black",d:"Routine is the leash"},
+    {id:"p_kit",ic:"🏮",name:"Pet comfort kit",cost:0,care:4,type:"Kit",d:"Uses lantern kit"}
+  ];
+
+  function ensure(){
+    if(!window.S) window.S={rp:50,day:1};
+    if(!S.petArc) S.petArc={};
+    if(!S.careKits) S.careKits={};
+    return S;
+  }
+
+  window.openVetWing=function(){
+    ensure();
+    var html='<div class="section-kicker">VET WING · STILL-ROOM FOR ANIMALS</div>';
+    html+='<p class="muted" style="font-size:.78rem"><strong>Fiction only.</strong> Not veterinary diagnosis or treatment. Emergencies, blood, no-urine, collapse, toxin → real vet / ER now. Product links are searches only.</p>';
+    for(var i=0;i<PETS.length;i++){
+      var p=PETS[i];
+      html+='<button type="button" class="vet-pet" onclick="window.startPetVisit('+i+')">';
+      html+='<strong>'+p.ic+' '+esc(p.name)+' · '+esc(p.species)+'</strong>';
+      html+='<span class="muted" style="font-size:.78rem">'+esc(p.prob)+'</span>';
+      html+='</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Vet wing","PETS",html);
+  };
+
+  window.startPetVisit=function(idx){
+    var p=PETS[idx]; if(!p) return;
+    ensure();
+    var stage=S.petArc[p.id]||0;
+    var cand={
+      name:p.name+" ("+p.species+")",
+      pid:p.id,
+      type:"Pet visit",
+      urgency:stage>=2?"Urgent":"Routine",
+      wellness:60+stage*5,
+      problems:[p.prob,p.signs,p.sol],
+      temperament:"Guarded",
+      diff:{id:stage>=3?"hard":"mid",label:stage>=3?"Hard":"Moderate"},
+      pr:{id:p.id,f:p.family,p:p.prob,color:p.color,att:1,quote:p.prob},
+      pet:true,petData:p,species:p.species
+    };
+    try{closeOverhaulModal();}catch(e){}
+    if(typeof startCardDuel==="function"){
+      startCardDuel(cand);
+      // deal pet cards into hand
+      setTimeout(function(){
+        try{
+          var d=window._duel;
+          if(!d) return;
+          for(var i=0;i<4;i++){
+            var c=PET_CARDS[Math.floor(Math.random()*PET_CARDS.length)];
+            if(d.hand.length<8) d.hand.push(Object.assign({},c));
+          }
+          d.log.unshift(p.ic+" "+p.species+" visit · "+p.sol);
+          // inject solution panel
+          var body=document.getElementById("overhaulModalBody");
+          if(body && !body.querySelector("[data-pet-sol]")){
+            var div=document.createElement("div");
+            div.dataset.petSol="1";
+            div.className="card";
+            var h='<div class="section-kicker">COMMON PROBLEM → CARE MAP (FICTION)</div>';
+            h+='<p><strong>'+esc(p.prob)+'</strong></p>';
+            h+='<p class="muted" style="font-size:.8rem">Signs: '+esc(p.signs)+'</p>';
+            h+='<p style="font-size:.84rem">Still-room map: '+esc(p.sol)+'</p>';
+            for(var a=0;a<p.amz.length;a++){
+              h+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(p.amz[a])+'">🛒 '+esc(p.amz[a])+'</a> ';
+            }
+            h+='<p class="muted" style="font-size:.7rem;margin-top:6px">Real pets: confirm with a veterinarian before any supplement or device.</p>';
+            div.innerHTML=h;
+            body.insertBefore(div, body.firstChild.nextSibling);
+          }
+        }catch(e){}
+      },120);
+    } else if(typeof toast==="function") toast("Open card visits to see pets");
+  };
+
+  // Advance pet arc on complete
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var v=window._visit;
+        if(v && v.pet && v.pid){
+          ensure();
+          S.petArc[v.pid]=Math.min(3,(S.petArc[v.pid]||0)+1);
+          if(typeof toast==="function") toast(v.name+" · pet stage "+(S.petArc[v.pid]+1)+"/4");
+        }
+      }catch(e){}
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnVetWing")) return;
+    var b=document.createElement("button");
+    b.id="btnVetWing"; b.className="btn"; b.style.marginTop="8px";
+    b.textContent="🐾 Vet wing · animal visits";
+    b.onclick=function(){ window.openVetWing(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   SERIOUS-ILLNESS STORIES — support, not fake cures
+   HIV / cancer visits are fiction about living with illness.
+   No peroxide, no "heal AIDS/cancer" products.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var STORIES=[
+    {id:"SI-01",name:"Jonah Vale",tag:"HIV · living",family:"Mood-Energy",color:"Green",
+      p:"Wants a room that isn't a lecture about his labs",
+      signs:"Tired after clinics · hungry for ordinary talk",
+      care:"Listen. Food. Sleep terrain. Meds belong with his HIV clinician — not this still-room.",
+      links:[
+        {t:"HIV.gov — what HIV treatment actually is",u:"https://www.hiv.gov/hiv-basics/staying-in-hiv-care/treatment/overview-of-hiv-treatments"},
+        {t:"CDC — HIV treatment",u:"https://www.cdc.gov/hiv/treatment/index.html"}
+      ]},
+    {id:"SI-02",name:"Maren Ash",tag:"Cancer · after infusion week",family:"Sleep",color:"Blue",
+      p:"Sleep is broken; she wants one kind hour, not a protocol",
+      signs:"Nausea hangover · lights too bright",
+      care:"Dim room. Water. Rest story. Oncology stays with her oncology team.",
+      links:[
+        {t:"American Cancer Society — coping & support",u:"https://www.cancer.org/cancer/survivorship/coping.html"},
+        {t:"NCI — side effects",u:"https://www.cancer.gov/about-cancer/treatment/side-effects"}
+      ]},
+    {id:"SI-03",name:"Theo Reed",tag:"Cancer · caregiver burnout",family:"Boundaries",color:"Black",
+      p:"He is not the patient. He is the calendar.",
+      signs:"Says yes to every ride · hasn't eaten sitting down",
+      care:"One no. One meal. Caregiver support pages — not a bottle.",
+      links:[
+        {t:"CancerCare — caregiver support",u:"https://www.cancercare.org/tagged/caregiving"},
+        {t:"NCI — caregivers",u:"https://www.cancer.gov/about-cancer/coping/caregiver-support"}
+      ]},
+    {id:"SI-04",name:"Sana Pike",tag:"HIV · first year on treatment",family:"Focus",color:"Yellow",
+      p:"Pills are going well. Shame is louder than the virus.",
+      signs:"Misses doses when visiting family · fog after nights",
+      care:"Routine card. No moralizing. Treatment info from HIV.gov.",
+      links:[
+        {t:"HIV.gov — staying on treatment",u:"https://www.hiv.gov/hiv-basics/staying-in-hiv-care/taking-care-of-yourself"},
+        {t:"CDC — prevention & care",u:"https://www.cdc.gov/hiv/index.html"}
+      ]},
+    {id:"SI-05",name:"Ellis's cousin (guest)",tag:"Cancer · pain + fear",family:"Pain-Stiffness",color:"Red",
+      p:"Pain is real. Fear is also real. Don't sell a miracle.",
+      signs:"Guarded gait · asks if you 'know something they don't'",
+      care:"Comfort + honest referral. Pain belongs with licensed clinicians.",
+      links:[
+        {t:"NCI — cancer pain",u:"https://www.cancer.gov/about-cancer/treatment/side-effects/pain"},
+        {t:"ACS — pain control",u:"https://www.cancer.org/cancer/managing-cancer/side-effects/pain.html"}
+      ]}
+  ];
+
+  window.openSeriousWing=function(){
+    var html='<div class="section-kicker">SERIOUS ILLNESS · STORY WING</div>';
+    html+='<p class="muted" style="font-size:.8rem">These visits are about <strong>living with</strong> HIV or cancer in fiction. ';
+    html+='This clinic does <strong>not</strong> treat, cure, or sell cures. ';
+    html+='Hydrogen peroxide (including “food grade” / ingested) is <strong>not</strong> a treatment for HIV or cancer and can cause serious harm.</p>';
+    for(var i=0;i<STORIES.length;i++){
+      var g=STORIES[i];
+      html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.startSeriousVisit('+i+')">';
+      html+='<strong>'+esc(g.name)+'</strong><div class="muted" style="font-size:.75rem">'+esc(g.tag)+' · '+esc(g.p)+'</div></button>';
+    }
+    html+='<button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Serious stories","SUPPORT",html);
+  };
+
+  window.startSeriousVisit=function(idx){
+    var g=STORIES[idx]; if(!g) return;
+    var cand={
+      name:g.name,pid:g.id,type:"Support visit",urgency:"Routine",wellness:58,
+      problems:[g.p,g.signs,g.care],temperament:"Guarded",
+      diff:{id:"hard",label:"Hard"},
+      pr:{id:g.id,f:g.family,p:g.p,color:g.color,att:2,quote:g.p},
+      serious:true,links:g.links,care:g.care
+    };
+    try{closeOverhaulModal();}catch(e){}
+    if(typeof startCardDuel==="function") startCardDuel(cand);
+    setTimeout(function(){
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-si]")) return;
+      var div=document.createElement("div");
+      div.dataset.si="1"; div.className="card";
+      var h='<div class="section-kicker">SUPPORT MAP · NOT A CURE</div>';
+      h+='<p style="font-size:.84rem">'+esc(g.care)+'</p>';
+      for(var i=0;i<g.links.length;i++){
+        h+='<p><a class="amz-link" target="_blank" rel="noopener" href="'+g.links[i].u+'">📗 '+esc(g.links[i].t)+'</a></p>';
+      }
+      h+='<p class="muted" style="font-size:.72rem">No peroxide. No miracle bottles. Licensed care for the disease; this room for the hour.</p>';
+      div.innerHTML=h;
+      body.insertBefore(div, body.firstChild);
+    },140);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnSerious")) return;
+    var b=document.createElement("button");
+    b.id="btnSerious"; b.className="btn sec"; b.style.marginTop="8px";
+    b.textContent="🤍 Serious stories · HIV & cancer support";
+    b.onclick=function(){ window.openSeriousWing(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,800);
+  setTimeout(mount,1800);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   AILMENT PICKER → HERB FINDINGS SHEET + AMAZON SEARCH
+   Folklore / game reference. Not diagnosis or treatment.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var AILMENTS=[
+    {id:"sleep",ic:"💙",name:"Trouble winding down / sleep",family:"Sleep",
+      note:"Still-room SETTLE terrain. Persistent insomnia or gasping at night → clinician.",
+      herbs:[
+        {h:"Chamomile",find:"Flower tea used in European folk settle-at-night stories.",q:"organic chamomile tea bags"},
+        {h:"Lemon balm",find:"Melissa — gentle nervine in many herbals.",q:"lemon balm tea"},
+        {h:"Passionflower",find:"Folk use for a busy mind at lights-out.",q:"passionflower tea"},
+        {h:"Magnesium (mineral)",find:"Game token for muscle/settle terrain — not a sleeping pill.",q:"magnesium glycinate"}
+      ]},
+    {id:"focus",ic:"💛",name:"Fog / can't start tasks",family:"Focus",
+      note:"GROUND / one-next-step. Sudden confusion or stroke signs → emergency care.",
+      herbs:[
+        {h:"Rosemary",find:"Traditional 'clarity' scent and leaf tea in kitchen herbals.",q:"rosemary essential oil"},
+        {h:"Bacopa",find:"Ayurvedic study herb; evidence mixed; clinician if on meds.",q:"bacopa monnieri"},
+        {h:"Peppermint",find:"Alert scent; tea after heavy meals in folk tables.",q:"peppermint tea bags"},
+        {h:"B-complex",find:"Vitamin token for 'energy of thinking' fiction + search.",q:"B complex vitamins"}
+      ]},
+    {id:"bound",ic:"🖤",name:"Can't say no / overloaded",family:"Boundaries",
+      note:"Black ledger. This is a script problem more than a bottle.",
+      herbs:[
+        {h:"Motherwort",find:"Old midwife plant; folk 'lion-hearted' nervine stories.",q:"motherwort tea"},
+        {h:"Hawthorn",find:"Heart-terrain folklore; interactions possible — clinician.",q:"hawthorn berry tea"},
+        {h:"Lemon balm",find:"Soft edge without a lecture.",q:"lemon balm tea"}
+      ]},
+    {id:"mood",ic:"💚",name:"Low fuel / flat mood",family:"Mood-Energy",
+      note:"Not a stand-in for depression care. If hopeless or unsafe → 988 / clinician.",
+      herbs:[
+        {h:"Tulsi (holy basil)",find:"Adaptogen folklore; tea first.",q:"tulsi tea"},
+        {h:"Ashwagandha",find:"Widely sold; thyroid/pregnancy cautions — not DIY medicine.",q:"ashwagandha capsules"},
+        {h:"Vitamin D",find:"Mineral/vitamin token; test with a clinician if deficient.",q:"vitamin D3"}
+      ]},
+    {id:"pain",ic:"❤️",name:"Stiff joints / desk ache",family:"Pain-Stiffness",
+      note:"New severe pain, swelling, fever, injury → clinician. This is comfort lore.",
+      herbs:[
+        {h:"Turmeric",find:"Kitchen rhizome; curcumin extracts are a common search.",q:"turmeric curcumin"},
+        {h:"Boswellia",find:"Frankincense resin in some joint formulas.",q:"boswellia extract"},
+        {h:"Ginger",find:"Warming folk tea; also digestive.",q:"ginger tea bags"},
+        {h:"Epsom soak",find:"Magnesium sulfate bath — comfort tool, not a cure.",q:"epsom salt"}
+      ]},
+    {id:"digest",ic:"🧡",name:"Heavy meals / unsettled gut",family:"Digestive",
+      note:"Blood in stool, black stool, severe pain, persistent vomiting → urgent care.",
+      herbs:[
+        {h:"Ginger",find:"Travel and kitchen nausea folklore.",q:"ginger tea bags"},
+        {h:"Peppermint",find:"After-dinner tea in many households.",q:"peppermint tea"},
+        {h:"Fennel",find:"Seed tea for gassy meals in folk tables.",q:"fennel seed tea"},
+        {h:"Chamomile",find:"Soft belly + settle overlap.",q:"organic chamomile tea bags"}
+      ]},
+    {id:"home",ic:"🤍",name:"Room fights rest (noise/light/air)",family:"Home-Environment",
+      note:"Terrain tools. Not herbs-as-medicine for the house.",
+      herbs:[
+        {h:"Nettle",find:"Spring tonic folklore; mineral-rich leaf tea stories.",q:"nettle leaf tea"},
+        {h:"Lavender (scent)",find:"Pillow and room scent tradition.",q:"dried lavender sachets"},
+        {h:"White noise / dark",find:"Comfort tools often beat another tea.",q:"white noise machine"}
+      ]},
+    {id:"cold",ic:"🤧",name:"Scratchy seasonal sniffles",family:"Restore",
+      note:"High fever, short breath, chest pain → clinician. Folklore teas only.",
+      herbs:[
+        {h:"Elderflower / elderberry",find:"European cold-season folklore; not a flu drug.",q:"elderberry tea"},
+        {h:"Thyme",find:"Kitchen steam and tea stories.",q:"thyme tea"},
+        {h:"Honey + lemon",find:"Soothing drink folklore (no honey for infants).",q:"raw honey"},
+        {h:"Vitamin C",find:"Popular search; modest evidence for colds.",q:"vitamin C capsules"}
+      ]},
+    {id:"skin",ic:"✨",name:"Dry / itchy comfort (mild)",family:"Home-Environment",
+      note:"Spreading rash, infection signs, face/eye swell → clinician.",
+      herbs:[
+        {h:"Calendula",find:"Skin-salve folklore.",q:"calendula salve"},
+        {h:"Oat bath",find:"Colloidal oatmeal comfort soaks.",q:"colloidal oatmeal bath"},
+        {h:"Aloe",find:"Gel for mild comfort stories.",q:"pure aloe vera gel"}
+      ]},
+    {id:"head",ic:"🧠",name:"Tension head (mild)",family:"Pain-Stiffness",
+      note:"Thunderclap, one-sided new worst, vision change, fever+stiff neck → ER.",
+      herbs:[
+        {h:"Peppermint (temples lore)",find:"Scent tradition; keep oil off eyes.",q:"peppermint essential oil"},
+        {h:"Feverfew",find:"Migraine folklore; interactions exist.",q:"feverfew tea"},
+        {h:"Hydration + magnesium",find:"Terrain first.",q:"magnesium glycinate"}
+      ]}
+  ];
+
+  window.openAilmentPicker=function(){
+    var html='<div class="section-kicker">PICK AN AILMENT</div>';
+    html+='<p class="muted" style="font-size:.78rem">Opens a findings sheet: folk notes + Amazon <em>product searches</em>. Not a diagnosis. Not a prescription.</p>';
+    for(var i=0;i<AILMENTS.length;i++){
+      var a=AILMENTS[i];
+      html+='<button type="button" class="ail-btn" onclick="window.openAilmentSheet(\''+a.id+'\')">'+a.ic+' '+esc(a.name)+'</button>';
+    }
+    html+='<button class="btn ghost" style="width:100%;margin-top:8px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Ailment sheets","REFERENCE",html);
+  };
+
+  window.openAilmentSheet=function(id){
+    var a=null;
+    for(var i=0;i<AILMENTS.length;i++) if(AILMENTS[i].id===id) a=AILMENTS[i];
+    if(!a) return;
+    var html='<div class="section-kicker">FINDINGS SHEET</div>';
+    html+='<h3 style="margin:4px 0">'+a.ic+' '+esc(a.name)+'</h3>';
+    html+='<p class="muted" style="font-size:.78rem">Family '+esc(a.family)+' · still-room fiction</p>';
+    html+='<div class="card"><strong>When this is not a sheet problem</strong><p class="muted" style="margin:6px 0 0;font-size:.8rem">'+esc(a.note)+'</p></div>';
+    html+='<div class="card"><div class="muted" style="font-size:.7rem">HERB & TOKEN FINDINGS</div>';
+    for(var h=0;h<a.herbs.length;h++){
+      var x=a.herbs[h];
+      html+='<div class="sheet-herb"><strong>'+esc(x.h)+'</strong><div class="muted">'+esc(x.find)+'</div>';
+      html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(x.q)+'">🛒 '+esc(x.q)+'</a></div>';
+    }
+    html+='</div>';
+    html+='<p class="muted" style="font-size:.72rem">Links are Amazon search pages, not endorsements. Herbs interact with medicines. Pregnancy, kids, liver/kidney disease → licensed clinician first.</p>';
+    html+='<button class="btn" style="width:100%" onclick="window.openAilmentPicker()">← All ailments</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(a.name,"SHEET",html);
+    if(window.sfx) window.sfx.ok();
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnAilments")) return;
+    var b=document.createElement("button");
+    b.id="btnAilments"; b.className="btn"; b.style.marginTop="8px";
+    b.textContent="📄 Ailment sheets · herbs + Amazon";
+    b.onclick=function(){ window.openAilmentPicker(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,700);
+  setTimeout(mount,1700);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mount,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   LONGER PLAY PACK — more cards + more sheets
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var MORE_CARDS=[
+    {id:"c_listen2",ic:"👂",name:"Second listen",cost:0,care:3,type:"Any",d:"Hear it again"},
+    {id:"c_water",ic:"💧",name:"Water first",cost:0,care:2,type:"Any",d:"Terrain"},
+    {id:"c_window",ic:"🪟",name:"Open a window",cost:0,care:3,type:"White",d:"Air"},
+    {id:"c_walk",ic:"🚶",name:"Five-minute walk",cost:1,care:5,type:"Green",d:"Mood fuel"},
+    {id:"c_stretch",ic:"🙆",name:"Desk unhunch",cost:1,care:5,type:"Red",d:"Shoulders"},
+    {id:"c_timer",ic:"⏱️",name:"Ten-minute box",cost:1,care:6,type:"Yellow",d:"Start ugly"},
+    {id:"c_no",ic:"🚫",name:"One clean no",cost:2,care:7,type:"Black",d:"Boundary"},
+    {id:"c_tea2",ic:"🍵",name:"Second cup",cost:1,care:4,type:"Blue",d:"Settle again"},
+    {id:"c_ginger",ic:"🫚",name:"Ginger story",cost:1,care:5,type:"Orange",d:"Gut weather"},
+    {id:"c_doc",ic:"📝",name:"Write the If–Then",cost:1,care:6,type:"Any",d:"Plan sticks"},
+    {id:"c_phone",ic:"📱",name:"Phone face-down",cost:1,care:5,type:"Blue",d:"Night terrain"},
+    {id:"c_light",ic:"💡",name:"Dim the lamp",cost:0,care:3,type:"White",d:"Room"},
+    {id:"c_salt",ic:"🧂",name:"Simple food",cost:1,care:4,type:"Orange",d:"Not a feast"},
+    {id:"c_friend",ic:"📨",name:"Text one true thing",cost:1,care:4,type:"Green",d:"Not a feed"},
+    {id:"c_refer",ic:"🏥",name:"Name a real clinician",cost:0,care:8,type:"Match",d:"Best card sometimes"},
+    {id:"c_laugh",ic:"😄",name:"Allow a laugh",cost:0,care:3,type:"Any",d:"Nervous system"},
+    {id:"c_blanket",ic:"🧺",name:"Weighted-story rest",cost:1,care:5,type:"Blue",d:"Nest"},
+    {id:"c_list",ic:"✅",name:"Three-line list",cost:1,care:5,type:"Yellow",d:"Not twenty"},
+    {id:"c_heat",ic:"🔥",name:"Heat pack story",cost:1,care:6,type:"Red",d:"Joints"},
+    {id:"c_mint",ic:"🌿",name:"Mint after",cost:1,care:4,type:"Orange",d:"Table close"}
+  ];
+
+  var MORE_SHEETS=[
+    {id:"eye",ic:"👁️",name:"Screen-tired eyes",family:"Home-Environment",note:"Sudden vision loss / one-eye dark → urgent care.",
+      herbs:[
+        {h:"Blink + 20-20-20",find:"Terrain first: look 20 ft, 20 seconds.",q:"blue light glasses"},
+        {h:"Warm cloth",find:"Comfort lore for tight faces.",q:"warm compress eye mask"},
+        {h:"Chamomile cool bag (folk)",find:"Pillow stories only — keep out of eyes if irritated.",q:"chamomile tea bags"}
+      ]},
+    {id:"travel",ic:"✈️",name:"Travel gut / odd hours",family:"Digestive",note:"Severe dehydration or blood → clinician.",
+      herbs:[
+        {h:"Ginger chews (folk)",find:"Motion stories.",q:"ginger chews"},
+        {h:"Peppermint",find:"After strange meals.",q:"peppermint tea"},
+        {h:"Electrolyte (not a herb)",find:"Terrain token for long days.",q:"electrolyte powder"}
+      ]},
+    {id:"season",ic:"🌾",name:"Itchy seasonal air",family:"Home-Environment",note:"Wheeze / face swell → emergency care.",
+      herbs:[
+        {h:"Nettle",find:"Spring tonic folklore.",q:"nettle leaf tea"},
+        {h:"Local honey stories",find:"Folk only; not immunotherapy. No honey for infants.",q:"raw honey"},
+        {h:"Saline rinse tool",find:"Comfort tool search.",q:"saline nasal rinse"}
+      ]},
+    {id:"grind",ic:"😬",name:"Jaw clench / morning tightness",family:"Pain-Stiffness",note:"Broken tooth / can't open jaw → dentist.",
+      herbs:[
+        {h:"Warm jaw rest",find:"Hands off grinding lore.",q:"warm compress"},
+        {h:"Magnesium token",find:"Settle mineral search.",q:"magnesium glycinate"},
+        {h:"Night guard search",find:"Device, not a herb.",q:"night guard for teeth grinding"}
+      ]},
+    {id:"cycle",ic:"🌙",name:"Cramp comfort (mild)",family:"Pain-Stiffness",note:"Sudden worst pain, fainting, heavy soak-through → clinician.",
+      herbs:[
+        {h:"Ginger / cinnamon kitchen teas",find:"Warming folklore.",q:"ginger tea bags"},
+        {h:"Heat bottle",find:"Tool first.",q:"heating pad"},
+        {h:"Raspberry leaf (folk)",find:"Traditional tea stories; pregnancy rules differ — clinician.",q:"red raspberry leaf tea"}
+      ]},
+    {id:"grief",ic:"🕯️",name:"Grief weather (not a disease)",family:"Mood-Energy",note:"If unsafe or stuck in despair → 988 / clinician. Tea is not therapy.",
+      herbs:[
+        {h:"Rose",find:"Heart-terrain folklore.",q:"rose tea"},
+        {h:"Hawthorn",find:"Old 'heart' plant stories.",q:"hawthorn berry tea"},
+        {h:"Walk + water",find:"Not Amazon required." ,q:"reusable water bottle"}
+      ]},
+    {id:"study",ic:"📚",name:"Exam week stack",family:"Focus",note:"Panic attacks / can't eat or sleep days → clinician.",
+      herbs:[
+        {h:"Rosemary",find:"Desk scent lore.",q:"rosemary essential oil"},
+        {h:"Lemon balm",find:"Edges without a lecture.",q:"lemon balm tea"},
+        {h:"Timer + one page",find:"The real card.",q:"analog kitchen timer"}
+      ]},
+    {id:"senior",ic:"🪶",name:"Slow morning body",family:"Pain-Stiffness",note:"Fall, new weakness, chest pain → urgent care.",
+      herbs:[
+        {h:"Warmth first",find:"Move after heat.",q:"epsom salt"},
+        {h:"Turmeric kitchen",find:"Food lore.",q:"turmeric curcumin"},
+        {h:"Stable shoes story",find:"Terrain.",q:"slip resistant slippers"}
+      ]}
+  ];
+
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(!d) return r;
+      d.maxRound=Math.max(d.maxRound||8, 10);
+      d.maxHp=Math.round((d.maxHp||24)*1.15);
+      d.hp=d.maxHp;
+      d.maxEnergy=Math.max(d.maxEnergy||3, 4);
+      for(var i=0;i<5;i++){
+        var c=MORE_CARDS[Math.floor(Math.random()*MORE_CARDS.length)];
+        if(d.hand.length<10) d.hand.push(Object.assign({},c));
+      }
+      d.log.unshift("Longer table: extra care cards dealt");
+    }catch(e){}
+    return r;
+  };
+
+  var _end=window.duelEndTurn;
+  window.duelEndTurn=function(){
+    var r=typeof _end==="function"?_end.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(d && d.hand && d.hand.length<10){
+        d.hand.push(Object.assign({}, MORE_CARDS[Math.floor(Math.random()*MORE_CARDS.length)]));
+      }
+    }catch(e){}
+    return r;
+  };
+
+  // Extend ailment picker
+  var _pick=window.openAilmentPicker;
+  window.openAilmentPicker=function(){
+    if(typeof _pick==="function") _pick();
+    setTimeout(function(){
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-more-ail]")) return;
+      var box=document.createElement("div");
+      box.dataset.moreAil="1";
+      var h='<div class="section-kicker" style="margin-top:10px">MORE SHEETS</div>';
+      for(var i=0;i<MORE_SHEETS.length;i++){
+        var a=MORE_SHEETS[i];
+        h+='<button type="button" class="ail-btn" onclick="window.openExtraSheet(\''+a.id+'\')">'+a.ic+' '+esc(a.name)+'</button>';
+      }
+      box.innerHTML=h;
+      body.appendChild(box);
+    },80);
+  };
+
+  window.openExtraSheet=function(id){
+    var a=null;
+    for(var i=0;i<MORE_SHEETS.length;i++) if(MORE_SHEETS[i].id===id) a=MORE_SHEETS[i];
+    if(!a) return;
+    var html='<div class="section-kicker">FINDINGS SHEET</div><h3>'+a.ic+' '+esc(a.name)+'</h3>';
+    html+='<p class="muted" style="font-size:.78rem">'+esc(a.family)+'</p>';
+    html+='<div class="card"><strong>Not a sheet problem when:</strong><p class="muted" style="font-size:.8rem">'+esc(a.note)+'</p></div>';
+    html+='<div class="card">';
+    for(var i=0;i<a.herbs.length;i++){
+      var x=a.herbs[i];
+      html+='<div class="sheet-herb"><strong>'+esc(x.h)+'</strong><div class="muted">'+esc(x.find)+'</div>';
+      html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(x.q)+'">🛒 '+esc(x.q)+'</a></div>';
+    }
+    html+='</div><button class="btn" style="width:100%" onclick="window.openAilmentPicker()">← All sheets</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(a.name,"SHEET",html);
+  };
+
+  window.MORE_CARDS=MORE_CARDS;
+  window.MORE_SHEETS=MORE_SHEETS;
+})();
+
+
+
+
+/* ==========================================================
+   MORE CARD EFFECTS — draw, shield, burn, double, multi, energy
+   ========================================================== */
+(function(){
+  var FX_CARDS=[
+    {id:"fx_draw",ic:"🃏",name:"Draw two",cost:1,care:2,type:"Any",d:"+2 cards",fx:{draw:2}},
+    {id:"fx_surge",ic:"⚡",name:"Energy surge",cost:0,care:1,type:"Any",d:"+2 energy",fx:{gainEnergy:2}},
+    {id:"fx_shield",ic:"🛡️",name:"Soft shield",cost:1,care:3,type:"Any",d:"Block next push",fx:{shield:1}},
+    {id:"fx_burn",ic:"🔥",name:"Linger care",cost:2,care:4,type:"Red",d:"+3 next turn",fx:{burn:3}},
+    {id:"fx_double",ic:"✨",name:"Echo",cost:2,care:4,type:"Match",d:"Double next care",fx:{nextDouble:true}},
+    {id:"fx_healE",ic:"🔋",name:"Full breath",cost:1,care:2,type:"Blue",d:"Energy to max",fx:{fillEnergy:true}},
+    {id:"fx_pierce",ic:"🎯",name:"True name",cost:2,care:8,type:"Yellow",d:"Heavy clear hit",fx:{bonus:2}},
+    {id:"fx_combo",ic:"🔗",name:"Combo link",cost:1,care:4,type:"Any",d:"Bonus after match",fx:{combo:3}},
+    {id:"fx_bloom",ic:"🌼",name:"Bloom",cost:1,care:4,type:"Green",d:"Draw 1",fx:{draw:1,score:2}},
+    {id:"fx_root",ic:"🌳",name:"Root down",cost:2,care:5,type:"White",d:"Shield + care",fx:{shield:1}},
+    {id:"fx_storm",ic:"🌪️",name:"Three sparks",cost:3,care:9,type:"Any",d:"Big multi care",fx:{score:2}},
+    {id:"fx_tea",ic:"🫖",name:"Shared tea",cost:1,care:4,type:"Orange",d:"+1 energy",fx:{gainEnergy:1}},
+    {id:"fx_moon",ic:"🌙",name:"Moon rest",cost:0,care:2,type:"Blue",d:"Shield + energy",fx:{shield:1,gainEnergy:1}},
+    {id:"fx_ink",ic:"🖋️",name:"Ink the plan",cost:1,care:5,type:"Black",d:"+score",fx:{score:3}},
+    {id:"fx_cleanse",ic:"💧",name:"Clear weather",cost:1,care:4,type:"Any",d:"Reset linger",fx:{cleanse:true}}
+  ];
+
+  function sideFx(d, card){
+    if(!d||!card||!card.fx) return;
+    var fx=card.fx, notes=[];
+    if(fx.draw){
+      var pool=FX_CARDS.concat(window.MORE_CARDS||[]);
+      for(var i=0;i<fx.draw;i++){
+        if(d.hand.length>=10) break;
+        d.hand.push(Object.assign({}, pool[Math.floor(Math.random()*pool.length)]));
+      }
+      notes.push("draw "+fx.draw);
+    }
+    if(fx.gainEnergy){ d.energy=Math.min(d.maxEnergy,(d.energy||0)+fx.gainEnergy); notes.push("+"+fx.gainEnergy+" nrg"); }
+    if(fx.fillEnergy){ d.energy=d.maxEnergy; notes.push("nrg full"); }
+    if(fx.shield){ d.shield=(d.shield||0)+fx.shield; notes.push("shield"); }
+    if(fx.burn){ d.burn=(d.burn||0)+fx.burn; notes.push("linger "+fx.burn); }
+    if(fx.score){ d.score=(d.score||0)+fx.score; notes.push("score"); }
+    if(fx.nextDouble){ d._nextDouble=true; notes.push("echo armed"); }
+    if(fx.combo && d._lastMatch){ d.hp=Math.max(0,d.hp-fx.combo); d.score+=1; notes.push("combo"); }
+    if(fx.bonus){ d.hp=Math.max(0,d.hp-fx.bonus); notes.push("bonus"); }
+    if(fx.cleanse){ d.burn=0; notes.push("cleared"); }
+    d._lastMatch=(card.type===d.color||card.type==="Match");
+    if(d._nextDouble && !fx.nextDouble){
+      // applied on following card in next play
+    }
+    if(notes.length) d.log.unshift("Effect · "+notes.join(", "));
+    if(typeof toast==="function" && notes.length) toast(card.ic+" "+notes.join(" · "));
+  }
+
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    var card=d&&d.hand&&d.hand[idx];
+    var snap=card?Object.assign({},card):null;
+    if(d && d._nextDouble && card){
+      card.care=Math.round((card.care||3)*2);
+      d._nextDouble=false;
+      if(d.log) d.log.unshift("Echo doubles "+card.name);
+    }
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    d=window._duel;
+    if(d && snap) sideFx(d, snap);
+    return r;
+  };
+
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(!d) return r;
+      d.shield=0; d.burn=0; d._lastMatch=false; d._nextDouble=false;
+      for(var i=0;i<4;i++){
+        if(d.hand.length>=10) break;
+        d.hand.push(Object.assign({}, FX_CARDS[Math.floor(Math.random()*FX_CARDS.length)]));
+      }
+      d.log.unshift("Effects live: draw · shield · linger · echo · surge");
+    }catch(e){}
+    return r;
+  };
+
+  var _end=window.duelEndTurn;
+  window.duelEndTurn=function(){
+    var d=window._duel;
+    if(d){
+      if(d.burn){ d.hp=Math.max(0,d.hp-d.burn); d.log.unshift("Linger · −"+d.burn); d.burn=0; }
+      if(d.shield){ d.log.unshift("Shield softens the push"); d.shield=Math.max(0,d.shield-1); }
+    }
+    var r=typeof _end==="function"?_end.apply(this,arguments):undefined;
+    try{
+      d=window._duel;
+      if(d && d.hand && d.hand.length<10){
+        d.hand.push(Object.assign({}, FX_CARDS[Math.floor(Math.random()*FX_CARDS.length)]));
+      }
+    }catch(e){}
+    return r;
+  };
+
+  window.FX_CARDS=FX_CARDS;
+})();
+
+
+
+
+/* ==========================================================
+   RESOURCE SUSTAIN — flame, attention, focus stay high
+   Regen on play so they don't run out
+   ========================================================== */
+(function(){
+  function ensure(){
+    if(!window.S) window.S={};
+    if(typeof S.lanternFuel!=="number") S.lanternFuel=85;
+    if(typeof S.att!=="number") S.att=14;
+    if(typeof S.focus!=="number") S.focus=12;
+    if(typeof S.rp!=="number") S.rp=50;
+    // soft caps
+    S._fuelCap=100;
+    S._attCap=16;
+    S._focusCap=14;
+    return S;
+  }
+
+  window.bumpResources=function(opts){
+    ensure();
+    opts=opts||{};
+    if(opts.flame) S.lanternFuel=Math.min(S._fuelCap,(S.lanternFuel||0)+opts.flame);
+    if(opts.att) S.att=Math.min(S._attCap,(S.att||0)+opts.att);
+    if(opts.focus) S.focus=Math.min(S._focusCap,(S.focus||0)+opts.focus);
+    if(opts.rp) S.rp=(S.rp||0)+opts.rp;
+    if(typeof save==="function") save({ui:false});
+  };
+
+  // Raise baselines once per load if low
+  ensure();
+  if(S.lanternFuel<70) S.lanternFuel=85;
+  if(S.att<10) S.att=14;
+  if(S.focus<8) S.focus=12;
+
+  // Regen cards in duel
+  var REGEN_CARDS=[
+    {id:"rg_flame",ic:"🪔",name:"Feed the flame",cost:0,care:2,type:"Any",d:"+12% flame",fx:{score:1},_regen:{flame:12}},
+    {id:"rg_att",ic:"👁️",name:"Clear eyes",cost:0,care:2,type:"Yellow",d:"+2 Attention",fx:{},_regen:{att:2}},
+    {id:"rg_focus",ic:"🧘",name:"Still point",cost:0,care:2,type:"Blue",d:"+2 Focus",fx:{},_regen:{focus:2}},
+    {id:"rg_all",ic:"✨",name:"Still-room breath",cost:1,care:3,type:"Any",d:"+flame +att +focus",fx:{draw:1},_regen:{flame:8,att:1,focus:1}},
+    {id:"rg_draw",ic:"🃏",name:"Deep draw",cost:1,care:2,type:"Any",d:"Draw 2 + focus",fx:{draw:2},_regen:{focus:1}}
+  ];
+
+  var _scd=window.startCardDuel;
+  window.startCardDuel=function(cand){
+    // spend less: refund attention soft
+    ensure();
+    if((S.att||0)<4) S.att=8;
+    if((S.focus||0)<3) S.focus=8;
+    if((S.lanternFuel||0)<25) S.lanternFuel=50;
+    var r=typeof _scd==="function"?_scd.apply(this,arguments):undefined;
+    try{
+      var d=window._duel;
+      if(!d) return r;
+      for(var i=0;i<2;i++){
+        if(d.hand.length>=10) break;
+        d.hand.push(Object.assign({}, REGEN_CARDS[Math.floor(Math.random()*REGEN_CARDS.length)]));
+      }
+      d.log.unshift("Sustain cards: flame · attention · focus");
+    }catch(e){}
+    return r;
+  };
+
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    var d=window._duel;
+    var card=d&&d.hand&&d.hand[idx];
+    var regen=card&&card._regen;
+    var r=typeof _play==="function"?_play.apply(this,arguments):undefined;
+    if(regen){
+      window.bumpResources(regen);
+      if(typeof toast==="function"){
+        var bits=[];
+        if(regen.flame) bits.push("flame +"+regen.flame+"%");
+        if(regen.att) bits.push("Att +"+regen.att);
+        if(regen.focus) bits.push("Focus +"+regen.focus);
+        toast("🪔 "+bits.join(" · "));
+      }
+      if(window.sfx) window.sfx.soft();
+    }
+    // small passive drip each play
+    if(Math.random()<0.35) window.bumpResources({flame:2,focus:1});
+    return r;
+  };
+
+  // After visit: restore pool so you don't dry out
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      var r=_vf.apply(this,arguments);
+      window.bumpResources({flame:10,att:3,focus:3,rp:1});
+      if(typeof toast==="function") toast("Resources recover · flame/Att/Focus up");
+      return r;
+    };
+  }
+
+  // Road walk feeds flame option already; add on finish
+  var _fr=window.finishRoadStory;
+  if(typeof _fr==="function"){
+    window.finishRoadStory=function(){
+      var r=_fr.apply(this,arguments);
+      window.bumpResources({flame:15,focus:2,att:1});
+      return r;
+    };
+  }
+
+  // Soft-block: if systems try to zero out, floor them
+  var _save=window.save;
+  if(typeof _save==="function"){
+    window.save=function(){
+      ensure();
+      if(S.att<0) S.att=0;
+      if(S.focus<0) S.focus=0;
+      if(S.lanternFuel<0) S.lanternFuel=0;
+      return _save.apply(this,arguments);
+    };
+  }
+
+  // HUD nudge on home
+  function paintRes(){
+    try{
+      ensure();
+      var home=document.getElementById("sc-home");
+      if(!home) return;
+      var el=document.getElementById("resSustain");
+      if(!el){
+        el=document.createElement("div");
+        el.id="resSustain";
+        el.className="card";
+        el.style.fontSize=".78rem";
+        home.insertBefore(el, home.firstChild);
+      }
+      el.innerHTML='<div class="section-kicker">CLINIC RESOURCES</div>'+
+        '🪔 Flame <b>'+Math.round(S.lanternFuel)+'%</b> · 👁️ Att <b>'+(S.att|0)+'</b>/'+(S._attCap||16)+
+        ' · 🧘 Focus <b>'+(S.focus|0)+'</b>/'+(S._focusCap||14)+
+        '<div class="muted" style="margin-top:4px">They refill on visits, sustain cards, and road walks — hard to run out.</div>';
+    }catch(e){}
+  }
+  setTimeout(paintRes,600);
+  setTimeout(paintRes,1600);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(paintRes,30);
+      return r;
+    };
+  }
+
+  window.REGEN_CARDS=REGEN_CARDS;
 })();
 
 </script>
