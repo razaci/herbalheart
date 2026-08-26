@@ -696,6 +696,16 @@ body{
 body.has-dock .wrap{padding-bottom:128px}
 .adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 
+
+/* ===== JUNG ROAD + TOP VET ===== */
+.top-vet{
+  position:sticky;top:0;z-index:12;display:flex;gap:6px;flex-wrap:wrap;
+  padding:6px 0 8px;background:rgba(13,27,39,.92);border-bottom:1px solid #29495c
+}
+.top-vet button{font:inherit;font-size:.68rem;padding:6px 8px;border-radius:10px;border:1px solid #3a5a4a;background:#143028;color:#c8e8d0;cursor:pointer}
+.prof-bar{height:8px;border-radius:99px;background:#1a303c;overflow:hidden;margin:4px 0 8px}
+.prof-bar>i{display:block;height:100%;background:#c4a0ff}
+
 </style>
 </head>
 <body>
@@ -12584,6 +12594,400 @@ window.GUILD_HERBS=[
 
   // Keep old startPetVisit working
   window.startPetVisit=function(idx){ window.startPetVisit100(idx%100); };
+})();
+
+
+
+/* ==========================================================
+   OLD ROAD SECRET HOROSCOPE + JUNG / SHADOW PLAY-PROFILE
+   Game fiction. Not a psychological diagnosis.
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+
+  var SIGNS=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  var FUNCS=["Thinking","Feeling","Sensation","Intuition"];
+  var ATT=["Extraversion","Introversion"];
+  var SHADOW=["The critic","The people-pleaser","The absent one","The fixer","The frozen child","The proud exile"];
+
+  function ensureP(){
+    if(!window.S) window.S={};
+    if(!S.psy){
+      S.psy={T:0,F:0,S:0,N:0,E:0,I:0,shadow:{},picks:0,secretSign:null,roadCards:[]};
+    }
+    return S.psy;
+  }
+
+  function addPsy(tag){
+    var p=ensureP();
+    p.picks++;
+    (tag||"").split(",").forEach(function(t){
+      t=t.trim();
+      if(t==="T") p.T++; else if(t==="F") p.F++;
+      else if(t==="S") p.S++; else if(t==="N") p.N++;
+      else if(t==="E") p.E++; else if(t==="I") p.I++;
+      else if(t.indexOf("sh:")===0){
+        var sh=t.slice(3);
+        p.shadow[sh]=(p.shadow[sh]||0)+1;
+      }
+    });
+    if(typeof save==="function") save({ui:false});
+  }
+
+  window.readJungProfile=function(){
+    var p=ensureP();
+    var fn=[["Thinking",p.T],["Feeling",p.F],["Sensation",p.S],["Intuition",p.N]].sort(function(a,b){return b[1]-a[1];});
+    var at=p.E>=p.I?"Extraversion":"Introversion";
+    var sh=Object.keys(p.shadow).sort(function(a,b){return p.shadow[b]-p.shadow[a];})[0]||"unmarked";
+    var idx=((p.T*3+p.F*5+p.S*7+p.N*11+p.E*13+p.I)%12);
+    var sign=p.secretSign||SIGNS[idx];
+    p.secretSign=sign;
+    return {
+      sign:sign,
+      attitude:at,
+      superior:fn[0][0],
+      auxiliary:fn[1][0],
+      inferior:fn[3][0],
+      shadow:sh,
+      picks:p.picks,
+      raw:p
+    };
+  };
+
+  var ROAD_PSY=[
+    {title:"Fork of the persona",narr:"Two masks on a stump. One smiles for the street. One does not.",
+      cards:[
+        {n:"Wear the smile",t:"T,E",txt:"You greet first. The road notes extraversion + thinking."},
+        {n:"Sit with the unsmiling one",t:"F,I",txt:"Feeling turns inward. Shadow: the people-pleaser stirs."},
+        {n:"Name both as costumes",t:"N,T",txt:"Intuition: persona is a tool, not a self."}
+      ]},
+    {title:"The well of the shadow",narr:"Your reflection is late arriving. When it does, it is slightly older.",
+      cards:[
+        {n:"Ask what it wants",t:"F,I,sh:The frozen child",txt:"You give the shadow a chair. It talks in small weather."},
+        {n:"Walk on",t:"T,E,sh:The absent one",txt:"Efficiency. The well keeps the question."},
+        {n:"Leave a token",t:"S,F,sh:The fixer",txt:"Sensation + care. You try to repair a hole that isn't a hole."}
+      ]},
+    {title:"Secret horoscope stone",narr:"Twelve cuts in basalt. One is warmer.",
+      cards:[
+        {n:"Touch the warm cut",t:"S,I",txt:"Sensation finds the body's sign before the chart does."},
+        {n:"Read all twelve first",t:"T,N",txt:"Thinking + intuition: map before contact."},
+        {n:"Refuse to pick",t:"F,N,sh:The proud exile",txt:"You will not be filed. The stone files you anyway."}
+      ]},
+    {title:"Anima / animus weather",narr:"A voice that is not quite yours offers a shorter path.",
+      cards:[
+        {n:"Follow the voice a little",t:"N,F",txt:"Inner other as guide — not as boss."},
+        {n:"Ask its name",t:"T,F",txt:"Dialogue. Jung would call this work."},
+        {n:"Keep your own pace",t:"S,I,sh:The critic",txt:"The critic says the voice is a trick. Sometimes it is."}
+      ]},
+    {title:"The clinic in the dream",narr:"You are both healer and guest. The chair faces itself.",
+      cards:[
+        {n:"Sit as the guest",t:"F,I",txt:"Receptive. Inferior function gets a turn."},
+        {n:"Stand as the healer",t:"T,E,sh:The fixer",txt:"Competence as armor."},
+        {n:"Turn both chairs to the window",t:"N,S",txt:"Neither role owns the hour."}
+      ]}
+  ];
+
+  window.openJungRoad=function(){
+    if((window.S&&S.lanternFuel||70)<8){
+      if(typeof toast==="function") toast("Flame too low");
+      return;
+    }
+    ensureP();
+    if(typeof S.jungCh!=="number") S.jungCh=0;
+    renderJungCh();
+    if(window.sfx) window.sfx.door();
+  };
+
+  function renderJungCh(){
+    var ch=ROAD_PSY[Math.min(S.jungCh||0, ROAD_PSY.length-1)];
+    var html='<div class="section-kicker">OLD ROAD · INNER CHART '+( (S.jungCh||0)+1)+'/'+ROAD_PSY.length+'</div>';
+    html+='<p class="muted" style="font-size:.72rem">Fiction profile from play. Not a diagnosis. Not clinical Jungian analysis.</p>';
+    html+='<h3>'+esc(ch.title)+'</h3><p style="line-height:1.45">'+esc(ch.narr)+'</p>';
+    for(var i=0;i<ch.cards.length;i++){
+      html+='<button class="rs-card" style="width:100%;margin-bottom:8px;text-align:left;padding:10px;border-radius:12px;border:1px solid #4a3a6a;background:#161022;color:inherit;font:inherit" onclick="window.pickJungCard('+i+')">';
+      html+='<strong>'+esc(ch.cards[i].n)+'</strong></button>';
+    }
+    html+='<button class="btn sec" style="width:100%" onclick="window.openPsySheet()">Secret horoscope + profile</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Leave the road</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Inner road","JUNG",html);
+  }
+
+  window.pickJungCard=function(i){
+    var ch=ROAD_PSY[Math.min(S.jungCh||0, ROAD_PSY.length-1)];
+    var c=ch.cards[i]; if(!c) return;
+    addPsy(c.t);
+    var p=ensureP();
+    p.roadCards.push(ch.title+": "+c.n);
+    if((S.lanternFuel||80)>0) S.lanternFuel=Math.max(0,S.lanternFuel-3);
+    var last=(S.jungCh||0)>=ROAD_PSY.length-1;
+    S.jungCh=last?0:(S.jungCh||0)+1;
+    if(last) p.secretSign=window.readJungProfile().sign;
+    var html='<div class="card glow"><strong>'+esc(c.n)+'</strong><p style="margin:8px 0">'+esc(c.txt)+'</p>';
+    html+='<button class="btn" style="width:100%" onclick="'+(last?'window.openPsySheet()':'window.openJungRoad()')+'">'+(last?'Reveal secret chart':'Next stone')+'</button></div>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(c.n,"SHADOW",html);
+    if(window.sfx) window.sfx.ok();
+  };
+
+  window.openPsySheet=function(){
+    var r=window.readJungProfile();
+    var p=r.raw;
+    function bar(n,max){
+      var pct=Math.min(100, Math.round(100*(n||0)/Math.max(1,max||8)));
+      return '<div class="prof-bar"><i style="width:'+pct+'%"></i></div>';
+    }
+    var max=Math.max(p.T,p.F,p.S,p.N,1);
+    var html='<div class="section-kicker">SECRET HOROSCOPE · PLAY PROFILE</div>';
+    html+='<h3>✨ '+esc(r.sign)+'</h3>';
+    html+='<p>Attitude: <b>'+esc(r.attitude)+'</b><br>Superior: <b>'+esc(r.superior)+'</b> · Auxiliary: <b>'+esc(r.auxiliary)+'</b><br>Inferior (tender): <b>'+esc(r.inferior)+'</b><br>Shadow figure in play: <b>'+esc(r.shadow)+'</b></p>';
+    html+='<p class="muted" style="font-size:.75rem">Built from '+r.picks+' choices on the inner road and visits. Folklore + Jung language as game flavor only.</p>';
+    html+='Thinking'+bar(p.T,max)+'Feeling'+bar(p.F,max)+'Sensation'+bar(p.S,max)+'Intuition'+bar(p.N,max);
+    html+='<p class="muted" style="font-size:.78rem">Extraversion '+p.E+' · Introversion '+p.I+'</p>';
+    html+='<button class="btn" style="width:100%" onclick="window.openJungRoad()">Walk another inner chapter</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Inner chart","PROFILE",html);
+  };
+
+  // Tag some duel plays as psyche ticks
+  var _play=window.playDuelCard;
+  window.playDuelCard=function(idx){
+    try{
+      var d=window._duel, c=d&&d.hand&&d.hand[idx];
+      if(c){
+        var map={Blue:"F,I",Yellow:"T,E",Red:"S,E",Orange:"S,F",Green:"F,N",Black:"T,I",White:"S,I",Any:"N",Match:"N,T"};
+        addPsy(map[c.type]||"N");
+      }
+    }catch(e){}
+    return typeof _play==="function"?_play.apply(this,arguments):undefined;
+  };
+
+  function mountTop(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("topVetBar")) return;
+    var bar=document.createElement("div");
+    bar.id="topVetBar"; bar.className="top-vet";
+    bar.innerHTML=
+      '<button type="button" onclick="window.openVetWing&&openVetWing()">🐾 Vet wing</button>'+
+      '<button type="button" onclick="window.vetAdv&&vetAdv(\'refer\')">🏥 Refer vet</button>'+
+      '<button type="button" onclick="window.openJungRoad&&openJungRoad()">🔮 Inner road</button>'+
+      '<button type="button" onclick="window.openPsySheet&&openPsySheet()">✨ Secret chart</button>';
+    home.insertBefore(bar, home.firstChild);
+  }
+  setTimeout(mountTop,500);
+  setTimeout(mountTop,1500);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mountTop,30);
+      return r;
+    };
+  }
+
+  // Dock already has vet; add inner road if dock exists
+  setTimeout(function(){
+    var dock=document.getElementById("clinicDock");
+    if(dock && !document.getElementById("dockJung")){
+      var b=document.createElement("button");
+      b.id="dockJung"; b.textContent="🔮 Inner";
+      b.onclick=function(){ window.openJungRoad(); };
+      dock.appendChild(b);
+    }
+  },800);
+})();
+
+
+
+/* ==========================================================
+   PATIENT HOROSCOPE FINDINGS — choose + play
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m];});}
+  function amz(q){return "https://www.amazon.com/s?k="+encodeURIComponent(q);}
+
+  var ZODIAC={
+    Aries:{ic:"♈",el:"Fire",mod:"Cardinal",body:"Head / spark",gift:"Starts the step",shadow:"Burns the plan",herb:"Rosemary",q:"rosemary essential oil",line:"Name one first move before the hour ends."},
+    Taurus:{ic:"♉",el:"Earth",mod:"Fixed",body:"Throat / steady",gift:"Slow is not stuck",shadow:"Stays past the useful",herb:"Rose",q:"rose tea",line:"Keep the plan chewable."},
+    Gemini:{ic:"♊",el:"Air",mod:"Mutable",body:"Hands / talk",gift:"Two doors of thought",shadow:"Starts twelve, finishes none",herb:"Peppermint",q:"peppermint tea",line:"Pick the thought that can finish."},
+    Cancer:{ic:"♋",el:"Water",mod:"Cardinal",body:"Chest / nest",gift:"Room as medicine",shadow:"Mood as weather system",herb:"Chamomile",q:"organic chamomile tea bags",line:"Nest before advice."},
+    Leo:{ic:"♌",el:"Fire",mod:"Fixed",body:"Heart / pride",gift:"Dignity first",shadow:"Won't try what isn't beautiful",herb:"Calendula",q:"calendula tea",line:"Honor them; then the step."},
+    Virgo:{ic:"♍",el:"Earth",mod:"Mutable",body:"Gut / craft",gift:"One tidy If–Then",shadow:"Perfect or nothing",herb:"Fennel",q:"fennel seed tea",line:"Good enough is a finish."},
+    Libra:{ic:"♎",el:"Air",mod:"Cardinal",body:"Balance / other",gift:"Fair no",shadow:"Yes to keep the peace",herb:"Lemon balm",q:"lemon balm tea",line:"Make the no small and clean."},
+    Scorpio:{ic:"♏",el:"Water",mod:"Fixed",body:"Depth / door",gift:"Truth without theater",shadow:"Tests every kindness",herb:"Hawthorn",q:"hawthorn berry tea",line:"Offer a door they can close."},
+    Sagittarius:{ic:"♐",el:"Fire",mod:"Mutable",body:"Hips / horizon",gift:"Meaning in motion",shadow:"Lecture instead of step",herb:"Tulsi",q:"tulsi tea",line:"Horizon, not a sermon."},
+    Capricorn:{ic:"♑",el:"Earth",mod:"Cardinal",body:"Knees / duty",gift:"Structure that holds",shadow:"Rest feels like failure",herb:"Nettle",q:"nettle leaf tea",line:"Permission to stop is work."},
+    Aquarius:{ic:"♒",el:"Air",mod:"Fixed",body:"Ankles / odd",gift:"Weird tools welcome",shadow:"Alone as ideology",herb:"Lavender",q:"dried lavender sachets",line:"Odd counts if it works."},
+    Pisces:{ic:"♓",el:"Water",mod:"Mutable",body:"Feet / tide",gift:"Soft boundaries",shadow:"Dissolves into others",herb:"Passionflower",q:"passionflower tea",line:"One edge that stays."}
+  };
+  var SIGN_LIST=Object.keys(ZODIAC);
+
+  function signFor(seed){
+    var n=0, s=String(seed||"x");
+    for(var i=0;i<s.length;i++) n+=s.charCodeAt(i);
+    return SIGN_LIST[n%12];
+  }
+
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.patientSigns) S.patientSigns={};
+    return S;
+  }
+
+  window.getPatientSign=function(pid, name){
+    ensure();
+    var key=pid||name||"guest";
+    if(S.patientSigns[key]) return S.patientSigns[key];
+    return signFor(key);
+  };
+
+  window.choosePatientSign=function(pid, sign){
+    ensure();
+    if(!ZODIAC[sign]) return;
+    S.patientSigns[pid]=sign;
+    if(typeof save==="function") save({ui:false});
+    if(typeof toast==="function") toast(ZODIAC[sign].ic+" "+sign+" set for this guest");
+    window.showPatientHoroSheet(pid, (window._visit&&window._visit.name)||pid);
+  };
+
+  window.showPatientHoroSheet=function(pid, name){
+    ensure();
+    var key=pid||name;
+    var cur=window.getPatientSign(key, name);
+    var z=ZODIAC[cur];
+    var html='<div class="section-kicker">PATIENT HOROSCOPE FINDINGS</div>';
+    html+='<h3>'+(z.ic||"✨")+' '+esc(name||"Guest")+' · '+esc(cur)+'</h3>';
+    html+='<p class="muted" style="font-size:.75rem">Choose a sign to re-roll findings for this visit. Game fiction only.</p>';
+    html+='<div class="card"><div class="muted" style="font-size:.7rem">ELEMENT · MODE · BODY LORE</div>';
+    html+='<p><b>'+esc(z.el)+'</b> · '+esc(z.mod)+' · '+esc(z.body)+'</p>';
+    html+='<p><b>Gift:</b> '+esc(z.gift)+'<br><b>Shadow weather:</b> '+esc(z.shadow)+'</p>';
+    html+='<p style="font-style:italic">“'+esc(z.line)+'”</p>';
+    html+='<p><b>Herb token:</b> '+esc(z.herb)+'</p>';
+    html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(z.q)+'">🛒 '+esc(z.q)+'</a></div>';
+    html+='<div class="muted" style="font-size:.7rem;margin:8px 0 4px">CHOOSE SIGN</div><div style="display:flex;flex-wrap:wrap;gap:4px">';
+    for(var i=0;i<SIGN_LIST.length;i++){
+      var s=SIGN_LIST[i], zz=ZODIAC[s];
+      html+='<button type="button" class="btn sm'+(s===cur?'':' sec')+'" onclick="window.choosePatientSign(\''+String(key).replace(/'/g,"")+'\,\''+s+'\')">'+(zz.ic+' '+s)+'</button>';
+    }
+    // fix onclick quotes
+    html=html.replace(/choosePatientSign\('([^']+)\\,''/g, "choosePatientSign('$1','");
+    html+='</div>';
+    html+='<button class="btn" style="width:100%;margin-top:10px" onclick="window.applyHoroToDuel(\''+cur+'\')">Apply to this visit · +care if element matches</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="closeOverhaulModal()">Close</button>';
+    // rebuild choose buttons cleanly
+    html='<div class="section-kicker">PATIENT HOROSCOPE FINDINGS</div>';
+    html+='<h3>'+z.ic+' '+esc(name||"Guest")+' · '+esc(cur)+'</h3>';
+    html+='<p class="muted" style="font-size:.75rem">Pick a sign for this guest. Findings update. Fiction only.</p>';
+    html+='<div class="card"><p><b>'+esc(z.el)+'</b> · '+esc(z.mod)+' · '+esc(z.body)+'</p>';
+    html+='<p><b>Gift:</b> '+esc(z.gift)+'<br><b>Shadow weather:</b> '+esc(z.shadow)+'</p>';
+    html+='<p style="font-style:italic">“'+esc(z.line)+'”</p>';
+    html+='<p>Herb token: <b>'+esc(z.herb)+'</b></p>';
+    html+='<a class="amz-link" target="_blank" rel="noopener" href="'+amz(z.q)+'">🛒 '+esc(z.q)+'</a></div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin:8px 0">';
+    for(var j=0;j<SIGN_LIST.length;j++){
+      var sg=SIGN_LIST[j];
+      html+='<button type="button" class="btn sm" data-psign="'+sg+'" data-pid="'+esc(key)+'">'+ZODIAC[sg].ic+' '+sg+'</button>';
+    }
+    html+='</div>';
+    html+='<button class="btn" style="width:100%" id="btnApplyHoro">Apply sign to visit</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Horoscope findings","ZODIAC",html);
+    setTimeout(function(){
+      document.querySelectorAll("[data-psign]").forEach(function(btn){
+        btn.onclick=function(){
+          window.choosePatientSign(btn.getAttribute("data-pid"), btn.getAttribute("data-psign"));
+        };
+      });
+      var ap=document.getElementById("btnApplyHoro");
+      if(ap) ap.onclick=function(){ window.applyHoroToDuel(window.getPatientSign(key)); };
+    },50);
+  };
+
+  window.applyHoroToDuel=function(sign){
+    var z=ZODIAC[sign]; if(!z) return;
+    var d=window._duel;
+    if(d){
+      d.sign=sign; d.element=z.el; d.horo=z.line;
+      d.hand.push({id:"horo_gift",ic:z.ic,name:sign+" gift",cost:1,care:7,type:z.el==="Fire"?"Red":z.el==="Water"?"Blue":z.el==="Earth"?"White":"Yellow",d:z.gift});
+      d.log.unshift(z.ic+" "+sign+" findings applied · "+z.line);
+      if(typeof toast==="function") toast(z.ic+" "+sign+" card dealt");
+    }
+    if(typeof toast==="function") toast(z.ic+" "+z.line);
+  };
+
+  // Inject button into duel / visit
+  function paintHoroBtn(){
+    try{
+      var body=document.getElementById("overhaulModalBody");
+      if(!body||body.querySelector("[data-horo-btn]")) return;
+      var v=window._visit||window._duel||{};
+      var name=v.name||(v.cand&&v.cand.name)||"Guest";
+      var pid=(v.cand&&v.cand.pid)||v.pid||name;
+      var sign=window.getPatientSign(pid, name);
+      var z=ZODIAC[sign];
+      var bar=document.createElement("div");
+      bar.dataset.horoBtn="1";
+      bar.className="card";
+      bar.innerHTML='<div class="section-kicker">HOROSCOPE FINDINGS</div>'+
+        '<p style="font-size:.84rem">'+z.ic+' <b>'+esc(sign)+'</b> · '+esc(z.el)+' · “'+esc(z.line)+'”</p>'+
+        '<button class="btn sm" type="button">Choose / expand findings</button>';
+      bar.querySelector("button").onclick=function(){ window.showPatientHoroSheet(pid, name); };
+      body.insertBefore(bar, body.firstChild);
+    }catch(e){}
+  }
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      if(cand){
+        var pid=cand.pid||cand.name;
+        var sign=window.getPatientSign(pid, cand.name);
+        cand.sign=sign; cand.horo=ZODIAC[sign];
+      }
+      var r=_scd.apply(this,arguments);
+      setTimeout(paintHoroBtn,100);
+      setTimeout(paintHoroBtn,280);
+      return r;
+    };
+  }
+
+  // Farm-style play: "garden of signs" mini board on home
+  function mountGarden(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("signGarden")) return;
+    var g=document.createElement("div");
+    g.id="signGarden"; g.className="card";
+    var h='<div class="section-kicker">SIGN GARDEN · FINDINGS PLAY</div>';
+    h+='<p class="muted" style="font-size:.75rem">Tend a sign to open its herb token + line. Same data used on patients.</p><div style="display:flex;flex-wrap:wrap;gap:4px">';
+    for(var i=0;i<SIGN_LIST.length;i++){
+      h+='<button type="button" class="btn sm sec" data-garden="'+SIGN_LIST[i]+'">'+ZODIAC[SIGN_LIST[i]].ic+'</button>';
+    }
+    h+='</div><div id="gardenOut" style="margin-top:8px"></div>';
+    g.innerHTML=h;
+    home.appendChild(g);
+    g.querySelectorAll("[data-garden]").forEach(function(btn){
+      btn.onclick=function(){
+        var sg=btn.getAttribute("data-garden");
+        var z=ZODIAC[sg];
+        var out=document.getElementById("gardenOut");
+        if(out){
+          out.innerHTML='<b>'+z.ic+' '+sg+'</b> · '+z.el+'<br>'+z.line+
+            '<br><a class="amz-link" target="_blank" rel="noopener" href="'+amz(z.q)+'">🛒 '+z.q+'</a>';
+        }
+        if(window.bumpResources) window.bumpResources({focus:1,flame:2});
+        if(typeof toast==="function") toast(z.ic+" tended");
+      };
+    });
+  }
+  setTimeout(mountGarden,900);
+  setTimeout(mountGarden,2000);
+  var _rgh=window.renderGameplayHome;
+  if(typeof _rgh==="function"){
+    window.renderGameplayHome=function(){
+      var r=_rgh.apply(this,arguments);
+      setTimeout(mountGarden,40);
+      return r;
+    };
+  }
+
+  window.ZODIAC=ZODIAC;
 })();
 
 </script>
