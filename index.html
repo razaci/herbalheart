@@ -787,6 +787,16 @@ body.has-dock .wrap{padding-bottom:24px!important}
 .diff-4{background:#3a1018;color:#ff8a9a}
 .redlight-btn{width:100%;padding:10px;margin:6px 0;border-radius:12px;border:1px solid #8a3040;background:#2a1018;color:#ffc8d0;font:inherit;cursor:pointer}
 
+
+/* ===== SYNERGY ICONS ===== */
+.syn-ico{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#1a2830;border:1px solid #4a6a7a;font-size:1.1rem;margin-right:8px;flex-shrink:0}
+.syn-row{display:flex;align-items:flex-start;gap:4px;margin-bottom:8px;text-align:left}
+.syn-pop{position:fixed;left:50%;top:28%;transform:translate(-50%,-50%);z-index:300;
+  padding:14px 18px;border-radius:16px;background:#1a1020;border:1px solid #c4a0ff;
+  color:#f0e8ff;font-size:1rem;font-weight:700;pointer-events:none;
+  animation:synPop .9s ease-out forwards}
+@keyframes synPop{0%{opacity:0;transform:translate(-50%,-40%) scale(.9)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
+
 </style>
 </head>
 <body>
@@ -14847,6 +14857,201 @@ window.GUILD_HERBS=[
       return r;
     };
   }
+})();
+
+
+
+/* Card mechanics reference panel */
+(function(){
+  window.openCardMechanics=function(){
+    var html='<div class="section-kicker">CARD MECHANICS</div>';
+    html+='<div class="card"><b>Goal</b><p class="muted" style="font-size:.82rem">Lower Affliction HP to 0 by playing cards. Each card spends Energy and deals Care. Match the guest\'s color/element for better results.</p></div>';
+    html+='<div class="card"><b>Turn loop</b><ol style="margin:6px 0 0 18px;font-size:.82rem"><li>Choose 3 help cards (visit start)</li><li>Tap a card if you can afford its cost</li><li>Care chips Affliction HP</li><li>End turn → energy recovers, linger resolves, draw</li><li>Win at 0 HP or Finish visit</li></ol></div>';
+    html+='<div class="card"><b>Stats on a card</b><p class="muted" style="font-size:.82rem"><b>Cost</b> — Energy to play<br><b>Care</b> — damage to Affliction HP<br><b>Type</b> — Red Fire · Yellow/Black Air · Blue/Green Water · White/Orange Earth · Any · Match<br><b>Effects</b> — draw, shield, linger, echo, energy, path marks</p></div>';
+    html+='<div class="card"><b>Bonuses</b><p class="muted" style="font-size:.82rem">Type matches guest color → stronger care<br>Element chart (Fire/Earth/Air/Water) multiplies care<br>Moon phase multiplies care<br>Your path history boosts trust/boundary/refer cards</p></div>';
+    html+='<div class="card"><b>Difficulty</b><p class="muted" style="font-size:.82rem">Higher levels = more HP, less energy, longer rounds. Weak visits worsen the guest\'s problem stage.</p></div>';
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Card mechanics","RULES",html);
+  };
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnCardMech")) return;
+    var b=document.createElement("button");
+    b.id="btnCardMech"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="🃏 Card mechanics";
+    b.onclick=function(){ window.openCardMechanics(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,600);
+  setTimeout(mount,1600);
+})();
+
+
+
+/* ==========================================================
+   SPECIFIC CARD SYNERGIES (combos that fire in-duel)
+   ========================================================== */
+(function(){
+  var COMBOS=[
+    {a:"listen",b:"refer",name:"Hear then send",bonus:4,log:"Trust→Refer: the door stays honest"},
+    {a:"nest",b:"phone",name:"Night nest",bonus:3,log:"Settle×Settle: the room holds"},
+    {a:"step",b:"write",name:"Step on paper",bonus:3,log:"Action+Plan: the If–Then sticks"},
+    {a:"no",b:"step",name:"No, then move",bonus:4,log:"Boundary+Action: clear and go"},
+    {a:"body",b:"red",name:"Warm + lamp",bonus:3,log:"Body+Device: comfort stack"},
+    {a:"gut",b:"nest",name:"Table then bed",bonus:3,log:"Gut+Settle: full-hour care"},
+    {a:"listen",b:"write",name:"Heard → written",bonus:3,log:"Trust+Plan: their words, one line"},
+    {a:"refer",b:"no",name:"Limit + edge",bonus:2,log:"Refer+Boundary: still-room knows its job"},
+    {a:"walk",b:"step",name:"Motion pair",bonus:3,log:"Action×2: the body leads"},
+    {a:"flame",b:"listen",name:"Lit listen",bonus:2,log:"Sustain+Trust: the hour is funded"}
+  ];
+
+  function meanId(card){
+    if(!card) return "";
+    if(card.mean) return card.mean;
+    var n=(card.name||"").toLowerCase();
+    if(n.indexOf("listen")>=0) return "listen";
+    if(n.indexOf("nest")>=0||n.indexOf("phone")>=0) return "settle";
+    if(n.indexOf("step")>=0||n.indexOf("walk")>=0) return "action";
+    if(n.indexOf("no")>=0||n.indexOf("boundary")>=0) return "boundary";
+    if(n.indexOf("joint")>=0||n.indexOf("warm")>=0) return "body";
+    if(n.indexOf("table")>=0||n.indexOf("tea")>=0||n.indexOf("ginger")>=0) return "gut";
+    if(n.indexOf("clinician")>=0||n.indexOf("refer")>=0) return "refer";
+    if(n.indexOf("red")>=0||n.indexOf("lamp")>=0) return "device";
+    if(n.indexOf("if")>=0||n.indexOf("write")>=0||n.indexOf("ink")>=0) return "plan";
+    if(n.indexOf("flame")>=0||n.indexOf("feed")>=0) return "sustain";
+    // map mean tags to combo keys
+    var map={trust:"listen",settle:"nest",action:"step",boundary:"no",body:"body",gut:"gut",refer:"refer",device:"red",plan:"write",sustain:"flame"};
+    return map[card.mean]||card.mean||"";
+  }
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      var tag=meanId(card);
+      var r=_play.apply(this,arguments);
+      try{
+        d=window._duel;
+        if(!d||!card) return r;
+        if(!d._comboHist) d._comboHist=[];
+        d._comboHist.push(tag);
+        if(d._comboHist.length>8) d._comboHist.shift();
+        // check last two / any pair in history
+        for(var i=0;i<COMBOS.length;i++){
+          var c=COMBOS[i];
+          var ha=d._comboHist.indexOf(c.a);
+          var hb=d._comboHist.indexOf(c.b);
+          if(ha>=0 && hb>=0 && !d._comboFired){
+            // fire once per pair per visit when both present
+            var key=c.a+"+"+c.b;
+            d._comboDone=d._comboDone||{};
+            if(d._comboDone[key]) continue;
+            d._comboDone[key]=1;
+            d.hp=Math.max(0,d.hp-(c.bonus||2));
+            d.score=(d.score||0)+1;
+            d.log.unshift("SYNERGY · "+c.name+" · −"+(c.bonus||2)+" · "+c.log);
+            if(typeof toast==="function") toast("✨ "+c.name);
+            if(window.sfx) window.sfx.ok();
+            if(d.hp<=0 && window.vfComplete){
+              if(window._visit) window._visit.score=Math.max(8,d.score);
+              setTimeout(function(){ window.vfComplete(); },250);
+            }
+          }
+        }
+        if(window.renderDuel && d.hp>0) setTimeout(window.renderDuel,40);
+      }catch(e){}
+      return r;
+    };
+  }
+
+  window.openSynergyGuide=function(){
+    var html='<div class="section-kicker">CARD SYNERGIES</div>';
+    html+='<p class="muted" style="font-size:.78rem">Play both halves in one visit to trigger a bonus chip.</p>';
+    for(var i=0;i<COMBOS.length;i++){
+      var c=COMBOS[i];
+      html+='<div class="card"><b>✨ '+c.name+'</b> · +'+c.bonus+' care<br><span class="muted" style="font-size:.78rem">'+c.a+' + '+c.b+' — '+c.log+'</span></div>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Synergies","COMBO",html);
+  };
+
+  setTimeout(function(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnSyn")) return;
+    var b=document.createElement("button");
+    b.id="btnSyn"; b.className="btn sec"; b.style.marginTop="6px";
+    b.textContent="✨ Card synergies";
+    b.onclick=function(){ window.openSynergyGuide(); };
+    home.appendChild(b);
+  },900);
+})();
+
+
+
+/* Visual synergy icons */
+(function(){
+  var ICO={
+    "Hear then send":"👂🏥",
+    "Night nest":"🛏️📱",
+    "Step on paper":"➡️📝",
+    "No, then move":"🚫➡️",
+    "Warm + lamp":"🧡🔴",
+    "Table then bed":"🫖🛏️",
+    "Heard → written":"👂📝",
+    "Limit + edge":"🏥🚫",
+    "Motion pair":"🚶➡️",
+    "Lit listen":"🪔👂"
+  };
+
+  window.synergyIcon=function(name){
+    return ICO[name]||"✨";
+  };
+
+  window.flashSynergy=function(name, bonus){
+    var el=document.createElement("div");
+    el.className="syn-pop";
+    el.textContent=(ICO[name]||"✨")+" "+name+(bonus?" · −"+bonus:"");
+    document.body.appendChild(el);
+    setTimeout(function(){ try{ el.remove(); }catch(e){} },950);
+  };
+
+  // patch openSynergyGuide if exists — wrap
+  var _g=window.openSynergyGuide;
+  window.openSynergyGuide=function(){
+    var html='<div class="section-kicker">CARD SYNERGIES · ICONS</div>';
+    html+='<p class="muted" style="font-size:.78rem">Play both halves in one visit. Icons flash when a combo hits.</p>';
+    var rows=[
+      ["Hear then send","Listen + Clinician","Trust first, then the limit"],
+      ["Night nest","Nest + Phone down","Room and night hold"],
+      ["Step on paper","Next step + If–Then","Motion written"],
+      ["No, then move","Clean no + Step","Edge and direction"],
+      ["Warm + lamp","Joints + Red light","Body + device"],
+      ["Table then bed","Simple table + Nest","Gut then rest"],
+      ["Heard → written","Listen + If–Then","Words to one line"],
+      ["Limit + edge","Refer + Clean no","Still-room knows its job"],
+      ["Motion pair","Walk + Step","Body leads"],
+      ["Lit listen","Flame + Listen","Hour funded, then heard"]
+    ];
+    for(var i=0;i<rows.length;i++){
+      var r=rows[i];
+      html+='<div class="syn-row card"><span class="syn-ico">'+(ICO[r[0]]||"✨")+'</span><div><b>'+r[0]+'</b><div class="muted" style="font-size:.75rem">'+r[1]+' — '+r[2]+'</div></div></div>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Synergies","ICONS",html);
+  };
+
+  // hook toast-based synergy from previous pack
+  var _toast=window.toast;
+  window.toast=function(msg){
+    try{
+      if(msg && String(msg).indexOf("✨ ")===0){
+        var name=String(msg).replace(/^✨\s*/,"");
+        window.flashSynergy(name);
+      }
+    }catch(e){}
+    if(typeof _toast==="function") return _toast.apply(this,arguments);
+  };
 })();
 
 </script>
