@@ -19356,6 +19356,114 @@ window.GUILD_HERBS=[
   }
 })();
 
+
+
+/* ==========================================================
+   SEEN-4 ROTATION · no return until 100 roster has been seen
+   ========================================================== */
+(function(){
+  function ensure(){
+    if(!window.S) window.S={};
+    if(!S.seenCount) S.seenCount={};
+    if(!S.seenOnce) S.seenOnce={};
+    return S;
+  }
+
+  function nameKey(n){
+    return String(n||"").trim().toLowerCase();
+  }
+
+  window.timesSeen=function(name){
+    ensure();
+    return S.seenCount[nameKey(name)]||0;
+  };
+
+  window.markSeen=function(name){
+    ensure();
+    var k=nameKey(name);
+    if(!k) return;
+    S.seenCount[k]=(S.seenCount[k]||0)+1;
+    S.seenOnce[k]=true;
+    if(typeof save==="function") save({ui:false});
+  };
+
+  window.rosterSeenCount=function(){
+    ensure();
+    var list=window.PATIENT_100||[];
+    var n=0;
+    for(var i=0;i<list.length;i++){
+      if(S.seenOnce[nameKey(list[i].name)]) n++;
+    }
+    return n;
+  };
+
+  window.canRequeue=function(name){
+    var t=window.timesSeen(name);
+    if(t<4) return true;
+    var roster=window.PATIENT_100||[];
+    var need=roster.length||100;
+    return window.rosterSeenCount()>=need;
+  };
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{
+        var d=window._duel||window._visit||{};
+        if(d.name) window.markSeen(d.name);
+      }catch(e){}
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  var _bwq=window.buildWideQueue;
+  if(typeof _bwq==="function"){
+    window.buildWideQueue=function(){
+      var q=_bwq.apply(this,arguments)||[];
+      var filtered=[];
+      for(var i=0;i<q.length;i++){
+        if(window.canRequeue(q[i].name)) filtered.push(q[i]);
+      }
+      // fill from unseen roster
+      var list=window.PATIENT_100||[];
+      var guard=0;
+      while(filtered.length<8 && guard++<120){
+        var p=list[Math.floor(Math.random()*list.length)];
+        if(!p) break;
+        if(!window.canRequeue(p.name)) continue;
+        var exists=false;
+        for(var j=0;j<filtered.length;j++) if(filtered[j].name===p.name) exists=true;
+        if(exists) continue;
+        filtered.push({
+          name:p.name, pid:p.id||p.name, fam:p.f||"Sleep",
+          color:p.color||"Blue", type:"Roster",
+          problems:[p.p||p.primary||"hour"],
+          pr:{id:p.id||p.name,f:p.f||"Sleep",p:p.p||"",color:"Blue",att:1,quote:""}
+        });
+      }
+      return filtered;
+    };
+  }
+
+  var _oww=window.openWideWaiting;
+  if(typeof _oww==="function"){
+    window.openWideWaiting=function(){
+      var r=_oww.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-rot]")) return;
+        var p=document.createElement("p");
+        p.dataset.rot="1";
+        p.className="muted";
+        p.style.fontSize=".72rem";
+        p.textContent="Rotation · roster seen "+window.rosterSeenCount()+" / "+((window.PATIENT_100||[]).length||100)+". After 4 hours a guest waits until the 100 have all been seen.";
+        body.appendChild(p);
+      },80);
+      return r;
+    };
+  }
+})();
+
 </script>
 </body>
 </html>
