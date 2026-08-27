@@ -1054,43 +1054,6 @@ body{ background:#0a1612 !important; }
 .fb h4{margin:0 0 6px;color:#c9e8d4}
 .fb p{margin:0 0 10px;font-size:.85rem;color:#b7cfc4}
 
-
-/* ===== MOBILE PLAYABLE ===== */
-@media (max-width: 520px){
-  .desk-hide{display:block !important}
-  .btn, button.btn, button{
-    -webkit-appearance:none;
-    appearance:none;
-    display:block !important;
-    width:100% !important;
-    min-height:44px;
-    margin-bottom:8px;
-    font-size:16px !important;
-    color:#e8fff4 !important;
-    background:#1a3a30 !important;
-    border:1px solid #4a8a70 !important;
-    border-radius:12px !important;
-    padding:12px 14px !important;
-  }
-  .fx-tile, .card{
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    color:#e4efe8 !important;
-  }
-  #sc-home, #app, main{
-    display:block !important;
-    visibility:visible !important;
-    padding-bottom:80px;
-  }
-  #overhaulModal{
-    background:rgba(6,16,14,.55) !important;
-    -webkit-overflow-scrolling:touch;
-  }
-  #overhaulModalBody{color:#e4efe8 !important; font-size:16px !important}
-  .start-screen{display:none !important}
-}
-
 </style>
 </head>
 <body>
@@ -20418,64 +20381,652 @@ window.GUILD_HERBS=[
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Mobile: unhide floor, keep Visit tappable */
+/* ==========================================================
+   MODAL LISTENER DEBUG + backdrop does not wipe hour
+   ========================================================== */
 (function(){
-  function unhide(){
-    document.querySelectorAll(".desk-hide").forEach(function(el){
-      el.classList.remove("desk-hide");
-      el.style.display="";
-    });
-    var start=document.querySelector(".start-screen");
-    if(start) start.style.display="none";
-    var home=document.getElementById("sc-home");
-    if(home){ home.style.display="block"; home.style.visibility="visible"; }
+  function note(m){
+    if(window.pipeLog) window.pipeLog("ev "+m);
+    try{ console.log("[modal-ev]", m); }catch(e){}
   }
-  setTimeout(unhide,200);
-  setTimeout(unhide,1200);
+
+  function bind(){
+    var modal=document.getElementById("overhaulModal");
+    if(!modal || modal.dataset.evBound) return;
+    modal.dataset.evBound="1";
+    modal.addEventListener("click", function(e){
+      var t=e.target;
+      var id=(t&&t.id)||"";
+      var txt=((t&&t.textContent)||"").slice(0,24).replace(/\s+/g," ");
+      note("click #"+id+" "+txt);
+      // backdrop = the full-screen modal itself, not inner card
+      if(t===modal){
+        note("backdrop click");
+        if(window._duel && window._duel.hp>0){
+          e.preventDefault();
+          e.stopPropagation();
+          note("blocked backdrop close (hour live)");
+          return;
+        }
+      }
+    }, true);
+  }
+  setTimeout(bind,100);
+  setTimeout(bind,800);
+
+  document.addEventListener("click", function(e){
+    var t=e.target;
+    if(!t || !t.closest) return;
+    var closer=t.closest("[onclick]");
+    if(closer && String(closer.getAttribute("onclick")||"").indexOf("closeOverhaulModal")>=0){
+      note("close button");
+      if(window._duel && window._duel.hp>0 && window._holdHour){
+        e.preventDefault();
+        e.stopPropagation();
+        note("close ignored mid-hour; use Finish or Close screen");
+        if(typeof toast==="function") toast("Finish the hour or tap Close screen");
+        return;
+      }
+    }
+  }, true);
+
+  var _c=window.closeOverhaulModal;
+  window.closeOverhaulModal=function(){
+    note("closeOverhaulModal()");
+    if(window._duel && window._duel.hp>0 && window._holdHour){
+      note("close skipped mid-hour");
+      return;
+    }
+    if(typeof _c==="function") return _c.apply(this,arguments);
+    var modal=document.getElementById("overhaulModal");
+    if(modal) modal.style.display="none";
+  };
+})();
+
+
+
+/* ==========================================================
+   EVENT LISTENER CLEANUP
+   ========================================================== */
+(function(){
+  if(window._listenerCleanupDone) return;
+  window._listenerCleanupDone=true;
+
+  var tracked=[];
+  var proto=EventTarget.prototype.addEventListener;
+  if(!EventTarget.prototype._wbAdd){
+    EventTarget.prototype._wbAdd=proto;
+    EventTarget.prototype.addEventListener=function(type,fn,opt){
+      tracked.push({t:this,type:type,fn:fn,opt:opt});
+      return proto.call(this,type,fn,opt);
+    };
+  }
+
+  window.cleanupListeners=function(filterType){
+    var keep=[];
+    tracked.forEach(function(x){
+      if(filterType && x.type!==filterType){ keep.push(x); return; }
+      try{ x.t.removeEventListener(x.type,x.fn,x.opt); }catch(e){}
+    });
+    if(filterType) tracked=keep;
+    else tracked=[];
+    if(window.pipeLog) window.pipeLog("listeners cleaned "+(filterType||"all"));
+  };
+
+  // Drop duplicate document click handlers that only profile / close
+  function slimDocumentClicks(){
+    var seen=0;
+    var next=[];
+    tracked.forEach(function(x){
+      if(x.t===document && x.type==="click"){
+        seen++;
+        if(seen>2){
+          try{ document.removeEventListener("click", x.fn, x.opt); }catch(e){}
+          return;
+        }
+      }
+      next.push(x);
+    });
+    tracked=next;
+    if(window.pipeLog) window.pipeLog("doc clicks kept "+Math.min(seen,2));
+  }
+
+  window.addEventListener("pagehide", function(){
+    window.cleanupListeners();
+  });
+
+  setTimeout(slimDocumentClicks, 1500);
+
+  var _close=window.closeOverhaulModal;
+  window.closeOverhaulModal=function(){
+    var r=typeof _close==="function"?_close.apply(this,arguments):null;
+    var modal=document.getElementById("overhaulModal");
+    if(modal){
+      modal.onclick=null;
+    }
+    return r;
+  };
+})();
+
+
+
+/* ==========================================================
+   EVENT DELEGATION · modal body + floor
+   ========================================================== */
+(function(){
+  function actFrom(el){
+    if(!el || !el.closest) return null;
+    return el.closest("[data-act]");
+  }
+
+  function runAct(el){
+    var act=el.getAttribute("data-act");
+    var i=el.getAttribute("data-i");
+    var id=el.getAttribute("data-id");
+    if(act==="play" && window.playDuelCard) window.playDuelCard(+i);
+    else if(act==="end" && window.duelEndTurn) window.duelEndTurn();
+    else if(act==="flee" && window.duelFlee) window.duelFlee();
+    else if(act==="pouch" && window.usePouch) window.usePouch(id);
+    else if(act==="move" && window.hourMove) window.hourMove(id);
+    else if(act==="room" && window.openFictionRoom) window.openFictionRoom(id);
+    else if(act==="tarot" && window.openTarotTable) window.openTarotTable();
+    else if(act==="lore" && window.openDuelLore) window.openDuelLore();
+    else if(act==="guest" && window.takeWideGuest) window.takeWideGuest(+i);
+    else if(act==="visit" && window.openWideWaiting) window.openWideWaiting();
+    else if(act==="desk" && window.openDeskDrawer) window.openDeskDrawer();
+    else if(act==="go" && window.goCustomHour) window.goCustomHour();
+    else if(act==="close") { window._holdHour=false; if(window.forceCloseScreens) window.forceCloseScreens(); }
+    if(window.pipeLog) window.pipeLog("deleg "+act);
+  }
+
+  function bind(root){
+    if(!root || root.dataset.deleg) return;
+    root.dataset.deleg="1";
+    root.addEventListener("click", function(e){
+      var el=actFrom(e.target);
+      if(!el) return;
+      e.preventDefault();
+      runAct(el);
+    });
+  }
+
+  function stampDuelButtons(){
+    var body=document.getElementById("overhaulModalBody");
+    if(!body) return;
+    body.querySelectorAll(".duel-card").forEach(function(b,i){
+      if(!b.getAttribute("data-act")){
+        b.setAttribute("data-act","play");
+        b.setAttribute("data-i", String(i));
+      }
+    });
+    body.querySelectorAll("button").forEach(function(b){
+      if(b.getAttribute("data-act")) return;
+      var t=(b.textContent||"").toLowerCase();
+      if(t.indexOf("end turn")>=0) b.setAttribute("data-act","end");
+      if(t.indexOf("leave visit")>=0||t.indexOf("flee")>=0) b.setAttribute("data-act","flee");
+    });
+  }
+
+  function tick(){
+    bind(document.getElementById("overhaulModalBody"));
+    bind(document.getElementById("sc-home"));
+    stampDuelButtons();
+  }
+  setTimeout(tick,200);
+  setTimeout(tick,1000);
+  setInterval(tick, 2000);
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(tick,40);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   BOOT STREAMLINE · one window, no launch storm
+   ========================================================== */
+(function(){
+  window._bootLock=true;
+  window._userGesture=false;
+  window._modalBusy=0;
+
+  function hideModal(){
+    var m=document.getElementById("overhaulModal")||document.getElementById("ohModal");
+    if(m){ m.style.display="none"; }
+    document.querySelectorAll(".modal").forEach(function(el){ el.style.display="none"; });
+    window._holdHour=false;
+    window._duel=null;
+  }
+
+  var _open=window.openOverhaulModal;
+  window.openOverhaulModal=function(title,kicker,body){
+    if(window._bootLock && !window._userGesture){
+      if(window.pipeLog) window.pipeLog("boot-block "+(title||""));
+      return;
+    }
+    var now=Date.now();
+    if(now-window._modalBusy<280){
+      if(window.pipeLog) window.pipeLog("rate-limit modal");
+      return;
+    }
+    window._modalBusy=now;
+    var text=String(body||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+    if(text.length<4) return;
+    if(typeof _open==="function") return _open.call(this,title,kicker,body);
+  };
+
+  document.addEventListener("pointerdown", function(){
+    window._userGesture=true;
+    window._bootLock=false;
+  }, true);
+
+  function slimFloor(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var keep=/visit clinic|custom hour|desk ·|go ·|hardness|daily contract|close screen/i;
+    home.querySelectorAll("button").forEach(function(b){
+      if(b.id==="safeClose"||b.id==="btnDeskSpine"||b.id==="btnCustomHour") return;
+      var t=(b.textContent||"");
+      if(!keep.test(t) && b.id && b.id.indexOf("btn")===0){
+        b.style.display="none";
+      }
+    });
+    var pd=document.getElementById("pipeDebug");
+    if(pd) pd.style.display="none";
+  }
+
+  hideModal();
+  setTimeout(hideModal, 50);
+  setTimeout(hideModal, 400);
+  setTimeout(function(){ window._bootLock=false; slimFloor(); hideModal(); }, 900);
+  setTimeout(slimFloor, 1600);
+
+  if(typeof window.go==="function"){
+    try{ window.go("home"); }catch(e){}
+  }
+})();
+
+
+
+
+
+
+
+/* ==========================================================
+   CORE HOUR MECHANICS (no extra pause screens)
+   ========================================================== */
+(function(){
+  window.runVisitLoadout=function(){
+    window._bootLock=false; window._userGesture=true;
+    if(window.openWideWaiting) window.openWideWaiting();
+  };
+  window.enterWaitingRoom=function(){
+    window._bootLock=false; window._userGesture=true;
+    if(window.openWideWaiting) window.openWideWaiting();
+  };
+
+  window.takeWideGuest=function(i){
+    var c=(window._wideQ||[])[i];
+    if(!c) return;
+    window._funCand=c;
+    if(window.openCardChoice) window.openCardChoice(c);
+    else if(window.startCardDuel) window.startCardDuel(c);
+  };
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      if(d && card){
+        if((card.cost||0)>(d.energy||0)){
+          if(typeof toast==="function") toast("Not enough energy");
+          return;
+        }
+        var bonus=0;
+        if(card.type && d.color && String(card.type).indexOf(d.color)>=0) bonus+=2;
+        if(d._tell && /settle/i.test(d._tell) && card.mean==="settle") bonus+=2;
+        if(d._tell && /refer|plan/i.test(d._tell) && (card.mean==="refer"||card.mean==="plan")) bonus+=2;
+        d._pendingBonus=bonus;
+      }
+      var r=_play.apply(this,arguments);
+      try{
+        d=window._duel;
+        if(d && d._pendingBonus){
+          d.hp=Math.max(0,(d.hp||0)-d._pendingBonus);
+          d.log.unshift("MECH · extra care "+d._pendingBonus);
+          d._pendingBonus=0;
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        var d=window._duel;
+        if(!body||!d||body.querySelector("[data-mech]")) return;
+        var means=(d.hand||[]).map(function(c){return c.mean||"";});
+        var combo=(means.indexOf("trust")>=0 && means.indexOf("refer")>=0)?"Combo ready: Listen then Refer":"No combo in hand";
+        var p=document.createElement("p");
+        p.dataset.mech="1";
+        p.className="muted";
+        p.style.fontSize=".78rem";
+        p.textContent="Energy "+(d.energy||0)+"/"+(d.maxEnergy||4)+" · Turn "+(d.turn||1)+"/"+(d.maxTurns||5)+" · "+combo;
+        body.insertBefore(p, body.firstChild);
+      },80);
+      return r;
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   SYNERGY GUIDE + HARD NO-BLANK MODAL
+   ========================================================== */
+(function(){
+  window.openSynergyGuide=function(){
+    var html='<div class="section-kicker">COMBO SYNERGY</div>';
+    html+='<p class="muted" style="font-size:.75rem">How the hour pays when two cards mean more together.</p>';
+    html+='<div class="card"><b>Paid combo</b><p style="font-size:.82rem">Listen (trust) then Refer in the same hour. +3 care. Preview: Combo ready.</p><p class="muted" style="font-size:.75rem">Cheap Listen first if energy is tight. Refer next turn after redraw if it costs more.</p></div>';
+    html+='<div class="card"><b>Path pairs</b><p style="font-size:.8rem">Listen+Settle · Boundary+Refer · Body+Settle · Plan+Action · Gut+Device. Cheap half first.</p></div>';
+    html+='<div class="card"><b>Multipliers</b><p style="font-size:.8rem">Color match +2. Look/Ask tell +2. Moon can add a pip. Matched Refer after Ask often beats an unmatched big card.</p></div>';
+    html+='<div class="card"><b>Agenda</b><p style="font-size:.8rem">Touch family A and B. Refer often tags B. Settle/Listen often tag A on Sleep.</p></div>';
+    html+='<div class="card"><b>Plan</b><p style="font-size:.8rem">1 Combo ready? If HP over 6, Listen then Refer. 2 HP 4 or less: play the match. 3 Look said settle: settle.</p></div>';
+    html+='<button class="btn ghost" style="width:100%" onclick="window._holdHour=false;window.forceCloseScreens&&forceCloseScreens()">Close</button>';
+    window._paintSafe("Synergy","COMBO",html);
+  };
+
+  window._paintSafe=function(title,kicker,html){
+    var modal=document.getElementById("overhaulModal");
+    var bod=document.getElementById("overhaulModalBody");
+    var tit=document.getElementById("overhaulModalTitle");
+    var kick=document.getElementById("overhaulModalKicker");
+    if(!modal||!bod){
+      if(typeof toast==="function") toast(title||"panel");
+      return;
+    }
+    var text=String(html||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+    if(text.length<4){
+      html='<p>Panel was empty. Use Visit clinic or Desk.</p><button class="btn" onclick="window.openWideWaiting&&openWideWaiting()">Waiting room</button>';
+    }
+    window._lastGoodModal=html;
+    if(kick) kick.textContent=kicker||"";
+    if(tit) tit.textContent=title||"";
+    bod.innerHTML=html;
+    modal.style.display="block";
+    modal.style.zIndex="99999";
+    setTimeout(function(){
+      var t=(bod.textContent||"").trim();
+      if(t.length<8 && window._lastGoodModal){
+        bod.innerHTML=window._lastGoodModal;
+      }
+    },60);
+  };
+
+  var _open=window.openOverhaulModal;
+  window.openOverhaulModal=function(title,kicker,body){
+    if(window._bootLock && !window._userGesture) return;
+    window._paintSafe(title,kicker,body);
+  };
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var d=window._duel;
+      if(!d){
+        window._paintSafe("Hour","EMPTY",'<p>No hour is live.</p><button class="btn" onclick="window.openWideWaiting&&openWideWaiting()">Waiting room</button>');
+        return;
+      }
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        if(!(body.textContent||"").trim()){
+          window._paintSafe(d.name||"Hour","RESTORE",'<p><b>'+(d.name||"Guest")+'</b></p><p>HP '+(d.hp||0)+' · Energy '+(d.energy||0)+'</p><button class="btn" onclick="window._rawRenderDuel&&_rawRenderDuel()">Redraw hour</button>');
+        }
+        if(!body.querySelector("[data-syn]")){
+          var b=document.createElement("button");
+          b.dataset.syn="1";
+          b.className="btn sm";
+          b.textContent="Synergy guide";
+          b.onclick=function(){ window.openSynergyGuide(); };
+          body.appendChild(b);
+        }
+      },90);
+      return r;
+    };
+  }
+
+  var _desk=window.openDeskDrawer;
+  if(typeof _desk==="function"){
+    window.openDeskDrawer=function(){
+      var r=_desk.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-syn2]")) return;
+        var b=document.createElement("button");
+        b.dataset.syn2="1";
+        b.className="btn";
+        b.style.width="100%";
+        b.textContent="Combo synergy guide";
+        b.onclick=function(){ window.openSynergyGuide(); };
+        body.appendChild(b);
+      },80);
+      return r;
+    };
+  }
+})();
+
+
+
+/* Fallback UI components */
+(function(){
+  window.uiFallback=function(kind, extra){
+    extra=extra||"";
+    var map={
+      empty:{t:"Nothing here",d:"This panel had no content. The still-room is still open.",a:"Waiting room",f:"openWideWaiting"},
+      hour:{t:"Hour not live",d:"There is no guest in the chair. Start from the door.",a:"Visit clinic",f:"openWideWaiting"},
+      queue:{t:"Waiting room empty",d:"Reroll the roster. Rotation may have parked repeats.",a:"Reroll",f:"openWideWaiting"},
+      desk:{t:"Desk jammed",d:"Side tools failed to list. You can still run an hour.",a:"Visit clinic",f:"openWideWaiting"},
+      miss:{t:"Tool missing",d:"That drawer is not wired in this build.",a:"Desk",f:"openDeskDrawer"},
+      err:{t:"Paint failed",d:extra||"The window threw. Close screen and try Visit.",a:"Close screen",f:"forceCloseScreens"}
+    };
+    var x=map[kind]||map.empty;
+    return '<div class="fb"><h4>'+x.t+'</h4><p>'+x.d+'</p>'+
+      '<button class="btn" style="width:100%" onclick="window.'+x.f+'&&'+x.f+'()">'+x.a+'</button></div>';
+  };
+
+  var _ps=window._paintSafe;
+  window._paintSafe=function(title,kicker,html){
+    var text=String(html||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+    if(text.length<4) html=window.uiFallback("empty");
+    if(typeof _ps==="function") return _ps(title,kicker,html);
+    var modal=document.getElementById("overhaulModal");
+    var bod=document.getElementById("overhaulModalBody");
+    if(!bod||!modal) return;
+    bod.innerHTML=html;
+    modal.style.display="block";
+  };
+
+  var _ow=window.openWideWaiting;
+  if(typeof _ow==="function"){
+    window.openWideWaiting=function(){
+      try{
+        var r=_ow.apply(this,arguments);
+        setTimeout(function(){
+          var bod=document.getElementById("overhaulModalBody");
+          if(bod && (bod.textContent||"").trim().length<12){
+            window._paintSafe("Waiting room","FALLBACK",window.uiFallback("queue"));
+          }
+        },120);
+        return r;
+      }catch(e){
+        window._paintSafe("Waiting room","ERR",window.uiFallback("err", e.message));
+      }
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      try{
+        if(!window._duel){
+          window._paintSafe("Hour","FALLBACK",window.uiFallback("hour"));
+          return;
+        }
+        return _rd.apply(this,arguments);
+      }catch(e){
+        window._paintSafe("Hour","ERR",window.uiFallback("err", e.message));
+      }
+    };
+  }
+
+  var _desk=window.openDeskDrawer;
+  if(typeof _desk==="function"){
+    window.openDeskDrawer=function(){
+      try{ return _desk.apply(this,arguments); }
+      catch(e){ window._paintSafe("Desk","ERR",window.uiFallback("desk")); }
+    };
+  }
+})();
+
+
+
+/* ==========================================================
+   PLAYTHROUGH UPGRADE · start, recap, next
+   ========================================================== */
+(function(){
+  window.startHour=function(cand){
+    window._bootLock=false;
+    window._userGesture=true;
+    window._holdHour=true;
+    if(!cand){
+      if(window.openWideWaiting) return window.openWideWaiting();
+      if(window._paintSafe) window._paintSafe("Hour","FALLBACK", window.uiFallback?window.uiFallback("hour"):"<p>No guest.</p>");
+      return;
+    }
+    if(typeof window.startCardDuel==="function") return window.startCardDuel(cand);
+    if(typeof window.openCardChoice==="function") return window.openCardChoice(cand);
+  };
+
+  window.paintRecap=function(){
+    window._holdHour=false;
+    var d=window._lastDuel||window._duel||{};
+    var html='<div class="section-kicker">HOUR RECAP</div>';
+    html+='<div class="card"><p><b>'+(d.name||"Guest")+'</b></p>';
+    html+='<p style="font-size:.85rem">HP left '+(d.hp==null?"—":d.hp)+' · score '+(d.score||0)+' · turns '+(d.turn||"?")+'</p>';
+    html+='<p class="muted" style="font-size:.8rem">'+(d._bt==="out"?"Discharged.":d._bt==="book"?"Revisit booked.":d._bt==="refer"?"Referred.":"Hour closed.")+'</p></div>';
+    if(d.log&&d.log.length){
+      html+='<div class="card" style="font-size:.78rem">'+(d.log.slice(0,6).join("<br>"))+'</div>';
+    }
+    html+='<button class="btn" style="width:100%" onclick="window.openWideWaiting&&openWideWaiting()">Next guest</button>';
+    html+='<button class="btn sec" style="width:100%;margin-top:6px" onclick="window.openTreatLog&&openTreatLog()">Treatment log</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window._holdHour=false;window.forceCloseScreens&&forceCloseScreens()">Back to floor</button>';
+    if(window._paintSafe) window._paintSafe("Recap","END",html);
+  };
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      try{ window._lastDuel=Object.assign({}, window._duel||{}); }catch(e){ window._lastDuel=window._duel; }
+      var r=_vf.apply(this,arguments);
+      setTimeout(function(){ window.paintRecap(); }, 80);
+      return r;
+    };
+  }
+
+  var _run=window.runVisitLoadout;
+  window.runVisitLoadout=function(){
+    window._bootLock=false; window._userGesture=true;
+    if(window.openWideWaiting) return window.openWideWaiting();
+    if(typeof _run==="function") return _run.apply(this,arguments);
+  };
+
+  // Floor: ensure Visit still works
+  setTimeout(function(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnVisitNow")) return;
+    var b=document.createElement("button");
+    b.id="btnVisitNow";
+    b.className="btn";
+    b.style.cssText="width:100%;padding:14px;margin-top:8px";
+    b.textContent="Visit clinic";
+    b.onclick=function(){ window.runVisitLoadout(); };
+    home.insertBefore(b, home.firstChild);
+  }, 500);
+})();
+
+
+
+/* ==========================================================
+   CLINIC LORE BOOK · full still-room text
+   ========================================================== */
+(function(){
+  window.openClinicLore=function(){
+    var html='<div class="section-kicker">WILLOW BEND · HOUSE BOOK</div>';
+    html+='<p class="muted" style="font-size:.75rem">Folklore for the hour. Not a medical authority.</p>';
+    html+='<div class="card"><b>The still-room</b><p style="font-size:.84rem;line-height:1.45">Willow Bend is not a hospital. One chair that does not wobble. One hour. The building is older than the painted sign.</p></div>';
+    html+='<div class="card"><b>How the house thinks</b><p style="font-size:.84rem;line-height:1.45">The founders were tired of guessing, so breakfast is on the intake. Tired of heroes who forget cups, so water is first. Tired of rooms that only exist when you perform, so the lamp hums — a job besides you. The brass plaque: this house is not the last house. Refer is a skill.</p></div>';
+    html+='<div class="card"><b>Rooms and rules</b><p style="font-size:.82rem;line-height:1.4">The chair — budget and myth. The painted line — you may leave mid-hour. The wool blanket — unbilled. The drawer of notes — paper outlives advice. The lane called Next — walked after you have been believed. The kettle rule — do not fix the sentence they have not finished.</p></div>';
+    html+='<div class="card"><b>What healing means</b><p style="font-size:.84rem;line-height:1.45">Affliction HP is a game meter. Breakthrough means the hour held. Discharge, book a revisit, or refer. All three are competent.</p></div>';
+    html+='<div class="card"><b>Basement study</b><p style="font-size:.84rem;line-height:1.45">Jung sheets and function stacks are study furniture. Seeded fiction. The still-room will not confuse a bar chart with a person.</p></div>';
+    html+='<div class="card"><b>House rules</b><p style="font-size:.84rem;line-height:1.45">Safety, trust, choice, collaboration, empowerment, humility. Shadow beats are optional. Pause and Refer are always legal. Going deeper is not a high score.</p></div>';
+    html+='<div class="card"><b>How lore enters play</b><p style="font-size:.84rem;line-height:1.45">Each duel card carries one line. Playing Listen writes the kettle rule. Playing Refer writes the plaque. The deck is the story.</p></div>';
+    html+='<button class="btn sec" style="width:100%" onclick="window.openDuelLore&&openDuelLore()">Duel deck lines</button>';
+    html+='<button class="btn sec" style="width:100%;margin-top:4px" onclick="window.openTicCodex&&openTicCodex()">TIC rules</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window._holdHour=false;window.forceCloseScreens&&forceCloseScreens()">Close</button>';
+    if(window._paintSafe) window._paintSafe("House book","LORE",html);
+    else if(window.openOverhaulModal) openOverhaulModal("House book","LORE",html);
+  };
+
+  var _desk=window.openDeskDrawer;
+  if(typeof _desk==="function"){
+    window.openDeskDrawer=function(){
+      var r=_desk.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-housebook]")) return;
+        var b=document.createElement("button");
+        b.dataset.housebook="1";
+        b.className="btn";
+        b.style.width="100%";
+        b.textContent="House book · clinic lore";
+        b.onclick=function(){ window.openClinicLore(); };
+        body.insertBefore(b, body.firstChild);
+      },70);
+      return r;
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body||body.querySelector("[data-housebook2]")) return;
+        var b=document.createElement("button");
+        b.dataset.housebook2="1";
+        b.className="btn sm";
+        b.textContent="House book";
+        b.onclick=function(){ window.openClinicLore(); };
+        body.appendChild(b);
+      },100);
+      return r;
+    };
+  }
 })();
 
 </script>
