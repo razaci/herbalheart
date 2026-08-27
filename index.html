@@ -20560,5 +20560,277 @@ body.stream-quiet #sc-home > button.btn.desk-hide{display:none!important}
 })();
 </script>
 
+
+<style id="wb2026">
+.hr-story{font-size:.92rem;line-height:1.45;margin:8px 0 12px;color:#d7efe4}
+.hr-next{margin:8px 0;padding:10px 12px;border-radius:12px;border:1px solid #3a5a40;background:#102018;font-size:.82rem}
+.hr-spend{display:grid;gap:7px;margin:10px 0}
+.hr-spend button{width:100%;text-align:left;padding:11px 12px;border-radius:12px;border:1px solid #31566d;background:#102634;color:#eaf5ff;font:inherit;font-weight:650}
+.hr-spend button[disabled]{opacity:.4}
+.hr-spend button b{display:block;font-size:.88rem}
+.hr-spend button span{display:block;font-size:.72rem;color:#86a5b8;font-weight:500;margin-top:2px}
+.hr-unlock{margin:10px 0 0;padding:10px;border-radius:12px;border:1px dashed #3a5a70;font-size:.78rem;color:#9db7c7}
+#nextUnlock{margin:8px 0;padding:10px 12px;border-radius:14px;border:1px solid #3a5a70;background:linear-gradient(145deg,#153446,#10212e);font-size:.82rem}
+#returnTray .ret{padding:8px 10px;margin:6px 0;border-radius:12px;border:1px solid #3a5a40;background:#102018;font-size:.8rem}
+.short-chip{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:99px;border:1px solid #62e6ad;color:#62e6ad;font-size:.68rem}
+</style>
+<script id="wb2026js">
+(function(){
+  function num(n){ n=Number(n); return isFinite(n)?n:0; }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  function S(){ if(!window.S) window.S={}; return window.S; }
+  function persist(){ try{ if(typeof save==="function") save({ui:false}); }catch(e){} }
+  function toast2(m){ try{ if(typeof toast==="function") toast(m); }catch(e){} }
+
+  var SHOP=[
+    {id:"pouch",n:"Stock the pouch",d:"+1 pouch charge for the next hour",cost:6},
+    {id:"book",n:"Book them back",d:"Named return in 2 clinic days",cost:8},
+    {id:"chair",n:"Chair that does not wobble",d:"Permanent +1 hour score",cost:18,once:"chair"},
+    {id:"lamp",n:"Quieter lamp",d:"+1 starting energy next hour",cost:14,once:"lamp"}
+  ];
+
+  function nextUnlock(){
+    var st=S();
+    for(var i=0;i<SHOP.length;i++){
+      var x=SHOP[i];
+      if(x.once && st.upgrades && st.upgrades[x.once]) continue;
+      return x;
+    }
+    return {n:"Still-room is stocked",d:"Spend RP on pouch or bookings",cost:0};
+  }
+
+  function paintUnlock(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("nextUnlock");
+    if(!el){
+      el=document.createElement("div");
+      el.id="nextUnlock";
+      home.insertBefore(el, home.firstChild);
+    }
+    var u=nextUnlock();
+    var rp=num(S().rp);
+    el.innerHTML="<div class='section-kicker'>NEXT UNLOCK</div><b>"+esc(u.n)+"</b> · "+(u.cost? (rp+" / "+u.cost+" RP") : "done")+
+      "<div style='font-size:.74rem;color:#86a5b8;margin-top:3px'>"+esc(u.d)+"</div>";
+    paintReturns(home);
+    paintShort(home);
+  }
+
+  function paintReturns(home){
+    var st=S();
+    st.returns=st.returns||[];
+    var el=document.getElementById("returnTray");
+    if(!el){
+      el=document.createElement("div");
+      el.id="returnTray";
+      home.insertBefore(el, home.children[1]||null);
+    }
+    var due=st.returns.filter(function(r){ return num(r.day)<=num(st.day||1); });
+    if(!due.length){ el.innerHTML=""; return; }
+    el.innerHTML="<div class='section-kicker'>DUE TODAY</div>"+due.map(function(r,i){
+      return "<div class='ret'><b>"+esc(r.name)+"</b> · "+esc(r.note||"return")+"</div>";
+    }).join("");
+  }
+
+  function paintShort(home){
+    var el=document.getElementById("shortRunHud");
+    if(!el){
+      el=document.createElement("div");
+      el.id="shortRunHud";
+      el.className="card";
+      home.appendChild(el);
+    }
+    var st=S();
+    if(!st.short){ el.style.display="none"; return; }
+    el.style.display="";
+    el.innerHTML="<div class='section-kicker'>SHORT RUN · "+st.short.left+" hours left</div>"+
+      "RP this run "+st.short.rp+" · best hour "+st.short.best+
+      (st.short.left<=0?"<button class='btn' onclick='window.endShortRun()'>Day recap</button>":"");
+  }
+
+  window.startShortRun=function(){
+    var st=S();
+    st.short={left:3,rp:0,best:0};
+    persist();
+    toast2("Three hours. Then recap.");
+    paintUnlock();
+    if(typeof window.openWideWaiting==="function") window.openWideWaiting();
+    else if(typeof window.openWaitingRoom==="function") window.openWaitingRoom();
+  };
+  window.endShortRun=function(){
+    var st=S();
+    var s=st.short||{rp:0,best:0};
+    st.short=null;
+    persist();
+    var html="<div class='section-kicker'>DAY RECAP</div>"+
+      "<div class='card'><b>+"+s.rp+" RP</b> across three hours<br>Best hour score "+s.best+"</div>"+
+      "<button class='btn' onclick='closeOverhaulModal();window.go&&go(\"home\")'>Close</button>";
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Recap","DAY",html);
+    paintUnlock();
+  };
+
+  /* streak felt in the hour */
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(){
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel, st=S(), k=num(st.streak);
+        if(d){
+          if(k>=5){ d.energy=Math.min((d.maxEnergy||4)+1,(d.energy||0)+1); d.maxEnergy=(d.maxEnergy||4)+1; d.log.unshift("STREAK 5 · extra pip"); }
+          else if(k>=3){ d.score=(d.score||0)+1; d.log.unshift("STREAK 3 · gold bias +1"); }
+          if(k===0 && Math.random()<0.4){ d.linger=true; d.log.unshift("STREAK BROKEN · linger leans in"); }
+          if(st.upgrades&&st.upgrades.chair) d.score=(d.score||0)+1;
+          if(st.upgrades&&st.upgrades.lamp) d.energy=Math.min((d.maxEnergy||4),(d.energy||0)+1);
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  /* single cashier — board no longer invents a second RP pile */
+  var paid=false;
+  function markPaid(){ paid=true; setTimeout(function(){ paid=false; }, 2500); }
+
+  var _force=window.forceRewardBoard;
+  window.forceRewardBoard=function(extra){
+    extra=extra||{};
+    if(document.getElementById("hourReward") && document.getElementById("hourReward").classList.contains("on"))
+      return;
+    /* if vfComplete already wrote a log this tick, just show */
+    if(window.showHourRewards) window.showHourRewards(window.snapshotRewards && window.snapshotRewards());
+    else if(typeof _force==="function") _force(extra);
+  };
+
+  var _grant=null;
+
+  window.scheduleReturn=function(name, note){
+    var st=S();
+    st.returns=st.returns||[];
+    st.returns.push({name:name||"Guest", note:note||"follow-up", day:num(st.day||1)+2});
+    persist();
+  };
+
+  window.spendBoard=function(id){
+    var st=S();
+    var item=null;
+    for(var i=0;i<SHOP.length;i++) if(SHOP[i].id===id) item=SHOP[i];
+    if(!item) return;
+    if(num(st.rp)<item.cost){ toast2("Need "+item.cost+" RP"); return; }
+    st.rp-=item.cost;
+    st.upgrades=st.upgrades||{};
+    if(id==="pouch") st.pouch=num(st.pouch)+1;
+    if(id==="book"){
+      var n=(window._duel&&window._duel.name)||(st.log&&st.log[0]&&st.log[0].name)||"Guest";
+      window.scheduleReturn(n, "booked from the board");
+    }
+    if(item.once) st.upgrades[item.once]=1;
+    persist();
+    toast2(item.n);
+    if(window.showHourRewards) window.showHourRewards(window._lastSnap||{});
+  };
+
+  var _show=window.showHourRewards;
+  window.showHourRewards=function(snap){
+    snap=snap||(window.snapshotRewards&&window.snapshotRewards())||{};
+    window._lastSnap=snap;
+    if(typeof _show==="function") _show(snap);
+    setTimeout(function(){
+      var el=document.getElementById("hourReward");
+      if(!el) return;
+      var st=S();
+      var log=(st.log&&st.log[0])||{};
+      var name=log.name||snap.name||"Guest";
+      var bits=(window._duel&&window._duel.log)||[];
+      var line=bits[0]||log.notes||"The kettle notices they stood differently.";
+      var story=document.getElementById("hrStory");
+      if(!story){
+        story=document.createElement("div");
+        story.id="hrStory";
+        story.className="hr-story";
+        el.insertBefore(story, el.children[1]||el.firstChild);
+      }
+      var next="";
+      if(log.outcome==="Breakthrough"||log.outcome==="Improve"){
+        next=name+" can be booked for Day "+(num(st.day||1)+2)+".";
+      } else if(log.outcome==="Stuck"||log.outcome==="Setback"){
+        next="Follow-up sits in the drawer. No streak.";
+      } else next="Heard. The room keeps the hour.";
+      story.innerHTML="<b>"+esc(name)+"</b> — "+esc(String(line).slice(0,140))+"<div class='hr-next'>"+esc(next)+"</div>";
+
+      var spend=document.getElementById("hrSpend");
+      if(!spend){
+        spend=document.createElement("div");
+        spend.id="hrSpend";
+        spend.className="hr-spend";
+        el.appendChild(spend);
+      }
+      var u=nextUnlock();
+      spend.innerHTML="<div class='section-kicker'>ONE SPEND</div>"+
+        SHOP.map(function(x){
+          var owned=x.once && st.upgrades && st.upgrades[x.once];
+          var dis=owned || num(st.rp)<x.cost;
+          return "<button "+(dis?"disabled":"")+" onclick='window.spendBoard(\""+x.id+"\")'><b>"+x.n+" · "+x.cost+" RP</b><span>"+x.d+(owned?" · owned":"")+"</span></button>";
+        }).join("");
+
+      var un=document.getElementById("hrUnlock");
+      if(!un){ un=document.createElement("div"); un.id="hrUnlock"; un.className="hr-unlock"; el.appendChild(un); }
+      un.textContent="Next on the home board: "+u.n+(u.cost?(" · "+u.cost+" RP"):"");
+    }, 80);
+
+    try{
+      var st=S();
+      if(st.short && st.short.left>0){
+        var log=(st.log&&st.log[0])||{};
+        st.short.left--;
+        st.short.rp+=num(log.rp);
+        st.short.best=Math.max(st.short.best, num(log.score));
+        persist();
+      }
+    }catch(e){}
+  };
+
+  var _home=window.streamHome;
+  if(typeof _home==="function"){
+    window.streamHome=function(){
+      var r=_home.apply(this,arguments);
+      setTimeout(paintUnlock, 60);
+      return r;
+    };
+  }
+  var _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(id){
+      var r=_go.apply(this,arguments);
+      if(id==="home") setTimeout(paintUnlock, 80);
+      return r;
+    };
+  }
+
+  /* start overlay short-run button */
+  function hookStart(){
+    var inner=document.querySelector(".start-inner, .start-card");
+    if(!inner || document.getElementById("shortRunBtn")) return;
+    var b=document.createElement("button");
+    b.id="shortRunBtn";
+    b.className="btn sec";
+    b.style.width="100%";
+    b.textContent="Short run · 3 hours";
+    b.onclick=function(){
+      try{ var ss=document.querySelector(".start-screen"); if(ss) ss.style.display="none"; }catch(e){}
+      if(typeof window.streamEnterClinic==="function") window.streamEnterClinic();
+      window.startShortRun();
+    };
+    inner.appendChild(b);
+  }
+  setTimeout(hookStart, 400);
+  setTimeout(hookStart, 1400);
+  setTimeout(paintUnlock, 900);
+
+  /* apply owned upgrades into next duel */
+  /* upgrades already applied in the streak wrap above via second pass */
+})();
+</script>
+
 </body>
 </html>
