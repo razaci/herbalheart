@@ -20832,5 +20832,257 @@ body.stream-quiet #sc-home > button.btn.desk-hide{display:none!important}
 })();
 </script>
 
+
+<style id="wb-wls">
+#weatherBar,#letterBar,#silentBar{margin:8px 0;padding:10px 12px;border-radius:14px;border:1px solid #31566d;background:linear-gradient(145deg,#153446,#10212e);font-size:.82rem}
+#weatherBar b,#letterBar b{display:block;margin-bottom:3px}
+.letter-pick{width:100%;text-align:left;margin:6px 0;padding:11px 12px;border-radius:12px;border:1px solid #31566d;background:#102634;color:#eaf5ff;font:inherit;font-weight:650}
+.letter-pick span{display:block;font-size:.74rem;color:#86a5b8;font-weight:500;margin-top:3px}
+</style>
+<script id="wb-wls-js">
+(function(){
+  function st(){ if(!window.S) window.S={}; return window.S; }
+  function persist(){ try{ if(typeof save==="function") save({ui:false}); }catch(e){} }
+  function toast2(m){ try{ if(typeof toast==="function") toast(m);}catch(e){} }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  function day(){ return Number(st().day)||1; }
+
+  var WEATHER=[
+    {id:"rain", ic:"🌧️", n:"Rain on the glass", rule:"Wait hits harder. Linger is shy.", wait:2, linger:0.15},
+    {id:"frost", ic:"❄️", n:"Hard frost", rule:"Linger leans in. Water costs a pip extra if you have it.", wait:0, linger:0.7},
+    {id:"thaw", ic:"🌤️", n:"Thaw", rule:"Pouch returns a pip. The lane is kind.", wait:0, linger:0.25, pouchEnergy:1},
+    {id:"still", ic:"🕯️", n:"Still air", rule:"No extra weather. The room is the room.", wait:0, linger:0.35}
+  ];
+
+  function weatherForDay(d){
+    return WEATHER[(Math.max(1,d)-1)%WEATHER.length];
+  }
+  window.clinicWeather=function(){
+    var s=st();
+    if(!s.weather || s.weatherDay!==day()){
+      s.weather=weatherForDay(day());
+      s.weatherDay=day();
+      persist();
+    }
+    return s.weather;
+  };
+
+  function paintWeather(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var w=window.clinicWeather();
+    var el=document.getElementById("weatherBar");
+    if(!el){ el=document.createElement("div"); el.id="weatherBar"; home.insertBefore(el, home.firstChild); }
+    el.innerHTML="<div class='section-kicker'>WEATHER · DAY "+day()+"</div><b>"+w.ic+" "+esc(w.n)+"</b>"+esc(w.rule);
+    paintLetters(home);
+    paintSilent(home);
+  }
+
+  /* ---- letter week ---- */
+  var LETTERS=[
+    {id:"thanks", n:"A thank-you", d:"Folded twice. They remembered the pocket line.", hour:{name:"The writer", fam:"Sleep", color:"Blue", line:"You said sit before I explain myself to the sink. I did."}},
+    {id:"complaint", n:"A complaint", d:"The ink is pressed through the page.", hour:{name:"The unsigned", fam:"Boundaries", color:"Red", line:"You made it sound easy to leave. It was not."}},
+    {id:"refer", n:"A referral", d:"Another house wrote our name in a margin.", hour:{name:"Referred guest", fam:"Focus", color:"Yellow", line:"They said this chair does not wobble. Prove it."}}
+  ];
+
+  function weekIndex(){ return Math.floor((day()-1)/7); }
+
+  function ensureLetters(){
+    var s=st();
+    var wk=weekIndex();
+    if(s.letterWeek!==wk){
+      s.letterWeek=wk;
+      s.letters=LETTERS.map(function(L){ return {id:L.id, sealed:true}; });
+      s.letterOpened=0;
+      persist();
+    }
+    return s.letters||[];
+  }
+
+  function paintLetters(home){
+    var list=ensureLetters();
+    var el=document.getElementById("letterBar");
+    if(!el){ el=document.createElement("div"); el.id="letterBar"; home.insertBefore(el, home.children[1]||null); }
+    var sealed=list.filter(function(x){ return x.sealed; }).length;
+    el.innerHTML="<div class='section-kicker'>LETTER WEEK · "+sealed+" sealed</div>"+
+      (sealed?"<button class='btn sec' style='margin:6px 0 0;min-height:42px' onclick='window.openLetterWeek()'>Open the drawer</button>":
+      "<span class='muted'>All three read. Next bundle next week.</span>");
+  }
+
+  window.openLetterWeek=function(){
+    var list=ensureLetters();
+    var html="<div class='section-kicker'>THREE FOLDED NOTES</div><p class='muted' style='font-size:.75rem'>One per week if you want. Opening starts a short hour.</p>";
+    list.forEach(function(x,i){
+      var L=LETTERS[i];
+      if(x.sealed) html+="<button class='letter-pick' onclick='window.openLetter(\""+L.id+"\")'><b>"+L.n+"</b><span>"+L.d+"</span></button>";
+      else html+="<div class='muted' style='margin:6px 0'>Already read · "+L.n+"</div>";
+    });
+    html+="<button class='btn ghost' style='width:100%' onclick='closeOverhaulModal()'>Close drawer</button>";
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Letters","WEEK",html);
+  };
+
+  window.openLetter=function(id){
+    var s=st();
+    var list=ensureLetters();
+    var L=null, idx=-1;
+    LETTERS.forEach(function(x,i){ if(x.id===id){ L=x; idx=i; } });
+    if(!L || !list[idx] || !list[idx].sealed) return;
+    list[idx].sealed=false;
+    s.letterOpened=(s.letterOpened||0)+1;
+    persist();
+    try{ closeOverhaulModal(); }catch(e){}
+    toast2("Letter · "+L.n);
+    var cand={name:L.hour.name, fam:L.hour.fam, color:L.hour.color, type:"Letter",
+      problems:[L.hour.line], pr:{f:L.hour.fam,p:L.hour.line,color:L.hour.color,quote:L.hour.line},
+      line:L.hour.line};
+    if(typeof window.startCardDuel==="function") window.startCardDuel(cand);
+    else if(typeof window.openCardChoice==="function") window.openCardChoice(cand);
+  };
+
+  /* ---- silent hour ---- */
+  window.isSilentHour=function(){ return !!st().silent; };
+  window.toggleSilentHour=function(){
+    st().silent=!st().silent;
+    persist();
+    toast2(st().silent?"Silent hour on":"Rooms back");
+    paintWeather();
+  };
+
+  function paintSilent(home){
+    var el=document.getElementById("silentBar");
+    if(!el){ el=document.createElement("div"); el.id="silentBar"; home.appendChild(el); }
+    var on=st().silent;
+    el.innerHTML="<div class='section-kicker'>SILENT HOUR</div>"+
+      (on?"No tarot, no spread, no fiction rooms. Look / Wait / Note + cards.":
+      "Full still-room noise.")+
+      "<button class='btn sec' style='margin-top:8px;min-height:42px' onclick='window.toggleSilentHour()'>"+(on?"End silence":"Start a silent hour")+"</button>";
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      if(!window.isSilentHour()) return r;
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        ["data-rooms","data-tarot","data-tarot2","data-duellore"].forEach(function(k){
+          body.querySelectorAll("["+k+"]").forEach(function(n){ n.style.display="none"; });
+        });
+        var note=body.querySelector("[data-silent]");
+        if(!note){
+          note=document.createElement("p");
+          note.dataset.silent="1";
+          note.className="muted";
+          note.style.fontSize=".72rem";
+          note.textContent="Silent hour · chairs and cards only.";
+          body.insertBefore(note, body.firstChild);
+        }
+      }, 180);
+      return r;
+    };
+  }
+
+  var _fun=window.dealFunCards;
+  if(typeof _fun==="function"){
+    window.dealFunCards=function(cand){
+      if(window.isSilentHour()){
+        window._funCand=cand;
+        try{ closeOverhaulModal(); }catch(e){}
+        if(typeof window.startCardDuel==="function") return window.startCardDuel(cand);
+        if(typeof window.openCardChoice==="function") return window.openCardChoice(cand);
+        return;
+      }
+      return _fun.apply(this,arguments);
+    };
+  }
+
+  var _scd=window.startCardDuel;
+  if(typeof _scd==="function"){
+    window.startCardDuel=function(cand){
+      var r=_scd.apply(this,arguments);
+      try{
+        var d=window._duel, w=window.clinicWeather();
+        if(d && w){
+          d._weather=w.id;
+          if(w.id==="frost") d.linger=true;
+          if(w.id==="thaw" && typeof window.usePouch==="function"){
+            /* thaw: pouch will restore more when used; tag it */
+            d._thaw=1;
+          }
+          d.log.unshift("WEATHER · "+w.n+" · "+w.rule);
+        }
+        if(d && window.isSilentHour()) d.log.unshift("SILENT · the radio stays off");
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _hm=window.hourMove;
+  if(typeof _hm==="function"){
+    window.hourMove=function(kind){
+      var r=_hm.apply(this,arguments);
+      try{
+        var d=window._duel, w=window.clinicWeather();
+        if(d && w && kind==="wait" && w.id==="rain"){
+          d.hp=Math.max(0,(d.hp||0)-1);
+          d.log.unshift("RAIN · wait lands twice");
+          if(window.renderDuel) window.renderDuel();
+          if(d.hp<=0 && window.forceRewardBoard) window.forceRewardBoard({outcome:"Breakthrough"});
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _pouch=window.usePouch;
+  if(typeof _pouch==="function"){
+    window.usePouch=function(){
+      var r=_pouch.apply(this,arguments);
+      try{
+        var d=window._duel, w=window.clinicWeather();
+        if(d && w && w.id==="thaw"){
+          d.energy=Math.min((d.maxEnergy||4),(d.energy||0)+1);
+          d.log.unshift("THAW · pouch gives the pip back");
+          if(window.renderDuel) window.renderDuel();
+        }
+        if(d && w && w.id==="frost"){
+          d.energy=Math.max(0,(d.energy||0)- (d._frostTax?0:0));
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  /* day tick from previous short-run / hours pack */
+  var _show=window.showHourRewards;
+  if(typeof _show==="function"){
+    window.showHourRewards=function(snap){
+      var r=_show.apply(this,arguments);
+      setTimeout(paintWeather, 200);
+      return r;
+    };
+  }
+  var _go=window.go;
+  if(typeof _go==="function"){
+    window.go=function(id){
+      var r=_go.apply(this,arguments);
+      if(id==="home") setTimeout(paintWeather, 90);
+      return r;
+    };
+  }
+  var _home=window.streamHome;
+  if(typeof _home==="function"){
+    window.streamHome=function(){
+      var r=_home.apply(this,arguments);
+      setTimeout(paintWeather, 80);
+      return r;
+    };
+  }
+  setTimeout(paintWeather, 700);
+  setTimeout(paintWeather, 1600);
+})();
+</script>
+
 </body>
 </html>
