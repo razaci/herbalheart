@@ -22003,5 +22003,197 @@ window.HERB_COMBOS_1000=[{id:1,n:'Echinacea',t:'Single',i:'Colds, flu onset, imm
 })();
 </script>
 
+<style>
+
+.mn-board{background:linear-gradient(180deg,#1a2418,#10160e);border:2px solid #c9a84c;border-radius:8px;padding:14px;margin:8px 0;box-shadow:inset 0 0 0 1px #3a4a28}
+.mn-board h3{font-family:Cinzel,serif;letter-spacing:.14em;text-align:center;color:#e8d090;margin:0 0 8px;font-size:.95rem}
+.mn-item{width:100%;text-align:left;background:transparent;border:0;border-bottom:1px dashed #3a4a28;color:#e4efe8;font:inherit;padding:8px 2px;cursor:pointer}
+.mn-item .pr{float:right;color:#e8d090;font-size:.78rem}
+.mn-item .ds{display:block;font-size:.72rem;color:#8fb8a4;margin-top:2px}
+.mn-chalk{font-family:Cinzel,serif;color:#d5e8c8;letter-spacing:.08em}
+
+</style>
+
+<script>
+/* ==========================================================
+   FICTIONAL MENUS IN PLAY — order during the hour
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[m];});}
+
+  var MENUS={
+    kettle:{
+      ic:"🫖", title:"KETTLE BOARD", sub:"Served while they are still talking",
+      items:[
+        {n:"First cup, unnamed",p:"free",fx:"energy",v:1,d:"Water that admits it is water."},
+        {n:"Wrong tea, corrected",p:"1 en",fx:"score",v:1,d:"They tell you the almost-favorite. Bonded."},
+        {n:"Chamomile that does not lecture",p:"1 en",fx:"care",v:2,d:"Blue hour. Settle before screens."},
+        {n:"Skullcap after the list of three",p:"1 en",fx:"care",v:3,d:"Item two was the visit. This is the cup after."},
+        {n:"Ginger for the ferry stomach",p:"1 en",fx:"linger",v:0,d:"Clears a little weather from the gut thread."},
+        {n:"Second cup you also drink",p:"free",fx:"energy",v:1,d:"Unprofessional. Correct."}
+      ]
+    },
+    night:{
+      ic:"🌙", title:"NIGHT CUTOFF CARD", sub:"Moon Road specials · after the lamp",
+      items:[
+        {n:"Phone face-down tax",p:"1 focus",fx:"care",v:2,d:"The night keeps a job. You take its shift."},
+        {n:"Dusk routine, small",p:"1 en",fx:"care",v:3,d:"Allowed to be ordinary."},
+        {n:"3am mind, one chair",p:"2 en",fx:"care",v:4,d:"Do not moralize the scroll."},
+        {n:"Stopped-clock broth",p:"free",fx:"score",v:1,d:"Time is a rumor. Use the kettle."}
+      ]
+    },
+    lampmarket:{
+      ic:"🧺", title:"THURSDAY STALL", sub:"Wick wrote the prices. Check the leaf.",
+      items:[
+        {n:"Almost-correct tea",p:"1 en",fx:"care",v:1,d:"Same leaf. Mostly."},
+        {n:"Pie you cannot bill",p:"free",fx:"score",v:1,d:"You can thank it."},
+        {n:"Ginger by the sack (pinch)",p:"1 en",fx:"care",v:2,d:"Warmth before heroics."},
+        {n:"Hat that is not yours",p:"leave it",fx:"score",v:1,d:"The hour stays yours."}
+      ]
+    },
+    grey:{
+      ic:"🌫️", title:"VERGE FARE (penciled)", sub:"If the road forgot its name",
+      items:[
+        {n:"Unopened letter, still unopened",p:"1 en",fx:"score",v:2,d:"A drawer allowed to stay shut."},
+        {n:"Fog-on-the-lane water",p:"free",fx:"energy",v:1,d:"The window erases the street. Good."},
+        {n:"Name that stays on a door",p:"2 en",fx:"care",v:4,d:"Bramble weather. Make the room boring and real."},
+        {n:"Moth at the unlit lamp",p:"free",fx:"score",v:1,d:"It prefers the dark. You note it."}
+      ]
+    },
+    ridge:{
+      ic:"🔥", title:"LOOKOUT SUPPER", sub:"Hearth Colm's board · dignity first",
+      items:[
+        {n:"Joint weather, warmed",p:"1 en",fx:"care",v:3,d:"No hauled hips."},
+        {n:"Short-stairs story",p:"1 en",fx:"care",v:2,d:"The stairs got taller. The soup did not."},
+        {n:"Stove-dog portion",p:"free",fx:"energy",v:1,d:"Lives where people cook."},
+        {n:"One object from the old room",p:"1 focus",fx:"score",v:2,d:"Harbor special, served inland."}
+      ]
+    },
+    staff:{
+      ic:"📋", title:"STAFF CHALK", sub:"Jun's handwriting. Do not rearrange.",
+      items:[
+        {n:"One next step, not twelve",p:"1 en",fx:"care",v:2,d:"High praise is one nod."},
+        {n:"Color order respected",p:"free",fx:"score",v:1,d:"Blue jar third from the left."},
+        {n:"Emergency rest token",p:"5 RP",fx:"energy",v:2,d:"The weakness is over-helping when tired."},
+        {n:"Document the hour for River",p:"1 focus",fx:"score",v:2,d:"Care you can hand to the next person."}
+      ]
+    },
+    dessert:{
+      ic:"🍋", title:"AFTER THE HOUR", sub:"Tiny ceremonies",
+      items:[
+        {n:"Lemon in the water",p:"free",fx:"energy",v:1,d:"It works because it is tiny."},
+        {n:"Crack in the cup, served anyway",p:"free",fx:"score",v:1,d:"The crack is not the problem."},
+        {n:"Dust in the sun",p:"free",fx:"score",v:1,d:"The room admits it is old. You both relax."},
+        {n:"Pocket line to go",p:"1 en",fx:"care",v:2,d:"Paper outlives advice."}
+      ]
+    }
+  };
+
+  function applyItem(it){
+    var d=window._duel;
+    if(!d){
+      if(typeof toast==="function") toast(it.n+" · no one in the chair yet");
+      return;
+    }
+    if(/RP/.test(it.p) && window.S){
+      if((S.rp||0)<5){ if(typeof toast==="function") toast("Need 5 RP"); return; }
+      if(window.bumpStat) window.bumpStat("rp",-5,"menu");
+    }
+    if(/en/.test(it.p) && (d.energy||0)<1 && it.p.indexOf("free")<0 && it.p.indexOf("leave")<0 && it.p.indexOf("focus")<0 && it.p.indexOf("RP")<0){
+      if((d.energy||0)<1){ if(typeof toast==="function") toast("Need energy"); return; }
+    }
+    if(/1 en/.test(it.p)||/2 en/.test(it.p)){
+      var cost=/2 en/.test(it.p)?2:1;
+      if((d.energy||0)<cost){ if(typeof toast==="function") toast("Need energy"); return; }
+      d.energy-=cost;
+    }
+    if(/focus/.test(it.p)){
+      if((d.focus||0)<1){ if(typeof toast==="function") toast("Need focus"); return; }
+      d.focus-=1;
+    }
+    if(it.fx==="care") d.hp=Math.max(0,(d.hp||0)-(it.v||0));
+    if(it.fx==="energy") d.energy=Math.min((d.maxEnergy||4)+1,(d.energy||0)+(it.v||0));
+    if(it.fx==="score") d.score=(d.score||0)+(it.v||0);
+    if(it.fx==="linger") d.linger=0;
+    if(d.log) d.log.unshift("MENU · "+it.n+" · "+it.d);
+    if(d.table) d.table.push({ic:"🍽️",name:it.n,care:it.v||0,type:"Menu"});
+    if(typeof toast==="function") toast("🍽️ "+it.n);
+    if(window.SFX&&window.SFX.pouch) window.SFX.pouch();
+    if(window.renderDuel) window.renderDuel();
+  }
+
+  window.orderMenuItem=function(menuId, idx){
+    var m=MENUS[menuId]; if(!m) return;
+    applyItem(m.items[idx]);
+  };
+
+  window.openFictionMenu=function(id){
+    var m=MENUS[id]; if(!m){ window.openMenuHouse(); return; }
+    var html='<div class="mn-board"><h3 class="mn-chalk">'+m.ic+' '+m.title+'</h3>';
+    html+='<p class="muted" style="text-align:center;font-size:.72rem">'+esc(m.sub)+'</p>';
+    m.items.forEach(function(it,i){
+      html+='<button class="mn-item" onclick="window.orderMenuItem(\''+id+'\','+i+')">';
+      html+='<span>'+esc(it.n)+'</span><span class="pr">'+esc(it.p)+'</span>';
+      html+='<span class="ds">'+esc(it.d)+'</span></button>';
+    });
+    html+='</div>';
+    html+='<button class="btn sec" style="width:100%" onclick="window.openMenuHouse()">Other boards</button>';
+    html+='<button class="btn ghost" style="width:100%;margin-top:6px" onclick="window.backToHour?window.backToHour():closeOverhaulModal()">Back to cards</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal(m.title,"MENU",html);
+  };
+
+  window.openMenuHouse=function(){
+    var html='<div class="section-kicker">MENUS IN THE HOUSE</div>';
+    html+='<p class="muted" style="font-size:.75rem">Chalkboards you can order from during an hour. Cards stay the main work. A cup is a move.</p>';
+    Object.keys(MENUS).forEach(function(k){
+      var m=MENUS[k];
+      html+='<button class="btn sec" style="width:100%;text-align:left;margin-bottom:6px" onclick="window.openFictionMenu(\''+k+'\')">';
+      html+=m.ic+' <b>'+m.title+'</b><div class="muted" style="font-size:.72rem">'+esc(m.sub)+'</div></button>';
+    });
+    html+='<p class="muted" style="font-size:.7rem">Fiction fare. Not nutrition advice, not a pharmacy.</p>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Menus","HOUSE",html);
+  };
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var play=document.querySelector(".gp-play");
+        var body=document.getElementById("overhaulModalBody");
+        var host=play||body;
+        if(!host||host.querySelector("[data-menus]")) return;
+        var box=document.createElement("div");
+        box.dataset.menus="1";
+        box.innerHTML='<div class="gp-kicker">House menus</div><div class="gp-row">'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'kettle\')">🫖 Kettle</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'night\')">🌙 Night</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'lampmarket\')">🧺 Stall</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'grey\')">🌫️ Verge</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'ridge\')">🔥 Lookout</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'staff\')">📋 Chalk</button>'+
+          '<button class="btn sm" onclick="window.openFictionMenu(\'dessert\')">🍋 After</button>'+
+          '</div>';
+        host.appendChild(box);
+      },100);
+      return r;
+    };
+  }
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnMenus")) return;
+    var b=document.createElement("button");
+    b.id="btnMenus"; b.className="btn sec"; b.style.width="100%"; b.style.marginTop="6px";
+    b.textContent="🍽️ House menus · kettle to verge";
+    b.onclick=function(){ window.openMenuHouse(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,550);
+  setTimeout(mount,1700);
+})();
+</script>
+
 </body>
 </html>
