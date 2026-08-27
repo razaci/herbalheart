@@ -21751,5 +21751,257 @@ window.HERB_COMBOS_1000=[{id:1,n:'Echinacea',t:'Single',i:'Colds, flu onset, imm
 })();
 </script>
 
+<style>
+
+.st-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+.st-cell{padding:8px 4px;border-radius:10px;border:1px solid #2a4a40;background:#0c1814;text-align:center}
+.st-cell .sv{font-weight:800;font-size:1.05rem;color:#8af0b8}
+.st-cell .sl{font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:#8fb8a4}
+.st-delta{position:fixed;left:50%;top:30%;transform:translate(-50%,0);z-index:420;font-weight:800;color:#ffe9a8;
+  text-shadow:0 0 12px rgba(255,220,120,.7);pointer-events:none;animation:xpFloat 1s ease-out forwards}
+.st-bar{height:8px;border-radius:99px;background:#06120e;border:1px solid #2a4a40;overflow:hidden;margin-top:4px}
+.st-bar>i{display:block;height:100%;background:linear-gradient(90deg,#1f6a44,#8af0b8)}
+
+</style>
+
+<script>
+/* ==========================================================
+   BETTER GAME STATS · live HUD, deltas, hour report
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[m];});}
+  function ensure(){
+    if(!window.S) window.S={day:1,rp:0,log:[],mastery:{}};
+    S.stats=S.stats||{
+      hours:0,clears:0,fails:0,careDealt:0,combosPlayed:0,
+      bestCare:0,streak:0,bestStreak:0,focusSpent:0,referrals:0,
+      lastDelta:null
+    };
+    S.mastery=S.mastery||{};
+    return S;
+  }
+  function rankFromRp(rp){
+    if(rp>=700) return "Master of the Still-Room";
+    if(rp>=350) return "Senior Healer";
+    if(rp>=150) return "Journeyman";
+    if(rp>=50) return "Apprentice";
+    return "Novice";
+  }
+  window.bumpStat=function(kind, n, why){
+    var S=ensure();
+    var st=S.stats;
+    n=n||1;
+    if(kind==="rp"){
+      S.rp=(S.rp||0)+n;
+      S.rank=rankFromRp(S.rp);
+    } else if(kind==="care"){
+      st.careDealt+=n;
+      if(n>st.bestCare) st.bestCare=n;
+    } else if(st[kind]!=null){
+      st[kind]+=n;
+    }
+    st.lastDelta={k:kind,n:n,why:why||""};
+    window.flashStat((n>=0?"+":"")+n+" "+kind+(why?" · "+why:""));
+    window.paintStatsHud();
+    var mRP=document.getElementById("mRP");
+    if(mRP && kind==="rp") mRP.textContent=S.rp;
+    var rb=document.getElementById("rankBadge");
+    if(rb && S.rank) rb.textContent=S.rank;
+    if(typeof save==="function") try{ save({ui:false}); }catch(e){}
+  };
+  window.flashStat=function(txt){
+    var el=document.createElement("div");
+    el.className="st-delta";
+    el.textContent=txt;
+    document.body.appendChild(el);
+    setTimeout(function(){ try{ el.remove(); }catch(e){} },1000);
+  };
+  window.paintStatsHud=function(){
+    var S=ensure();
+    var st=S.stats;
+    var host=document.getElementById("stHud");
+    if(!host){
+      var home=document.getElementById("sc-home");
+      if(!home) return;
+      host=document.createElement("div");
+      host.id="stHud";
+      host.className="card";
+      var meters=home.querySelector(".meters")||home.firstChild;
+      if(home.contains && document.getElementById("atmosphere")){
+        var atm=document.getElementById("atmosphere");
+        if(atm && atm.parentNode) atm.parentNode.parentNode.insertBefore(host, atm.parentNode);
+        else home.insertBefore(host, home.firstChild);
+      } else home.insertBefore(host, home.firstChild);
+    }
+    var acc=st.hours?Math.round(100*st.clears/st.hours):0;
+    var next=50;
+    if((S.rp||0)>=700) next=null;
+    else if((S.rp||0)>=350) next=700;
+    else if((S.rp||0)>=150) next=350;
+    else if((S.rp||0)>=50) next=150;
+    else next=50;
+    var need=next==null?1:Math.max(1,next-(S.rp||0));
+    var prev=0;
+    if(next===50) prev=0;
+    else if(next===150) prev=50;
+    else if(next===350) prev=150;
+    else if(next===700) prev=350;
+    else prev=700;
+    var span=(next|| (S.rp||0)+1)-prev;
+    var pct=next==null?100:Math.min(100,Math.round(100*((S.rp||0)-prev)/span));
+    host.innerHTML='<div class="section-kicker">Live stats</div>'+
+      '<div class="st-hud">'+
+      '<div class="st-cell"><div class="sv">'+(S.rp||0)+'</div><div class="sl">RP</div></div>'+
+      '<div class="st-cell"><div class="sv">'+st.hours+'</div><div class="sl">Hours</div></div>'+
+      '<div class="st-cell"><div class="sv">'+st.clears+'</div><div class="sl">Clears</div></div>'+
+      '<div class="st-cell"><div class="sv">'+acc+'%</div><div class="sl">Resolve</div></div>'+
+      '<div class="st-cell"><div class="sv">'+st.careDealt+'</div><div class="sl">Care dealt</div></div>'+
+      '<div class="st-cell"><div class="sv">'+st.combosPlayed+'</div><div class="sl">Combos</div></div>'+
+      '<div class="st-cell"><div class="sv">'+st.streak+'</div><div class="sl">Streak</div></div>'+
+      '<div class="st-cell"><div class="sv">'+(S.maya||0)+'</div><div class="sl">Maya</div></div>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:.72rem"><span>'+esc(S.rank||"Novice")+'</span><span>'+(next==null?"max rank":(S.rp||0)+" / "+next+" RP")+'</span></div>'+
+      '<div class="st-bar"><i style="width:'+pct+'%"></i></div>'+
+      '<button class="btn sm" style="width:100%;margin-top:8px" onclick="window.openStatsRoom()">Full stat sheet</button>';
+    var pill=document.getElementById("streakPill");
+    if(pill){
+      pill.textContent="🔥 x"+st.streak;
+      if(st.streak>0) pill.classList.add("on");
+    }
+    var mRP=document.getElementById("mRP"); if(mRP) mRP.textContent=S.rp||0;
+    var mC=document.getElementById("mCases"); if(mC) mC.textContent=st.hours||(S.log&&S.log.length)||0;
+  };
+
+  window.openStatsRoom=function(){
+    var S=ensure(); var st=S.stats;
+    var cats=["Sleep","Focus","Boundaries","Mood-Energy","Pain-Stiffness","Digestive","Home-Environment"];
+    var html='<div class="section-kicker">STAT SHEET</div>';
+    html+='<div class="card"><b>'+esc(S.clinic||"Willow Bend")+'</b> · '+esc(S.rank||"Novice");
+    html+='<p class="muted">Healer '+(S.healer||"—")+' · Day '+(S.day||1)+'</p></div>';
+    html+='<div class="st-hud">';
+    [["RP",S.rp||0],["Hours",st.hours],["Clears",st.clears],["Fails",st.fails],
+     ["Care",st.careDealt],["Best hit",st.bestCare],["Combos",st.combosPlayed],["Streak",st.streak],
+     ["Best streak",st.bestStreak],["Focus spent",st.focusSpent],["Referrals",st.referrals],["Maya",S.maya||0]
+    ].forEach(function(p){
+      html+='<div class="st-cell"><div class="sv">'+p[1]+'</div><div class="sl">'+p[0]+'</div></div>';
+    });
+    html+='</div>';
+    html+='<div class="section-kicker">Mastery</div><div class="card">';
+    cats.forEach(function(c){
+      var v=S.mastery[c]||0;
+      html+='<div style="display:flex;justify-content:space-between;font-size:.8rem"><span>'+c+'</span><span>'+v+'/5</span></div>';
+      html+='<div class="st-bar"><i style="width:'+Math.min(100,v*20)+'%"></i></div>';
+    });
+    html+='</div>';
+    if(S.ledger&&S.ledger.titles&&S.ledger.titles.length){
+      html+='<p class="muted">Titles: '+S.ledger.titles.map(esc).join(" · ")+'</p>';
+    }
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Stats","HUD",html);
+  };
+
+  window.scoreHour=function(win){
+    var S=ensure(); var st=S.stats; var d=window._duel||{};
+    st.hours++;
+    if(win){
+      st.clears++;
+      st.streak++;
+      if(st.streak>st.bestStreak) st.bestStreak=st.streak;
+      var fam=d.fam||"Sleep";
+      S.mastery[fam]=(S.mastery[fam]||0)+1;
+      if(/maya/i.test(d.name||"")) S.maya=(S.maya||0)+1;
+      var rp=8+Math.min(6,Math.round((d.score||0)/2));
+      if((d.table||[]).length>=3) rp+=2;
+      window.bumpStat("rp",rp,"hour clear");
+    } else {
+      st.fails++;
+      st.streak=0;
+      window.flashStat("hour open · revisit");
+    }
+    window.paintStatsHud();
+    if(typeof save==="function") try{ save({ui:false}); }catch(e){}
+  };
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      var r=_play.apply(this,arguments);
+      try{
+        var care=(card&&(card.care||0))||0;
+        if(care) window.bumpStat("care",care,card&&card.name);
+      }catch(e){}
+      return r;
+    };
+  }
+  var _pcc=window.playComboCard;
+  if(typeof _pcc==="function"){
+    window.playComboCard=function(id){
+      var r=_pcc.apply(this,arguments);
+      window.bumpStat("combosPlayed",1,"combo #"+id);
+      return r;
+    };
+  }
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      var d=window._duel||{};
+      window.scoreHour(d.hp<=0);
+      return _vf.apply(this,arguments);
+    };
+  }
+  var _ht=window.hourTimeout;
+  if(typeof _ht==="function"){
+    window.hourTimeout=function(){
+      window.scoreHour(false);
+      return _ht.apply(this,arguments);
+    };
+  }
+  var _sff=window.spendFocusCare;
+  if(typeof _sff==="function"){
+    window.spendFocusCare=function(){
+      window.bumpStat("focusSpent",1,"quiet care");
+      return _sff.apply(this,arguments);
+    };
+  }
+
+  // hour mini-stats under cards
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        var d=window._duel; var st=ensure().stats;
+        if(!body||!d) return;
+        var el=body.querySelector("[data-stmini]");
+        if(!el){
+          el=document.createElement("div");
+          el.dataset.stmini="1";
+          el.className="muted";
+          el.style.fontSize=".72rem";
+          var play=document.querySelector(".gp-play")||body;
+          play.appendChild(el);
+        }
+        el.textContent="Hour score "+(d.score||0)+" · run care "+st.careDealt+" · streak "+st.streak+" · RP "+(S.rp||0);
+      },120);
+      return r;
+    };
+  }
+
+  setTimeout(window.paintStatsHud,400);
+  setTimeout(window.paintStatsHud,1400);
+  var _ui=window.ui;
+  if(typeof _ui==="function"){
+    window.ui=function(){
+      var r=_ui.apply(this,arguments);
+      setTimeout(window.paintStatsHud,20);
+      return r;
+    };
+  }
+})();
+</script>
+
 </body>
 </html>
