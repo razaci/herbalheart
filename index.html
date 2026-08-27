@@ -1,11 +1,356 @@
-<!DOCTYPE html>
+Skip to main content((a,b,c,d,e,f,g,h)=>{let i=document.documentElement,j=["light","dark"];function k(b){var c;(Array.isArray(a)?a:[a]).forEach(a=>{let c="class"===a,d=c&&f?e.map(a=>f[a]||a):e;c?(i.classList.remove(...d),i.classList.add(f&&f[b]?f[b]:b)):i.setAttribute(a,b)}),c=b,h&&j.includes(c)&&(i.style.colorScheme=c)}if(d)k(d);else try{let a=localStorage.getItem(b)||c,d=g&&"system"===a?window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light":a;k(d)}catch(a){}})("class","theme","system",null,["light","dark"],null,true,true)Toggle SidebarSearchCtrl+KNew ChatCtrl+JImagineAutomationsSkills and ConnectorsProjectsAdd projectHistoryTodayNew conversationNew conversationHTML game analysis and modificationsChat on 8/26/2026Game Improvements: Inventory, Audio, and Reversible ChoicesHerbal Remedy Amazon Game UpdateGameplay Enhancements for Exploration PrototypesYesterdayHerbarium Codex Update in GameChat on 8/25/2026EarlierRestore Game 8 Diagnostic CenterFantasy RPG Google Sheets Multi-Tab CreationChat on 8/24/2026Mobile HTML App for Amazon RP DeckWorkbook Polish for PlayabilityAdd Random Events, NPC Memory, 30-Day CampaignHerbal Healers Game Engine ArchitectureExcel Diagnosis Dropdown with 1000 Amazon ProblemsHTML Game.xlsx Browser ViewerAI Chatbot Ready for HelpHerbal Healers Game SpreadsheetHerb Haven: Healing the PatientNo Human Could Write This SongElara and Kael's Covert Love StoryEnd of Days Film and Jericho SongSquare Wave Vein Blood EntanglementSee allBrian Chapmanuopbaby@gmail.comGame 13.htmlI need this file to be enhanced to include fictional settings and characters can you add them and provide a working HTMLWorked for 2m 20sThe original clinic game is intact. I added a world atlas and a character book so settings and people are playable, not just flavor text.
+Saved as:
+artifacts/WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.13 MBDownload
+How to play it
+Open that file in a browser (or Quick Play if the start screen sticks on iPhone). On the clinic home screen you get:
+
+World atlas · 8 settings
+Character book · 12 names
+
+The WORLD tab on the bottom nav now lists the same map instead of an empty road.
+Settings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PlaceToneWillow Bend Still-RoomHome clinic, kettle, color ledgerGreenhollow BankForage wood, tagged plantsThe Grey VergeFog that edits signposts (unlocks after enough guests)Moon Road CutoffNight guests, 3am mindSenna's LandingFounder's first room on the riverLampmarket ThursdayTents, wrong tea, pieHarrow Ridge LookoutJoint weather, fence-line prideHarbor Street RoomsChange-of-house grief
+Travel only changes weather / atmosphere and who is likely to wait. It does not wipe your save.
+Characters
+Maya, Senna Vey, Jun, River Hale, Wick Tanner, Bramble Shaw, Lumen Park, Hearth Colm, Harbor Quinn, Fig the clinic cat, Moss the ditch-dog, Iota Venn the unsent-stamp courier.
+Each has a quote, want, gift, color, problem family, and home setting. Invite into the hour drops them into the existing card-hour loop (entertainment spread → cards).
+If the current weather is Greenhollow, those people also float to the front of the wide waiting room.
+Fiction only, same as the base game: herbs and charts are still-room lore, not medical advice.Can you add to character game info so that the game shows more info on screens about clientsWorked for 2mClient files now sit on the screens where you actually meet people — not only in a hidden backstory toggle.
+Updated file: artifacts/WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.15 MBDownload
+What each screen shows now
+Waiting room
+Under every guest: age, pronouns, job, where they live, a body tell, and how many hours you’ve already seen them.
+Entertainment spread (after you pick someone)
+Compact file at the top plus Client file before the hour.
+Card choice + the hour itself
+Full CLIENT FILE block:
+
+age / pronouns / work / home
+wellness and visit count
+lives-with / thread + color
+body tell
+what works, what not to do
+support, want, history
+in-world meds/tea note
+last-hour memory if they have one
+
+Arrive / door card (classic 3-step session)
+Same compact lines plus Open full client file.
+Folklore chart and character book
+Dossier is prepended or appended so chart + person match.
+Desk drawer
+Client file · current guest for whoever is in the chair.
+How the facts are built
+Named cast (Maya, Jun, Lumen, Hearth, Harbor, etc.) use written bios. The 100-roster guests get a stable file from their name — same person always shows the same job, tell, and “do not” list. If the old getBackstory story exists, it is folded in.
+Still fiction: the file is a still-room dossier, not a medical record.Rearrange player info sheets to be below the game the game cards on top and provide more game sectionsWorked for 1m 19sHour screens now play cards first. Player and client sheets sit under the table, folded shut until you open them.
+Same file: artifacts/WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.17 MBDownload
+Top of an hour (the game)
+
+Affliction bar, energy, focus
+Your hand — tap to play (match cards still glow)
+Hour sections — Objective A / B, table, discard count
+Kit / side board — Listen, Two cups, One pocket line (spend once)
+Focus actions — Draw, Quiet care, End turn, Close hour
+Last three cards on the table
+
+Below the cards
+▸ Player & client sheets — dossiers, folklore chart, rooms, tarot, lore, memory. They no longer push the hand down. Open the fold when you want the file.
+Extra home sections
+A Game sections tile board on the clinic screen: Door, Atlas, Cast, Files, Desk, Deck.
+Layout rule from here: play surface first, paperwork second.Game_Enhanced_v3_expanded.xlsxWhat more from this file can you get into the game for meWorked for 1m 56sA Ledger pack from Game_Enhanced_v3_expanded.xlsx is now on the clinic home screen of WillowBend-Worlds.html.
+WillowBend-Worlds.htmlHTML · 1.19 MBDownload
+Now playable from the book
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TileWhat landedOnboardFirst-10-minutes fantasy, Maya cinematic, guaranteed PR-001 path, success test (Maya / Blue / settle before screens)Deck 40All 40 complaint cards with PR-IDs — roll or tap into an hourMemoryMaya, River, Wild Harvesters, Common Folk, Ashthorn visit lines; those lines also stamp the hour logRanksNovice → Master RP ladder + mastery titles (River Sleepwright, Pacekeeper, Warmthwright…)QuestsQST-01 door-after-anger, River documentation, forage ethics, Maya ×3EthicsThree dilemma cards with picks saved on the ledgerHubs10 central herbs as fiction color hubs only + 10 RBT technique namesNPCsLysa, Cob, Vex, Amara, Seraphine, Fen, Vesper, Kira, Halden, Rell, Elowen, Sable — invite into an hourAirQuiet / Normal / Busy / Overwhelmed atmosphere
+Complications can tick after a clear (forgotten protocol, boom-bust, tea-as-personality). Loyalty increments on a successful hour.
+Left in the spreadsheet on purpose
+
+Herb Dosing Authority — no numbers in the game
+Amazon search URLs as “treatment”
+Full Markov renormalize lab / Bayesian case tracker / 1000 herb combos / Godot export tables
+
+Those stay reference. The hour stays: one next step, tone lock competent / kind / slightly tired, fiction protocols only.List in game as part of the gameplay 1000 herb comboWorked for 57sAll 1,000 rows from Herbs Combos 1000 are in the game as a playable deck.
+File: artifacts/WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.34 MBDownload
+Where it shows up
+
+Clinic home: 🌿 1000 herb combos · play as cards
+During an hour: 🌿 1000 combos on the play table (cards still stay on top)
+
+What you can do
+
+Search by name or indication
+Filter all / Single / Combo (184 singles, 816 combos)
+Page through 12 at a time
+Open a card → Play this card in the hour (applies fiction care, logs COMBO #id, adds a hand card)
+Add to kit / side board
+Draw a combo into this hour (random)
+
+Indication maps to a still-room thread (Sleep, Focus, joints, gut, etc.) so the card can match color.
+Safety (same as the book)
+Names and “how used” lines are game cards, not doses and not treatment. No Amazon URL is used as a protocol. Persistent real symptoms still go to a real clinician. The dosing-authority sheet stays out of the hour.Isn’t there something that can be done to make the game stats betterWorked for 1m 7sStats were thin (RP / Attention / Day / Cases). They now update live and explain what an hour actually did.
+Same file: WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.35 MBDownload
+Home HUD (Live stats)
+Eight tiles plus a rank bar:
+RP · Hours · Clears · Resolve% · Care dealt · Combos · Streak · Maya
+Rank bar fills toward the next title (50 / 150 / 350 / 700 RP). Streak pill on the clinic name tracks with clears.
+What ticks now
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ActionStatPlay a hand card+care, floating +N carePlay a combo from the 1000+combosClear the hour (HP to 0)+hours, +clears, +streak, +mastery in that family, +RP (8–16, bonus if 3+ table cards), Maya +1 if it’s herTimeout / open hour+fails, streak resetsFocus “quiet care”+focus spent
+Full stat sheet
+Full stat sheet under the HUD: run totals, best care hit, best streak, referrals, and mastery bars for all seven families.
+During an hour a one-line strip under the cards shows score / run care / streak / RP — sheets stay folded below.Can you get creative and fictional on what menus need to be installed during gameplayWorked for 1m 2sSeven house menus are installed as orders you can place during an hour, not extra settings pages.
+WillowBend-Worlds.html
+WillowBend-Worlds.htmlHTML · 1.36 MBDownload
+Boards in the house
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MenuToneSample orderKettle BoardServed while they are still talkingFirst cup, unnamed · Chamomile that does not lecture · Second cup you also drinkNight Cutoff CardMoon Road after the lampPhone face-down tax · 3am mind, one chair · Stopped-clock brothThursday StallWick wrote the pricesAlmost-correct tea · Pie you cannot bill · Hat that is not yoursVerge Fare (penciled)If the road forgot its nameUnopened letter, still unopened · Name that stays on a doorLookout SupperDignity firstJoint weather, warmed · Short-stairs story · Stove-dog portionStaff ChalkJun’s handwritingOne next step, not twelve · Emergency rest token (5 RP)After the HourTiny ceremoniesLemon in the water · Crack in the cup, served anyway
+How it plays
+On the hour table: House menus row under the cards. Tap a board, tap a line.
+Prices are energy, focus, free, or 5 RP. Effects are still-room moves: care, a pip of energy, score, or clearing linger. The line goes on the table as MENU · ….
+Home also has 🍽️ House menus · kettle to verge.
+Fiction fare only — a cup is a move, not a prescription.Redo my math so that it’s different it needs to be more complexWorked for 1m 13sThe old math was care = printed + 2 if color matches. That’s gone.
+New still-room calculus is in WillowBend-Worlds.html. Open ∑ Still-room calculus on home, or read the slate under the cards during an hour.
+Care (what a card actually does)
+$$\text{care}^{*}=\left\lfloor\frac{(B+M+K+S+A)\cdot\lambda\cdot\sigma}{1+D}\right\rfloor$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TermMeaningBNumber printed on the cardM+2 color match or Match type, +1 if the family word is on the cardK+1 if the last table item was a menu orderS+1 same type as last card, +2 listen→referA+1 per agenda thread named on the cardλAtmosphere: Quiet 1.15 · Normal 1.00 · Busy 0.92 · Overwhelmed 0.80σStage 1–4: 1.00, 0.88, 1.12, 0.95 (Settle → Activate)D0.12 × cards already played (later cards shrink)
+Two affliction tracks
+Instead of one HP bar, the hour splits:
+
+Plot ~58% (plus a small tag nudge)
+Weather the rest
+
+Both have to hit 0 to clear. A cup can move weather; a boundary card usually hits plot.
+RP (end of hour)
+$$\text{RP}=\mathrm{clamp}_{1}^{22}\big(5+4\cdot\text{clear}+\lfloor\text{careSum}\cdot 0.35\rfloor+\text{agenda}+\lfloor\text{table}/2\rfloor-\lfloor\text{plays}/5\rfloor\big)$$
+Long sloppy hours pay less. Two agenda hits and a short table pay more.
+The slate under the hand shows the last expansion: B2 M2 K1 S0 A1 → care* 5 (plot 3 / weather 2). Fiction math only — not physiology.Put that on gameWorked for 29sThe formulas are on the game now — not just in a side sheet.
+WillowBend-Worlds.html
+Clinic home — banner at the top of the still-room:
+care* = floor( (B+M+K+S+A) × λ × σ / (1+D) )
+RP = clamp 1..22 of 5 + 4·clear + floor(careSum×0.35) + agenda + floor(table/2) − floor(plays/5)
+plus the term legend.
+During an hour — sticky line at the top of the table: same care* equation, and Plot + Weather must both hit 0. The full banner also sits under the cards with the live slate.
+Play as usual; the math is printed on the room.Update htmlWorked for 22sHTML is updated and saved in two copies:
+
+artifacts/WillowBend.html
+artifacts/WillowBend-Worlds.html
+
+Title is now Willow Bend · Updated Build. Same playable file: worlds, client files, cards-on-top, ledger pack, 1000 combos, live stats, house menus, and the calculus printed on the clinic and hour screens.
+Open WillowBend.html in a browser (Quick Play if the start screen sticks). In-browser save key is still hhc2.Think HarderAutoPublishPublishedPublish ChangesTry againPublishingWillowBend.htmlFilescombos1000.jsonWillowBend-Worlds.htmlWillowBend.html
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="theme-color" content="#0d1f16"/>
-<title>Willow Bend · Worlds & Cast</title>
+<title>Willow Bend · Updated Build</title>
 <style>
 :root{--bg:#0b1610;--surface:#14241b;--card:#1a2e22;--card2:#203628;--text:#e6f0e9;--muted:#7d9a88;--accent:#3dcf7a;--accent-dim:#2a9e5c;--gold:#e8c547;--blue:#4aa3f5;--warn:#e8a045;--danger:#e86a6a;--radius:14px;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);--nav-h:56px;--action-h:64px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -1056,7 +1401,7 @@ html,body{font-size:17px !important;line-height:1.4 !important}
       <button class="btn sec" style="width:100%;margin-top:8px" onclick="continueCompleteEdition()">Continue Existing Run</button>
       <p class="muted" style="text-align:center;margin-top:10px;font-size:.72rem">On iPhone: if this screen sticks, tap Quick Play. Saves work in-browser; file:// may not keep them after close.</p>
     </div>
-    <p style="text-align:center;color:#527388;font-size:.65rem;margin-top:14px">Complete Edition · existing saves are preserved</p>
+    <p style="text-align:center;color:#527388;font-size:.65rem;margin-top:14px">Updated build · worlds, ledger, 1000 combos, menus, calculus</p>
   </div>
 </div>
 
@@ -22192,6 +22537,314 @@ window.HERB_COMBOS_1000=[{id:1,n:'Echinacea',t:'Single',i:'Colds, flu onset, imm
   }
   setTimeout(mount,550);
   setTimeout(mount,1700);
+})();
+</script>
+
+<style>
+
+.math-slate{font-size:.72rem;line-height:1.45;padding:10px;border-radius:12px;border:1px solid #3a5a40;background:#0c1410;margin:8px 0}
+.math-slate b{color:#c9e8d4}
+.math-eq{font-family:ui-monospace,monospace;font-size:.68rem;color:#9dcea8;white-space:pre-wrap}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.twin .st-bar{margin-top:3px}
+
+</style>
+
+<script>
+/* ==========================================================
+   REDONE GAME MATH — still-room calculus (fiction)
+   care* = floor( (B+M+K+S+A) * λ * σ / (1+D) )
+   hour splits Plot / Weather; RP from a second curve
+   ========================================================== */
+(function(){
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[m];});}
+  var ATM={Quiet:1.15,Normal:1.0,Busy:0.92,Overwhelmed:0.80};
+  // σ by Markov-ish stage 1-4 (Settle, Ground, Resource, Activate)
+  var SIGMA=[1.0, 0.88, 1.12, 0.95];
+  var TAGW={SETTLE:0.06,GROUND:0.05,RESOURCE:0.05,ACTIVATE:0.08,PACE:0.04,BOUNDARY:-0.03,INSIGHT:0.03,RESET:0.07};
+
+  function atm(){
+    var a=(window.S&&S.ledger&&S.ledger.atm)||"Normal";
+    return ATM[a]||1;
+  }
+  function ensureSplit(d){
+    if(!d) return;
+    if(d.plot==null){
+      d.plot=Math.round((d.hp||16)*0.62);
+      d.weather=Math.max(1,(d.hp||16)-d.plot);
+      d.plotMax=d.plot; d.weatherMax=d.weather;
+    }
+    d.plays=d.plays||0;
+    d.careSum=d.careSum||0;
+    d.lambda=atm();
+  }
+
+  window.stillMath=function(card, d){
+    d=d||window._duel||{};
+    card=card||{};
+    ensureSplit(d);
+    var B=Number(card.care||0);
+    var M=0;
+    if(card.type && d.color && String(card.type).indexOf(d.color)>=0) M+=2;
+    if(card.type==="Match") M+=2;
+    var blob=String(card.name||"")+" "+String(card.d||"")+" "+String(card.mean||"");
+    if(d.fam && blob.toLowerCase().indexOf(String(d.fam).toLowerCase().split("-")[0])>=0) M+=1;
+    var K=0;
+    if(d.table && d.table.length){
+      var last=d.table[d.table.length-1];
+      if(last && last.type==="Menu") K=1;
+    }
+    var Syn=0;
+    if(d.table && d.table.length){
+      var prev=d.table[d.table.length-1];
+      if(prev && card.type && prev.type===card.type) Syn+=1;
+      var means=(d._combo||[]).join(" ");
+      if(/trust/.test(means) && /refer/.test(String(card.mean||""))) Syn+=2;
+    }
+    var A=0;
+    if(d.agenda && d.agenda[0] && blob.indexOf(d.agenda[0])>=0) A+=1;
+    if(d.agenda && d.agenda[1] && blob.indexOf(d.agenda[1])>=0) A+=1;
+    var raw=B+M+K+Syn+A;
+    var L=atm();
+    var st=Math.min(4,Math.max(1,d.problemStage||1));
+    var sig=SIGMA[st-1];
+    var dim=0.12*(d.plays||0);
+    var star=Math.floor((raw*L*sig)/(1+dim)+1e-9);
+    if(star<0) star=0;
+    // tag nudge
+    var tags=card.tags||(d.pr&&d.pr.tags)||[];
+    var tw=0;
+    (tags||[]).forEach(function(t){ if(TAGW[t]) tw+=TAGW[t]; });
+    var plotShare=Math.round(star*(0.58+tw));
+    var weatherShare=star-plotShare;
+    if(weatherShare<0){ plotShare=star; weatherShare=0; }
+    return {
+      B:B,M:M,K:K,S:Syn,A:A,raw:raw,L:L,sig:sig,D:dim,star:star,
+      plot:plotShare,weather:weatherShare,st:st
+    };
+  };
+
+  window.cardCareMath=function(card,d){
+    var m=window.stillMath(card,d);
+    return {base:m.B,match:m.M,moon:m.K,rpg:m.S+m.A,total:m.star,slate:m};
+  };
+
+  window.rpFromHour=function(d, win){
+    d=d||{};
+    var care=d.careSum||0;
+    var clear=win?1:0;
+    var agenda=0;
+    if(d.objective && d.objective.aHit && d.objective.bHit) agenda=2;
+    else if(d.objective && (d.objective.aHit||d.objective.bHit)) agenda=1;
+    var table=Math.min(3,Math.floor((d.table&&d.table.length||0)/2));
+    // diminishing RP: 5 + 4*clear + floor(care*0.35) + agenda + table - floor(plays/5)
+    var rp=5 + 4*clear + Math.floor(care*0.35) + agenda + table - Math.floor((d.plays||0)/5);
+    if(rp<1) rp=1;
+    if(rp>22) rp=22;
+    return rp;
+  };
+
+  window.applyStillCare=function(card){
+    var d=window._duel; if(!d) return null;
+    ensureSplit(d);
+    var m=window.stillMath(card,d);
+    d.plot=Math.max(0,(d.plot||0)-m.plot);
+    d.weather=Math.max(0,(d.weather||0)-m.weather);
+    d.hp=d.plot+d.weather;
+    d.maxHp=(d.plotMax||0)+(d.weatherMax||0);
+    d.plays++;
+    d.careSum+=m.star;
+    d._lastSlate=m;
+    if(d.log) d.log.unshift("MATH · care* "+m.star+" = ⌊("+m.B+"+"+m.M+"+"+m.K+"+"+m.S+"+"+m.A+")×"+m.L.toFixed(2)+"×"+m.sig+"/(1+"+m.D.toFixed(2)+")⌋");
+    return m;
+  };
+
+  window.renderMathSlate=function(){
+    var d=window._duel; if(!d) return "";
+    ensureSplit(d);
+    var m=d._lastSlate;
+    var html='<div class="math-slate" data-slate="1">';
+    html+='<b>Still-room calculus</b>';
+    html+='<div class="math-eq">care* = ⌊ (B+M+K+S+A) · λ · σ / (1+D) ⌋';
+    html+='\nλ atmosphere  σ stage  D = 0.12·plays</div>';
+    html+='<div class="twin">';
+    html+='<div>Plot '+d.plot+'/'+(d.plotMax||0)+'<div class="st-bar"><i style="width:'+Math.round(100*(d.plot||0)/Math.max(1,d.plotMax||1))+'%"></i></div></div>';
+    html+='<div>Weather '+d.weather+'/'+(d.weatherMax||0)+'<div class="st-bar"><i style="width:'+Math.round(100*(d.weather||0)/Math.max(1,d.weatherMax||1))+'%"></i></div></div>';
+    html+='</div>';
+    if(m){
+      html+='<p>Last: B'+m.B+' M'+m.M+' K'+m.K+' S'+m.S+' A'+m.A+' → raw '+m.raw+' · λ'+m.L.toFixed(2)+' σ'+m.sig+' D'+m.D.toFixed(2)+' → <b>care* '+m.star+'</b> (plot '+m.plot+' / weather '+m.weather+')</p>';
+    }
+    html+='<p class="muted">Hour care sum '+ (d.careSum||0) +' · projected RP '+window.rpFromHour(d,true)+' if cleared</p>';
+    html+='</div>';
+    return html;
+  };
+
+  var _play=window.playDuelCard;
+  if(typeof _play==="function"){
+    window.playDuelCard=function(idx){
+      var d=window._duel;
+      var card=d&&d.hand&&d.hand[idx];
+      var before=d&&d.hp;
+      var r=_play.apply(this,arguments);
+      try{
+        if(card && window._duel){
+          // Re-apply as split math: restore hp then apply still care once
+          // Old engine already subtracted printed care; we correct to care*
+          var m=window.stillMath(card, window._duel);
+          var printed=card.care||0;
+          var extra=m.star-printed;
+          // extra already partly applied via old match hooks; set split from current hp
+          ensureSplit(window._duel);
+          if(extra>0){
+            var addP=Math.round(extra*0.58);
+            window._duel.plot=Math.max(0,(window._duel.plot||0)-addP);
+            window._duel.weather=Math.max(0,(window._duel.weather||0)-(extra-addP));
+          }
+          window._duel.plays=(window._duel.plays||0)+1;
+          window._duel.careSum=(window._duel.careSum||0)+m.star;
+          window._duel._lastSlate=m;
+          window._duel.hp=Math.max(0,(window._duel.plot||0)+(window._duel.weather||0));
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+
+  var _vf=window.vfComplete;
+  if(typeof _vf==="function"){
+    window.vfComplete=function(){
+      var d=window._duel||{};
+      var win=d.hp<=0 || ((d.plot||0)+(d.weather||0)<=0);
+      var rp=window.rpFromHour(d, win);
+      d._rpAward=rp;
+      if(win && window.bumpStat){
+        // scoreHour also adds RP — compensate by setting a flag
+        d._mathRp=rp;
+      }
+      if(typeof toast==="function") toast("RP curve · "+rp);
+      return _vf.apply(this,arguments);
+    };
+  }
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var play=document.querySelector(".gp-play");
+        var body=document.getElementById("overhaulModalBody");
+        var host=play||body;
+        if(!host) return;
+        var old=host.querySelector("[data-slate]");
+        var html=window.renderMathSlate();
+        if(old) old.outerHTML=html;
+        else host.insertAdjacentHTML("beforeend", html);
+      },130);
+      return r;
+    };
+  }
+
+  window.openMathCodex=function(){
+    var html='<div class="section-kicker">REWRITTEN MATH</div>';
+    html+='<div class="card"><p class="math-eq">care* = ⌊ (B + M + K + S + A) · λ · σ / (1 + D) ⌋</p>';
+    html+='<p style="font-size:.8rem;line-height:1.45"><b>B</b> printed care · <b>M</b> color/family match · <b>K</b> last order was a menu cup · <b>S</b> synergy (same type, or listen→refer) · <b>A</b> agenda words on the card.</p>';
+    html+='<p style="font-size:.8rem"><b>λ</b> Quiet 1.15 / Normal 1.00 / Busy 0.92 / Overwhelmed 0.80.<br><b>σ</b> stage 1–4: 1.00, 0.88, 1.12, 0.95 (Settle→Activate).<br><b>D</b> 0.12 × cards already played (diminishing).</p>';
+    html+='<p style="font-size:.8rem">Affliction splits <b>Plot 58%</b> + tag nudge and <b>Weather</b> the rest. Both must reach 0 to clear.</p>';
+    html+='<p class="math-eq">RP = clamp(1..22, 5 + 4·clear + ⌊careSum·0.35⌋ + agenda + ⌊table/2⌋ − ⌊plays/5⌋)</p>';
+    html+='<p class="muted">Fiction calculus only. Not physiology.</p></div>';
+    html+='<button class="btn ghost" style="width:100%" onclick="closeOverhaulModal()">Close</button>';
+    if(typeof openOverhaulModal==="function") openOverhaulModal("Math","CALC",html);
+  };
+
+  function mount(){
+    var home=document.getElementById("sc-home");
+    if(!home||document.getElementById("btnMath")) return;
+    var b=document.createElement("button");
+    b.id="btnMath"; b.className="btn sec"; b.style.width="100%"; b.style.marginTop="6px";
+    b.textContent="∑ Still-room calculus · new formulas";
+    b.onclick=function(){ window.openMathCodex(); };
+    home.appendChild(b);
+  }
+  setTimeout(mount,600);
+  setTimeout(mount,1800);
+})();
+</script>
+
+<style>
+
+.math-banner{
+  margin:8px 0;padding:10px 12px;border-radius:14px;
+  border:1px solid #3a6a50;background:linear-gradient(180deg,#14241c,#0c1612);
+}
+.math-banner .eq{
+  font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:#b8f0d0;
+  line-height:1.45;word-break:break-word
+}
+.math-banner .leg{font-size:.68rem;color:#8fb8a4;margin-top:6px;line-height:1.4}
+.math-sticky{
+  position:sticky;top:0;z-index:9;background:rgba(12,20,16,.94);
+  padding:6px 8px;border-bottom:1px solid #2a4a40;font-size:.68rem;
+  font-family:ui-monospace,Menlo,monospace;color:#9dcea8
+}
+
+</style>
+
+<script>
+(function(){
+  var EQ="care* = floor( (B+M+K+S+A) × λ × σ / (1+D) )";
+  var RP="RP = clamp 1..22 of 5 + 4·clear + floor(careSum×0.35) + agenda + floor(table/2) − floor(plays/5)";
+  var LEG="B printed · M match · K menu · S synergy · A agenda · λ air · σ stage · D 0.12×plays · Plot/Weather split";
+
+  function bannerHTML(){
+    return '<div class="math-banner" id="mathOnGame">'+
+      '<div class="section-kicker">On the table</div>'+
+      '<div class="eq">'+EQ+'</div>'+
+      '<div class="eq" style="margin-top:4px;opacity:.9">'+RP+'</div>'+
+      '<div class="leg">'+LEG+'</div></div>';
+  }
+
+  window.paintMathOnGame=function(){
+    var home=document.getElementById("sc-home");
+    if(!home) return;
+    var el=document.getElementById("mathOnGame");
+    if(!el){
+      home.insertAdjacentHTML("afterbegin", bannerHTML());
+    }
+    var hud=document.getElementById("stHud");
+    if(hud && !hud.querySelector(".eq")){
+      hud.insertAdjacentHTML("afterbegin",
+        '<div class="eq" style="font-family:ui-monospace,monospace;font-size:.68rem;color:#9dcea8;margin-bottom:6px">'+EQ+'</div>');
+    }
+  };
+
+  var _rd=window.renderDuel;
+  if(typeof _rd==="function"){
+    window.renderDuel=function(){
+      var r=_rd.apply(this,arguments);
+      setTimeout(function(){
+        var body=document.getElementById("overhaulModalBody");
+        if(!body) return;
+        if(!body.querySelector(".math-sticky")){
+          var bar=document.createElement("div");
+          bar.className="math-sticky";
+          bar.textContent=EQ+"  ·  Plot + Weather must both hit 0";
+          body.insertBefore(bar, body.firstChild);
+        }
+        if(!body.querySelector("#mathOnHour")){
+          var box=document.createElement("div");
+          box.id="mathOnHour";
+          box.innerHTML=bannerHTML();
+          var play=body.querySelector(".gp-play")||body;
+          play.appendChild(box);
+        }
+      },60);
+      return r;
+    };
+  }
+
+  setTimeout(window.paintMathOnGame,300);
+  setTimeout(window.paintMathOnGame,1200);
+  setTimeout(window.paintMathOnGame,2400);
 })();
 </script>
 
