@@ -1054,6 +1054,43 @@ body{ background:#0a1612 !important; }
 .fb h4{margin:0 0 6px;color:#c9e8d4}
 .fb p{margin:0 0 10px;font-size:.85rem;color:#b7cfc4}
 
+
+/* ===== MOBILE PLAYABLE ===== */
+@media (max-width: 520px){
+  .desk-hide{display:block !important}
+  .btn, button.btn, button{
+    -webkit-appearance:none;
+    appearance:none;
+    display:block !important;
+    width:100% !important;
+    min-height:44px;
+    margin-bottom:8px;
+    font-size:16px !important;
+    color:#e8fff4 !important;
+    background:#1a3a30 !important;
+    border:1px solid #4a8a70 !important;
+    border-radius:12px !important;
+    padding:12px 14px !important;
+  }
+  .fx-tile, .card{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    color:#e4efe8 !important;
+  }
+  #sc-home, #app, main{
+    display:block !important;
+    visibility:visible !important;
+    padding-bottom:80px;
+  }
+  #overhaulModal{
+    background:rgba(6,16,14,.55) !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #overhaulModalBody{color:#e4efe8 !important; font-size:16px !important}
+  .start-screen{display:none !important}
+}
+
 </style>
 </head>
 <body>
@@ -20422,6 +20459,24 @@ window.GUILD_HERBS=[
 
 
 
+
+
+
+/* Mobile: unhide floor, keep Visit tappable */
+(function(){
+  function unhide(){
+    document.querySelectorAll(".desk-hide").forEach(function(el){
+      el.classList.remove("desk-hide");
+      el.style.display="";
+    });
+    var start=document.querySelector(".start-screen");
+    if(start) start.style.display="none";
+    var home=document.getElementById("sc-home");
+    if(home){ home.style.display="block"; home.style.visibility="visible"; }
+  }
+  setTimeout(unhide,200);
+  setTimeout(unhide,1200);
+})();
 
 </script>
 </body>
