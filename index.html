@@ -77,4 +77,25 @@ const oldDetail=detail;detail=function(){setNav('plant');oldDetail();};const old
 // Preserve the original plant sidebar and editor; the home view is an additional layer.
 view('home');
 })();
+</script><style>
+.hh-shop{display:inline-flex;align-items:center;gap:7px;margin:6px 4px 6px 0;padding:8px 12px;border-radius:10px;border:1px solid #6e8151;background:linear-gradient(135deg,#304b2b,#203c2a);color:#fff0c2!important;text-decoration:none;font-size:12px;font-weight:700;line-height:1.25;max-width:100%;white-space:normal}.hh-shop:hover{background:#42643a;border-color:#d9b96d}.hh-shop:focus-visible{outline:3px solid #e6cb91;outline-offset:2px}.hh-shop-profile{font-size:14px;padding:12px 17px;margin:12px 0}.hh-shop-note{font-size:12px;color:#aec4b3;line-height:1.5;margin:5px 0 12px}
+</style><script>
+/* Amazon product SEARCH links: never imply verified stock, species, or safety. */
+(()=>{
+const enc=s=>encodeURIComponent(String(s||'').trim());
+const getRecords=()=>typeof records!=='undefined'?records:[];
+function makeLink(r,profile){const a=document.createElement('a');a.className='hh-shop'+(profile?' hh-shop-profile':'');a.target='_blank';a.rel='noopener noreferrer';a.textContent=profile?'🛒 Find '+r.common+' on Amazon ↗':'🛒 Amazon ↗';a.href='https://www.amazon.com/s?k='+enc((r.scientific&&r.scientific.trim()?r.scientific:r.common)+' herb');a.title='Open Amazon search results for '+r.common+' in a new tab. Products are not verified or endorsed.';return a;}
+let running=false;
+function enhance(){if(running)return;running=true;try{
+ document.querySelectorAll('button[data-plant]').forEach(b=>{if(b.dataset.amazonAdded)return;const r=getRecords().find(x=>x.id===b.dataset.plant);if(!r)return;b.dataset.amazonAdded='1';const a=makeLink(r,false);a.addEventListener('click',e=>e.stopPropagation());b.insertAdjacentElement('afterend',a);});
+ const d=document.getElementById('detail');if(d&&typeof selected!=='undefined'){
+  const r=getRecords().find(x=>x.id===selected);
+  const existing=d.querySelector('.hh-shop-profile-wrap');
+  if(r && !d.querySelector('#editForm')){
+   if(!existing||existing.dataset.herb!==r.id){if(existing)existing.remove();const wrap=document.createElement('div');wrap.className='hh-shop-profile-wrap';wrap.dataset.herb=r.id;wrap.append(makeLink(r,true));const note=document.createElement('p');note.className='hh-shop-note';note.textContent='Opens Amazon search results in a new tab, not a verified product listing. Check the exact species, ingredients, seller, and safety before purchasing.';wrap.append(note);const hero=d.querySelector('.hero');(hero||d).append(wrap);}
+  }else if(existing)existing.remove();
+ }
+}finally{running=false;}}
+const obs=new MutationObserver(()=>enhance());obs.observe(document.body,{childList:true,subtree:true});enhance();
+})();
 </script></body></html>
